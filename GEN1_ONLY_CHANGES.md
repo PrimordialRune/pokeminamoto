@@ -287,6 +287,56 @@ The following data arrays retain Gen 2/3 entries to maintain array index compati
 
 ---
 
+---
+
+## Move Replacements (Gen 2/3 → Gen 1)
+
+In addition to species, all Gen 2/3 moves have been replaced with Gen 1 equivalents.
+
+**Gen 1 moves:** MOVE_POUND (1) through MOVE_STRUGGLE (165)
+**Gen 2 moves:** MOVE_SKETCH (166) through MOVE_BEAT_UP (251)
+**Gen 3 moves:** MOVE_FAKE_OUT (252) through MOVE_PSYCHO_BOOST (354)
+
+### Files Updated
+
+| File | Move Replacements |
+|------|-------------------|
+| trainer_parties.h | 707 |
+| battle_frontier_mons.h | 1,529 |
+| apprentice.h | 189 |
+| trainer_hill.h | 370 |
+| battle_pyramid_level_50_wild_mons.h | 209 |
+| battle_pyramid_open_level_wild_mons.h | 209 |
+| contest_opponents.h | 175 |
+| battle_tent.h | 281 |
+| level_up_learnsets.h | 1,313 |
+| egg_moves.h | 546 |
+| tutor_learnsets.h | 2,334 |
+| **Total** | **7,862** |
+
+### Notable Move Replacement Mappings
+
+| Gen 2/3 Move | Gen 1 Replacement | Reasoning |
+|--------------|-------------------|-----------|
+| MOVE_SHADOW_BALL | MOVE_NIGHT_SHADE | Ghost special attack |
+| MOVE_CRUNCH | MOVE_BITE | Dark biting move |
+| MOVE_SLUDGE_BOMB | MOVE_SLUDGE | Poison attack |
+| MOVE_HIDDEN_POWER | MOVE_SWIFT | Special attack |
+| MOVE_PROTECT | MOVE_HARDEN | Defensive move |
+| MOVE_GIGA_DRAIN | MOVE_MEGA_DRAIN | Draining move |
+| MOVE_DRAGON_CLAW | MOVE_SLASH | Physical slashing |
+| MOVE_DRAGON_DANCE | MOVE_SWORDS_DANCE | Stat boosting |
+| MOVE_BRICK_BREAK | MOVE_KARATE_CHOP | Fighting move |
+| MOVE_EXTREME_SPEED | MOVE_QUICK_ATTACK | Priority move |
+| MOVE_AERIAL_ACE | MOVE_WING_ATTACK | Flying move |
+| MOVE_CALM_MIND | MOVE_MEDITATE | Psychic boost |
+| MOVE_LEAF_BLADE | MOVE_RAZOR_LEAF | Grass physical |
+| MOVE_PSYCHO_BOOST | MOVE_PSYCHIC | Psychic (Deoxys) |
+| MOVE_SACRED_FIRE | MOVE_FIRE_BLAST | Fire (Ho-Oh) |
+| MOVE_AEROBLAST | MOVE_HYPER_BEAM | Special (Lugia) |
+
+---
+
 ## Reverting Changes
 
 All changes can be reverted by restoring files from version control:
