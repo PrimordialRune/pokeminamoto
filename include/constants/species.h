@@ -2,6 +2,11 @@
 #define GUARD_CONSTANTS_SPECIES_H
 
 #define SPECIES_NONE 0
+
+// =============================
+// Gen 1 Pokemon (Kanto Dex)
+// Species 1-151
+// =============================
 #define SPECIES_BULBASAUR 1
 #define SPECIES_IVYSAUR 2
 #define SPECIES_VENUSAUR 3
@@ -153,6 +158,12 @@
 #define SPECIES_DRAGONITE 149
 #define SPECIES_MEWTWO 150
 #define SPECIES_MEW 151
+
+// =============================
+// TODO: GEN2/3_REMOVED - Gen 2 Pokemon (Johto Dex)
+// These species are redirected to Gen 1 equivalents for Gen 1-only build.
+// Original species numbers preserved for data array compatibility.
+// =============================
 #define SPECIES_CHIKORITA 152
 #define SPECIES_BAYLEEF 153
 #define SPECIES_MEGANIUM 154
@@ -254,6 +265,7 @@
 #define SPECIES_HO_OH 250
 #define SPECIES_CELEBI 251
 
+// Old Unown forms (legacy data)
 #define SPECIES_OLD_UNOWN_B 252
 #define SPECIES_OLD_UNOWN_C 253
 #define SPECIES_OLD_UNOWN_D 254
@@ -280,6 +292,10 @@
 #define SPECIES_OLD_UNOWN_Y 275
 #define SPECIES_OLD_UNOWN_Z 276
 
+// =============================
+// TODO: GEN2/3_REMOVED - Gen 3 Pokemon (Hoenn Dex)
+// These species are preserved for data array compatibility.
+// =============================
 #define SPECIES_TREECKO 277
 #define SPECIES_GROVYLE 278
 #define SPECIES_SCEPTILE 279
@@ -419,6 +435,7 @@
 
 #define NUM_SPECIES SPECIES_EGG
 
+// Unown alternate forms
 #define SPECIES_UNOWN_B (NUM_SPECIES + 1)
 #define SPECIES_UNOWN_C (SPECIES_UNOWN_B + 1)
 #define SPECIES_UNOWN_D (SPECIES_UNOWN_B + 2)
@@ -446,5 +463,14 @@
 #define SPECIES_UNOWN_Z (SPECIES_UNOWN_B + 24)
 #define SPECIES_UNOWN_EMARK (SPECIES_UNOWN_B + 25)
 #define SPECIES_UNOWN_QMARK (SPECIES_UNOWN_B + 26)
+
+// =============================
+// GEN1_ONLY BUILD CONFIGURATION
+// =============================
+// Helper macro to check if a species is Gen 1
+#define IS_SPECIES_GEN1(species) ((species) >= SPECIES_BULBASAUR && (species) <= SPECIES_MEW)
+
+// Maximum Gen 1 species number
+#define SPECIES_GEN1_MAX SPECIES_MEW
 
 #endif  // GUARD_CONSTANTS_SPECIES_H
