@@ -56,7 +56,7 @@ FortreeCity_House4_EventScript_Wingull::
 	lock
 	faceplayer
 	waitse
-	playmoncry SPECIES_WINGULL, CRY_MODE_NORMAL
+	playmoncry SPECIES_PIDGEY, CRY_MODE_NORMAL
 	msgbox FortreeCity_House4_Text_Wingull, MSGBOX_DEFAULT
 	waitmoncry
 	release

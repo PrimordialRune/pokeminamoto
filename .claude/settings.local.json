@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:github.com)",
+      "Bash(gh api:*)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(which arm-none-eabi-gcc:*)",
+      "Bash(for file:*)",
+      "Bash(do echo:*)",
+      "Read(//home/primordial/pokeminamoto_v2/pokeminamoto/**)",
+      "Bash(done)"
+    ]
+  }
+}

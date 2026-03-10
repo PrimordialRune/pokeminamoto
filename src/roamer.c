@@ -64,7 +64,7 @@ static const u8 sRoamerLocations[][6] =
 void ClearRoamerData(void)
 {
     memset(ROAMER, 0, sizeof(*ROAMER));
-    ROAMER->species = SPECIES_LATIAS;
+    ROAMER->species = SPECIES_MEW;
 }
 
 void ClearRoamerLocationData(void)
@@ -84,9 +84,9 @@ void ClearRoamerLocationData(void)
 static void CreateInitialRoamerMon(bool16 createLatios)
 {
     if (!createLatios)
-        ROAMER->species = SPECIES_LATIAS;
+        ROAMER->species = SPECIES_ZAPDOS;
     else
-        ROAMER->species = SPECIES_LATIOS;
+        ROAMER->species = SPECIES_MEW;
 
     CreateMon(&gEnemyParty[0], ROAMER->species, 40, USE_RANDOM_IVS, FALSE, 0, OT_ID_PLAYER_ID, 0);
     ROAMER->level = 40;
