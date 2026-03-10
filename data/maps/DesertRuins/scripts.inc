@@ -1,3 +1,4 @@
+
 DesertRuins_MapScripts::
 	map_script MAP_SCRIPT_ON_RESUME, DesertRuins_OnResume
 	map_script MAP_SCRIPT_ON_LOAD, DesertRuins_OnLoad
@@ -83,4 +84,3 @@ DesertRuins_EventScript_RanFromRegirock::
 	setvar VAR_0x8004, SPECIES_MOLTRES
 	goto Common_EventScript_LegendaryFlewAway
 	end
-

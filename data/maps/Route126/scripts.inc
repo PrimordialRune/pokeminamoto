@@ -1,3 +1,4 @@
+
 Route126_MapScripts::
 	map_script MAP_SCRIPT_ON_TRANSITION, Route126_OnTransition
 	.byte 0
@@ -61,4 +62,3 @@ Route126_EventScript_RematchPablo::
 	trainerbattle_rematch TRAINER_PABLO_1, Route126_Text_PabloRematchIntro, Route126_Text_PabloRematchDefeat
 	msgbox Route126_Text_PabloPostRematch, MSGBOX_AUTOCLOSE
 	end
-

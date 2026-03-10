@@ -1,3 +1,4 @@
+
 PetalburgWoods_MapScripts::
 	.byte 0
 
@@ -470,4 +471,3 @@ PetalburgWoods_Text_TrainerTipsPP:
 	.string "make moves during battle.\p"
 	.string "If a POKéMON runs out of PP, it must be\n"
 	.string "taken to a POKéMON CENTER.$"
-

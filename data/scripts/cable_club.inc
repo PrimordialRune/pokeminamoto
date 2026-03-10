@@ -1,3 +1,4 @@
+
 CableClub_OnTransition:
 	call CableClub_EventScript_HideOrShowMysteryGiftMan
 	end

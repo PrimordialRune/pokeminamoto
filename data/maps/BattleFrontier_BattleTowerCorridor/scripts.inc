@@ -1,3 +1,4 @@
+
 BattleFrontier_BattleTowerCorridor_MapScripts::
 	map_script MAP_SCRIPT_ON_LOAD, BattleFrontier_BattleTowerCorridor_OnLoad
 	map_script MAP_SCRIPT_ON_FRAME_TABLE, BattleFrontier_BattleTowerCorridor_OnFrame
@@ -51,4 +52,3 @@ BattleFrontier_BattleTowerCorridor_Movement_AttendantWalkToDoor:
 	walk_up
 	set_invisible
 	step_end
-

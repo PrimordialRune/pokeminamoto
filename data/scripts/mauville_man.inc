@@ -1,3 +1,4 @@
+
 MauvilleCity_PokemonCenter_1F_EventScript_MauvilleOldMan::
 	special Script_GetCurrentMauvilleMan
 	switch VAR_RESULT

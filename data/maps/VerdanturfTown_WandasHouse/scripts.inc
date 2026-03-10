@@ -1,3 +1,4 @@
+
 VerdanturfTown_WandasHouse_MapScripts::
 	.byte 0
 
@@ -165,4 +166,3 @@ VerdanturfTown_WandasHouse_Text_WallyWasInEverGrande:
 	.string "WALLY was in EVER GRANDE?\p"
 	.string "His parents in PETALBURG would be\n"
 	.string "astonished to hear that!$"
-

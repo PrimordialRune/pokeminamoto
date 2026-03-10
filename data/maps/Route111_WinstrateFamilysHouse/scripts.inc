@@ -1,3 +1,4 @@
+
 Route111_WinstrateFamilysHouse_MapScripts::
 	.byte 0
 
@@ -99,4 +100,3 @@ Route111_WinstrateFamilysHouse_Text_GrandsonStrongShort:
 	.string "POKéMON LEAGUE CHAMPION by now.\p"
 	.string "Knowing my grandson, he could be the\n"
 	.string "CHAMPION already!$"
-

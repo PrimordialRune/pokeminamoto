@@ -1,3 +1,4 @@
+
 @ All the LOCALID constants used in this file are essentially redundant.
 @ They're all used to have the NPC the player talked to turn back so they're facing
 @ their original direction (because they're watching/participating in the contests).
@@ -510,4 +511,3 @@ LilycoveCity_ContestHall_Text_CuteContestStage:
 LilycoveCity_ContestHall_Text_SmartContestStage:
 	.string "SMARTNESS CONTEST STAGE\n"
 	.string "BE IMPRESSED BY SMART POKéMON!$"
-

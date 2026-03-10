@@ -1,3 +1,4 @@
+
 FortreeCity_House1_MapScripts::
 	.byte 0
 
@@ -95,4 +96,3 @@ FortreeCity_House1_Text_TradingMemoriesWithOthers:
 
 FortreeCity_House1_Text_Zigzagoon:
 	.string "ZIGZAGOON: Gumomoh?$"
-

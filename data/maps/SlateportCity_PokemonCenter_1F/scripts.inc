@@ -1,3 +1,4 @@
+
 SlateportCity_PokemonCenter_1F_MapScripts::
 	map_script MAP_SCRIPT_ON_TRANSITION, SlateportCity_PokemonCenter_1F_OnTransition
 	map_script MAP_SCRIPT_ON_RESUME, CableClub_OnResume
@@ -37,4 +38,3 @@ SlateportCity_PokemonCenter_1F_Text_TradedMonWithFriend:
 	.string "I trade POKéMON with my friends.\p"
 	.string "If a traded POKéMON is holding an\n"
 	.string "item, it makes me twice as happy!$"
-

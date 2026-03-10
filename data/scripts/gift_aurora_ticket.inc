@@ -1,3 +1,4 @@
+
 MysteryGiftScript_AuroraTicket::
 	setvaddress MysteryGiftScript_AuroraTicket
 	lock

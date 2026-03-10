@@ -1,3 +1,4 @@
+
 Route119_House_MapScripts::
 	.byte 0
 
@@ -24,4 +25,3 @@ Route119_House_Text_RumorAboutCaveOfOrigin:
 
 Route119_House_Text_Wingull:
 	.string "WINGULL: Pihyoh!$"
-

@@ -1,3 +1,4 @@
+
 MysteryGiftScript_VisitingTrainer::
 	setvaddress MysteryGiftScript_VisitingTrainer
 	special ValidateEReaderTrainer

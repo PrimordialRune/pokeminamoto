@@ -1,3 +1,4 @@
+
 MtChimney_CableCarStation_MapScripts::
 	map_script MAP_SCRIPT_ON_TRANSITION, MtChimney_CableCarStation_OnTransition
 	map_script MAP_SCRIPT_ON_FRAME_TABLE, MtChimney_CableCarStation_OnFrame
@@ -92,4 +93,3 @@ MtChimney_CableCarStation_Text_StepThisWay:
 
 MtChimney_CableCarStation_Text_RideAnotherTime:
 	.string "Please ride with us another time.$"
-

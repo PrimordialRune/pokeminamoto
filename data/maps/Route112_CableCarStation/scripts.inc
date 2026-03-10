@@ -1,3 +1,4 @@
+
 Route112_CableCarStation_MapScripts::
 	map_script MAP_SCRIPT_ON_TRANSITION, Route112_CableCarStation_OnTransition
 	map_script MAP_SCRIPT_ON_FRAME_TABLE, Route112_CableCarStation_OnFrame
@@ -93,4 +94,3 @@ Route112_CableCarStation_Text_StepThisWay:
 
 Route112_CableCarStation_Text_RideAnotherTime:
 	.string "Please ride with us another time.$"
-

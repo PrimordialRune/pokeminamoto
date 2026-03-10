@@ -1,0 +1,12 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"poryscript.executablePath": "${workspaceFolder}/tools/poryscript/poryscript",
+		"poryscript.fontConfigPath": "${workspaceFolder}/tools/poryscript/font_config.json",
+		"poryscript.commandConfigPath": "${workspaceFolder}/tools/poryscript/command_config.json"
+	}
+}

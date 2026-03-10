@@ -1,3 +1,4 @@
+
 Underwater_SealedChamber_MapScripts::
 	map_script MAP_SCRIPT_ON_DIVE_WARP, Underwater_SealedChamber_OnDive
 	.byte 0
@@ -21,4 +22,3 @@ Underwater_SealedChamber_EventScript_Braille::
 	braillemsgbox Underwater_SealedChamber_Braille_GoUpHere
 	releaseall
 	end
-

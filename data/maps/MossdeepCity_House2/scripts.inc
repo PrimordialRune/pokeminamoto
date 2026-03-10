@@ -1,3 +1,4 @@
+
 MossdeepCity_House2_MapScripts::
 	.byte 0
 
@@ -65,4 +66,3 @@ MossdeepCity_House2_Text_PokemonCarriesMailBackAndForth:
 
 MossdeepCity_House2_Text_Wingull:
 	.string "WINGULL: Pihyoh!$"
-

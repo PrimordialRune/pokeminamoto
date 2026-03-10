@@ -1,3 +1,4 @@
+
 LavaridgeTown_House_MapScripts::
 	.byte 0
 
@@ -23,4 +24,3 @@ LavaridgeTown_House_Text_WifeWarmingEggInHotSprings:
 
 LavaridgeTown_House_Text_Zigzagoon:
 	.string "ZIGZAGOON: Pshoo!$"
-

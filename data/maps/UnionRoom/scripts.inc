@@ -1,3 +1,4 @@
+
 UnionRoom_MapScripts::
 	map_script MAP_SCRIPT_ON_RESUME, UnionRoom_OnResume
 	map_script MAP_SCRIPT_ON_TRANSITION, UnionRoom_OnTransition
@@ -104,4 +105,3 @@ UnionRoom_EventScript_Unused::
 	waitstate
 	releaseall
 	end
-

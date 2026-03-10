@@ -1,3 +1,4 @@
+
 MtPyre_4F_MapScripts::
 	.byte 0
 
@@ -19,4 +20,3 @@ MtPyre_5F_Text_AtsushiDefeat:
 MtPyre_5F_Text_AtsushiPostBattle:
 	.string "Until I improve, my teacher, who rests\n"
 	.string "here, will never find true peace…$"
-

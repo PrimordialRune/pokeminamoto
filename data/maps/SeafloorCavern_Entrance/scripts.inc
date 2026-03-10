@@ -1,3 +1,4 @@
+
 SeafloorCavern_Entrance_MapScripts::
 	map_script MAP_SCRIPT_ON_RESUME, SeafloorCavern_Entrance_OnResume
 	.byte 0
@@ -83,4 +84,3 @@ SeafloorCavern_Entrance_Text_HearMagmaNearMossdeepShort:
 	.string "were spotted near MOSSDEEP.\p"
 	.string "That bunch of goons, they sure don't\n"
 	.string "look good near the sea!$"
-

@@ -1,3 +1,4 @@
+
 Route124_DivingTreasureHuntersHouse_MapScripts::
 	map_script MAP_SCRIPT_ON_TRANSITION, Route124_DivingTreasureHuntersHouse_OnTransition
 	.byte 0

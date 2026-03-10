@@ -1,3 +1,4 @@
+
 MysteryGiftScript_BattleCard::
 	setvaddress MysteryGiftScript_BattleCard
 	vgoto_if_set FLAG_MYSTERY_GIFT_DONE, MysteryGiftScript_BattleCardInfo

@@ -38,5 +38,16 @@ prefabs.json
 *.diff
 *.sym
 *.js
+!tools/porymap-mcp/index.js
+!tools/porymap-mcp/package.json
+tools/porymap-mcp/node_modules/
+tools/poryscript/poryscript-linux.zip
+!tools/poryscript/poryscript
+!tools/poryscript/font_config.json
+!tools/poryscript/command_config.json
+
+# Poryscript-generated files (source is *.pory)
+data/maps/*/scripts.inc
+data/scripts/*.inc
 /pokeemerald-*.png
 /pokeemerald_modern-*.png

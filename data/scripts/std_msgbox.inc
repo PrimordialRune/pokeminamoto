@@ -1,3 +1,4 @@
+
 Std_MsgboxNPC:
 	lock
 	faceplayer

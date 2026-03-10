@@ -1,3 +1,4 @@
+
 EventScript_UseSurf::
 	checkpartymove MOVE_SURF
 	goto_if_eq VAR_RESULT, PARTY_SIZE, EventScript_EndUseSurf

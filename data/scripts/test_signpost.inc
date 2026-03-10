@@ -1,3 +1,4 @@
+
 Text_ThisIsATestSignpostMsg::
 	.string "This is a test message.\n"
 	.string "This is a signpost.$"

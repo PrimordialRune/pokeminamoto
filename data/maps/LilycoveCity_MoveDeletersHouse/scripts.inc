@@ -1,3 +1,4 @@
+
 LilycoveCity_MoveDeletersHouse_MapScripts::
 	.byte 0
 
@@ -103,4 +104,3 @@ LilycoveCity_MoveDeletersHouse_Text_CantForgetSurf:
 	.string "Hm!\p"
 	.string "Your {STR_VAR_1} doesn't seem willing\n"
 	.string "to forget SURF.$"
-

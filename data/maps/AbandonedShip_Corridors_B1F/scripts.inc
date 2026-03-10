@@ -1,3 +1,4 @@
+
 AbandonedShip_Corridors_B1F_MapScripts::
 	map_script MAP_SCRIPT_ON_RESUME, AbandonedShip_Corridors_B1F_OnResume
 	map_script MAP_SCRIPT_ON_LOAD, AbandonedShip_Corridors_B1F_OnLoad
@@ -83,4 +84,3 @@ AbandonedShip_Corridors_B1F_Text_InsertedStorageKey:
 
 AbandonedShip_Text_TheDoorIsOpen:
 	.string "The door is open.$"
-

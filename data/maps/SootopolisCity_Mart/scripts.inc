@@ -1,3 +1,4 @@
+
 SootopolisCity_Mart_MapScripts::
 	.byte 0
 
@@ -72,4 +73,3 @@ SootopolisCity_Mart_Text_FullRestoreItemOfDreams:
 SootopolisCity_Mart_Text_DidSomethingAwaken:
 	.string "This weather…\n"
 	.string "Did something awaken?$"
-

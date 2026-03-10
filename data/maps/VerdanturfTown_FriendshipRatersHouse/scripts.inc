@@ -1,3 +1,4 @@
+
 VerdanturfTown_FriendshipRatersHouse_MapScripts::
 	.byte 0
 
@@ -101,4 +102,3 @@ VerdanturfTown_FriendshipRatersHouse_Text_DetestsYou:
 
 VerdanturfTown_FriendshipRatersHouse_Text_Pikachu:
 	.string "PIKACHU: Pika pika!$"
-

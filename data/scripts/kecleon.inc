@@ -1,3 +1,4 @@
+
 Route120_EventScript_Kecleon1::
 	lock
 	faceplayer

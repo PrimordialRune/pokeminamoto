@@ -1,3 +1,4 @@
+
 SouthernIsland_Exterior_MapScripts::
 	map_script MAP_SCRIPT_ON_TRANSITION, SouthernIsland_Exterior_OnTransition
 	.byte 0
@@ -51,4 +52,3 @@ Ferry_Movement_DepartIslandBoardWest:
 SouthernIsland_Exterior_EventScript_Sign::
 	msgbox SouthernIsland_Exterior_Text_Sign, MSGBOX_SIGN
 	end
-

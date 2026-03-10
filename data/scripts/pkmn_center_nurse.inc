@@ -1,3 +1,4 @@
+
 Common_EventScript_PkmnCenterNurse::
 	lock
 	faceplayer

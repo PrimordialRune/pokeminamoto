@@ -1,3 +1,4 @@
+
 @ All unused / leftover scripts from RS
 CaveOfOrigin_EventScript_LegendaryCry::
 	lockall

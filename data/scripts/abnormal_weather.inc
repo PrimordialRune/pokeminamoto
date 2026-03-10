@@ -1,3 +1,4 @@
+
 AbnormalWeather_EventScript_PlaceTilesRoute114North::
 	setmetatile 7, 3, METATILE_Fallarbor_RedCaveEntrance_Top, TRUE
 	setmetatile 7, 4, METATILE_Fallarbor_RedCaveEntrance_Bottom, FALSE

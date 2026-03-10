@@ -1,3 +1,4 @@
+
 SlateportCity_PokemonFanClub_MapScripts::
 	.byte 0
 
@@ -397,4 +398,3 @@ SlateportCity_PokemonFanClub_Text_Zigzagoon:
 
 SlateportCity_PokemonFanClub_Text_Azumarill:
 	.string "AZUMARILL: Marimari?$"
-

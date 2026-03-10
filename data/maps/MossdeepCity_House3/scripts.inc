@@ -1,3 +1,4 @@
+
 MossdeepCity_House3_MapScripts::
 	.byte 0
 
@@ -47,4 +48,3 @@ MossdeepCity_House3_Text_DontYouLikeToFish:
 MossdeepCity_House3_Text_GoAfterSeafloorPokemon:
 	.string "Go after the seafloor POKéMON with\n"
 	.string "your SUPER ROD.$"
-

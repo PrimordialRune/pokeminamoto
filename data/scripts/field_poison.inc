@@ -1,3 +1,4 @@
+
 EventScript_FieldPoison::
 	lockall
 	special TryFieldPoisonWhiteOut

@@ -1,3 +1,4 @@
+
 Std_RegisteredInMatchCall::
 	buffertrainerclassname STR_VAR_1, VAR_0x8000
 	buffertrainername STR_VAR_2, VAR_0x8000

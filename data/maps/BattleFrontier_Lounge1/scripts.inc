@@ -1,3 +1,4 @@
+
 BattleFrontier_Lounge1_MapScripts::
 	.byte 0
 
@@ -255,4 +256,3 @@ BattleFrontier_Lounge1_Text_DidntDoAnythingSpecialRaisingIt:
 	.string "He said my POKéMON is outstanding!\n"
 	.string "But I didn't do anything special\l"
 	.string "raising it…$"
-

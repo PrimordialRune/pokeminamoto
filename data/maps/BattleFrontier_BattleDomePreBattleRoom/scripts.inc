@@ -1,3 +1,4 @@
+
 BattleFrontier_BattleDomePreBattleRoom_MapScripts::
 	map_script MAP_SCRIPT_ON_FRAME_TABLE, BattleFrontier_BattleDomePreBattleRoom_OnFrame
 	map_script MAP_SCRIPT_ON_WARP_INTO_MAP_TABLE, BattleFrontier_BattleDomePreBattleRoom_OnWarp
@@ -388,4 +389,3 @@ BattleFrontier_BattleDomePreBattleRoom_Text_ReadyForTuckerSilverShort:
 BattleFrontier_BattleDomePreBattleRoom_Text_ReadyForTuckerGoldShort:
 	.string "Your final battle against TUCKER is\n"
 	.string "next. Are you ready?$"
-

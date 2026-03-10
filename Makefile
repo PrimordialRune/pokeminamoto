@@ -148,6 +148,13 @@ FIX       := $(TOOLS_DIR)/gbafix/gbafix$(EXE)
 MAPJSON   := $(TOOLS_DIR)/mapjson/mapjson$(EXE)
 JSONPROC  := $(TOOLS_DIR)/jsonproc/jsonproc$(EXE)
 
+PORYSCRIPT     := tools/poryscript/poryscript
+PORYSCRIPT_CC  := tools/poryscript/command_config.json
+PORYSCRIPT_FC  := tools/poryscript/font_config.json
+
+PORY_SRCS      := $(wildcard data/maps/*/scripts.pory) $(wildcard data/scripts/*.pory)
+PORY_INCS      := $(PORY_SRCS:.pory=.inc)
+
 PERL := perl
 SHA1 := $(shell { command -v sha1sum || command -v shasum; } 2>/dev/null) -c
 
@@ -247,6 +254,7 @@ clean-assets:
 	find $(DATA_ASM_SUBDIR)/maps \( -iname 'connections.inc' -o -iname 'events.inc' -o -iname 'header.inc' \) -exec rm {} +
 
 tidy: tidynonmodern tidymodern
+	@$(if $(PORY_INCS),rm -f $(PORY_INCS))
 
 tidynonmodern:
 	rm -f $(ROM_NAME) $(ELF_NAME) $(MAP_NAME)
@@ -281,6 +289,9 @@ generated: $(AUTO_GEN_TARGETS)
 %.gbapal: %.png  ; $(GFX) $< $@
 %.lz:     %      ; $(GFX) $< $@
 %.rl:     %      ; $(GFX) $< $@
+
+%.inc: %.pory
+	$(PORYSCRIPT) -i $< -o $@ -cc $(PORYSCRIPT_CC) -fc $(PORYSCRIPT_FC) -lm=false
 
 clean-generated:
 	@rm -f $(AUTO_GEN_TARGETS)
@@ -355,6 +366,9 @@ $(DATA_ASM_BUILDDIR)/%.d: $(DATA_ASM_SUBDIR)/%.s
 ifneq ($(NODEP),1)
 -include $(addprefix $(OBJ_DIR)/,$(REGULAR_DATA_ASM_SRCS:.s=.d))
 endif
+
+# Ensure all .pory sources are compiled to .inc before event_scripts.o is assembled
+$(DATA_ASM_BUILDDIR)/event_scripts.o: $(PORY_INCS)
 
 $(OBJ_DIR)/sym_bss.ld: sym_bss.txt
 	$(RAMSCRGEN) .bss $< ENGLISH > $@

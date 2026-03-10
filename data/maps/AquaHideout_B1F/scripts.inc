@@ -1,3 +1,4 @@
+
 AquaHideout_B1F_MapScripts::
 	map_script MAP_SCRIPT_ON_RESUME, AquaHideout_B1F_OnResume
 	map_script MAP_SCRIPT_ON_TRANSITION, AquaHideout_B1F_OnTransition

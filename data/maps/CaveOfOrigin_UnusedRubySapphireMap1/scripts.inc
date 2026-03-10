@@ -1,3 +1,4 @@
+
 CaveOfOrigin_UnusedRubySapphireMap1_MapScripts::
 	map_script MAP_SCRIPT_ON_TRANSITION, CaveOfOrigin_UnusedRubySapphireMap1_OnTransition
 	.byte 0

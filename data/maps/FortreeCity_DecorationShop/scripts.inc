@@ -1,3 +1,4 @@
+
 FortreeCity_DecorationShop_MapScripts::
 	.byte 0
 
@@ -65,4 +66,3 @@ FortreeCity_DecorationShop_Text_BuyingDeskForDolls:
 	.string "If I don't, when I decorate my\n"
 	.string "SECRET BASE, my DOLLS will get\l"
 	.string "dirty or poked with splinters.$"
-

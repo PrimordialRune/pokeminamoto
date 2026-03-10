@@ -1,3 +1,4 @@
+
 AbandonedShip_HiddenFloorCorridors_MapScripts::
 	map_script MAP_SCRIPT_ON_RESUME, AbandonedShip_HiddenFloorCorridors_OnResume
 	map_script MAP_SCRIPT_ON_LOAD, AbandonedShip_HiddenFloorCorridors_OnLoad
@@ -152,4 +153,3 @@ AbandonedShip_HiddenFloorCorridors_Text_InsertedKey:
 	.string "KEY.\p"
 	.string "The inserted KEY stuck fast,\n"
 	.string "but the door opened.$"
-

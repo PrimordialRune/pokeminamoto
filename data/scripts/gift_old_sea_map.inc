@@ -1,3 +1,4 @@
+
 MysteryGiftScript_OldSeaMap::
 	setvaddress MysteryGiftScript_OldSeaMap
 	lock

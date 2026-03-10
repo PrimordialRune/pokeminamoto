@@ -1,3 +1,4 @@
+
 SlateportCity_SternsShipyard_1F_MapScripts::
 	.byte 0
 
@@ -138,4 +139,3 @@ SlateportCity_SternsShipyard_1F_Text_SeaIsLikeLivingThing:
 SlateportCity_SternsShipyard_1F_Text_GetSeasickEasily:
 	.string "I get seasick real easily.\n"
 	.string "So I get to help out here instead.$"
-

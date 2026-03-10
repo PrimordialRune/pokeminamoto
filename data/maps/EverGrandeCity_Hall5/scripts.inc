@@ -1,3 +1,4 @@
+
 EverGrandeCity_Hall5_MapScripts::
 	map_script MAP_SCRIPT_ON_WARP_INTO_MAP_TABLE, EverGrandeCity_Hall5_OnWarp
 	.byte 0
@@ -9,4 +10,3 @@ EverGrandeCity_Hall5_OnWarp:
 EverGrandeCity_Hall5_EventScript_TurnPlayerNorth::
 	turnobject LOCALID_PLAYER, DIR_NORTH
 	end
-

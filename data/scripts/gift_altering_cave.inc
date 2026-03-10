@@ -1,3 +1,4 @@
+
 MysteryGiftScript_AlteringCave::
 	setvaddress MysteryGiftScript_AlteringCave
 	addvar VAR_ALTERING_CAVE_WILD_SET, 1

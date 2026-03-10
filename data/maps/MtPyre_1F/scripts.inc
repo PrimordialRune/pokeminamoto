@@ -1,3 +1,4 @@
+
 MtPyre_1F_MapScripts::
 	.byte 0
 
@@ -44,4 +45,3 @@ MtPyre_1F_Text_ComeToPayRespects:
 MtPyre_1F_Text_RestingPlaceOfZigzagoon:
 	.string "This is the final resting place of my\n"
 	.string "ZIGZAGOON. I cherished it…$"
-

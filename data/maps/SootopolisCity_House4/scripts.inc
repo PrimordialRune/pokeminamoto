@@ -1,3 +1,4 @@
+
 SootopolisCity_House4_MapScripts::
 	.byte 0
 
@@ -36,4 +37,3 @@ SootopolisCity_House4_Text_StrollUnderwaterWithPokemon:
 
 SootopolisCity_House4_Text_Azumarill:
 	.string "AZUMARILL: Marurii.$"
-

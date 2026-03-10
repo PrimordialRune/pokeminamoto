@@ -1,3 +1,4 @@
+
 @ Gabby and Ty can appear in a fixed location on 3 different routes.
 @ Each time they are battled they will disappear from the route they're on
 @ and relocate to the next one, in the order Route 111 -> Route 118 -> Route 120.

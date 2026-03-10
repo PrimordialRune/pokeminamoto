@@ -1,3 +1,4 @@
+
 PokemonLeague_EliteFour_SetAdvanceToNextRoomMetatiles::
 	applymovement LOCALID_PLAYER, Common_Movement_Delay32
 	waitmovement 0

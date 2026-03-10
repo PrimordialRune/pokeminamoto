@@ -1,3 +1,4 @@
+
 @ On this map the player will automatically walk into the room, but the camera is supposed to remain still.
 @ To do this GF sets the player (LOCALID_PLAYER) invisible and creates a fake player object (LOCALID_TOWER_MULTI_CORRIDOR_PLAYER).
 @ The graphics of this fake player object are represented with VAR_OBJ_GFX_ID_F.
@@ -167,4 +168,3 @@ BattleFrontier_BattleTowerMultiCorridor_Movement_AttendantEnterDoor:
 BattleFrontier_BattleTowerMultiCorridor_Movement_ExitElevator:
 	walk_down
 	step_end
-

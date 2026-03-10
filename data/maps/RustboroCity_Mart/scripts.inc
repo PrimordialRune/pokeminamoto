@@ -1,3 +1,4 @@
+
 RustboroCity_Mart_MapScripts::
 	.byte 0
 
@@ -81,4 +82,3 @@ RustboroCity_Mart_Text_GettingEscapeRopeJustInCase:
 	.string "case I get lost in a cave.\p"
 	.string "I just need to use it to get back to\n"
 	.string "the entrance.$"
-

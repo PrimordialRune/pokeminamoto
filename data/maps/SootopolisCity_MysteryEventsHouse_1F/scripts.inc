@@ -1,3 +1,4 @@
+
 SootopolisCity_MysteryEventsHouse_1F_MapScripts::
 	map_script MAP_SCRIPT_ON_TRANSITION, SootopolisCity_MysteryEventsHouse_1F_OnTransition
 	map_script MAP_SCRIPT_ON_FRAME_TABLE, SootopolisCity_MysteryEventsHouse_1F_OnFrame
@@ -225,4 +226,3 @@ SootopolisCity_MysteryEventsHouse_1F_Text_TooBadForYou:
 	.string "Ah, too bad for you!\p"
 	.string "But it was a good match.\n"
 	.string "I hope you can win next time.$"
-

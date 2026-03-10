@@ -1,3 +1,4 @@
+
 LilycoveCity_CoveLilyMotel_1F_MapScripts::
 	.byte 0
 
@@ -126,4 +127,3 @@ LilycoveCity_CoveLilyMotel_1F_Text_BetterGetWorkingOnGuestsDinner:
 	.string "so I guess they must make games.\p"
 	.string "Uh-oh, I'd better get working on\n"
 	.string "their dinner!$"
-

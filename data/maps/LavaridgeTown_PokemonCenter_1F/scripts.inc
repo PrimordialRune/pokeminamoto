@@ -1,3 +1,4 @@
+
 LavaridgeTown_PokemonCenter_1F_MapScripts::
 	map_script MAP_SCRIPT_ON_TRANSITION, LavaridgeTown_PokemonCenter_1F_OnTransition
 	map_script MAP_SCRIPT_ON_RESUME, CableClub_OnResume
@@ -45,4 +46,3 @@ LavaridgeTown_PokemonCenter_1F_Text_TrainersShouldRestToo:
 	.string "the hot springs from here.\p"
 	.string "If POKéMON are getting rest, so too\n"
 	.string "should their TRAINERS.$"
-

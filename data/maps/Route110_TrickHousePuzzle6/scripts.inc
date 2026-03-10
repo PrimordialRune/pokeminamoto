@@ -1,3 +1,4 @@
+
 Route110_TrickHousePuzzle6_MapScripts::
 	map_script MAP_SCRIPT_ON_TRANSITION, Route110_TrickHousePuzzle6_OnTransition
 	map_script MAP_SCRIPT_ON_WARP_INTO_MAP_TABLE, Route110_TrickHousePuzzle6_OnWarp
@@ -84,4 +85,3 @@ Route110_TrickHousePuzzle6_Text_SebastianDefeat:
 Route110_TrickHousePuzzle6_Text_SebastianPostBattle:
 	.string "You don't seem to be affected at all.\n"
 	.string "Or do you have your poker face on?$"
-

@@ -1,3 +1,4 @@
+
 FallarborTown_BattleTentCorridor_MapScripts::
 	map_script MAP_SCRIPT_ON_FRAME_TABLE, FallarborTown_BattleTentCorridor_OnFrame
 	.byte 0
@@ -65,4 +66,3 @@ FallarborTown_ContestHall_Text_CantWinEverywhere:
 FallarborTown_ContestHall_Text_SuperRankStage:
 	.string "POKéMON CONTESTS\n"
 	.string "SUPER RANK STAGE!$"
-

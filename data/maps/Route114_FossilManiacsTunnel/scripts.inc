@@ -1,3 +1,4 @@
+
 Route114_FossilManiacsTunnel_MapScripts::
 	map_script MAP_SCRIPT_ON_TRANSITION, Route114_FossilManiacsTunnel_OnTransition
 	map_script MAP_SCRIPT_ON_LOAD, Route114_FossilManiacsTunnel_OnLoad
@@ -88,4 +89,3 @@ Route114_FossilManiacsTunnel_Text_NotSafeThatWay:
 	.string "underneath now…\p"
 	.string "But I've left it alone because I don't\n"
 	.string "think there are any FOSSILS there…$"
-

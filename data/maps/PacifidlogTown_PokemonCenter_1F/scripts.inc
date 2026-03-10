@@ -1,3 +1,4 @@
+
 PacifidlogTown_PokemonCenter_1F_MapScripts::
 	map_script MAP_SCRIPT_ON_TRANSITION, PacifidlogTown_PokemonCenter_1F_OnTransition
 	map_script MAP_SCRIPT_ON_RESUME, CableClub_OnResume
@@ -45,4 +46,3 @@ PacifidlogTown_PokemonCenter_1F_Text_AncestorsLivedOnBoats:
 	.string "I understand that they lived that way\n"
 	.string "because they were searching for\l"
 	.string "something.$"
-

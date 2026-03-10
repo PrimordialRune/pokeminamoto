@@ -1,3 +1,4 @@
+
 ProfileMan_EventScript_Man::
 	lock
 	faceplayer

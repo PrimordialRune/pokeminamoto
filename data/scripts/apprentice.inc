@@ -1,3 +1,4 @@
+
 BattleFrontier_BattleTowerLobby_EventScript_Apprentice::
 	lock
 	faceplayer

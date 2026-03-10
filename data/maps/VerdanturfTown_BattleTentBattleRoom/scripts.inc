@@ -1,3 +1,4 @@
+
 @ On this map the player will automatically walk into the room, but the camera is supposed to remain still.
 @ To do this GF sets the player (LOCALID_PLAYER) invisible and creates a fake player object (LOCALID_VERDANTURF_TENT_BATTLE_PLAYER).
 @ The graphics of this fake player object are represented with VAR_OBJ_GFX_ID_1.
@@ -172,4 +173,3 @@ VerdanturfTown_BattleTentBattleRoom_Movement_OpponentExit:
 	walk_up
 	walk_up
 	step_end
-

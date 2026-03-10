@@ -1,3 +1,4 @@
+
 BattleFrontier_Lounge8_MapScripts::
 	.byte 0
 
@@ -42,4 +43,3 @@ BattleFrontier_Lounge8_Text_ToldMeIHaveTalentForBattling:
 	.string "But I'm no good at CONTESTS!\p"
 	.string "I guess having talent and liking\n"
 	.string "something aren't the same.$"
-

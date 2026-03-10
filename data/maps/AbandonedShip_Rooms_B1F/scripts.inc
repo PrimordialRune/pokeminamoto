@@ -1,3 +1,4 @@
+
 AbandonedShip_Rooms_B1F_MapScripts::
 	map_script MAP_SCRIPT_ON_RESUME, AbandonedShip_Rooms_B1F_OnResume
 	.byte 0
@@ -15,4 +16,3 @@ AbandonedShip_Rooms_B1F_Text_GettingQueasy:
 	.string "I'm getting queasy just being aboard\n"
 	.string "this ship…\p"
 	.string "It's not even moving, but…$"
-

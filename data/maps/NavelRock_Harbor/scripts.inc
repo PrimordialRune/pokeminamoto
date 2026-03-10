@@ -1,3 +1,4 @@
+
 NavelRock_Harbor_MapScripts::
 	.byte 0
 
@@ -23,4 +24,3 @@ NavelRock_Harbor_EventScript_AsYouLike::
 	msgbox EventTicket_Text_AsYouLike, MSGBOX_DEFAULT
 	release
 	end
-

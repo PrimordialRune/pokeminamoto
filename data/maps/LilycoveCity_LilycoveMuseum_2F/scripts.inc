@@ -1,3 +1,4 @@
+
 LilycoveCity_LilycoveMuseum_2F_MapScripts::
 	map_script MAP_SCRIPT_ON_LOAD, LilycoveCity_LilycoveMuseum_2F_OnLoad
 	map_script MAP_SCRIPT_ON_FRAME_TABLE, LilycoveCity_LilycoveMuseum_2F_OnFrame
@@ -329,4 +330,3 @@ LilycoveCity_LilycoveMuseum_2F_Text_ThesePaintingsOfYourPokemon:
 	.string "These paintings are of your POKéMON.\p"
 	.string "Isn't that just the ultimate joy for\n"
 	.string "a TRAINER?$"
-

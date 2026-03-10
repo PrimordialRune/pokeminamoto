@@ -1,3 +1,4 @@
+
 BattleFrontier_BattlePikeRoomWildMons_MapScripts::
 	map_script MAP_SCRIPT_ON_RESUME, BattleFrontier_BattlePikeRoomWildMons_OnResume
 	map_script MAP_SCRIPT_ON_FRAME_TABLE, BattleFrontier_BattlePikeRoomWildMons_OnFrame
@@ -39,4 +40,3 @@ BattleFrontier_BattlePikeRoomWildMons_OnResume:
 BattleFrontier_BattlePikeRoomWildMons_EventScript_SetLost::
 	setvar VAR_TEMP_1, 1
 	end
-

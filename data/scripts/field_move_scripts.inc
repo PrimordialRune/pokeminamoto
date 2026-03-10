@@ -1,3 +1,4 @@
+
 @ Interact with cuttable tree
 EventScript_CutTree::
 	lockall

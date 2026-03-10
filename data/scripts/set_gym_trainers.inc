@@ -1,3 +1,4 @@
+
 Common_EventScript_SetGymTrainers::
 	switch VAR_0x8008
 	case 1, RustboroCity_Gym_SetGymTrainers

@@ -1,3 +1,4 @@
+
 BerryTreeScript::
 	special ObjectEventInteractionGetBerryTreeData
 	switch VAR_0x8004

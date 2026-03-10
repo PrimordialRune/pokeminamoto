@@ -1,3 +1,4 @@
+
 MysteryGiftScript_StampCard::
 	setvaddress MysteryGiftScript_StampCard
 	setorcopyvar VAR_RESULT, GET_MAX_STAMPS

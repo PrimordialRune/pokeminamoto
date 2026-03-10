@@ -1,3 +1,4 @@
+
 DesertUnderpass_MapScripts::
 	map_script MAP_SCRIPT_ON_TRANSITION, DesertUnderpass_OnTransition
 	.byte 0
@@ -33,4 +34,3 @@ DesertUnderpass_Text_FoundRootFossil::
 @ Unused
 DesertUnderpass_Text_FoundClawFossil::
 	.string "{PLAYER} found the CLAW FOSSIL.$"
-

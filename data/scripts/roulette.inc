@@ -1,3 +1,4 @@
+
 Roulette_EventScript_Table1::
 	checkitem ITEM_COIN_CASE
 	goto_if_eq VAR_RESULT, FALSE, MauvilleCity_GameCorner_EventScript_NoCoinCase

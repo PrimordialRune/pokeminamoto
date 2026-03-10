@@ -1,3 +1,4 @@
+
 EventScript_PictureBookShelf::
 	msgbox Text_PictureBookShelf, MSGBOX_SIGN
 	end

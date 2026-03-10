@@ -1,3 +1,4 @@
+
 BattleFrontier_BattleTowerElevator_MapScripts::
 	map_script MAP_SCRIPT_ON_FRAME_TABLE, BattleFrontier_BattleTowerElevator_OnFrame
 	map_script MAP_SCRIPT_ON_WARP_INTO_MAP_TABLE, BattleFrontier_BattleTowerElevator_OnWarp
@@ -83,4 +84,3 @@ BattleFrontier_BattleTowerElevator_EventScript_TurnPlayerNorth::
 	setvar VAR_TEMP_1, 1
 	turnobject LOCALID_PLAYER, DIR_NORTH
 	end
-

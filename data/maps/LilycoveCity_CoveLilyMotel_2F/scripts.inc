@@ -1,3 +1,4 @@
+
 LilycoveCity_CoveLilyMotel_2F_MapScripts::
 	.byte 0
 
@@ -133,4 +134,3 @@ LilycoveCity_CoveLilyMotel_2F_Text_ContestsDoTakeStrategy:
 	.string "to win a CONTEST.\p"
 	.string "Devising CONTEST strategies is one way\n"
 	.string "of becoming a better TRAINER, I'd say.$"
-

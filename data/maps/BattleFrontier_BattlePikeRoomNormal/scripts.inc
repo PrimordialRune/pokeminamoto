@@ -1,3 +1,4 @@
+
 BattleFrontier_BattlePikeRoomNormal_MapScripts::
 	map_script MAP_SCRIPT_ON_RESUME, BattleFrontier_BattlePikeRoom_OnResume
 	map_script MAP_SCRIPT_ON_TRANSITION, BattleFrontier_BattlePikeRoom_OnTransition
@@ -843,4 +844,3 @@ BattleFrontier_BattlePikeRoomNormal_Text_WillRestoreTwoMons:
 	.string "I'm in good spirits now.\p"
 	.string "I will restore two of your POKéMON\n"
 	.string "to full health!$"
-

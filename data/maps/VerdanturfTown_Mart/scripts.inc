@@ -1,3 +1,4 @@
+
 VerdanturfTown_Mart_MapScripts::
 	.byte 0
 
@@ -55,4 +56,3 @@ VerdanturfTown_Mart_Text_NestBallOnWeakenedPokemon:
 	.string "weakened POKéMON.\p"
 	.string "VERDANTURF is the only place you can\n"
 	.string "buy it.$"
-

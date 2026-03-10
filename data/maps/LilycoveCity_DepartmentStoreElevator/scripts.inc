@@ -1,3 +1,4 @@
+
 LilycoveCity_DepartmentStoreElevator_MapScripts::
 	.byte 0
 
@@ -121,4 +122,3 @@ LilycoveCity_DepartmentStoreElevator_EventScript_MoveElevator::
 LilycoveCity_DepartmentStoreElevator_EventScript_SetFloor::
 	special SetDeptStoreFloor
 	return
-

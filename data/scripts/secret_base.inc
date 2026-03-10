@@ -1,3 +1,4 @@
+
 SecretBase_Text_TreeCanBeClimbed:
 	.string "If some vines drop down, this tree can\n"
 	.string "be climbed.$"

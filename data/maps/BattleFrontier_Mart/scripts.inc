@@ -1,3 +1,4 @@
+
 BattleFrontier_Mart_MapScripts::
 	.byte 0
 
@@ -62,4 +63,3 @@ BattleFrontier_Mart_Text_FacilitiesDontAllowItems:
 	.string "during battles.\p"
 	.string "That rule makes things tougher than\n"
 	.string "they already are!$"
-

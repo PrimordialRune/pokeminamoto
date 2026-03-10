@@ -1,3 +1,4 @@
+
 BattleFrontier_BattleArenaCorridor_MapScripts::
 	map_script MAP_SCRIPT_ON_FRAME_TABLE, BattleFrontier_BattleArenaCorridor_OnFrame
 	.byte 0
@@ -87,4 +88,3 @@ BattleFrontier_BattleArenaCorridor_Movement_AttendantMoveOutOfWay:
 BattleFrontier_BattleArenaCorridor_Text_PleaseStepIn:
 	.string "Your battles shall be waged in\n"
 	.string "the next room. Please step in!$"
-

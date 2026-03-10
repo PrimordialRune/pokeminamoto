@@ -1,3 +1,4 @@
+
 Route110_TrickHouseEnd_MapScripts::
 	map_script MAP_SCRIPT_ON_RESUME, Route110_TrickHouseEnd_OnResume
 	map_script MAP_SCRIPT_ON_TRANSITION, Route110_TrickHouseEnd_OnTransition
@@ -353,4 +354,3 @@ Route110_TrickHouseEnd_Text_MakeNewTricksToStumpYou:
 Route110_TrickHouseEnd_Text_YoureIgnoringMe:
 	.string "Now, now! You're ignoring me now?\n"
 	.string "Now that, I consider heartbreaking!$"
-

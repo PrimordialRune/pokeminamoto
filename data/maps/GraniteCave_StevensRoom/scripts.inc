@@ -1,3 +1,4 @@
+
 GraniteCave_StevensRoom_MapScripts::
 	.byte 0
 
@@ -116,4 +117,3 @@ GraniteCave_StevensRoom_Text_IveGotToHurryAlong:
 GraniteCave_StevensRoom_Text_OhBagIsFull:
 	.string "Oh, your BAG is full…\n"
 	.string "That's too bad, then.$"
-

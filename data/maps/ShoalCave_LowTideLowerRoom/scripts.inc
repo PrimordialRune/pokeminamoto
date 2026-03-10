@@ -1,3 +1,4 @@
+
 ShoalCave_LowTideLowerRoom_MapScripts::
 	map_script MAP_SCRIPT_ON_LOAD, ShoalCave_LowTideLowerRoom_OnLoad
 	.byte 0
@@ -55,4 +56,3 @@ ShoalCave_LowTideLowerRoom_Text_CanOvercomeColdWithFocus:
 
 ShoalCave_LowTideLowerRoom_Text_EverythingStartsWithFocus:
 	.string "Everything starts with focus!$"
-

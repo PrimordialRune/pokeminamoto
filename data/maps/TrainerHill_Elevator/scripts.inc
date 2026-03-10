@@ -1,3 +1,4 @@
+
 TrainerHill_Elevator_MapScripts::
 	map_script MAP_SCRIPT_ON_FRAME_TABLE, TrainerHill_Elevator_OnFrame
 	.byte 0
@@ -85,4 +86,3 @@ TrainerHill_Elevator_Movement_AttendantFacePlayer:
 TrainerHill_Elevator_Movement_AttendantFaceDown:
 	face_down
 	step_end
-

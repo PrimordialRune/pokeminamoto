@@ -1,3 +1,4 @@
+
 IslandCave_MapScripts::
 	map_script MAP_SCRIPT_ON_RESUME, IslandCave_OnResume
 	map_script MAP_SCRIPT_ON_LOAD, IslandCave_OnLoad

@@ -1,3 +1,4 @@
+
 .set ITEMID, VAR_0x8000
 .set AMOUNT, VAR_0x8001
 

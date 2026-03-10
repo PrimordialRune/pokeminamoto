@@ -1,3 +1,4 @@
+
 EventScript_StartTrainerApproach::
 	selectapproachingtrainer
 	lockfortrainer

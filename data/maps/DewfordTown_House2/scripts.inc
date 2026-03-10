@@ -1,3 +1,4 @@
+
 DewfordTown_House2_MapScripts::
 	.byte 0
 
@@ -54,4 +55,3 @@ DewfordTown_House2_Text_BrawlySoCool:
 	.string "heard about BRAWLY?\p"
 	.string "He's so cool…\n"
 	.string "Everyone idolizes him.$"
-

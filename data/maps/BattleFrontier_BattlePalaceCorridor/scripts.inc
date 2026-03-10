@@ -1,3 +1,4 @@
+
 BattleFrontier_BattlePalaceCorridor_MapScripts::
 	map_script MAP_SCRIPT_ON_FRAME_TABLE, BattleFrontier_BattlePalaceCorridor_OnFrame
 	.byte 0
@@ -146,4 +147,3 @@ BattleFrontier_BattlePalaceCorridor_Text_BeginningToUnderstandNature:
 BattleFrontier_BattlePalaceCorridor_Text_HeartfeltBondBetweenYouAndMons:
 	.string "Ah… I see a strong, heartfelt bond\n"
 	.string "between you and your POKéMON…$"
-

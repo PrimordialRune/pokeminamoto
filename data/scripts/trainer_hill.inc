@@ -1,3 +1,4 @@
+
 TrainerHill_OnResume:
 	setvar VAR_TEMP_2, 0
 	trainerhill_resumetimer

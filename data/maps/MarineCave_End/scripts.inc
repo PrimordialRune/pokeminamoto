@@ -1,3 +1,4 @@
+
 MarineCave_End_MapScripts::
 	map_script MAP_SCRIPT_ON_RESUME, MarineCave_End_OnResume
 	map_script MAP_SCRIPT_ON_TRANSITION, MarineCave_End_OnTransition
@@ -69,4 +70,3 @@ MarineCave_End_Movement_KyogreApproach:
 	delay_16
 	walk_down_affine
 	step_end
-

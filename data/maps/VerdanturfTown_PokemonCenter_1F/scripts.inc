@@ -1,3 +1,4 @@
+
 VerdanturfTown_PokemonCenter_1F_MapScripts::
 	map_script MAP_SCRIPT_ON_TRANSITION, VerdanturfTown_PokemonCenter_1F_OnTransition
 	map_script MAP_SCRIPT_ON_RESUME, CableClub_OnResume
@@ -39,4 +40,3 @@ VerdanturfTown_PokemonCenter_1F_Text_VisitForBattleTent:
 	.string "saying.\p"
 	.string "Or is there somebody here that you\n"
 	.string "came to see?$"
-

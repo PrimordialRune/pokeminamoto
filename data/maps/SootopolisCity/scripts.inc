@@ -1,3 +1,4 @@
+
 SootopolisCity_MapScripts::
 	map_script MAP_SCRIPT_ON_LOAD, SootopolisCity_OnLoad
 	map_script MAP_SCRIPT_ON_TRANSITION, SootopolisCity_OnTransition

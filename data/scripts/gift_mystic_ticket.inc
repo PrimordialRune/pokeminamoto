@@ -1,3 +1,4 @@
+
 MysteryGiftScript_MysticTicket::
 	setvaddress MysteryGiftScript_MysticTicket
 	lock

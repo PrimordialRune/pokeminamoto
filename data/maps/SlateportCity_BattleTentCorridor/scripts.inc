@@ -1,3 +1,4 @@
+
 SlateportCity_BattleTentCorridor_MapScripts::
 	map_script MAP_SCRIPT_ON_FRAME_TABLE, SlateportCity_BattleTentCorridor_OnFrame
 	map_script MAP_SCRIPT_ON_WARP_INTO_MAP_TABLE, SlateportCity_BattleTentCorridor_OnWarp
@@ -272,4 +273,3 @@ SlateportCity_ContestHall_Text_GetUrgeToMoveWithMon:
 SlateportCity_ContestHall_Text_HyperRankStage:
 	.string "POKéMON CONTESTS\n"
 	.string "HYPER RANK STAGE!$"
-

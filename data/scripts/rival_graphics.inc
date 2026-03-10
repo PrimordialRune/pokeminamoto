@@ -1,3 +1,4 @@
+
 Common_EventScript_SetupRivalGfxId::
 	checkplayergender
 	goto_if_eq VAR_RESULT, MALE, EventScript_SetupRivalGfxIdFemale

@@ -1,3 +1,4 @@
+
 Route117_EventScript_DaycareMan::
 	lock
 	faceplayer

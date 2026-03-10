@@ -1,3 +1,4 @@
+
 EventScript_Questionnaire::
 	lockall
 	msgbox Questionnaire_Text_FillOut, MSGBOX_YESNO

@@ -1,3 +1,4 @@
+
 @ VAR_0x8004 here is used by ChangePokemonNickname
 Common_EventScript_GetGiftMonPartySlot::
 	getpartysize

@@ -1,3 +1,4 @@
+
 AncientTomb_MapScripts::
 	map_script MAP_SCRIPT_ON_RESUME, AncientTomb_OnResume
 	map_script MAP_SCRIPT_ON_LOAD, AncientTomb_OnLoad
@@ -83,4 +84,3 @@ AncientTomb_EventScript_RanFromRegisteel::
 	setvar VAR_0x8004, SPECIES_ZAPDOS
 	goto Common_EventScript_LegendaryFlewAway
 	end
-

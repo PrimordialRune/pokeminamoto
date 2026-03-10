@@ -1,3 +1,4 @@
+
 TerraCave_End_MapScripts::
 	map_script MAP_SCRIPT_ON_RESUME, TerraCave_End_OnResume
 	map_script MAP_SCRIPT_ON_TRANSITION, TerraCave_End_OnTransition
@@ -69,4 +70,3 @@ TerraCave_End_Movement_GroudonApproach:
 	delay_16
 	walk_down_affine
 	step_end
-
