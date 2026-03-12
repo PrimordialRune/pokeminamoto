@@ -151,6 +151,7 @@ JSONPROC  := $(TOOLS_DIR)/jsonproc/jsonproc$(EXE)
 PORYSCRIPT     := tools/poryscript/poryscript
 PORYSCRIPT_CC  := tools/poryscript/command_config.json
 PORYSCRIPT_FC  := tools/poryscript/font_config.json
+LANGUAGE       ?= ENGLISH
 
 PORY_SRCS      := $(wildcard data/maps/*/scripts.pory) $(wildcard data/scripts/*.pory)
 PORY_INCS      := $(PORY_SRCS:.pory=.inc)
@@ -291,7 +292,7 @@ generated: $(AUTO_GEN_TARGETS)
 %.rl:     %      ; $(GFX) $< $@
 
 %.inc: %.pory
-	$(PORYSCRIPT) -i $< -o $@ -cc $(PORYSCRIPT_CC) -fc $(PORYSCRIPT_FC) -lm=false
+	$(PORYSCRIPT) -i $< -o $@ -cc $(PORYSCRIPT_CC) -fc $(PORYSCRIPT_FC) -lm=false -s LANGUAGE=$(LANGUAGE)
 
 clean-generated:
 	@rm -f $(AUTO_GEN_TARGETS)

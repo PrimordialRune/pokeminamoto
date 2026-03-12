@@ -1014,3 +1014,55 @@ LittlerootTown_Text_BirchSomethingToShowYouAtLab:
 	.string "I gave you?\p"
 	.string "I have something to show you.\n"
 	.string "Let's go to my LAB.$"
+
+LittlerootTown_EventScript_Gen1Researcher::
+	lock
+	faceplayer
+	msgbox LittlerootTown_Text_Gen1ResearcherGreeting, MSGBOX_YESNO
+	compare VAR_RESULT, YES
+	goto_if_eq LittlerootTown_EventScript_Gen1Researcher_2
+	msgbox LittlerootTown_Text_Gen1ResearcherDeclined, MSGBOX_DEFAULT
+LittlerootTown_EventScript_Gen1Researcher_1:
+	release
+	end
+
+LittlerootTown_EventScript_Gen1Researcher_2:
+	random 151
+	addvar VAR_RESULT, 1
+	bufferspeciesname STR_VAR_1, VAR_RESULT
+	givemon VAR_RESULT, 5
+	compare VAR_RESULT, MON_GIVEN_TO_PARTY
+	goto_if_eq LittlerootTown_EventScript_Gen1Researcher_5
+	compare VAR_RESULT, MON_GIVEN_TO_PC
+	goto_if_eq LittlerootTown_EventScript_Gen1Researcher_6
+	goto Common_EventScript_NoMoreRoomForPokemon
+	goto LittlerootTown_EventScript_Gen1Researcher_1
+
+LittlerootTown_EventScript_Gen1Researcher_5:
+	msgbox LittlerootTown_Text_Gen1ResearcherFarewell, MSGBOX_DEFAULT
+	setflag FLAG_UNUSED_0x959
+	goto LittlerootTown_EventScript_Gen1Researcher_1
+
+LittlerootTown_EventScript_Gen1Researcher_6:
+	msgbox LittlerootTown_Text_Gen1ResearcherSentToPC, MSGBOX_DEFAULT
+	setflag FLAG_UNUSED_0x959
+	goto LittlerootTown_EventScript_Gen1Researcher_1
+
+
+LittlerootTown_Text_Gen1ResearcherGreeting::
+	.string "OLD MAN: I have spent my whole life\n"
+	.string "studying the original 151 POKéEMON.\l"
+	.string "Only one remains to find a good home.\l"
+	.string "Would you like to take it?$"
+
+LittlerootTown_Text_Gen1ResearcherFarewell::
+	.string "OLD MAN: A {STR_VAR_1}! Treat it\n"
+	.string "well, young one.$"
+
+LittlerootTown_Text_Gen1ResearcherSentToPC::
+	.string "OLD MAN: Your party was full, so\n"
+	.string "{STR_VAR_1} was sent to your PC.$"
+
+LittlerootTown_Text_Gen1ResearcherDeclined::
+	.string "OLD MAN: Come back if you change your\n"
+	.string "mind.$"

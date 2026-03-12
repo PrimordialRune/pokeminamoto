@@ -1016,3 +1016,62 @@ LittlerootTown_Text_BirchSomethingToShowYouAtLab:
 	.string "Let's go to my LAB.$"
 
 `
+
+# ── Gen 1 Researcher NPC ─────────────────────────────────────────────────────
+
+script LittlerootTown_EventScript_Gen1Researcher {
+    lock
+    faceplayer
+    msgbox(LittlerootTown_Text_Gen1ResearcherGreeting, MSGBOX_YESNO)
+    if (var(VAR_RESULT) == YES) {
+        random(151)
+        addvar(VAR_RESULT, 1)
+        bufferspeciesname(STR_VAR_1, VAR_RESULT)
+        givemon(VAR_RESULT, 5)
+        if (var(VAR_RESULT) == MON_GIVEN_TO_PARTY) {
+            msgbox(LittlerootTown_Text_Gen1ResearcherFarewell, MSGBOX_DEFAULT)
+            setflag(FLAG_UNUSED_0x959)
+        }
+        elif (var(VAR_RESULT) == MON_GIVEN_TO_PC) {
+            msgbox(LittlerootTown_Text_Gen1ResearcherSentToPC, MSGBOX_DEFAULT)
+            setflag(FLAG_UNUSED_0x959)
+        }
+        else {
+            goto(Common_EventScript_NoMoreRoomForPokemon)
+        }
+    }
+    else {
+        msgbox(LittlerootTown_Text_Gen1ResearcherDeclined, MSGBOX_DEFAULT)
+    }
+    release
+    end
+}
+
+text LittlerootTown_Text_Gen1ResearcherGreeting {
+    poryswitch(LANGUAGE) {
+        ENGLISH: format("OLD MAN: I have spent my whole life studying the original 151 POK\eEMON. Only one remains to find a good home. Would you like to take it?")
+        ITALIAN: format("VECCHIO: Ho dedicato tutta la mia vita allo studio dei 151 POK\eMON originali. Ne rimane solo uno da collocare in buone mani. Vorresti adottarlo?")
+    }
+}
+
+text LittlerootTown_Text_Gen1ResearcherFarewell {
+    poryswitch(LANGUAGE) {
+        ENGLISH: format("OLD MAN: A {STR_VAR_1}! Treat it well, young one.")
+        ITALIAN: format("VECCHIO: Un {STR_VAR_1}! Prenditi cura di lui, giovane.")
+    }
+}
+
+text LittlerootTown_Text_Gen1ResearcherSentToPC {
+    poryswitch(LANGUAGE) {
+        ENGLISH: format("OLD MAN: Your party was full, so {STR_VAR_1} was sent to your PC.")
+        ITALIAN: format("VECCHIO: La squadra era piena, quindi {STR_VAR_1} \e stato inviato al PC.")
+    }
+}
+
+text LittlerootTown_Text_Gen1ResearcherDeclined {
+    poryswitch(LANGUAGE) {
+        ENGLISH: format("OLD MAN: Come back if you change your mind.")
+        ITALIAN: format("VECCHIO: Torna pure se cambi idea.")
+    }
+}
+
