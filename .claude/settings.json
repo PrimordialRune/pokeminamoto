@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(make)",
+      "Bash(make -j*)",
+      "Bash(make modern*)",
+      "Bash(make generated*)",
+      "Bash(make tidy*)",
+      "Bash(make syms*)",
+      "Bash(make compare*)",
+      "Bash(git status*)",
+      "Bash(git diff*)",
+      "Bash(git log*)",
+      "Bash(git show*)",
+      "Bash(git branch)",
+      "Bash(git branch -a*)",
+      "Bash(git branch --list*)",
+      "Bash(git fetch*)",
+      "Bash(git remote -v)",
+      "Bash(git ls-files*)",
+      "Bash(git grep*)",
+      "Bash(arm-none-eabi-*)",
+      "Bash(tools/poryscript/poryscript*)",
+      "Bash(tools/setup-cloud.sh*)",
+      "Bash(wsl.exe -d Ubuntu --cd /home/primordial/pokeminamoto_v2/pokeminamoto -- bash -lc 'make*)",
+      "Bash(wsl.exe -d Ubuntu --cd /home/primordial/pokeminamoto_v2/pokeminamoto -- bash -lc 'git status*)",
+      "Bash(wsl.exe -d Ubuntu --cd /home/primordial/pokeminamoto_v2/pokeminamoto -- bash -lc 'git diff*)",
+      "Bash(wsl.exe -d Ubuntu --cd /home/primordial/pokeminamoto_v2/pokeminamoto -- bash -lc 'git log*)",
+      "Bash(wsl.exe -d Ubuntu --cd /home/primordial/pokeminamoto_v2/pokeminamoto -- bash -lc 'git show*)",
+      "Bash(wsl.exe -d Ubuntu --cd /home/primordial/pokeminamoto_v2/pokeminamoto -- bash -lc 'git fetch*)",
+      "Read(//home/primordial/pokeminamoto_v2/pokeminamoto/**)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:api.github.com)"
+    ],
+    "ask": [
+      "Bash(git commit*)",
+      "Bash(git push*)",
+      "Bash(git checkout -b*)",
+      "Bash(git switch -c*)",
+      "Bash(git branch -d*)",
+      "Bash(git branch -D*)",
+      "Bash(git branch -m*)",
+      "Bash(git reset --hard*)",
+      "Bash(make clean*)"
+    ],
+    "deny": [
+      "Bash(git push --force*)",
+      "Bash(git push -f*)",
+      "Read(//home/primordial/pokeminamoto/**)",
+      "Read(//home/primordial/pokeminamoto_old/**)"
+    ]
+  },
+  "enabledMcpjsonServers": [
+    "porymap",
+    "gba-debug"
+  ]
+}

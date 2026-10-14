@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "porymap": {
+      "command": "node",
+      "args": [
+        "tools/porymap-mcp/index.js"
+      ]
+    },
+    "gba-debug": {
+      "command": "node",
+      "args": [
+        "tools/gba-debug-mcp/index.js"
+      ]
+    }
+  }
+}

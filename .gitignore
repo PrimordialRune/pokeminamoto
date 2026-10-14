@@ -41,6 +41,9 @@ prefabs.json
 !tools/porymap-mcp/index.js
 !tools/porymap-mcp/package.json
 tools/porymap-mcp/node_modules/
+!tools/gba-debug-mcp/index.js
+!tools/gba-debug-mcp/package.json
+tools/gba-debug-mcp/node_modules/
 tools/poryscript/poryscript-linux.zip
 !tools/poryscript/poryscript
 !tools/poryscript/font_config.json

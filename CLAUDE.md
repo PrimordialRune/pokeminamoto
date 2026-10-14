@@ -6,20 +6,32 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is **pokeminamoto** — a Gen 1-only fork of the [pokeemerald](https://github.com/pret/pokeemerald) GBA decompilation. The goal is a fully playable Pokémon Emerald ROM containing only the original 151 Pokémon (Bulbasaur through Mew) with Gen 1-equivalent moves. It runs on WSL2 (Ubuntu) and targets the GBA ARM7TDMI architecture.
 
-## Build Commands
+## Where the code lives (read this first)
 
-### Prerequisites (WSL2/Ubuntu)
+- **Canonical checkout:** WSL2 Ubuntu, `/home/primordial/pokeminamoto_v2/pokeminamoto`.
+- **Windows view:** the symlink `E:\Omar\Professional\GameDesign\Games\Pokemon\PKMN_Minamoto\pokeminamoto` → `\\wsl.localhost\Ubuntu\home\primordial\pokeminamoto_v2\pokeminamoto`. The parent `PKMN_Minamoto` folder is a separate repo of art (`MyRes/`), `MathModels/` and reference assets; link to it, never move files out of it.
+- `~/pokeminamoto` and `~/pokeminamoto_old` in WSL are stale 2023 copies. Never read or modify them.
+- Remotes: `origin` = `github.com/PrimordialRune/pokeminamoto`, `upstream` = `pret/pokeemerald`. Branches: `develop` is the default working branch (renamed from `copilot/refactor-gen-1-build`); `main` gets cut from it at milestones; `master` is the old upstream sync, kept as a mirror.
+
+### The WSL rule
+
+**Run every git and make command inside WSL, never with Windows git or make.** Windows git has `core.autocrlf=true` system-wide and writes CRLF into the tree; the repo is set to `core.autocrlf=input`. From a Windows shell (including Claude on Windows):
 
 ```bash
-# System packages (already installed)
-sudo apt install build-essential binutils-arm-none-eabi git libpng-dev
-
-# agbcc (legacy GCC 2.95 for GBA) — copy from old project or clone+build:
-git clone https://github.com/pret/agbcc ../agbcc
-cd ../agbcc && ./build.sh && ./install.sh ../pokeminamoto
+wsl.exe -d Ubuntu --cd /home/primordial/pokeminamoto_v2/pokeminamoto -- bash -lc 'make modern -j$(nproc)'
 ```
 
-**Note:** `tools/agbcc/` is not committed to git. It was bootstrapped by copying from `/home/primordial/pokeminamoto/tools/agbcc/`. The `arm-none-eabi-*` binutils from apt AND devkitARM (`/opt/devkitpro/devkitARM`) are both present; the Makefile uses whichever is in PATH (apt binutils take precedence if `DEVKITARM` is unset).
+From Git Bash, prefix with `MSYS_NO_PATHCONV=1` or the `/home/...` path gets rewritten and `--cd` fails with `ERROR_PATH_NOT_FOUND`. Editing files through the `\\wsl.localhost\...` path is fine; just don't run git/make from Windows. `wsl.exe` starts the distro on demand, so WSL does not need to be open beforehand.
+
+In a cloud session or a native Linux shell, run `make`/`git` directly.
+
+## Build Commands
+
+### Prerequisites
+
+Fresh Debian/Ubuntu box (cloud session, CI, new machine): run `tools/setup-cloud.sh`. It installs `build-essential git libpng-dev binutils-arm-none-eabi gcc-arm-none-eabi libnewlib-arm-none-eabi`, builds pret `agbcc` into `tools/agbcc/` (not committed), marks the committed poryscript binary executable and runs `npm ci` for the MCP servers when node is present. It is idempotent.
+
+On the home WSL box everything is already installed: apt `arm-none-eabi` binutils + gcc 10.3, devkitARM at `/opt/devkitpro` (the modern build picks up its gcc 12.2 and `arm-none-eabi-gdb`), and `tools/agbcc/`.
 
 ### Build Targets
 
@@ -174,14 +186,15 @@ Tutor slots are **index-based** (not name-based). `TUTOR(MOVE_ROLLOUT)` means "b
 
 ### Scripting
 
-Map scripts are written in pokescript assembly (`.inc` files in `data/scripts/`). The `preproc` tool handles custom string encoding and script macros. Script constants live in `include/constants/`. Poryscript (higher-level scripting language) is not yet integrated but can be added — see `tools/poryscript/` and https://github.com/huderlem/poryscript.
+Map and shared scripts are written in [Poryscript](https://github.com/huderlem/poryscript): edit `data/maps/*/scripts.pory` and `data/scripts/*.pory`. The generated `scripts.inc` and `data/scripts/*.inc` files are gitignored and rebuilt by `make` (or `make generated`) with the committed Linux binary `tools/poryscript/poryscript`. The `preproc` tool handles custom string encoding and script macros. Script constants live in `include/constants/`.
 
 ### Memory Layout
 
 Defined by `ld_script.ld` (classic) / `ld_script_modern.ld` (modern):
-- ROM: 32 MB limit (~44% used)
-- EWRAM: 256 KB (~95% used — **nearly full**, be careful adding data)
-- IWRAM: 32 KB (~94% used)
+Measured 2026-10-15 (classic / modern):
+- ROM: 32 MB limit (44.5% / 39.7% used)
+- EWRAM: 256 KB (95.3% used — **nearly full**; flag anything that adds RAM or save data)
+- IWRAM: 32 KB (94.3% / 92.8% used)
 
 ### Task System
 
@@ -194,3 +207,32 @@ The game uses a cooperative multitasking system (`include/task.h`). Nearly all g
 - **Tutor bitfields** in `sTutorLearnsets[]` use `TUTOR_MOVE_xxx` slot names (defined in `include/constants/party_menu.h`), never Gen 1 move names directly.
 - The starters are `SPECIES_BULBASAUR`, `SPECIES_CHARMANDER`, `SPECIES_SQUIRTLE` (set in `src/starter_choose.c`).
 - See `GEN1_ONLY_CHANGES.md` for the full replacement mapping reference.
+
+## Working remotely
+
+- **Remote Control (home PC):** sessions started in the Claude desktop app on the PC connect to Remote Control automatically, so they can be driven from the phone or claude.ai/code. The PC must be on and not asleep (the app keeps it awake only while Claude is working). Claude on Windows reaches the repo through the symlink and runs git/make via `wsl.exe` (the WSL rule above). mGBA, GDB and the `gba-debug` GDB tools only work here.
+- **Cloud sessions (claude.ai/code, from GitHub):** the repo is cloned fresh into an Ubuntu container. Set the environment's setup script to `tools/setup-cloud.sh` (about a minute; it builds agbcc). Both `make modern` (apt gcc 13) and classic `make` (agbcc) build there. No emulator, so verify by building and reading code; in-game checks happen on the PC. Commit and push before the session ends; the container is discarded.
+- **MCP servers** (`.mcp.json`): `porymap` (maps, scripts, palettes, builds) and `gba-debug` (disassembly, symbols, addr2line, map lookup; its `gdb_*` tools need mGBA + devkitARM gdb, so PC only). Both run with `node`; `tools/setup-cloud.sh` installs their deps.
+
+## Agents
+
+Project subagents live in `.claude/agents/`. Keep their briefs small and name the files.
+
+| Agent | Model | Use for |
+|-------|-------|---------|
+| `pokeminamoto-mechanic` | Haiku | builds, `make generated`, tidy, line endings, grep audits |
+| `pokeminamoto-engineer` | Sonnet | one scoped code or data change, a bug fix, a read-only audit |
+| `pokeminamoto-lead` | Opus | engine or design-judgement work (TP, move ranks, AI states, RAM/save budget), multi-step plans |
+
+Default to Sonnet; use the lead only when the task can't be specified up front.
+
+## Design docs
+
+Game design (story, region, roster, mechanics, art direction, open questions) is summarised in `docs/design/` from the GDD, story doc, arena ecology and city framework. The originals stay the source of truth; see `docs/design/README.md` for where they live.
+
+## Where things stand (2026-10-15)
+
+- Gen-1 data pass done on `develop`: Gen 2/3 species and moves replaced in data, map scripts converted to Poryscript, Gen1 Researcher NPC added. See `GEN1_ONLY_CHANGES.md`.
+- The game is still Emerald's Hoenn map, story and battle engine. None of the Minamoto design (Kanto remake, TP instead of PP, move ranks, signature moves, Talk/AI states, Charisma) is implemented yet.
+- Both builds pass locally and in a fresh Ubuntu 24.04 container.
+- RAM is the main constraint (EWRAM 95%, IWRAM ~93-94%). Mechanics that add per-mon or per-battle state need a RAM/save plan first.
