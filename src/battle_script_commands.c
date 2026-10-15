@@ -813,7 +813,7 @@ static const u16 sRarePickupItems[] =
     ITEM_WHITE_HERB,
     ITEM_TM_REST,
     ITEM_ELIXIR,
-    ITEM_TM_FOCUS_PUNCH,
+    ITEM_TM_MEGA_PUNCH,
     ITEM_LEFTOVERS,
     ITEM_TM_EARTHQUAKE,
 };

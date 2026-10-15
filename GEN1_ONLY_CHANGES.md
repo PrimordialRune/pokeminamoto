@@ -230,9 +230,9 @@ The following thematic replacement mappings were used consistently:
 The following data arrays retain Gen 2/3 entries to maintain array index compatibility:
 
 1. **species_info.h** - Full species stats array (required for array indexing)
-2. **evolution.h** - Evolution data (Gen 2/3 evolutions simply won't trigger with Gen 1-only encounters)
+2. **evolution.h** - Evolution data. Gen 2/3 entries remain, but evolutions from Gen 1 mons into Gen 2 forms and the Gen 2 baby entries were removed (see "Evolutions, Breeding, Trades and TMs" below)
 3. **level_up_learnsets.h** - Learnset data (array indexed by species)
-4. **tmhm_learnsets.h** - TM compatibility (array indexed by species)
+4. **tmhm_learnsets.h** - TM compatibility (array indexed by species). TM bits were rebuilt from Red/Blue; see below
 5. **pokedex.h** - Pokedex constants (array indexed by species)
 6. **Graphics data** - Sprite coordinates, animations (array indexed by species)
 
@@ -257,7 +257,7 @@ The following data arrays retain Gen 2/3 entries to maintain array index compati
 - Breeding will produce Gen 1 base forms directly
 
 ### Cross-Gen Evolutions
-- Gen 2 evolutions of Gen 1 Pokémon (e.g., Crobat from Golbat) cannot be obtained
+- Gen 2 evolutions of Gen 1 Pokémon (e.g., Crobat from Golbat) cannot be obtained: those evolution entries were removed from `evolution.h`
 - Evolution triggers remain in code but the result species are not spawnable
 - Players will have fully evolved Gen 1 forms (e.g., Golbat remains Golbat)
 
@@ -334,6 +334,33 @@ In addition to species, all Gen 2/3 moves have been replaced with Gen 1 equivale
 | MOVE_PSYCHO_BOOST | MOVE_PSYCHIC | Psychic (Deoxys) |
 | MOVE_SACRED_FIRE | MOVE_FIRE_BLAST | Fire (Ho-Oh) |
 | MOVE_AEROBLAST | MOVE_HYPER_BEAM | Special (Lugia) |
+
+---
+
+## Evolutions, Breeding, Trades and TMs
+
+### Evolutions (`src/data/pokemon/evolution.h`)
+Removed every evolution from a Gen 1 species into a Gen 2 species: Golbat → Crobat, Chansey → Blissey, Eevee → Espeon/Umbreon, Gloom → Bellossom, Poliwhirl → Politoed, Slowpoke → Slowking, Onix → Steelix, Scyther → Scizor, Seadra → Kingdra, Porygon → Porygon2.
+
+### Breeding
+Removed the evolution entries of the Gen 2 babies (Pichu, Cleffa, Igglybuff, Tyrogue, Smoochum, Elekid, Magby). `GetEggSpecies` walks back through `evolution.h`, so eggs now hatch the Gen 1 base form (Pikachu, Clefairy, Jigglypuff, Hitmonlee/Hitmonchan, Jynx, Electabuzz, Magmar).
+
+### In-game trades (`src/data/trade.h`)
+| Map | Before | After |
+|---|---|---|
+| Rustboro | Seedot for Ralts | Mr. Mime (MARCEL) for Abra |
+| Fortree | Plusle for Volbeat | Pikachu (SPARKY) for Butterfree |
+| Pacifidlog | Horsea for Bagon | Horsea for Dratini |
+| Battle Frontier | Meowth for Skitty | Meowth for Jigglypuff |
+
+The `INGAME_TRADE_*` constant names are unchanged.
+
+### TMs (`include/constants/tms_hms.h`)
+The 50 TMs are now Red/Blue's TM01–TM50 in their original numbering (TM01 Mega Punch … TM50 Substitute). `ITEM_TM_<move>` references were renamed slot by slot, so every place that gave TMxx still gives TMxx. TM icons, descriptions and the Gen 1 species' TM compatibility follow the new moves; compatibility comes from pret/pokered. Gen 2/3 species keep only their HM bits.
+
+Gym rewards were then switched to type-matching TMs: Roxanne TM48 Rock Slide, Brawly TM17 Submission, Wattson TM24 Thunderbolt, Flannery TM38 Fire Blast, Norman TM08 Body Slam, Winona TM43 Sky Attack, Tate & Liza TM46 Psywave, Juan TM11 BubbleBeam.
+
+HMs are unchanged (Rock Smash, Waterfall and Dive are still needed by the Hoenn maps). Secret Power is no longer taught by any TM, so Secret Bases can't be opened.
 
 ---
 
