@@ -39,7 +39,7 @@ PacifidlogTown_House2_EventScript_ClearReceivedFanClubTM::
 
 PacifidlogTown_House2_EventScript_GiveReturn::
 	msgbox PacifidlogTown_House2_Text_AdoringPokemonTakeThis, MSGBOX_DEFAULT
-	giveitem ITEM_TM_RETURN
+	giveitem ITEM_TM_FISSURE
 	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_ShowBagIsFull
 	setflag FLAG_RECEIVED_FANCLUB_TM_THIS_WEEK
 	special SetPacifidlogTMReceivedDay
@@ -54,7 +54,7 @@ PacifidlogTown_House2_EventScript_PutInEffort::
 
 PacifidlogTown_House2_EventScript_GiveFrustration::
 	msgbox PacifidlogTown_House2_Text_ViciousPokemonTakeThis, MSGBOX_DEFAULT
-	giveitem ITEM_TM_FRUSTRATION
+	giveitem ITEM_TM_MEGA_DRAIN
 	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_ShowBagIsFull
 	setflag FLAG_RECEIVED_FANCLUB_TM_THIS_WEEK
 	special SetPacifidlogTMReceivedDay
@@ -120,10 +120,10 @@ PacifidlogTown_House2_Text_ViciousPokemonTakeThis:
 	.string "deserves a TM like this.$"
 
 PacifidlogTown_House2_Text_ExplainReturnFrustration:
-	.string "If a POKéMON likes you a lot, RETURN's\n"
-	.string "power is enhanced.\p"
-	.string "If it doesn't like you, FRUSTRATION's\n"
-	.string "power goes up.$"
+	.string "A gentle POKéMON gets a gentle TM,\n"
+	.string "and a vicious one gets a vicious TM.\p"
+	.string "Come back some other time and\n"
+	.string "I might have another.$"
 
 PacifidlogTown_House2_Text_GetGoodTMInXDays:
 	.string "Oh, yes. In about {STR_VAR_1} or so days,\n"

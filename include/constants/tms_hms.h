@@ -2,56 +2,56 @@
 #define GUARD_CONSTANTS_TMS_HMS_H
 
 #define FOREACH_TM(F) \
-    F(FOCUS_PUNCH) \
-    F(DRAGON_CLAW) \
-    F(WATER_PULSE) \
-    F(CALM_MIND) \
-    F(ROAR) \
+    F(MEGA_PUNCH) \
+    F(RAZOR_WIND) \
+    F(SWORDS_DANCE) \
+    F(WHIRLWIND) \
+    F(MEGA_KICK) \
     F(TOXIC) \
-    F(HAIL) \
-    F(BULK_UP) \
-    F(BULLET_SEED) \
-    F(HIDDEN_POWER) \
-    F(SUNNY_DAY) \
-    F(TAUNT) \
+    F(HORN_DRILL) \
+    F(BODY_SLAM) \
+    F(TAKE_DOWN) \
+    F(DOUBLE_EDGE) \
+    F(BUBBLE_BEAM) \
+    F(WATER_GUN) \
     F(ICE_BEAM) \
     F(BLIZZARD) \
     F(HYPER_BEAM) \
-    F(LIGHT_SCREEN) \
-    F(PROTECT) \
-    F(RAIN_DANCE) \
-    F(GIGA_DRAIN) \
-    F(SAFEGUARD) \
-    F(FRUSTRATION) \
+    F(PAY_DAY) \
+    F(SUBMISSION) \
+    F(COUNTER) \
+    F(SEISMIC_TOSS) \
+    F(RAGE) \
+    F(MEGA_DRAIN) \
     F(SOLAR_BEAM) \
-    F(IRON_TAIL) \
+    F(DRAGON_RAGE) \
     F(THUNDERBOLT) \
     F(THUNDER) \
     F(EARTHQUAKE) \
-    F(RETURN) \
+    F(FISSURE) \
     F(DIG) \
     F(PSYCHIC) \
-    F(SHADOW_BALL) \
-    F(BRICK_BREAK) \
+    F(TELEPORT) \
+    F(MIMIC) \
     F(DOUBLE_TEAM) \
     F(REFLECT) \
-    F(SHOCK_WAVE) \
-    F(FLAMETHROWER) \
-    F(SLUDGE_BOMB) \
-    F(SANDSTORM) \
+    F(BIDE) \
+    F(METRONOME) \
+    F(SELF_DESTRUCT) \
+    F(EGG_BOMB) \
     F(FIRE_BLAST) \
-    F(ROCK_TOMB) \
-    F(AERIAL_ACE) \
-    F(TORMENT) \
-    F(FACADE) \
-    F(SECRET_POWER) \
+    F(SWIFT) \
+    F(SKULL_BASH) \
+    F(SOFT_BOILED) \
+    F(DREAM_EATER) \
+    F(SKY_ATTACK) \
     F(REST) \
-    F(ATTRACT) \
-    F(THIEF) \
-    F(STEEL_WING) \
-    F(SKILL_SWAP) \
-    F(SNATCH) \
-    F(OVERHEAT)
+    F(THUNDER_WAVE) \
+    F(PSYWAVE) \
+    F(EXPLOSION) \
+    F(ROCK_SLIDE) \
+    F(TRI_ATTACK) \
+    F(SUBSTITUTE)
 
 #define FOREACH_HM(F) \
     F(CUT) \

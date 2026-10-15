@@ -169,14 +169,14 @@ DewfordTown_Gym_EventScript_BrawlyDefeated::
 	end
 
 DewfordTown_Gym_EventScript_GiveBulkUp::
-	giveitem ITEM_TM_BULK_UP
+	giveitem ITEM_TM_SUBMISSION
 	goto_if_eq VAR_RESULT, 0, Common_EventScript_BagIsFull
 	msgbox DewfordTown_Gym_Text_ExplainBulkUp, MSGBOX_DEFAULT
 	setflag FLAG_RECEIVED_TM_BULK_UP
 	return
 
 DewfordTown_Gym_EventScript_GiveBulkUp2:
-	giveitem ITEM_TM_BULK_UP
+	giveitem ITEM_TM_SUBMISSION
 	goto_if_eq VAR_RESULT, 0, Common_EventScript_ShowBagIsFull
 	msgbox DewfordTown_Gym_Text_ExplainBulkUp, MSGBOX_DEFAULT
 	setflag FLAG_RECEIVED_TM_BULK_UP
@@ -410,9 +410,9 @@ DewfordTown_Gym_Text_KnuckleBadgeInfoTakeThis:
 	.string "MACHINE, too.$"
 
 DewfordTown_Gym_Text_ExplainBulkUp:
-	.string "That TM08 contains BULK UP.\p"
-	.string "It's a move that raises both ATTACK\n"
-	.string "and DEFENSE stats.\p"
+	.string "That TM17 contains SUBMISSION.\p"
+	.string "It hits hard, but your POKéMON takes\n"
+	.string "some of the damage too.\p"
 	.string "… … … … … …$"
 
 DewfordTown_Gym_Text_RegisteredBrawly:

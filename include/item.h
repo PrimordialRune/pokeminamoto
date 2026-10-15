@@ -79,7 +79,7 @@ u8 GetItemSecondaryId(u16 itemId);
 /* Expands to:
  * enum
  * {
- *   ITEM_TM_FOCUS_PUNCH,
+ *   ITEM_TM_MEGA_PUNCH,
  *   ...
  *   ITEM_HM_CUT,
  *   ...

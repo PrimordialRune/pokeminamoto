@@ -7,7 +7,7 @@ SootopolisCity_House1_EventScript_BrickBreakBlackBelt::
 	faceplayer
 	goto_if_set FLAG_RECEIVED_TM_BRICK_BREAK, SootopolisCity_House1_EventScript_ReceivedBrickBreak
 	msgbox SootopolisCity_House1_Text_DevelopedThisTM, MSGBOX_DEFAULT
-	giveitem ITEM_TM_BRICK_BREAK
+	giveitem ITEM_TM_MIMIC
 	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_ShowBagIsFull
 	setflag FLAG_RECEIVED_TM_BRICK_BREAK
 	msgbox SootopolisCity_House1_Text_ExplainBrickBreak, MSGBOX_DEFAULT
@@ -36,8 +36,8 @@ SootopolisCity_House1_Text_DevelopedThisTM:
 	.string "I bequeath it to you!$"
 
 SootopolisCity_House1_Text_ExplainBrickBreak:
-	.string "TM31 contains BRICK BREAK! It's a move\n"
-	.string "so horrible that I can't describe it.$"
+	.string "TM31 contains MIMIC! It's a move\n"
+	.string "so strange that I can't describe it.$"
 
 SootopolisCity_House1_Text_Kecleon:
 	.string "KECLEON: Puu puhyaah.$"

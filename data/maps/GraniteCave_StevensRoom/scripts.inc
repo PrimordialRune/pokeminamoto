@@ -10,7 +10,7 @@ GraniteCave_StevensRoom_EventScript_Steven::
 	call Common_EventScript_PlayerHandedOverTheItem
 	setflag FLAG_DELIVERED_STEVEN_LETTER
 	msgbox GraniteCave_StevensRoom_Text_ThankYouTakeThis, MSGBOX_DEFAULT
-	giveitem ITEM_TM_STEEL_WING
+	giveitem ITEM_TM_EXPLOSION
 	call_if_eq VAR_RESULT, FALSE, GraniteCave_StevensRoom_EventScript_BagFull
 	msgbox GraniteCave_StevensRoom_Text_CouldBecomeChampionLetsRegister, MSGBOX_DEFAULT
 	closemessage
@@ -94,7 +94,7 @@ GraniteCave_StevensRoom_Text_ThankYouTakeThis:
 	.string "Let me see…\n"
 	.string "I'll give you this TM.\p"
 	.string "It contains my favorite move,\n"
-	.string "STEEL WING.$"
+	.string "EXPLOSION.$"
 
 GraniteCave_StevensRoom_Text_CouldBecomeChampionLetsRegister:
 	.string "STEVEN: Your POKéMON appear quite\n"

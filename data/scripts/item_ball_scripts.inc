@@ -60,7 +60,7 @@ Route110_EventScript_ItemElixir::
 	end
 
 Route111_EventScript_ItemTMSandstorm::
-	finditem ITEM_TM_SANDSTORM
+	finditem ITEM_TM_EGG_BOMB
 	end
 
 Route111_EventScript_ItemStardust::
@@ -108,7 +108,7 @@ Route115_EventScript_ItemSuperPotion::
 	end
 
 Route115_EventScript_ItemTMFocusPunch::
-	finditem ITEM_TM_FOCUS_PUNCH
+	finditem ITEM_TM_MEGA_PUNCH
 	end
 
 Route115_EventScript_ItemIron::
@@ -380,7 +380,7 @@ FieryPath_EventScript_ItemTMToxic::
 	end
 
 MeteorFalls_1F_1R_EventScript_ItemTMIronTail::
-	finditem ITEM_TM_IRON_TAIL
+	finditem ITEM_TM_DRAGON_RAGE
 	end
 
 MeteorFalls_1F_1R_EventScript_ItemFullHeal::
@@ -396,7 +396,7 @@ MeteorFalls_1F_1R_EventScript_ItemPPUP::
 	end
 
 MeteorFalls_B1F_2R_EventScript_ItemTMDragonClaw::
-	finditem ITEM_TM_DRAGON_CLAW
+	finditem ITEM_TM_RAZOR_WIND
 	end
 
 NewMauville_Inside_EventScript_ItemUltraBall::
@@ -456,11 +456,11 @@ AbandonedShip_HiddenFloorRooms_EventScript_ItemWaterStone::
 	end
 
 AbandonedShip_HiddenFloorRooms_EventScript_ItemTMRainDance::
-	finditem ITEM_TM_RAIN_DANCE
+	finditem ITEM_TM_COUNTER
 	end
 
 ScorchedSlab_EventScript_ItemTMSunnyDay::
-	finditem ITEM_TM_SUNNY_DAY
+	finditem ITEM_TM_BUBBLE_BEAM
 	end
 
 SafariZone_Northwest_EventScript_ItemTMSolarBeam::
@@ -500,7 +500,7 @@ MtPyre_5F_EventScript_ItemLaxIncense::
 	end
 
 MtPyre_6F_EventScript_ItemTMShadowBall::
-	finditem ITEM_TM_SHADOW_BALL
+	finditem ITEM_TM_TELEPORT
 	end
 
 MtPyre_Exterior_EventScript_ItemMaxPotion::
@@ -508,7 +508,7 @@ MtPyre_Exterior_EventScript_ItemMaxPotion::
 	end
 
 MtPyre_Exterior_EventScript_ItemTMSkillSwap::
-	finditem ITEM_TM_SKILL_SWAP
+	finditem ITEM_TM_ROCK_SLIDE
 	end
 
 AquaHideout_B1F_EventScript_ItemMasterBall::
@@ -556,7 +556,7 @@ ShoalCave_LowTideStairsRoom_EventScript_ItemIceHeal::
 	end
 
 ShoalCave_LowTideIceRoom_EventScript_ItemTMHail::
-	finditem ITEM_TM_HAIL
+	finditem ITEM_TM_HORN_DRILL
 	end
 
 ShoalCave_LowTideIceRoom_EventScript_ItemNeverMeltIce::
