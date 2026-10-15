@@ -19,6 +19,7 @@
 #include "constants/rgb.h"
 #include "constants/songs.h"
 #include "constants/metatile_labels.h"
+#include "constants/removed_maps.h"
 
 struct MirageTowerPulseBlend
 {

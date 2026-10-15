@@ -44,6 +44,7 @@
 #include "constants/game_stat.h"
 #include "constants/rgb.h"
 #include "constants/songs.h"
+#include "constants/removed_maps.h"
 #include "contest.h"
 
 enum {

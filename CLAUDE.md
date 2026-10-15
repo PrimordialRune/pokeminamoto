@@ -233,6 +233,7 @@ Game design (story, region, roster, mechanics, art direction, open questions) is
 ## Where things stand (2026-10-15)
 
 - Gen-1 data pass done on `develop`: Gen 2/3 species and moves replaced in data, map scripts converted to Poryscript, Gen1 Researcher NPC added. See `GEN1_ONLY_CHANGES.md`.
-- The game is still Emerald's Hoenn map, story and battle engine. None of the Minamoto design (Kanto remake, TP instead of PP, move ranks, signature moves, Talk/AI states, Charisma) is implemented yet.
+- Hoenn maps removed: only the opening (truck, Littleroot, Route 101, Oldale, Route 103) and the link rooms remain so the ROM boots. Dead Emerald systems still name old maps through `include/constants/removed_maps.h` and `data/scripts/removed_maps.pory`; shrink both as systems are deleted. See `GEN1_ONLY_CHANGES.md`.
+- The game is still Emerald's story and battle engine. None of the Minamoto design (Kanto remake, TP instead of PP, move ranks, signature moves, Talk/AI states, Charisma) is implemented yet.
 - Both builds pass locally and in a fresh Ubuntu 24.04 container.
 - RAM is the main constraint (EWRAM 95%, IWRAM ~93-94%). Mechanics that add per-mon or per-battle state need a RAM/save plan first.

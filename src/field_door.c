@@ -7,6 +7,7 @@
 #include "task.h"
 #include "constants/songs.h"
 #include "constants/metatile_labels.h"
+#include "constants/removed_maps.h"
 
 #define DOOR_SOUND_NORMAL  0
 #define DOOR_SOUND_SLIDING 1

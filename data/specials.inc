@@ -168,7 +168,6 @@ gSpecials::
 	def_special StartWallClock
 	def_special Special_ViewWallClock
 	def_special ChooseStarter
-	def_special StartWallyTutorialBattle
 	def_special ChangePokemonNickname
 	def_special ChoosePartyMon
 	def_special GetFirstFreePokeblockSlot
@@ -528,7 +527,6 @@ gSpecials::
 	def_special LoadLinkContestPlayerPalettes
 	def_special ShowTrainerHillRecords
 	def_special PlayerFaceTrainerAfterBattle
-	def_special ResetHealLocationFromDewford
 	def_special IsLastMonThatKnowsSurf
 	def_special CountPartyAliveNonEggMons
 	def_special TryPrepareSecondApproachingTrainer
