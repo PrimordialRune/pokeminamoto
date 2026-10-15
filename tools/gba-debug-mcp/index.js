@@ -5,11 +5,13 @@ import { spawn, execSync } from "child_process";
 import path from "path";
 import fs from "fs";
 import { fileURLToPath } from "url";
+import { emuTools, initEmu, callEmuTool } from "./emu.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = path.resolve(__dirname, "../../");
 
-const GDB_BIN = "/opt/devkitpro/devkitARM/bin/arm-none-eabi-gdb";
+const DEVKITARM_GDB = "/opt/devkitpro/devkitARM/bin/arm-none-eabi-gdb";
+const GDB_BIN = fs.existsSync(DEVKITARM_GDB) ? DEVKITARM_GDB : "gdb-multiarch";
 const OBJDUMP = "arm-none-eabi-objdump";
 const NM = "arm-none-eabi-nm";
 const ADDR2LINE = "arm-none-eabi-addr2line";
@@ -252,7 +254,7 @@ async function handleGdbConnect({ port = 2345, elf_file }) {
 
   const elf = elf_file ? path.resolve(PROJECT_ROOT, elf_file) : defaultElf(true);
   if (!fs.existsSync(elf)) return err(`ELF not found: ${elf}`);
-  if (!fs.existsSync(GDB_BIN)) return err(`GDB not found at ${GDB_BIN}`);
+  if (GDB_BIN === DEVKITARM_GDB && !fs.existsSync(GDB_BIN)) return err(`GDB not found at ${GDB_BIN}`);
 
   gdbProc = spawn(GDB_BIN, ["--quiet", elf], {
     cwd: PROJECT_ROOT,
@@ -328,8 +330,11 @@ const server = new Server(
   { capabilities: { tools: {} } }
 );
 
+initEmu(PROJECT_ROOT);
+
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
   tools: [
+    ...emuTools,
     {
       name: "rebuild_file_debug",
       description:
@@ -429,7 +434,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
     {
       name: "gdb_connect",
       description:
-        "Spawn arm-none-eabi-gdb with the project ELF and connect to a running mGBA GDB stub via TCP. mGBA must be started with the -g flag (e.g. mGBA.exe pokeemerald_modern.gba -g). Only one session can be active at a time.",
+        "Spawn gdb with the project ELF and connect to an external mGBA GDB stub via TCP (mGBA started with -g, e.g. the desktop mGBA on the PC). For the built-in headless emulator use emu_start + emu_gdb instead. Only one session can be active at a time.",
       inputSchema: {
         type: "object",
         properties: {
@@ -480,7 +485,7 @@ server.setRequestHandler(CallToolRequestSchema, async (req) => {
       case "gdb_connect":        return await handleGdbConnect(args);
       case "gdb_exec":           return await handleGdbExec(args);
       case "gdb_disconnect":     return await handleGdbDisconnect();
-      default: return err(`Unknown tool: ${name}`);
+      default: return (await callEmuTool(name, args)) ?? err(`Unknown tool: ${name}`);
     }
   } catch (e) {
     return err(`Unexpected error in ${name}: ${e.message}\n${e.stack}`);
