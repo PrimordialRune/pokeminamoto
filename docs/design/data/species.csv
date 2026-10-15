@@ -1,0 +1,181 @@
+index,pocket_monster,localized_name,type,habitat,release,wild_nature,evolves_into,signature_move,encounters,notion_url
+1,FLAMIE,Growlithe,FIRE,GRASSLANDS,BETA,no,,FLARE,Route 8; Route 7,https://app.notion.com/p/31b3d985050a81849005d818007de211
+2,PONYTA,Ponyta,FIRE,GRASSLANDS,BETA,no,,FLAME TAIL,Cycling Road,https://app.notion.com/p/31b3d985050a81bfb3c2effce7ebf08d
+3,GALLOP,Rapidash,FIRE,GRASSLANDS,BETA,no,,FLAME TAIL,,https://app.notion.com/p/31b3d985050a81db9872e7e7e54ab834
+4,[NYAKO],Miako,NORMAL,GRASSLANDS,BETA,no,,PAY DAY,,https://app.notion.com/p/31b3d985050a811aaf7dedafcf2e51b5
+5,NYARTH,Meowth,NORMAL,GRASSLANDS,BETA,no,,PAY DAY,Route 5; Route 6; Route 8; Route 7,https://app.notion.com/p/31b3d985050a81e6ba62dcfda6414c85
+6,PERSIAN,Persian,NORMAL,GRASSLANDS,BETA,no,,FURY SWIPES,,https://app.notion.com/p/31b3d985050a812a8d64d98e97578921
+7,MANKEY,Mankey,FIGHTING,GRASSLANDS,BETA,no,,RAGE,Route 3; Route 5; Route 6; Route 8; Route 7; Route 23,https://app.notion.com/p/31b3d985050a812187f4ed66ac995e3c
+8,OKORIZARU,Primeape,FIGHTING,GRASSLANDS,BETA,no,,TANTRUM,Route 23,https://app.notion.com/p/31b3d985050a813f835ed73e78468545
+9,[TORA1],Kotora,NORMAL; ELECTRIC,GRASSLANDS,BETA,no,,SPARK BITE,,https://app.notion.com/p/31b3d985050a811d8e9ac9ff8ffc3969
+10,[TORA2],Raitora,NORMAL; ELECTRIC,GRASSLANDS,BETA,no,,SPARK BITE,,https://app.notion.com/p/31b3d985050a81aeb11ce695e4ec4722
+11,[TORA3],,NORMAL; ELECTRIC,GRASSLANDS,BETA,no,,THUNDER FANG,,https://app.notion.com/p/31b3d985050a81749a93fa2276daab28
+12,LEE,Hitmonlee,FIGHTING,GRASSLANDS,BETA,no,,STRETCH KICK; JUMP KICK; HIGH JUMP KICK,,https://app.notion.com/p/31b3d985050a810abdf6ccecc6d771ff
+13,CHAN,Hitmonchan,FIGHTING,GRASSLANDS,BETA,no,,UPPERCUT; SPECIAL PUNCH; MAGNUM PUNCH,,https://app.notion.com/p/31b3d985050a81c8ac1ae175104819d0
+14,SIHORN,Rhyhorn,GROUND,GRASSLANDS,BETA,no,,HORN CHARGE,,https://app.notion.com/p/31b3d985050a81e5b893e64b0d835b65
+15,SIDON,Rhydon,GROUND,GRASSLANDS,BETA,no,,HORN DRILL,,https://app.notion.com/p/31b3d985050a8178b83cf4ade6deee0b
+16,FUSHIGIDANE,Bulbasaur,GRASS,GRASSLANDS,ALPHA,no,,LEECH SEED,,https://app.notion.com/p/31b3d985050a8124886ec70a3a2ef0a1
+17,FUSHIGISOU,Ivysaur,GRASS; POISON,GRASSLANDS,ALPHA,no,,LEECH SEED,,https://app.notion.com/p/31b3d985050a8178b42cc8d11ba4e7e6
+18,FUSHIGIBANA,Venusaur,GRASS; POISON,GRASSLANDS,ALPHA,no,,GREEDY PLANT,,https://app.notion.com/p/31b3d985050a81559120f3ac33eef8d5
+19,SAND,Sandshrew,GROUND,GRASSLANDS,ALPHA,yes,,SAND ATTACK,Route 4; Route 11; Route 9; Route 10; Route 8; Route 23,https://app.notion.com/p/31b3d985050a81468590e9f34b643a35
+20,HITOKAGE,Charmander,FIRE,GRASSLANDS,ALPHA,no,,FLAME CLAWS,,https://app.notion.com/p/31b3d985050a81689c76e77e92a9c6f6
+21,LIZARDO,Charmeleon,FIRE,GRASSLANDS,ALPHA,no,,FLAME CLAWS,,https://app.notion.com/p/31b3d985050a812bb23fd2b1860d04cb
+22,LIZARDON,Charizard,FIRE; FLYING,GRASSLANDS,ALPHA,no,,FLARE SWIRL,,https://app.notion.com/p/31b3d985050a8163b549d24420cebdb1
+23,SANDSTORM,Sandslash,GROUND,GRASSLANDS,BETA,no,,SANDSTORM,Route 23,https://app.notion.com/p/31b3d985050a81da877af29b0498e337
+24,NIDORAN ♀,Nidoran F,GROUND; POISON,GRASSLANDS,ALPHA,yes,,BIDE,Route 22; Route 3; Route 9; Route 10,https://app.notion.com/p/31b3d985050a819794bcefd368e64921
+25,NIDORINA,Nidorina,GROUND; POISON,GRASSLANDS,ALPHA,no,,BIDE,Route 9; Route 23,https://app.notion.com/p/31b3d985050a814bb718f3c3666ebe21
+26,NIDOQUEEN,Nidoqueen,GROUND; POISON,GRASSLANDS,ALPHA,no,,LOVE LOVE ATTACK,,https://app.notion.com/p/31b3d985050a813e9fb3c78b06cea7a0
+27,MIKON,Miko,FIRE,GRASSLANDS,BETA,no,,WILL-O-WISP,Route 8; Route 7,https://app.notion.com/p/31b3d985050a81d9814ef57f82e2271e
+28,FOXFIRE,Vulpix,FIRE,GRASSLANDS,BETA,no,,WILL-O-WISP,Route 8; Route 7,https://app.notion.com/p/31b3d985050a81b79e98c1aba35c48fa
+29,NIDORAN ♂,Nidoran M,GROUND; POISON,GRASSLANDS,ALPHA,yes,,FOCUS ENERGY,Route 22; Route 3; Route 9; Route 10,https://app.notion.com/p/31b3d985050a81eabc8af088cd5e5ac7
+30,NIDORINO,Nidorino,GROUND; POISON,GRASSLANDS,ALPHA,no,,FOCUS ENERGY,Route 9; Route 23,https://app.notion.com/p/31b3d985050a81f1a529d74af90ba435
+31,NIDOKING,Nidoking,GROUND; POISON,GRASSLANDS,ALPHA,no,,MEGA HORN,,https://app.notion.com/p/31b3d985050a8118a6d4d49bdff7818f
+32,NINETAI,Ninetales,FIRE; GHOST,GRASSLANDS,BETA,no,,FIRE BLAST,,https://app.notion.com/p/31b3d985050a8134853ad8ba7448e319
+33,EGGSTRE,Exeggcute,GRASS,GRASSLANDS,BETA,no,,BARRAGE,,https://app.notion.com/p/31b3d985050a8166b87fff7441de6033
+34,EGGSCUT,Exeggutor,GRASS,GRASSLANDS,BETA,no,,EGG BOMB,,https://app.notion.com/p/31b3d985050a81f9a83fceaab5934a55
+35,ORPHON,Cubone,GROUND,GRASSLANDS,BETA,no,,BONE CLUB,,https://app.notion.com/p/31b3d985050a81489a37f4ba5d3f9525
+36,GARAGARA,Marowak,GROUND,GRASSLANDS,BETA,no,,BONE CLUB,VICTORY ROAD,https://app.notion.com/p/31b3d985050a8115b631f851f691735e
+37,GUARDIA,,GROUND,GRASSLANDS,BETA,no,,BONEMERANG,,https://app.notion.com/p/31b3d985050a81c68bf7d65c584de3ba
+38,LUCKY,Chansey,NORMAL,GRASSLANDS,BETA,no,,SOFT BOILED,,https://app.notion.com/p/31b3d985050a81ae9abfe2b73d0b0977
+39,MEDUSA,Tangela,GRASS; GHOST,GRASSLANDS,BETA,no,,CONSTRICT,Route 21,https://app.notion.com/p/31b3d985050a812c945dd787acf3bba8
+40,[CACTUS],,GRASS; GROUND,GRASSLANDS,BETA,no,,SPIKE BARRAGE,,https://app.notion.com/p/31b3d985050a8185ba9ff943a7778a2e
+41,GARURA,Kangaskhan,NORMAL; FIGHTING,GRASSLANDS,BETA,no,,ONE-TWO PUNCH,,https://app.notion.com/p/31b3d985050a81788f41e7bdbec22938
+42,TONGUETYD,Lickitung,NORMAL,GRASSLANDS,BETA,no,,LICK,,https://app.notion.com/p/31b3d985050a81b3a360d37ee827c59b
+43,STRIKE,Scyther,BUG,GRASSLANDS,BETA,no,,STUN CLAWS,,https://app.notion.com/p/31b3d985050a81348f92f2c15ac63cb5
+44,ELEBOO,Electabuzz,ELECTRIC,GRASSLANDS,BETA,no,,THUNDER PUNCH,,https://app.notion.com/p/31b3d985050a8172beadec40bdba6b12
+45,KAILIOS,Pinsir,BUG,GRASSLANDS,BETA,no,,GUILLOTINE,,https://app.notion.com/p/31b3d985050a81a2a8acfb9fbe0618a2
+46,[ELEPHANT],,GROUND,GRASSLANDS,BETA,no,,,,https://app.notion.com/p/31b3d985050a814f83a2e599a1498dbf
+47,KENTAUROS,Tauros,NORMAL,GRASSLANDS,BETA,no,,RAMPAGE,,https://app.notion.com/p/31b3d985050a8124bb82df130c026760
+48,EON,Eevee,NORMAL,GRASSLANDS,BETA,no,,QUICK ATTACK,,https://app.notion.com/p/31b3d985050a81df8a2dddfef299b31d
+49,SHOWERS,Vaporeon,WATER,GRASSLANDS,BETA,no,,QUICK ATTACK,,https://app.notion.com/p/31b3d985050a811e8a8bea6ffa5f8213
+50,THUNDERS,Jolteon,ELECTRIC,GRASSLANDS,BETA,no,,QUICK ATTACK,,https://app.notion.com/p/31b3d985050a81dd9b2cf920118d94ea
+51,BOOSTER,Flareon,FIRE,GRASSLANDS,BETA,no,,QUICK ATTACK,,https://app.notion.com/p/31b3d985050a81fa817cc86d1632c509
+52,IWARK,Onix,ROCK; GROUND,MOUNTAIN,BETA,no,,TUNNELING,Digda Cave; VICTORY ROAD,https://app.notion.com/p/31b3d985050a81db8176f94eff80e14b
+53,DIGDA,Diglett,GROUND,MOUNTAIN,BETA,no,,MAGNITUDE,Digda Cave,https://app.notion.com/p/31b3d985050a81409b31cf5d4dbe090c
+54,DUGTRIO,Dugtrio,GROUND,MOUNTAIN,BETA,no,,FISSURE,Digda Cave,https://app.notion.com/p/31b3d985050a81ae8627f6d2ce809a3e
+55,ISITSUBUTE,Geodude,ROCK,MOUNTAIN,ALPHA v2,no,,ROCK BURST,Mt. Moon; VICTORY ROAD,https://app.notion.com/p/31b3d985050a81d08e91d6ed78a137d8
+56,GOLONE,Graveler,ROCK,MOUNTAIN,ALPHA v2,no,,ROCK BURST,Mt. Moon; VICTORY ROAD,https://app.notion.com/p/31b3d985050a811599d4dc437a08a8c1
+57,GOLONYA,Golem,ROCK; GROUND,MOUNTAIN,BETA,no,,ROCKFALL,,https://app.notion.com/p/31b3d985050a818282b2c0afd2961794
+58,KARA-TEE,Machop,FIGHTING,MOUNTAIN,BETA,no,,SUPERSTRENGTH,Route 10; VICTORY ROAD,https://app.notion.com/p/31b3d985050a81c0b277fb033de28802
+59,KUNG-FOO,Machoke,FIGHTING,MOUNTAIN,BETA,no,,SUPERSTRENGTH,VICTORY ROAD,https://app.notion.com/p/31b3d985050a81dda222d0fd35157104
+60,JU-DOH,Machamp,FIGHTING,MOUNTAIN,BETA,no,,SEISMIC TOSS,,https://app.notion.com/p/31b3d985050a8190a2d0c456079b2cba
+61,BOOBER,Magmar,FIRE,MOUNTAIN,BETA,no,,FIRE PUNCH,,https://app.notion.com/p/31b3d985050a81d390caf54421ca9160
+62,KABIGON,Snorlax,NORMAL,MOUNTAIN,BETA,no,,REST,,https://app.notion.com/p/31b3d985050a8129a08ae2a556f56576
+63,GAO,,NORMAL; GROUND,MOUNTAIN,BETA,no,,LOUD CRY,,https://app.notion.com/p/31b3d985050a81ab8cd4f89076faf98e
+64,GYAON,,NORMAL; GROUND,MOUNTAIN,BETA,no,,GOD ROAR,,https://app.notion.com/p/31b3d985050a81ba8b55d5604599ead7
+65,KOBAT,,FLYING,MOUNTAIN,ALPHA v2,no,,LEECH LIFE,Mt. Moon; Twin Islands,https://app.notion.com/p/31b3d985050a81d59763e0f66594159a
+66,ZUBAT,Zubat,FLYING; POISON,MOUNTAIN,ALPHA v2,no,,LEECH LIFE,Mt. Moon; Twin Islands; VICTORY ROAD,https://app.notion.com/p/31b3d985050a81318ac4f28091edbfd0
+67,GOLBAT,Golbat,FLYING; POISON,MOUNTAIN,ALPHA v2,no,,LEECH LIFE,Twin Islands; VICTORY ROAD,https://app.notion.com/p/31b3d985050a81eb9aa1c91c956997c0
+68,ZENIGAME,Squirtle,WATER,WATER'S EDGE,ALPHA,no,,WITHDRAW,,https://app.notion.com/p/31b3d985050a81d7bb62e2f5800cbbeb
+69,KAMEIL,Wartortle,WATER,WATER'S EDGE,ALPHA,no,,WITHDRAW,,https://app.notion.com/p/31b3d985050a81488586fe2997452941
+70,KAMEX,Blastoise,WATER; FIGHTING,WATER'S EDGE,ALPHA,no,,SKULL BASH,,https://app.notion.com/p/31b3d985050a812eb617c99b45e12bd3
+71,BOO,,ICE,WATER'S EDGE,BETA,no,,ICE PUNCH,,https://app.notion.com/p/31b3d985050a81528bcdf57feff731cf
+72,HITODEMAN,Staryu,WATER,WATER'S EDGE,BETA,no,,SWIFT,Twin Islands,https://app.notion.com/p/31b3d985050a8108aa5cdb3c9828985f
+73,STARMIE,Starmie,WATER; PSYCHIC,WATER'S EDGE,BETA,no,,STAR FREEZE,,https://app.notion.com/p/31b3d985050a81bb9400effe4aa03cd1
+74,KODUCK,Psyduck,WATER,WATER'S EDGE,BETA,no,,HEADACHE,Twin Islands,https://app.notion.com/p/31b3d985050a813ea4d2cb5559706198
+75,ZUDUCK,,WATER; PSYCHIC,WATER'S EDGE,BETA,no,,PSY SHOCK,Twin Islands,https://app.notion.com/p/31b3d985050a8190908bcb05037f581b
+76,GOLDUCK,Golduck,WATER; PSYCHIC,WATER'S EDGE,BETA,no,,PSY SHOCK,Twin Islands,https://app.notion.com/p/31b3d985050a81c58181ca1dc84a5bbc
+77,LADISH,Oddish,GRASS,WATER'S EDGE,BETA,no,,SPROUT,Route 24; Route 25; Route 5; Route 6; Route 12; Route 7; Route 13; Route 14; Route 15,https://app.notion.com/p/31b3d985050a81a08900f33e18450b36
+78,KUSAIHANA,Gloom,GRASS; POISON,WATER'S EDGE,BETA,no,,FOUL ODOR,Route 12; Route 13; Route 14; Route 15,https://app.notion.com/p/31b3d985050a8176aad6c6ee131a425a
+79,RUFFRESIA,Vileplume,GRASS; POISON,WATER'S EDGE,BETA,no,,PETAL DANCE,,https://app.notion.com/p/31b3d985050a81de908febccd93b3e17
+80,CRAB,Krabby,WATER,WATER'S EDGE,BETA,no,,BUBBLE,Twin Islands,https://app.notion.com/p/31b3d985050a81a28a7de2abcdf6a3a6
+81,MADATSUBOMI,Bellsprout,GRASS,WATER'S EDGE,BETA,no,,RAZOR LEAF,Route 24; Route 25; Route 5; Route 6; Route 12; Route 7; Route 13; Route 14; Route 15,https://app.notion.com/p/31b3d985050a81dfaea3caa14bcc4bc9
+82,UTSUDON,Weepinbell,GRASS; POISON,WATER'S EDGE,BETA,no,,RAZOR LEAF,Route 12; Route 13; Route 14; Route 15,https://app.notion.com/p/31b3d985050a8113b8e2e913a0092bb0
+83,UTSUBOT,Victreebel,GRASS; POISON,WATER'S EDGE,BETA,no,,FRAGRANCE TRAP,,https://app.notion.com/p/31b3d985050a81168e92c1b005980fc3
+84,KINGLER,Kingler,WATER,WATER'S EDGE,BETA,no,,CRABHAMMER,Twin Islands,https://app.notion.com/p/31b3d985050a81c99de0ee86002ee3de
+85,SLOWMO,Slowpoke,WATER; NORMAL,WATER'S EDGE,BETA,no,,SCAVENGE?,Twin Islands,https://app.notion.com/p/31b3d985050a81fb8e29f0677797dc63
+86,YADORAN,Slowbro,WATER; PSYCHIC,WATER'S EDGE,BETA,no,,PSYWAVE,Twin Islands,https://app.notion.com/p/31b3d985050a81ee8d98db35b2cc4293
+87,CATERPIE,Caterpie,BUG,FOREST,ALPHA,yes,,STRING SHOT,Route 2; TOKIWA FOREST,https://app.notion.com/p/31b3d985050a811aaf61c9644ad42830
+88,TRANSEL,Metapod,BUG,FOREST,ALPHA,no,,HARDEN,TOKIWA FOREST,https://app.notion.com/p/31b3d985050a8100a490dce4c7edc2c5
+89,BUTTERFREE,Butterfree,BUG; FLYING,FOREST,ALPHA,no,,MOTH SCALES,,https://app.notion.com/p/31b3d985050a817cb2e7ecbf2b682460
+90,BEEDLE,Weedle,BUG,FOREST,ALPHA,yes,,PIN MISSILE,Route 2; TOKIWA FOREST; Route 24; Route 25; Route 5; Route 6,https://app.notion.com/p/31b3d985050a81b9bb5ff7736ca6011c
+91,KOCOON,Kakuna,BUG,FOREST,ALPHA,no,,HARDEN,TOKIWA FOREST; Route 24; Route 25; Route 5; Route 6,https://app.notion.com/p/31b3d985050a81c89a12fea07150e6f2
+92,SPEAR,Beedrill,BUG; POISON,FOREST,ALPHA,no,,TWINEEDLE,,https://app.notion.com/p/31b3d985050a81d8932fee2179c3c685
+93,RATTATAK,Rattata,NORMAL,FOREST,ALPHA,yes,,SUPER FANG,MASARA TOWN; Route 1; Route 2; Route 22; Route 4; Route 5; Route 6; Route 11; Route 9; Route 10; Route 8; Route 7; Route 16; Route 18; Route 21,https://app.notion.com/p/31b3d985050a81d3ad35cce25470f11e
+94,[SUMOFROG1] / [CICADA],,BUG; FIGHTING,FOREST,BETA,no,,HAZE,,https://app.notion.com/p/31b3d985050a81e99050f6da998e837c
+95,[SUMOFROG2] /[CICADA],,BUG; FIGHTING,FOREST,ALPHA v2,no,,HAZE,,https://app.notion.com/p/31b3d985050a81f69bc9e0269d9c6d10
+96,PARAS,Paras,BUG; GRASS,FOREST,ALPHA v2,no,,SPORE,TOKIWA FOREST,https://app.notion.com/p/31b3d985050a8139985eff9edc1840cc
+97,PARASYTE,Parasect,BUG; GRASS,FOREST,ALPHA v2,no,,SPORE,,https://app.notion.com/p/31b3d985050a8171b6f9d17c60f924e1
+98,MORPHON,Venomoth,BUG; POISON,FOREST,BETA,no,,BUG NOISE,Route 14; Route 15,https://app.notion.com/p/31b3d985050a8180a4e0da58b0af6510
+99,RATTA,Raticate,NORMAL,FOREST,ALPHA,no,,HYPER FANG,Route 11; Route 9; Route 10; Route 16; Cycling Road; Route 18; Route 21,https://app.notion.com/p/31b3d985050a81018dfccf13eaf8f2f9
+100,PIKACHU,Pikachu,ELECTRIC,FOREST,ALPHA v2,no,,THUNDER JOLT,TOKIWA FOREST,https://app.notion.com/p/31b3d985050a81368fb4c3c2d4eda2a3
+101,RAICHU,Raichu,ELECTRIC,FOREST,ALPHA v2,no,,SUPER THUNDERBOLT,,https://app.notion.com/p/31b3d985050a812682b5c2b5cc923329
+102,GOROCHU,,ELECTRIC; FIGHTING,FOREST,BETA,no,,GIGASHOCK,,https://app.notion.com/p/31b3d985050a81529e02fa90e6fa46dd
+103,KONGPANG,Venonat,BUG; POISON,FOREST,BETA,no,,CICADA SHELL,Route 12; Route 13; Route 14; Route 15,https://app.notion.com/p/31b3d985050a816b8e4ce1ab53241fad
+104,ARBO,Ekans,POISON,FOREST,BETA,no,,VENOM SPIT,Route 4; Route 11; Route 9; Route 10; Route 8; Route 23,https://app.notion.com/p/31b3d985050a81fd9244f1827b28a73c
+105,NAGAASP,Arbok,POISON,FOREST,BETA,no,,SNAKE GLARE,Route 23,https://app.notion.com/p/31b3d985050a81d48268e9333be39883
+106,SKULLKRAKEN,Gyarados,WATER; DRAGON,SEA,BETA,no,,DRAGON RAGE,,https://app.notion.com/p/31b3d985050a81c08b0dca8044eb34ca
+107,GYOPIN,Goldeen pre,WATER,SEA,BETA,no,,WATERFALL CLIMB,,https://app.notion.com/p/31b3d985050a81f78f08d1951c4662b3
+108,GOLDY,Goldeen,WATER,SEA,BETA,no,,WATERFALL CLIMB,,https://app.notion.com/p/31b3d985050a8102bf38ff0a395c3b19
+109,NEPTUNE,Seaking,WATER,SEA,BETA,no,,WATERFALL CLIMB,,https://app.notion.com/p/31b3d985050a81b9abcdedf25ba6d249
+110,[BETTA1],,WATER; FIGHTING,SEA,BETA,no,,DIZZY PUNCH,,https://app.notion.com/p/31b3d985050a8177a5c8c7f71a2d8702
+111,[BETTA2],,WATER; FIGHTING,SEA,BETA,no,,DIZZY PUNCH,,https://app.notion.com/p/31b3d985050a81b18f2ffd3e43351484
+112,JAGG,,WATER,SEA,BETA,no,,ABYSS JAW,,https://app.notion.com/p/31b3d985050a81058df6c5564b520898
+113,JILLY,Tentacool,WATER; POISON,SEA,BETA,no,,JELLYFISH STING,Route 19; Route 20; Route 21,https://app.notion.com/p/31b3d985050a81528f08c80f9f023965
+114,MANOWAR,Tentacruel,WATER; POISON,SEA,BETA,no,,JELLYFISH STING,,https://app.notion.com/p/31b3d985050a814eb4f3de36cb783764
+115,[CALAMAR1],,WATER; POISON,SEA,BETA,no,,SQUID INK,,https://app.notion.com/p/31b3d985050a81f5a609c9199e2a4592
+116,[CALAMAR2],,WATER; POISON,SEA,BETA,no,,SQUID INK,,https://app.notion.com/p/31b3d985050a81a3b16bc6c5bd2d5f3e
+117,PAWOU,Seel,WATER; ICE,SEA,BETA,no,,AURORA BEAM,Twin Islands,https://app.notion.com/p/31b3d985050a812a96ecc3acddec39d2
+118,MANATY,Dewgong,WATER; ICE,SEA,BETA,no,,AURORA BEAM,Twin Islands,https://app.notion.com/p/31b3d985050a8180876ac2f910683d14
+119,NESS,Lapras,WATER; ICE,SEA,BETA,no,,MIST,,https://app.notion.com/p/31b3d985050a812ea9b5cef589180891
+120,SHELLDER,Shellder,WATER,SEA,BETA,no,,CLAMP,Twin Islands,https://app.notion.com/p/31b3d985050a8190a4e2fe66732aeab2
+121,PARSHEN,Cloyster,WATER; ROCK,SEA,BETA,no,,CLAMP,Twin Islands,https://app.notion.com/p/31b3d985050a81caa9a3f9c224bada06
+122,[WARTORTLE],,WATER,SEA,BETA,no,,HYDRO PUMP,,https://app.notion.com/p/31b3d985050a81c597baef5c3bd29ae6
+123,[BLASTOISE],,WATER; ROCK,SEA,BETA,no,,HYDRO CANNON,,https://app.notion.com/p/31b3d985050a81a2b9e2e7d712d0c790
+124,AQUA,Poliwag,WATER,SEA,BETA,no,,AMNESIA,,https://app.notion.com/p/31b3d985050a8111bf54cc71e19c490d
+125,AQUANAU,Poliwhirl,WATER,SEA,BETA,no,,BELLY DRUM,,https://app.notion.com/p/31b3d985050a810cb460e46009f24d60
+126,AQUAMAR,Poliwrath,WATER; FIGHTING,SEA,BETA,no,,WHIRLPOOL,,https://app.notion.com/p/31b3d985050a8126a1dae7ab2512c271
+127,TATTU,Horsea,WATER,SEA,BETA,no,,KNOCKOUT NEEDLE,Twin Islands,https://app.notion.com/p/31b3d985050a81aa92f3f901bfa0e9f4
+128,SEADRA,Seadra,WATER,SEA,BETA,no,,KNOCKOUT NEEDLE,Twin Islands,https://app.notion.com/p/31b3d985050a814088a0c770c0c71e82
+129,CROCKY,,WATER; GRASS,SEA,BETA,no,,HUNGER,,https://app.notion.com/p/31b3d985050a8184a067e8ca6488011c
+130,KOIKING,Magikarp,WATER,SEA,BETA,no,,WRIGGLE,,https://app.notion.com/p/31b3d985050a8133bc6bedca7532e474
+131,PIDGE,Pidgey,NORMAL; FLYING,SKIES,ALPHA,yes,,WHIRLWIND,Route 1; Route 2; TOKIWA CITY; TOKIWA FOREST; Route 24; Route 25; Route 5; Route 6; Route 11; Route 12; Route 8; Route 7; Route 13; Route 14; Route 15; Route 21,https://app.notion.com/p/31b3d985050a8164af11eb7471447a94
+132,PIDGEOTT,Pidgeotto,NORMAL; FLYING,SKIES,ALPHA,no,,WHIRLWIND,TOKIWA FOREST; Route 24; Route 25; Route 5; Route 6; Route 11; Route 12; Route 8; Route 7; Route 13; Route 14; Route 15; Route 21,https://app.notion.com/p/31b3d985050a8111a0a6e02619636cdf
+133,PIGEOT,Pidgeot,NORMAL; FLYING,SKIES,ALPHA,no,,HURRICANE,,https://app.notion.com/p/31b3d985050a819a8f1ccfbf83697ff3
+134,ONISUZUME,Speaow,NORMAL; FLYING,SKIES,ALPHA,yes,,MIRROR MOVE,Route 22; TOKIWA CITY; Route 3; Route 4; Route 11; Route 9; Route 10; Route 16; Cycling Road; Route 18; Route 23,https://app.notion.com/p/31b3d985050a81ed8e33c4c1499931f0
+135,ONIDRILL,Fearow,NORMAL; FLYING,SKIES,ALPHA,no,,DRILL PECK,Route 9; Route 16; Cycling Road; Route 18; Route 23,https://app.notion.com/p/31b3d985050a8154b724ee21a16276ac
+136,COIL,Magnemite,ELECTRIC,SKIES,BETA,no,,SONICBOOM,,https://app.notion.com/p/31b3d985050a81b0add1ee1d1aa9757e
+137,RECOIL,Magneton,ELECTRIC,SKIES,BETA,no,,SONICBOOM,,https://app.notion.com/p/31b3d985050a815dbc24dc8bb855ed98
+138,DODO,Doduo,NORMAL; FLYING,SKIES,BETA,no,,REAR KICK,Route 16; Cycling Road; Route 18,https://app.notion.com/p/31b3d985050a81f984d8f258cd3622db
+139,DODORIO,Dodrio,NORMAL; FLYING,SKIES,BETA,no,,MEGA PECK,Route 16; Cycling Road; Route 18,https://app.notion.com/p/31b3d985050a81c9bb07f23a764d4548
+140,KAMONEGI,Farfetch'd,NORMAL; FLYING,SKIES,ALPHA,no,,LEEK SLAP,TOKIWA CITY; Route 12; Route 13; Route 14,https://app.notion.com/p/31b3d985050a81619d83e10554e283ec
+141,BETBETER,Grimer,POISON,URBAN,BETA,no,,SLUDGE,,https://app.notion.com/p/31b3d985050a815d99afe4dfd7a82010
+142,BETBETON,Muk,POISON,URBAN,BETA,no,,ACID ARMOR,,https://app.notion.com/p/31b3d985050a8176b284fd3fb0e78463
+143,PORYGON,Porygon,NORMAL,URBAN,BETA,no,,SHARPEN; CONVERSION; TRI ATTACK,,https://app.notion.com/p/31b3d985050a812392cdd19db51d2df1
+144,NY,Koffing,POISON,URBAN,BETA,no,,SMOG,,https://app.notion.com/p/31b3d985050a81f7b5e7db25cd89dac5
+145,LA,Weezing,POISON,URBAN,BETA,no,,POISON GAS,,https://app.notion.com/p/31b3d985050a81c9aa12e72337e445a1
+146,DEER,,NORMAL; ELECTRIC,URBAN,BETA,no,,WILD CHARGE,,https://app.notion.com/p/31b3d985050a81bdb39ef36fe0aad646
+147,BIRIRIDAMA,Voltorb,ELECTRIC,URBAN,BETA,no,,EXPLOSION,,https://app.notion.com/p/31b3d985050a81e3807fed634ed84699
+148,MARUMINE,Electrode,ELECTRIC,URBAN,BETA,no,,CHAIN LIGHTNING,,https://app.notion.com/p/31b3d985050a81af8bcaff199ec70e98
+149,SPIRIT,Gastly,GHOST,URBAN,BETA,no,,NIGHT SHADE,,https://app.notion.com/p/31b3d985050a81278745f10a32e2c334
+150,SPECTRE,Haunter,GHOST,URBAN,BETA,no,,TRANSPARENCY,,https://app.notion.com/p/31b3d985050a8128b37cc96ce590b574
+151,PHANTOM,Gengar,GHOST,URBAN,BETA,no,,DOUBLE TEAM; DESTINY BOND,,https://app.notion.com/p/31b3d985050a8135814fe837a6a9214c
+152,HOCUS,Abra,PSYCHIC,MYSTERIOUS,BETA,no,,TELEPORT,Route 24; Route 25; Route 5; Route 6; Route 8; Route 7,https://app.notion.com/p/31b3d985050a81ae9c9eec7692a7a845
+153,POCUS,Kadabra,PSYCHIC,MYSTERIOUS,BETA,no,,SPOON BEND,Route 8; Route 7,https://app.notion.com/p/31b3d985050a81cf969ade0fc215db81
+154,FOODIN,Alakazam,PSYCHIC,MYSTERIOUS,BETA,no,,REFLECT,,https://app.notion.com/p/31b3d985050a81e985cef8f01b9733e6
+155,ARIA,Clefairy,NORMAL,MYSTERIOUS,BETA,no,,MINIMIZE,Mt. Moon,https://app.notion.com/p/31b3d985050a81dc8c21fa0d6eeb60df
+156,ARIALA,Clefable,NORMAL,MYSTERIOUS,BETA,no,,METRONOME,,https://app.notion.com/p/31b3d985050a814dbbeff78ebd7e9c62
+157,METAMON,Ditto,NORMAL,MYSTERIOUS,BETA,no,,TRANSFORM,Route 13; Route 14; Route 15; Route 23,https://app.notion.com/p/31b3d985050a81d6b559de0aef02aea6
+158,BARRIERD,Mr. Mime,PSYCHIC,MYSTERIOUS,BETA,no,,LIGHT SCREEN,,https://app.notion.com/p/31b3d985050a81b68c5ef492829cb1b3
+159,PUDDING,Jigglypuff,NORMAL,MYSTERIOUS,BETA,no,,LULLABY,Route 5; Route 6; Route 8; Route 7,https://app.notion.com/p/31b3d985050a81928c36e015318676bf
+160,CUSTARD,Wigglytuff,NORMAL,MYSTERIOUS,BETA,no,,LULLABY,,https://app.notion.com/p/31b3d985050a81c4ba34f44989bfd8e8
+161,SLEEPE,Drowzee,PSYCHIC,MYSTERIOUS,BETA,no,,DREAM EATER,Route 11,https://app.notion.com/p/31b3d985050a81f9ac60fcbc13794207
+162,SLEEPER,Hypno,PSYCHIC,MYSTERIOUS,BETA,no,,HYPNOSIS,,https://app.notion.com/p/31b3d985050a81bd9748f10e9dadf13a
+163,ROUGELA,Jynx,PSYCHIC,MYSTERIOUS,BETA,no,,LOVELY KISS,,https://app.notion.com/p/31b3d985050a81448ef5f1c54de12ef9
+164,PTERA,Aerodactyl,ROCK; FLYING,FOSSIL,BETA,no,,JURASSIC JAW,,https://app.notion.com/p/31b3d985050a814e81dfcc6d9bfe4ef5
+165,ESS,Omanyte,ROCK; WATER,FOSSIL,BETA,no,,CLARVOYANCE,,https://app.notion.com/p/31b3d985050a819eaa9acda69051cc2d
+166,KARGO,Omastar,ROCK; WATER,FOSSIL,BETA,no,,PRIMAL BIND,,https://app.notion.com/p/31b3d985050a81439614caab8d293d89
+167,ATT,Kabuto,ROCK; BUG,FOSSIL,BETA,no,,HELMET SHELL,,https://app.notion.com/p/31b3d985050a8126aff4dca91478825d
+168,LANTIS,Kabutops,ROCK; BUG,FOSSIL,BETA,no,,SHARP SICKLE,,https://app.notion.com/p/31b3d985050a81f8a3f9ffa20af9fa8e
+169,FREEZER,Articuno,ICE; FLYING,MIRAGE,BETA,no,,FREEZE DRY,,https://app.notion.com/p/31b3d985050a81278198d7a490bffc79
+170,THUNDER,Zapdos,ELECTRIC; FLYING,MIRAGE,BETA,no,,THUNDERSTORM,,https://app.notion.com/p/31b3d985050a8110aaccf5fd20b7b5b5
+171,FIRE,Moltres,FIRE; FLYING,MIRAGE,BETA,no,,DIVINE BIRD,,https://app.notion.com/p/31b3d985050a81d690e8c8d5c14b0569
+172,BLAZE,Arcanine,FIRE,MIRAGE,BETA,no,,HEAT TACKLE,,https://app.notion.com/p/31b3d985050a81eda52ec1ddac445ab1
+173,DRAGOON,Dratini,DRAGON,MIRAGE,BETA,no,,TAIL STRIKE,,https://app.notion.com/p/31b3d985050a81dca8bacae18b821c5f
+174,DRAGYN,Dragonair,DRAGON,MIRAGE,BETA,no,,TAIL STRIKE,,https://app.notion.com/p/31b3d985050a814c804bf08ffe8969d8
+175,KAIRYU,Dragonite,DRAGON; FLYING,MIRAGE,BETA,no,,TITANIC TAIL,,https://app.notion.com/p/31b3d985050a814cb088e18498e47ccc
+176,[DRAKE1],Kurusu?,DRAGON,MIRAGE,BETA,no,,DRAGON BREATH,,https://app.notion.com/p/31b3d985050a81ee8128f532731e9466
+177,[DRAKE2],,DRAGON,MIRAGE,BETA,no,,DRAGON BREATH,,https://app.notion.com/p/31b3d985050a8199917de178a769bad4
+178,[DRAKE3],,DRAGON,MIRAGE,BETA,no,,DRAGON BREATH,,https://app.notion.com/p/31b3d985050a8133bd04f5f9b9a8310b
+179,OMEGA,,,MIRAGE,BETA,no,,BYE-BYE PUNCH,,https://app.notion.com/p/31b3d985050a81529817f4d20697b795
+180,MEW,Mewtwo,PSYCHIC,MIRAGE,BETA,no,,BARRIER,,https://app.notion.com/p/31b3d985050a81ff907de1adc56d609d

@@ -51,6 +51,16 @@ Order: biggest blockers for engine work first.
 
 ## D. Things that live elsewhere and should be exported or pasted into the repo
 
+**Update 2026-10-15:** the Notion databases are now exported to `data/` (species 180, overworld 42, trainers 47, moves 262, learnsets 50 rows for 4 species only, ui 1, tasks 6, plot chapters 1 empty). TP Cost is filled on one move only (POUND = 5); `evolves_into` is empty on every species row; boss team databases on the BOSS BATTLES pages return no rows; DEVELOPMENT ISSUES could not be read through the connector. Still missing from the repo and not in Notion, so Omar needs to upload or paste them:
+
+- Tokiwa City design doc v5.1 and Nibi City design doc v3.0 (and Nibi v2 for the cross-check).
+- The Excel Move Tag Index workbook (Move Tag Index, Tag Reference, Compact View sheets), which holds the v1.1 five-axis taxonomy.
+- The confirmed 261-move CSV used for research.
+- `MathModels/data/*.yaml` (bosses, encounters, pokemon stats) from the PC.
+- Species dex descriptions (on each Notion species page body, not exported) if they should live in the repo.
+
+Earlier list (kept for reference):
+
 - Notion: PKMN INDEX (180 rows, with Habitat/Type/Encounters/Evolves Into/Signature Move), Moves (24 Normal, 39 Elemental, 48 Move Machine, 150 Signature), MAPS/EVENTS (41 maps with encounter relations), TRAINERS (45), BOSS BATTLES page, UI gallery, Plot Chapters. Suggest a CSV/markdown export per database, then commit under `docs/design/data/` or convert to C data tables.
 - `E:\...\MathModels\data\*.yaml` and `newMM/` simulators: likely contain the current numeric stats and boss teams; document their relationship to Notion (which is source of truth).
 - `MyRes/` art (maps, tilesets, UI, logo, trainer sprites): the repo should say where the final ROM-ready assets will be.
