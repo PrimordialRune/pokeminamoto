@@ -18,7 +18,8 @@ fi
 
 # --- 1. System packages -------------------------------------------------------
 APT_PKGS=(build-essential git libpng-dev pkg-config
-          binutils-arm-none-eabi gcc-arm-none-eabi libnewlib-arm-none-eabi)
+          binutils-arm-none-eabi gcc-arm-none-eabi libnewlib-arm-none-eabi
+          libmgba-dev gdb-multiarch)  # last two: headless emulator for gba-debug-mcp
 
 if [ -z "${SKIP_APT:-}" ]; then
     missing=()
@@ -49,7 +50,14 @@ fi
 # Committed prebuilt binaries must be executable (older commits stored them 644).
 chmod +x tools/poryscript/poryscript tools/poryscript/poryscript-pls 2>/dev/null || true
 
-# --- 3. MCP server deps (optional, only if node is available) -----------------
+# --- 3. Headless emulator host (tools/gba-emu, used by gba-debug-mcp emu_*) ---
+if [ -f /usr/include/mgba/core/core.h ]; then
+    make -s -C tools/gba-emu || echo "!! tools/gba-emu failed to build; emu_* tools will be unavailable"
+else
+    echo "!! libmgba-dev missing; emu_* tools will be unavailable"
+fi
+
+# --- 4. MCP server deps (optional, only if node is available) -----------------
 if command -v node >/dev/null 2>&1 && \
    ! node -e 'process.exit(+process.versions.node.split(".")[0] >= 20 ? 0 : 1)'; then
     echo "!! node $(node -v) found; porymap-mcp needs node >= 20 (import.meta.dirname)"

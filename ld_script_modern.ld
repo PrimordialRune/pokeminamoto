@@ -150,6 +150,20 @@ SECTIONS {
     .debug_loc      0 : { *(.debug_loc) }
     .debug_macinfo  0 : { *(.debug_macinfo) }
 
+    /* DWARF 3 */
+    .debug_pubtypes 0 : { *(.debug_pubtypes) }
+    .debug_ranges   0 : { *(.debug_ranges) }
+
+    /* DWARF 5 (gcc >= 11 default; without these gdb and addr2line lose
+       line tables and types) */
+    .debug_addr     0 : { *(.debug_addr) }
+    .debug_line_str 0 : { *(.debug_line_str) }
+    .debug_loclists 0 : { *(.debug_loclists) }
+    .debug_macro    0 : { *(.debug_macro) }
+    .debug_names    0 : { *(.debug_names) }
+    .debug_rnglists 0 : { *(.debug_rnglists) }
+    .debug_str_offsets 0 : { *(.debug_str_offsets) }
+
     /* Discard everything not specifically mentioned above. */
     /DISCARD/ :
     {
