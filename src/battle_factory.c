@@ -18,6 +18,7 @@
 #include "constants/trainers.h"
 #include "constants/moves.h"
 #include "constants/items.h"
+#include "constants/removed_maps.h"
 
 static bool8 sPerformedRentalSwap;
 

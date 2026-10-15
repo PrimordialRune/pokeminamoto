@@ -17,10 +17,5 @@
 
 	.align 2
 	.include "data/scripts/gift_stamp_card.inc"
-	.include "data/scripts/gift_pichu.inc"
 	.include "data/scripts/gift_trainer.inc"
 	.include "data/scripts/gift_battle_card.inc"
-	.include "data/scripts/gift_aurora_ticket.inc"
-	.include "data/scripts/gift_mystic_ticket.inc"
-	.include "data/scripts/gift_altering_cave.inc"
-	.include "data/scripts/gift_old_sea_map.inc"

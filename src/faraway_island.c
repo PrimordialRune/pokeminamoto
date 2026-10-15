@@ -8,6 +8,7 @@
 #include "constants/event_objects.h"
 #include "constants/field_effects.h"
 #include "constants/metatile_behaviors.h"
+#include "constants/removed_maps.h"
 
 static u8 GetValidMewMoveDirection(u8);
 static bool8 ShouldMewMoveNorth(struct ObjectEvent *, u8);

@@ -8,6 +8,7 @@
 #include "constants/field_effects.h"
 #include "constants/songs.h"
 #include "constants/metatile_labels.h"
+#include "constants/removed_maps.h"
 #include "fieldmap.h"
 #include "party_menu.h"
 #include "fldeff.h"

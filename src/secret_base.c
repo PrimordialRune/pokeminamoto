@@ -46,6 +46,7 @@
 #include "constants/secret_bases.h"
 #include "constants/songs.h"
 #include "constants/trainers.h"
+#include "constants/removed_maps.h"
 
 #define TAG_SCROLL_ARROW 5112
 

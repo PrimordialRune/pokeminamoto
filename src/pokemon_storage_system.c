@@ -41,6 +41,7 @@
 #include "constants/rgb.h"
 #include "constants/songs.h"
 #include "constants/pokemon_icon.h"
+#include "constants/removed_maps.h"
 
 /*
     NOTE: This file is large. Some general groups of functions have

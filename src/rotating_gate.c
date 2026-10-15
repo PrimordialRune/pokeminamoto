@@ -7,6 +7,7 @@
 #include "sound.h"
 #include "sprite.h"
 #include "constants/songs.h"
+#include "constants/removed_maps.h"
 
 #define ROTATING_GATE_TILE_TAG 0x1300
 #define ROTATING_GATE_PUZZLE_MAX 12

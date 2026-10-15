@@ -360,7 +360,22 @@ The 50 TMs are now Red/Blue's TM01–TM50 in their original numbering (TM01 Mega
 
 Gym rewards were then switched to type-matching TMs: Roxanne TM48 Rock Slide, Brawly TM17 Submission, Wattson TM24 Thunderbolt, Flannery TM38 Fire Blast, Norman TM08 Body Slam, Winona TM43 Sky Attack, Tate & Liza TM46 Psywave, Juan TM11 BubbleBeam.
 
-HMs are unchanged (Rock Smash, Waterfall and Dive are still needed by the Hoenn maps). Secret Power is no longer taught by any TM, so Secret Bases can't be opened.
+HMs are unchanged. Rock Smash, Waterfall and Dive were kept for the Hoenn maps, which are now gone (below), so they can be replaced whenever the Kanto field-move set is decided. Secret Power is no longer taught by any TM, so Secret Bases can't be opened.
+
+---
+
+## Hoenn Maps Removed
+
+Only the maps the opening needs are left, so the ROM still boots to the overworld until Kanto maps exist: Inside of Truck, Littleroot Town (both houses and Birch's lab), Route 101, Oldale Town (houses, Pokémon Center 1F/2F), Route 103, and the link rooms (Trade Center, Record Corner, Battle Colosseum 2P/4P, Union Room). The other 498 maps and their layouts are deleted, along with their wild encounter tables, heal locations and map connections. The new game plays through the truck, clock, rival, starter rescue, Oldale Pokémon Center and the Route 103 rival battle on both builds.
+
+Removed with them: the Kecleon and Cave of Origin shared scripts, Feebas fishing on Route 119, Wally's Ralts catch tutorial, the Hoenn-only Mystery Gift scripts (Pichu egg, Aurora/Mystic Ticket, Altering Cave, Old Sea Map), the Lavaridge whiteout respawn, the Hoenn legendary weather music overrides, and the shared scripts only those maps used (contests, Lilycove Lady, Gabby & Ty, interviews, move tutors, Elite Four, Hall of Fame, apprentice, gym trainer setup, Secret Power TM).
+
+Emerald systems whose maps are gone but whose code is still compiled (Battle Frontier and Battle Tents, including the Frontier Brains' Gen 3 parties, Trainer Hill, Secret Bases, contests, Safari Zone, roamers, rematches, TV) are unreachable now. Until each is deleted they name their old maps through two stand-in files:
+
+- `include/constants/removed_maps.h`: the old `MAP_`, `LAYOUT_`, `HEAL_LOCATION_` and `LOCALID_` constants, pointing at map groups that don't exist so they never match the current map.
+- `data/scripts/removed_maps.pory`: empty labels for scripts and texts that lived in the deleted maps.
+
+Drop entries from both as each system is removed. Their save data (Secret Bases, Frontier records, berries, TV and so on) is still in the save blocks, so this change frees ROM (about 1.4 MB) but almost no RAM; freeing that RAM is the next step.
 
 ---
 

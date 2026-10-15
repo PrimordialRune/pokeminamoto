@@ -485,3 +485,6 @@ CableClub_Text_ExplainWirelessClub:
 CableClub_Text_HopeYouEnjoyWirelessSystem:
 	.string "I hope you enjoy the Wireless\n"
 	.string "Communication System.$"
+
+gText_LinkStandby3::
+	.string "Link standby…$"
