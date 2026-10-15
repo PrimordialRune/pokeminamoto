@@ -1,0 +1,700 @@
+**POCKET MONSTERS: MINAMOTO**
+
+*Story Document --- Narrative Reference v1.1*
+
+*Compiled from narrative design sessions with PrimordialRune*
+
+**1. Overview and Design Philosophy**
+
+Pocket Monsters: Minamoto is a redesign of the original Pokémon Red and
+Green, built on the Pokémon Emerald ROM base. Its goal is to restore and
+dramatize the content that was lost or softened during the development
+of the original titles --- the darker story, the cruder world, the
+villain organizations whose true nature was never made fully explicit.
+The game draws its evidentiary foundation from leaked prototype data,
+beta ROM archaeology, and the Spaceworld 1997 demo, and uses these as a
+basis for a more complete and more honest version of the Kanto story.
+
+The aesthetic is deliberately retro. Pixel art and bold colors evoke the
+first generation of Pokémon games, but the narrative operates at a
+register the originals never reached: corporate complicity, wartime
+exploitation, the ethics of scientific creation, and the ambiguity of
+heroism in a world where the institutions that present themselves as
+good are the ones doing the most damage.
+
+A foundational tonal commitment distinguishes Minamoto from its source
+material: the relationship between humans and Pokémon in this world is
+not yet the warm, partnership-based model of the later games. Pokémon
+are bought and sold in markets alongside other goods. Trainers routinely
+use physical discipline --- whips, restraints, conditioning through pain
+--- to train their Pokémon, and this is considered normal rather than
+cruel. Pokémon are widely understood as tools, assets, or natural
+resources first, and as companions only by those who choose to see them
+that way. The game never editorializes about this directly. It simply
+places the player in a world where these things are ambient and
+unremarkable, and allows the gradual accumulation of context to build
+whatever discomfort arises.
+
+The story is structured as dramatic irony. The player spends the first
+half believing Team Rocket is the primary villain and Silph Company a
+neutral institution under threat. The second half systematically
+dismantles that belief, not through a single dramatic revelation but
+through a cascade of retroactive understanding. The most important thing
+the player realizes is not that Silph is evil --- it is that they have
+been working for Silph all along without knowing it.
+
+**2. The World of Kanto**
+
+**2.1 The Recent War**
+
+The Pokémon War is not ancient history in Minamoto. It ended between ten
+and twenty years before the events of the game, placing it firmly within
+living memory for every adult NPC the player encounters. The war was
+fought across the Kanto region, Pokémon were used as weapons and as
+labor, and it ended badly for everyone involved in ways that different
+characters describe differently depending on which side of its
+consequences they found themselves on.
+
+The war left visible scars on the landscape. Certain routes have
+infrastructure that was damaged and never rebuilt. Certain buildings in
+smaller towns were clearly repurposed from military or industrial
+wartime use. The Pokémon Tower in Lavender Town is explicitly connected
+to the war: many of the Pokémon interred there died during combat, and
+the Channelers who maintain it are grieving something specific and
+recent, not performing a generic cultural ritual.
+
+Lt. Surge fought in the war and won and is not entirely comfortable with
+what winning required. His gym is not a celebration of military
+strength. He talks about Pokémon under duress --- what they can do when
+forced, what is done to them when it is convenient --- with the flat
+affect of a man who has decided that continuing to feel things about it
+would be unbearable. His dialogue establishes the war\'s register as one
+of exploitation rather than heroism, and it is one of the game\'s
+clearest moments of tonal honesty about what the world Satoshi is moving
+through actually is.
+
+**2.2 Post-War Society and the Treatment of Pokémon**
+
+In Minamoto\'s Kanto, the casual instrumentalization of Pokémon is the
+cultural baseline. Pokémon Markets exist alongside ordinary commerce in
+the major cities, where species are priced according to rarity, combat
+capability, and utility --- the same logic applied to livestock, tools,
+or raw materials. No one considers this unusual because no one alive in
+this world has been told to consider it otherwise.
+
+Training methods reflect the same logic. Physical conditioning through
+pain, restraint during capture, punishment to establish behavioral
+compliance --- these are standard practices among serious trainers, and
+the game depicts them in ambient detail without underlining them. NPCs
+who are rougher with their Pokémon are not coded as villains. They are
+coded as pragmatists. The player\'s own relationship with their Pokémon
+is left to develop through gameplay without the game insisting on a
+particular interpretation.
+
+This tonal baseline matters for the Silph storyline because it means
+that Silph\'s research program does not exist in a context of absolute
+prohibition. The experiments Blaine conducts are extreme, but the
+cultural distance between those experiments and ordinary practice is
+smaller in this world than it would be in ours. What Silph is doing is
+not unthinkable --- it is simply further along a continuum that society
+has already accepted.
+
+**3. Key Characters**
+
+**3.1 Satoshi --- The Protagonist**
+
+Satoshi is a young trainer from Masara Town who has just received his
+trainer\'s license. He is commissioned by Dr. Okido to travel Kanto and
+compile data for the PokéMon Index, a digital encyclopedia of documented
+species. His journey begins as a cataloguing mission and becomes
+something more serious as the forces he is disrupting reveal their
+actual nature.
+
+Satoshi is not a chosen hero. He does not have a destiny or a prophecy.
+He is the protagonist because he happens to be in the right places at
+the right times, and because his particular combination of persistence
+and moral legibility makes him resistant to the rationalizations that
+keep the adults around him complicit. He is not always right. He is not
+always effective. He keeps moving forward.
+
+**3.2 Ken and Shigeru --- The Rivals**
+
+Ken and Shigeru are Dr. Okido\'s grandchildren, both of whom begin the
+journey alongside Satoshi before diverging. Ken is collaborative and
+maintains an ongoing relationship with Satoshi throughout the game,
+appearing at intervals to share information or context. Shigeru is
+competitive and intermittently antagonistic, motivated by the desire to
+prove his worth independently of his grandfather\'s name. Neither is a
+villain. Both are mirrors for different ways of navigating the same
+world.
+
+**3.3 Dr. Okido --- The Retired Silph Researcher**
+
+Dr. Okido is the most important recontextualization from the original
+game\'s character conception. He is not simply a benign professor who
+happens to exist at the start of the player\'s journey. He is a former
+Silph Company researcher who spent the earlier part of his career
+working on the cataloguing and classification of Pokémon species --- the
+taxonomic and biological groundwork that made Silph\'s subsequent
+research programs possible. He retired from Silph and established his
+independent laboratory in Masara Town, and the PokéMon Index is a
+continuation of the same scientific work he did there.
+
+Okido is a genuinely good-faith person. He left Silph because the
+direction the organization was taking made him uncomfortable in ways he
+found difficult to name at the time. He does not know the full scope of
+what Blaine is doing. But he is not innocent in a simple sense either:
+he treats Pokémon as subjects of scientific inquiry rather than as
+individuals with interests, and the ambient cruelty of his research
+practices --- the collection protocols, the observation methods, the
+casual use of Pokémon as experimental material --- reflects the same
+desensitization that characterizes the world at large. He is a good man
+who operates inside a set of assumptions about Pokémon that the game
+quietly refuses to endorse.
+
+The player\'s relationship with Okido is warm and functional throughout
+the game. He provides guidance, receives the Index data the player
+compiles, and serves as a base of operations in Masara Town. The
+retroactive reading of his former Silph affiliation is not something the
+player is asked to judge him for. It is simply a piece of information
+that makes the world more complete.
+
+**3.4 Giovanni --- The Yakuza Boss**
+
+Giovanni leads Team Rocket, which he inherited from his mother Madame
+Boss who founded the organization. He is not a Gym Leader in Minamoto
+--- that role belongs to Katsura. Giovanni is a businessman and a crime
+boss, and his criminality is entirely in service of business objectives.
+He does not have an ideology. He has interests.
+
+His relationship to Silph is transactional and longstanding. Rocket
+provides Silph with fossils, rare Pokémon, and labor leverage in certain
+territories. Silph provides Rocket with protection, access, and the
+legitimacy of being seen as a business partner of Kanto\'s most
+respected corporation. Giovanni knows, in broad strokes, what Blaine is
+doing in the Silph laboratories. He has chosen not to know the details.
+This is not weakness. It is deliberate management of his own moral
+exposure.
+
+When Satoshi defeats him inside the Silph building, Giovanni steps
+aside. He does not call his grunts. He lets the player proceed. In that
+moment, he says something that reveals he has always known more than he
+admitted --- a specific detail about Blaine\'s work that only a man who
+chose to look away could possess. It is not a redemption. It is an
+acknowledgment. He disappears from the story immediately after, leaving
+the threads that Gold and Silver will inherit unresolved.
+
+**3.5 Blaine --- The Silph Director**
+
+Blaine is the Director of Research at the Silph Company and the game\'s
+true primary antagonist, not visible as such until the late game. He is
+not associated with the Cinnabar Gym --- that belongs to Katsura. Blaine
+is a scientist of extraordinary capability and deeply disordered ethics,
+operating under the conviction that the potential discoveries available
+through unrestrained experimentation justify whatever is required to
+pursue them.
+
+His personal history is tied to the war. During the conflict, he
+conducted research projects that used Pokémon biology in ways that would
+now be considered atrocities --- the war provided institutional cover
+for work that peacetime would not have permitted. When the war ended,
+Blaine moved that work into Silph, which he had already begun building
+as a civilian infrastructure project. The transition from wartime
+researcher to corporate director is seamless because the work never
+changed; only the framing around it did.
+
+Blaine\'s defining obsession is Mew --- specifically, what Mew
+represents: a Pokémon whose genetic structure is so foundational that it
+contains, in compressed form, the potential to become anything. His
+fossil revival research, his Pokémon augmentation program, and his
+application of Bill\'s digitalization technology all converge on a
+single goal: to understand Mew well enough to control what it becomes.
+He is not theatrical. He does not make speeches. He is calm, precise,
+and completely indifferent to suffering in the way that devoted
+scientists become indifferent to the suffering of their subjects --- not
+through cruelty but through the progressive removal of the subject from
+the category of things that matter relative to the work.
+
+**3.6 Mr. Fuji --- The Inventor and Defector**
+
+Mr. Fuji is the inventor of the fossil revival system --- not Blaine.
+This distinction is crucial. The science that makes the Mew project
+possible was built by a man motivated by grief rather than ambition.
+During the war, Fuji lost his daughter. He became obsessed, in the
+aftermath, with the question of whether life that had ended could be
+recovered from its biological traces --- whether the dead could be
+brought back if enough material remained. He pursued this obsession
+through his research into fossil genetics, developing the revival
+methodology that would eventually become Silph\'s fossil program.
+
+Fuji and Blaine were colleagues in the early Silph research environment.
+Their collaboration was productive and, for a time, genuinely
+scientific. The divergence came when Blaine began to understand the
+implications of Fuji\'s work and move it toward applications Fuji had
+never intended --- augmentation, controlled creation, the Mew project.
+Fuji saw where it was going and left. Blaine allowed him to leave,
+understanding that a man grieving a dead daughter who retreats to care
+for orphaned Pokémon in a small town is not a security threat worth
+managing aggressively.
+
+Fuji lives in Lavender Town and maintains the orphaned Pokémon facility
+there. He is gentle, quiet, and carries the weight of what his research
+became without being able to publicly acknowledge it. His stolen
+research notes --- which Rocket takes from his home on Silph\'s
+instruction --- are one of the game\'s key connective threads, appearing
+later inside the Silph building as physical evidence that links the
+Lavender Town event to the corporate machinery the player eventually
+dismantles.
+
+**3.7 Bill --- The Independent Researcher**
+
+Bill is an independent researcher whose work on biological
+digitalization --- specifically, the conversion of living Pokémon into
+transmissible data --- has made him one of the most significant
+scientists in Kanto. He invented the PC Storage System, the
+infrastructure that allows trainers to deposit and retrieve Pokémon from
+any terminal in the Kanto network. Every Pokémon Center is a node in a
+system Bill designed and Silph maintains.
+
+Bill shares his research with Silph under a paid collaboration
+agreement. He provides his findings on digitalization methodology; Silph
+funds his work and applies the technology to their own programs. Bill
+understands this exchange as a standard research-for-funding arrangement
+and believes his contribution ends at the technology transfer. What
+Silph is actually doing with his digitalization methodology --- using it
+as a layer in the augmentation research, applying it to the cellular
+integration process Blaine has developed --- is not something Bill has
+investigated. He is not naive about Silph\'s character, but he has
+chosen to define his responsibility narrowly: he builds the tools,
+others decide what to build with them.
+
+The encounter at Bill\'s cottage, where the player finds him partially
+fused with a Pokémon through his own digitalization equipment, is a
+proof-of-concept experiment that the player assists in completing and
+reversing. Bill presents it as an accident. The truth is more ambiguous
+--- he was testing the survivability of human-Pokémon cellular
+integration at the digitalization layer, which is precisely the
+application Silph is pursuing. Whether Bill\'s characterization of the
+event as accidental is self-deception or deliberate misdirection is left
+open.
+
+**4. The Two Villain Organizations**
+
+**4.1 Team Rocket --- Origin and Structure**
+
+Team Rocket was founded by Madame Boss, who operated at the intersection
+of wartime contracting and organized crime. During the Pokémon War, the
+organization she built controlled the fossil fuel infrastructure of the
+Kanto region --- mining operations staffed by enslaved Pokémon, cave
+systems exploited for coal and rare minerals, supply chains that kept
+both military and civilian operations running. The name Rocket works as
+a dark phonetic mirror of Pocket in Pocket Monsters --- the organization
+that extracts Pokémon rather than befriending them --- but internally,
+among the older members, Rocket was the fuel that kept Kanto moving.
+They knew what the name meant.
+
+After the war, Madame Boss did not demobilize. The infrastructure was
+too valuable and the leverage too embedded. Team Rocket transitioned
+from wartime contractor to peacetime criminal organization without
+fundamentally changing its operations. Giovanni inherited this structure
+and professionalized it --- giving it the visual language of a
+corporation, establishing the uniform, creating the hierarchical clarity
+that allowed expansion without chaos.
+
+By the time of the game\'s events, Rocket operates through three primary
+activities: fossil and rare Pokémon extraction sold to Silph, protection
+operations in the major cities, and ongoing management of the cave
+systems that still yield mineral resources. Their presence in Mt. Moon
+is not incidental --- they are working a fossil site they have held
+since the war. The player\'s first encounter with Rocket is an encounter
+with a mining operation in progress.
+
+**4.2 The Silph Company --- Structure and Cover**
+
+The Silph Company presents itself as the technological backbone of
+Kanto. It manufactures Pokéballs, maintains Bill\'s PC Storage Network,
+and funds research initiatives throughout the region. Its headquarters
+in Saffron City is the largest private building in Kanto. Its products
+are in every Pokémon Center. Its name carries reflexive trust from
+virtually every adult the player meets.
+
+Behind this public face, Silph under Blaine is running a research
+program that operates in categories the post-war period never formally
+prohibited because no one imagined anyone would attempt them in
+peacetime. The program has three primary arms: fossil revival and
+genetic reconstruction (developed from Fuji\'s original methodology),
+Pokémon augmentation through human cellular integration (Blaine\'s own
+research), and the applied use of Bill\'s digitalization technology for
+biological manipulation. These are not separate projects. They are
+sequential stages of a single program whose ultimate object is Mew.
+
+**5. The Silph Research Program**
+
+**5.1 Fossil Revival --- Fuji\'s Legacy, Blaine\'s Tool**
+
+The fossil revival methodology was developed by Mr. Fuji out of personal
+grief, then inherited and weaponized by Blaine. In its public-facing
+form, the program has produced demonstrable results: the Omanyte and
+Kabuto lines, revived from fossils recovered by Rocket\'s extraction
+operations, are presented as scientific achievements. They are also
+proof of concept for everything that follows.
+
+Fuji\'s original revival process was designed to reconstruct biological
+life from fragmentary genetic material preserved in fossil substrates.
+Blaine\'s refinement of this process extended it toward a specific
+application: the revival of specimens whose genetic architecture might
+be compatible with human cellular material --- a precondition for the
+augmentation research that became the program\'s central project.
+
+**5.2 Pokémon Augmentation --- The Trade-Evolution Lineage**
+
+Blaine\'s core hypothesis, developed during the war, is that certain
+Pokémon species contain dormant biological potential that can be
+activated and directed through controlled exposure to human cellular
+material. The mechanism is not transplantation but catalysis: human
+genetic sequences trigger developmental pathways already latent in the
+Pokémon\'s biology but not expressed under natural conditions.
+
+The Pokémon that evolve through trading --- Machamp, Gengar, Alakazam,
+Golem, and others --- are the products and descendants of this research.
+Their unusual evolution condition exists in the game world because these
+species require external biological stimulus to complete their
+development, a requirement engineered into their lineage through
+Blaine\'s experiments. What the trading mechanic abstracts into a game
+system is, in the lore, the legacy of a specific series of
+interventions: laboratory exposures that produced the first Machamp with
+its additional pair of arms, the first Gengar with its capacity for a
+kind of cognition no purely Pokémon-lineage Ghost-type should possess.
+
+These Pokémon do not exist in the wild. They are found only in the hands
+of Silph-affiliated scientists and the trainers who access Silph\'s
+networks. Their exclusive presence in those hands is one of the signals
+--- not emphasized, not explained --- that the attentive player will
+recall when the Silph truth arrives.
+
+**5.3 Bill\'s Technology as Applied Infrastructure**
+
+The digitalization methodology Bill developed for the PC Storage System
+provides Silph with a secondary capability: the ability to work on
+Pokémon biology at the level of data rather than physical tissue. This
+allows for precision in the cellular integration process that physical
+laboratory work alone could not achieve. Bill\'s contribution to the
+augmentation program is genuine and significant, and it is entirely
+indirect. He provided the tools. He did not design the application.
+
+**6. Mew --- The Central Mystery**
+
+**6.1 The Fossil and the Safari Zone Owner**
+
+During the player\'s journey, news reaches Kanto of a significant fossil
+discovery. The Safari Zone\'s owner --- a serious and obsessive fossil
+collector who has spent decades acquiring specimens --- has acquired an
+unusual fossil unlike anything in the existing paleogenetic record. The
+specimen\'s cellular architecture, as preliminary analysis suggests, is
+extraordinary: it contains genetic sequences compatible with virtually
+every known Pokémon species, as though it represents something
+foundational rather than specific.
+
+The Safari Zone owner acquired this fossil legitimately and has no
+intention of selling it or sharing it. It is, to him, the pinnacle of a
+collection he has spent a life building. He does not fully understand
+what he has. He knows it is exceptional. He knows the Silph Company has
+expressed interest and he has refused them.
+
+Silph\'s intelligence about the fossil comes from multiple channels, one
+of which is the ongoing network of researchers and trainers that the PC
+Storage System passively monitors. Blaine immediately understands the
+implication: a fossil with this genetic profile is the specimen he has
+been searching for since Fuji first theorized its possible existence.
+This is the raw material for the Mew project.
+
+**6.2 The Theft --- Rocket\'s Role in the Mew Project**
+
+Silph contracts Team Rocket to steal the fossil from the Safari Zone
+owner\'s property. The payment is substantial --- this is described in
+the Rocket Hideout\'s records as one of the largest single-transaction
+agreements in the organization\'s history. Giovanni personally approves
+it. The theft is executed during the mid-game, while the player is
+navigating the growing Rocket presence in Celadon and the surrounding
+area.
+
+The player may or may not witness the theft directly depending on their
+progress. What they encounter is its aftermath --- the Safari Zone
+owner, whose anger and distress on the player\'s visit has seemed merely
+eccentric, is now visibly devastated. He will not explain why. The
+fossil is gone. This is the event that retroactively gives meaning to
+his earlier behavior and connects the Safari Zone directly to the Silph
+storyline.
+
+From the moment the fossil reaches Silph\'s laboratories, the Mew
+project is live. Scientists begin working on the revival and integration
+process while Satoshi is still completing his Gym journey. The player
+and Blaine\'s team are on parallel timelines converging toward the Silph
+building.
+
+**6.3 The Player as Unknowing Contributor --- The Research Quests**
+
+Scattered across the Kanto region, the player encounters scientists who
+offer substantial reward compensation in exchange for specific Pokémon.
+These requests appear to be standard research procurement --- academics
+or independent researchers who need specimens they cannot easily catch
+themselves. The Pokémon requested are exclusively from the
+trade-evolution lines: Graveler, Machoke, Kadabra, and others whose
+development is tied to Blaine\'s augmentation program.
+
+The scientists making these requests are not uniformly coded as
+suspicious. Some may work out of facilities with no obvious Silph
+connection. Some may present themselves as university researchers or
+independent practitioners. The compensation offered is generous enough
+to be attractive without being so excessive as to seem alarming. The
+player delivers the Pokémon, receives the reward, and moves on.
+
+The retroactive realization --- which lands inside the Silph building,
+when the player finds laboratory documentation listing specimen
+acquisition records that match the requests they fulfilled --- is one of
+the game\'s most deliberate and uncomfortable moments. The player did
+not work for Silph knowingly. They worked for Silph because Silph is
+embedded in every structure of Kanto, including the informal economy of
+researcher-trainer exchange that the player assumed was neutral. The
+complicity is specific and personal: it has their name on it.
+
+**6.4 Mew\'s Escape --- The Mechanism**
+
+By the time the player reaches the upper floors of the Silph building,
+Mew has been revived and is contained. The containment is not a physical
+cage but an active suppression system --- a network of equipment tied to
+Blaine\'s direct and ongoing oversight that keeps Mew\'s psychic
+capabilities from expressing at full force. The system does not fail
+automatically. It fails when Blaine\'s attention fails.
+
+When the player defeats Blaine in battle, Blaine collapses. The moment
+his focus breaks, the suppression system loses coherence. Mew\'s escape
+is not a dramatic event. It is a peripheral occurrence --- motion at the
+edge of the player\'s perception, a door that was not open swinging
+open, a scientist\'s distant scream, a sound with no obvious source. The
+player does not see Mew clearly. They know something escaped. They will
+not know what until Cerulean Cave.
+
+This is the correct structure because it preserves Mew\'s agency. The
+player did not rescue Mew. They defeated Blaine for their own reasons
+--- to dismantle Rocket, to expose Silph, to complete their journey ---
+and Mew\'s liberation was a consequence, not a purpose. Heroism that
+works by accident is the kind this game is interested in.
+
+**7. The Story --- Act by Act**
+
+**ACT ONE --- The Journey Begins (Masara Town to Cerulean City)**
+
+The game opens in Masara Town. Satoshi receives his trainer\'s license,
+his starter Pokémon, and the PokéMon Index commission from Dr. Okido.
+Ken and Shigeru receive their starters simultaneously. The three depart
+together and quickly diverge. The framing is familiar: a young trainer,
+a mentor, a task. The world, in these opening hours, presents itself as
+the world the player expects.
+
+The first disruption comes in Mt. Moon. What should be a transitional
+cave is an active Rocket excavation operation. The grunts are
+territorial and aggressive in a way that suggests they are protecting an
+ongoing enterprise rather than simply hiding from society. The player
+fights through, recovers a fossil that Rocket was extracting, and exits
+onto the Cerulean route. Rocket is established as the game\'s primary
+visible threat.
+
+In Cerulean City, the player encounters Bill at his cottage to the east.
+Bill has partially fused with a Pokémon through his digitalization
+equipment and needs help reversing the process. He is charming and
+grateful and gives the player access to the SS Anne in Vermilion as
+thanks. The encounter reads entirely as a character-introduction
+sidequest for an eccentric inventor. This is the first moment the game
+will ask the player to reread in retrospect.
+
+**ACT TWO --- Building the Case Against Rocket (Vermilion to Lavender)**
+
+The mid-game establishes Team Rocket as an increasingly organized and
+visible criminal presence. Lt. Surge\'s gym in Vermilion provides the
+war context in his characteristic register --- flat, specific,
+uncomfortable, and entirely without nostalgia. The player gains a
+framework for understanding Rocket\'s origins as wartime contractors who
+never demobilized.
+
+The research quest system begins during this act. Scientists in various
+locations approach the player with compensation offers for specific
+Pokémon. The requests feel routine. The player obliges. The rewards are
+good. This continues across the act without the game flagging it as
+significant.
+
+In Lavender Town, the player finds the aftermath of a Rocket operation:
+Mr. Fuji\'s home has been ransacked and his research notes stolen. Fuji
+himself is missing, held somewhere by Rocket operatives who took him
+along with his documentation. The Pokémon Tower, where the player must
+eventually go, contains Ghost-type Pokémon whose presence there is
+connected to the war dead in ways that the Channelers hint at obliquely.
+When Fuji is recovered, he is grateful and reticent. He speaks about his
+former research career in terms that are deliberately vague --- the
+register of a man managing what he is willing to say. The player
+understands that his past connects to what was stolen, but not yet how.
+
+Meanwhile, the news of the Safari Zone fossil acquisition is spreading
+through NPC dialogue. The Safari Zone owner is mentioned in passing as a
+collector who has found something remarkable. The player who visits him
+encounters a man who is unexpectedly tense about questions related to
+his collection. The fossil is still in his possession at this point.
+This tension will make sense later.
+
+**ACT THREE --- The Rocket Hideout (Celadon City)**
+
+The player discovers and infiltrates Team Rocket\'s underground
+headquarters beneath the Celadon Game Corner. The Hideout is the
+structural pivot of the game --- not because the player finds something
+that immediately explains everything, but because they find enough to
+understand that Rocket\'s operations are pointed toward something larger
+than independent criminal enterprise.
+
+The Hideout\'s records reveal that Rocket leadership, including
+Giovanni, is not currently present. They are at the Silph Company in
+Saffron City, completing what the lower-ranking Rockets describe as a
+major business transaction. The player also finds, in the Hideout\'s
+procurement documentation, references to the Safari Zone fossil --- the
+acquisition contract, the payment amount, the destination: Silph
+laboratories in Saffron. The fossil theft is now confirmed as having
+happened, and the player understands for the first time that Rocket\'s
+activities have a client.
+
+The player defeats the Hideout\'s interim leadership and exits. The
+logical next destination is Saffron City. Giovanni is not encountered
+here. That confrontation is reserved for the Silph building, in a
+context that will have already begun recontextualizing who the actual
+villain is.
+
+**ACT FOUR --- The Silph Company (Saffron City)**
+
+The player enters the Silph building to find a corporation conducting
+business as normal on its lower floors. The atmosphere is intact. The
+employees are present and functioning. But the upper floors tell a
+different story, and the player\'s ascent is the game\'s central
+dramatic sequence --- a gradual revelation that unfolds floor by floor.
+
+The evidence accumulates in layers. A laboratory space whose equipment
+does not match any public-facing research description. A Silph scientist
+whose behavior is visibly wrong in ways the player cannot yet name. Mr.
+Fuji\'s stolen research notes, sitting in a Silph laboratory, finally
+completing the connection between the Lavender Town event and the
+building the player is standing in. Augmented Pokémon --- the
+trade-evolution species the player has been catching and delivering for
+researcher compensation --- in the hands of Silph\'s internal security
+team. The player\'s own name in the specimen acquisition records.
+
+Before reaching Blaine, the player encounters Giovanni and the Rocket
+leadership on a floor configured as a meeting space. The business
+transaction is visibly concluded. The fight with Giovanni happens here
+--- not at the game\'s climax but at its second-to-last confrontation,
+which is structurally important because defeating Giovanni does not
+solve the problem. When Giovanni loses, he is quiet for a moment. Then
+he says something specific about what is on the upper floors --- a
+detail that could only come from a man who chose, consistently, to treat
+the full scope of Blaine\'s work as outside his professional concern. He
+stands aside. He does not call his grunts. The player proceeds. Giovanni
+disappears from the story.
+
+Blaine is on the upper floors. He is contained rather than theatrical.
+He talks about the Mew project as a matter of scientific necessity, as
+though the moral dimension exists in a register he does not find
+legible. When the player defeats him, the containment system fails.
+Something escapes. In the aftermath\'s confusion, Blaine disappears.
+
+**ACT FIVE --- The League**
+
+Following the Silph confrontation, the player continues toward the
+Pokémon League. The Gym badges still matter; the journey has its
+structural arc. But the world has changed. Saffron City NPCs talk about
+what happened at Silph in the uncertain terms of people whose
+institutional trust has been disrupted without a clear replacement. The
+Gym battles that follow carry a different weight because the player is
+no longer simply a trainer working toward a goal --- they are someone
+who has been inside the machine that runs the region.
+
+The Four Heavenly Kings and the League represent the culmination of the
+trainer journey. They are what they have always been: the strongest
+trainers in Kanto, testing the player at the apex of the competitive
+structure. Winning the League closes the trainer narrative. It does not
+close the story.
+
+**ACT SIX --- The Safari Zone (The Unfinished Business)**
+
+After completing the League, the player receives credible information
+that Blaine has established a field laboratory inside the Safari Zone,
+at or near the original excavation site where the fossil was found. He
+is not hiding in the conventional sense. He is working.
+
+The Safari Zone\'s deeper areas, normally inaccessible, open for this
+final act. The player navigates through them before finding Blaine\'s
+field laboratory --- not a large facility but a focused one. He is
+excavating the original site. He has notes. He is looking for additional
+cellular material that might explain the gap in his Mew data: the thing
+Mew became when it woke up that his research did not predict. He is not
+looking for another Mew. He is looking for something older, something in
+the fossil record that predates Mew and might explain the foundational
+structure that Mew\'s genome contains.
+
+When the player finds him, he does not appear defeated or unhinged. He
+is quieter than he was at Silph --- the fire of the institutional
+context replaced by something more concentrated. He tells the player
+that they won a fight, not the war. He means this literally and without
+ego. He fights the player a second time and loses a second time, and
+then retreats into the Safari Zone\'s deeper wilderness, into areas that
+do not resolve into accessible map tiles. The player cannot follow. The
+chapter closes. The book does not.
+
+**EPILOGUE --- Cerulean Cave**
+
+Cerulean Cave, northwest of Cerulean City, becomes accessible after
+completing the League. The player descends through a cave system whose
+atmosphere is different from ordinary caves in ways that are difficult
+to name --- the Pokémon here are different, the space feels charged. At
+the cave\'s deepest point, the player encounters Mew for the first time
+face to face. It has been living here since its escape from Silph. It is
+not hostile. It regards the player with a quality of attention that the
+game can only render through positioning and movement --- something
+simultaneously ancient and immediate.
+
+The encounter is catchable. The game does not instruct the player on the
+correct response. The player decides. Whatever they decide, the cave is
+the story\'s true ending --- not the League, not the Safari Zone, not
+the moment Blaine walked into the wilderness. The story ends here, with
+a Pokémon looking at the player in a cave, alive because of something
+the player did without intending it.
+
+**8. Open Threads for the Sequel --- Gold and Silver**
+
+Minamoto is designed to close its central narrative --- the Rocket and
+Silph threat in Kanto --- while leaving several threads deliberately
+unresolved that a Johto-set sequel can inherit.
+
+Giovanni\'s disappearance after Silph is the first unresolved thread. He
+is gone and his organization is dismantled. But a man of his
+capabilities and resources does not simply stop existing. Gold and
+Silver will establish what he has been doing in the intervening years.
+The answer will be informed by what we know of his character in
+Minamoto: a man who chose not to know things, now in a position where he
+has nothing left to not-know, calculating whether that changes anything
+for him.
+
+Blaine\'s work at the Safari Zone excavation site represents the second
+thread. He is looking for something in the fossil record that predates
+Mew --- material that would explain the gap in his revival data. What he
+eventually finds, and the organization that coalesces around pursuing
+that discovery, is the origin of ゲルゲ団. The scientists who share his
+vision and continue his work after Minamoto\'s events are the founding
+membership of an organization that does not yet have that name but is
+moving toward it. Gold and Silver inherit this as the active villain
+layer of a new region, operating with Blaine\'s methods and his
+obsession.
+
+Mew, living in Cerulean Cave, is the third thread. Its existence is now
+known to enough people that knowledge of it will spread. What that means
+for the political and scientific landscape of a post-Silph Kanto is a
+question Minamoto deliberately leaves open.
+
+*--- End of Document ---*
+
+*Pocket Monsters: Minamoto --- Story Reference v1.1*

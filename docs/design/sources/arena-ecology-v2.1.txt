@@ -1,0 +1,765 @@
+POCKET MONSTERS: MINAMOTO
+
+Arena Ecology System
+
+Combat Systems Design Reference  ·  v2.1
+
+Internal design document. Full-system revision incorporating: expanded 22-category move taxonomy, 10-habitat + 7-characteristic Pokémon taxonomy, corrected critical hit formula, revised Jiro/Brock/Misty/Surge arenas, and type-advantage mitigation philosophy. Sabrina excluded pending character confirmation.
+
+**Part 0 — Global Rules**
+
+**0.1  Gym Leader Focus Sash**
+
+Every Pokémon on a Gym Leader's team carries an implicit Focus Sash effect. If a move would reduce the Pokémon from above 0 HP to 0 HP in a single hit, the Pokémon instead survives at 1 HP. This triggers once per Pokémon per battle. The purpose is structural: every Gym Leader Pokémon is guaranteed at least one action before being knocked out, preventing sweeping before the arena mechanics can express themselves. This rule is universal — it applies to all Gym Leaders, the Four Heavenly Kings, and Boss encounters.
+
+**0.2  Type Advantage Mitigation Philosophy**
+
+Gym Leaders are monotype specialists. A specialist's advantage is not raw type strength — it is mastery of their own environment. Each arena is designed so that the structurally correct type is still effective, but the environment creates a new cost or liability around using it. The goal is not to nerf type advantage but to make the arena itself a third combatant that the correct type must navigate alongside the Gym Leader's team.
+
+Practical examples: Ground-type against Surge is immune to everything Surge threatens, but Dig is disabled and Surge carries Flying coverage. Water-type against Misty is the correct TIDE tool but each Aquatic use pushes toward higher Conductivity that can detonate both sides. Fire-type against Misty is not effective damage but creates MIST that suspends Misty's TIDE advantage — a utility role that makes Fire genuinely relevant without being type-correct.
+
+Every gym design should be audited against this principle: what is the arena doing to make the correct type answer expensive, and is that cost interesting rather than arbitrary?
+
+**0.3  Modified Critical Hit Formula**
+
+All battles use the following crit stage table. Stages +3 and +4 are increased above standard.
+
+| **Stage** | **Probability** | **Common Pathways** |
+| --- | --- | --- |
+| +0 | 6.25% | Base rate. No modifiers. |
+| +1 | 12.5% | High-crit moves (Slash, Leek Slap, Drill Peck, Razor Leaf, Dive Bomb). |
+| +2 | 25% | Focus Energy use. Leek item on Farfetch'd. Arena state bonus (first-mover in ACTIVE). |
+| +3 | 50% | Focus Energy + high-crit move. Arena state bonus (first-mover in FULL). |
+| +4 | 100% | Farfetch'd holding Leek + FULL AIRFLOW + first-mover. No other standard path reaches this. |
+
+**⚑ **Farfetch'd + Leek: the item grants +2 crit stages. The arena's first-mover bonus in FULL grants +2 stages. Combined = +4 = 100%. Neither source alone reaches +4. Farfetch'd must be in FULL AIRFLOW AND act before the opponent in that turn to land a guaranteed crit. This is the fight's signature moment — earned, not given.
+
+**Part 1 — Move Category Taxonomy**
+
+Moves are assigned to ecology categories based on their physical mechanism, not their type. A category describes what the move does to the environment, not what damage it deals. Moves may belong to multiple categories (e.g. Fire Punch = THERMAL-HOT + CONTACT; Wing Attack = WIND + CONTACT-BLADE). Arena rules always reference categories, never individual move names.
+
+The existing GDD subcategory field (BODY, ARMS, FISTS, KICKS, TEETH, CLAWS, HORNS, TAIL) classifies the body part used within the CONTACT category and remains unchanged.
+
+| **Category** | **Physical Mechanism** | **Representative Moves (from game roster)** | **Arena Relevance** |
+| --- | --- | --- | --- |
+| WIND | Air current generation or redirection. | Gust, Razor Wind, Whirlwind, Hurricane, Wing Attack (dual), Divine Bird (dual), Dive Bomb (dual), Sky Attack (dual) | Disperses POWDER/SPORE, modifies AIRFLOW states, clears or generates sandstorm in terrain arenas, deploys water spray in aquatic arenas. |
+| GROUND-IMPACT | Surface strike creating seismic or mechanical terrain disruption. | Earthquake, Magnitude, Rock Slide, Rock Throw, Rock Blast, Bone Club, Rockfall, Bonemerang, Fissure, Horn Charge, Rock Burst | Fractures terrain (Brock), creates RESONANCE in conductive structures (Surge), disrupts foundation of spiritual environments (Erika). Mountain archetype immune to secondary terrain penalties. |
+| EXCAVATING | Penetration into or beneath the terrain surface. | Dig, Tunneling | Disabled in metal containers (Surge). Bypasses surface-level hazards in earth arenas. Creates sub-surface pathways. |
+| SONIC | Acoustic wave propagation through air or solid medium. | Growl, Screech, Supersonic, Sing, Lullaby, Bug Noise, Loud Cry, God Roar, Sonicboom, Headache | Resonates in enclosed metal spaces (Surge: partial CHARGE grounding). Disrupts concentration in spirit arenas. Volume-based effects scale with arena acoustics. |
+| SUPPRESSION | Adhesive, occlusive, or decelerating application. Slows without full immobilization. | String Shot, Smokescreen, Sand Attack, Flash, Squid Ink, Mud Slap, Foul Odor, Bubble (ACC-) | String Shot and similar obstruction moves immediately reduce AIRFLOW by 1 in Jiro's arena. Smokescreen increases DENSITY in Koga's arena. Sand Attack triggers SANDSTORM overlay in ACTIVE or FULL AIRFLOW. |
+| TRAP | Full-body physical restraint. Prevents field exit. Deals ongoing damage. | Wrap, Bind, Constrict, Clamp, Whirlpool (dual: TRAP+AQUATIC), Primal Bind, Fragrance Trap | In Misty's arena, Whirlpool (TRAP+AQUATIC) shifts TIDE while immobilizing — dual function. Trap moves in Koga's arena keep a Pokémon in its current DENSITY layer. |
+| CONDUCTIVE | Electric charge discharge through body or conductive medium. | Thunderbolt, Thunder, Electric Shock, Thunder Wave, Thunder Jolt, Spark Bite, Thunder Punch, Chain Lightning, Thunderstorm, Super Thunderbolt, Gigashock, Wild Charge, Thunder Fang | Core mechanic of Surge's arena — accumulates CHARGE. Always hits via BUOYS at 50% power in Misty's arena. No interaction with AIRFLOW or TERRAIN arenas. |
+| THERMAL-HOT | Combustion or sustained radiant heat output. | Ember, Flamethrower, Fire Blast, Wildfire, Fireball, Heat Tackle (dual: CONTACT), Fire Punch (dual: CONTACT), Flame Tail (dual: CONTACT), Flame Claws (dual: CONTACT), Flare, Flare Swirl, Will-O-Wisp, Fire Wall | Increases COMBUSTION in Coleman's arena. Adds 3 OVERHEAT toward coil DESTROYED in Surge's arena. Creates MIST in Misty's arena (utility, not damage). Temporarily raises room temperature in Jiro's enclosed warehouse (+10% fire power, 2 turns). |
+| THERMAL-COLD | Cold generation, crystallization, or frost formation. | Ice Beam, Blizzard, Powder Snow, Ice Punch (dual: CONTACT), Freeze Dry, Aurora Beam, Star Freeze (dual: AQUATIC), Mist | Manages CONDITION in Misty's arena (MIST→FROZEN or freeze TIDE). Reduces COMBUSTION in Coleman (-1). Fails at 0% power in SUPERHEATED state (Coleman COMBUSTION 4). Reduces SPIRIT PRESSURE in Erika (-1, 2-turn lock). |
+| AQUATIC | Pressurized water or liquid projection. | Flood, Water Gun, Hydro Jet, Waterfall, Hydro Pump, Bubble Beam, Waterfall Climb (dual: CONTACT), Abyss Jaw (dual: CONTACT-BITE), Crabhammer (dual: CONTACT), Hunger (dual: CONTACT), Hydro Cannon, Skull Bash (dual: CONTACT), Knockout Needle (dual: CONTACT) | Shifts TIDE in Misty's arena. SHORTS coil in Surge. Reduces COMBUSTION −2 and generates STEAM in Coleman. Transitions TERRAIN to MUDDY in Brock. Creates HUMIDITY overlay in Jiro (reduces sandstorm chip from 1/8 to 1/16 while active). |
+| SOLAR | Radiant light energy or sun-channeling. | Solar Beam, Flash (dual: SUPPRESSION), Growth, Sprout | Reserved primarily for outdoor or sun-exposed future arenas. Flash functions as SUPPRESSION in enclosed arenas. Solar Beam requires a TWO-TURN charge that may be disrupted by arena state transitions. |
+| BLAST | Explosive pressure wave with large area of effect. | Self-Destruct, Explosion, Bye-Bye Punch | Skips one TERRAIN tier in Brock (INTACT→FRACTURED). +2 DENSITY in Koga. +2 COMBUSTION and 4-turn STEAM in Coleman. Hits all targets in Double Battle format. Voltage surge effects in metal container arenas. |
+| TOXIC | Chemical poison introduction via liquid, gas, or biological secretion. | Smog, Acid, Venom Shot, Poison Sting, Toxic, Sludge, Venom Spit, Jellyfish Sting, Gastro Acid, Poison Gas, Leech Life | Core accumulator for Koga's DENSITY state (+1 per use). Acid additionally drops target one layer. Toxic in DENSE state escalates to BAD POISON. In Misty's arena, gas and liquid moves apply normally — no field interaction. |
+| POWDER/SPORE | Organic or chemical particulate dispersal into atmosphere. | Sleep Powder, Stun Spore, Spore, Poison Powder, Moth Scales, Spike Barrage, Petal Dance | +1 DENSITY in Koga's arena. In Jiro's arena, AIRFLOW at ACTIVE/FULL disperses powders before they settle — POWDER/SPORE moves have 20% reduced status accuracy in ACTIVE, 40% in FULL. The wind carries the spores away from the target. |
+| DRAIN | Active biological energy absorption from the target. | Mega Drain, Giga Drain, Absorb, Greedy Plant, Bug Bite, Sting, Hyper Sting, Dream Eater, Leech Seed, Barrage, Leech Life | Core threat in Erika's FRENZIED state when used by Liminal Pokémon (no PRESSURE cost). Non-Liminal Drain still adds PRESSURE. Dream Eater (DRAIN+MENTAL) requires sleep target — doubled PRESSURE if non-Liminal (two categories triggered). |
+| SPECTRAL | Ghost-type spiritual energy or life-force manipulation. | Night Shade, Curse, Haunt, Nightmare, Destiny Bond, Lure, Double Team, Transparency | Core PRESSURE escalator in Erika's arena when used by non-Liminal Pokémon. Liminal use adds 0 PRESSURE. Not modified by any other arena state. Spectral moves ignore CONTACT failure chance in FRENZIED (they are not physical). |
+| PSYCHIC-WAVE | Telekinetic force projection or mental field formation. | Psychokinesis, Mindpower, Super Mindpower, Psy Beam, Psy Shock, Reflect, Light Screen, Barrier, Disable/Psychic Wave, Spoon Bend, Psywave, Meditate | PSYCHIC-WAVE treated same as SPECTRAL for PRESSURE purposes in Erika's arena (spiritual register). Reflect/Light Screen/Barrier create defensive fields that partially interact with arena energy states in future Psychic-type arena (Sabrina). |
+| MENTAL | Direct consciousness interference: inducing sleep, confusion, or will suppression. | Hypnosis, Lovely Kiss, Confuse Ray, Amnesia, Haze, Snake Glare, Mirror Move | HAZE is the key MENTAL move for arena interaction: resets SPIRIT PRESSURE by −2 in Erika's arena. Confuse Ray in Erika's FRENZIED: confused non-Liminal Pokémon hitting themselves adds +1 PRESSURE (inward spiritual violence). Mental moves are silent in arenas without a consciousness state variable. |
+| CONTACT | Any move requiring direct physical body contact. Subcategorized by body part used. | All moves with GDD Subcategory: BODY (Tackle, Lunge, Body Slam), ARMS (Comet Punch, Slapstick, Thrash), FISTS (Punch, Mega Punch, Magnum Punch), KICKS (Kick, Mega Kick, Jump Kick), TEETH (Bite, Crunch, Gnaw), CLAWS (Slash, Cut, Irongrip, Fury Swipes), HORNS (Horn Peck, Horn Attack, Fury Stabs), TAIL (Slam, Tail Slap, Tail Whip). Also: elemental contact moves (Fire Punch, Ice Punch, Thunder Punch, Wing Attack, etc.) | 25% failure chance in Erika's FRENZIED state. Aerial Pokémon using Contact against ground-level targets descend one Miasma layer (Koga). In Jiro's arena, Contact moves from first-mover benefit from the turn's CRIT stage bonus. |
+| PROJECTILE | Ranged non-elemental physical object launched at speed without body contact. | Pin Missile, Twineedle, Spike Cannon, Rock Blast, Bonemerang, Razor Leaf, Egg Bomb, Hyper Beam, Pay Day, Dragon Breath, Dragon Rage, Swift, Tri Attack | In FULL AIRFLOW (Jiro): −10% accuracy from wind deflection. The cleaner counter-argument to WIND: projectile approaches from the player are partially compensated by maintaining distance, but accuracy costs. Always-hit moves (Swift, Tri Attack TRUE STRIKE) ignore this penalty. |
+| DISPLACEMENT | Forced repositioning or field exit of the target. | Whirlwind, Roar, God Roar | In Koga's arena: Displacement moves push the target up one Miasma layer (−1 DENSITY exposure for that Pokémon). In Jiro's arena: Whirlwind can redirect airflow for one turn (minor tactical application). Core function as forced-switch moves unchanged by any arena state. |
+| SUPPORT | Non-damaging stat, field, or status modification not covered by other categories. | Agility, Swords Dance, Defense Curl, Harden, Minimize, Withdraw, Focus Energy, Sharpen, Belly Drum, Recover, Soft Boiled, Rest, Conversion, Transform, Teleport, Cicada Shell, Waterfall (shield), Bramble Wall, Fire Wall, Sandstorm (weather-setting) | Arena-specific: Agility in Koga increases breathing rate → 1.5× poison damage for 2 turns. Sandstorm (the move) sets the weather field independently of arena AIRFLOW state. Rest in Koga halves poison rate while asleep (reduced breathing). Haze (also MENTAL) resets SPIRIT PRESSURE −2 in Erika. |
+
+**Part 2 — Pokémon Taxonomy**
+
+**2.1  Habitat (Mutually Exclusive)**
+
+Every Pokémon belongs to exactly one primary habitat. This classification is readable from PokéDex entries and reflects the natural environment from which the species originates. Habitat determines a Pokémon's ecological baseline — how it navigates the world, not just where it lives.
+
+| **Habitat** | **Ecological Profile** | **Representative Species** |
+| --- | --- | --- |
+| Grasslands | Open prairie, farmland, and low-altitude plains. Adapted to wide visibility, low cover, and variable weather. | Rattata/Rattatak, Ekans/Arbo, Nidoran lines, Mankey/Okorizaru, Kentauros, Meowth/Persian (Nyarth/Nyako) |
+| Water's Edge | Rivers, lakeshores, and coastal wetlands. Amphibious or shore-dependent species. | Psyduck/Golduck (Koduck/Zuduck), Slowpoke/Slowbro (Slowmo), Poliwag line, Seel/Dewgong, Horsea/Seadra (Tattu/Seadra) |
+| Mountain | Rocky highlands, cliff faces, and elevated terrain. Adapted to unstable footing and low oxygen. | Geodude line (Golone/Isitsubute/Golonya), Onix (Iwark), Machop/Machoke/Machamp (Kung-Foo/Kara-Tee/Chan), Rhyhorn/Rhydon (Sihorn/Sidon), Kabuto/Kabutops (Att/Lantis) |
+| Forest | Dense woodland, jungle, and undergrowth. Adapted to low light, cover, and organic complexity. | Caterpie/Metapod/Butterfree, Weedle/Kakuna/Beedrill (Beedle/Spear), Paras/Parasect (Paras/Parasyte), Venonat, Bellsprout line (Madatsubomi/Utsudon/Utsubot), Oddish line (Ladish/Kusaihana/Ruffresia) |
+| Sea | Open ocean, deep water, and coral environments. Fully aquatic species. | Tentacool/Tentacruel (Jilly/Manowar), Shellder/Cloyster (Shellder/Parshen), Goldeen/Seaking (Goldy/Neptune), Staryu/Starmie (Hitodeman), Krabby/Kingler (Crab/Kingler), Magikarp/Gyarados (Koiking/Gyaon) |
+| Skies | Atmospheric and high-altitude environments. Primarily airborne species. | Pidgey line (Pidge/Pidgeott/Pigeot), Spearow/Fearow (Onisuzume/Onidrill), Zubat/Golbat (Kobat/Golbat), Farfetch'd (Kamonegi), Doduo/Dodrio, Aerodactyl (Ptera) |
+| Urban | City, town, and human-settlement environments. Adapted to proximity to human activity and infrastructure. | Jigglypuff/Wigglytuff (Aria/Pudding/Custard), Meowth/Persian (Nyarth/Nyako), Magnemite/Magneton (Coil/Recoil), Voltorb/Electrode (Marumine/Biriridama), Porygon |
+| Mysterious | Rare, solitary, or environment-agnostic Pokémon. Unusual ecological placement or unknown origin. | Abra/Kadabra/Alakazam (Hocus/Pocus/Foodin), Mr. Mime (Barrierd), Jynx (Rougela), Gastly/Haunter/Gengar (Spirit/Spectre/Phantom), Ditto (Metamon), Eevee/Vaporeon/Jolteon/Flareon (Eon/Showers/Thunders/Booster), Chansey (Lucky), Lapras (Aquanau), Snorlax (Kabigon) |
+| Fossil | Extinct species revived through fossil technology. Their original habitat no longer exists in the contemporary world. | Omanyte/Omastar, Kabuto/Kabutops (Att/Lantis), Aerodactyl (Ptera) |
+| Mirage | Legendary and semi-mythical Pokémon. Appear rarely and unpredictably; no fixed habitat. | Articuno (Freezer), Zapdos (Thunder), Moltres (Fire), Mew, Mewtwo |
+
+**2.2  Characteristics (Overlapping)**
+
+A Pokémon may have one or more characteristics that describe how it moves and interacts with its environment. Characteristics overlap — a Pokémon can be both Aerial and Liminal (e.g., Haunter). Habitat and Characteristic are independent axes: a Mountain habitat Pokémon that can fly (Aerodactyl) has both Mountain habitat and Aerial characteristic.
+
+| **Characteristic** | **Definition** | **Primary Arena Relevance** |
+| --- | --- | --- |
+| Aerial | Moves primarily through flight or levitation. Not reliant on surface contact. | Immune to ground-surface effects (terrain SPE penalties, Muddy). Reduced Sandstorm damage immunity (NOT standard Rock/Ground immunity — see 0.3). Exposed to altitude Conductive bonus in Surge's arena. |
+| Swimmer | Primary locomotion is aquatic. Can operate normally in water environments. | Immune to wet-terrain SPE/EVA penalties in Brock's arena. No ACC penalty on Misty's platform. Aquatic moves available natively. |
+| Terrain-dweller | Adapted to rocky, unstable, or elevated terrain. | Immune to TERRAIN-tier SPE/EVA penalties (Brock). Mountain habitat and Terrain-dweller characteristic are strongly correlated but not identical. Rock/Ground/Steel types are the clearest examples. |
+| Ground-bound | Default. Primary locomotion on flat terrain surface. | Full exposure to all terrain, atmospheric, and toxin states. Most of any player's early-game team. |
+| Subterranean | Adapted to underground or lightless spaces. | Native users of EXCAVATING moves. In arenas where Dig is disabled (Surge), this characteristic provides no bypass — the physical impossibility of penetrating the surface applies regardless of adaptation. |
+| Liminal | Connected to the boundary between life and death through species lore or origin. | Immune to TP drain effects in Erika's arena. Attacks against Liminal targets do not escalate SPIRIT PRESSURE. Liminal category determined by species (see below) — it is not a type classification. Ghost-type ≠ automatically Liminal (some Ghost-types may not qualify). |
+| Volatile | Currently in an elevated off-ground state (using Fly, Bounce, or natural levitation in this turn). | Immune to discharge blast in Surge's arena (elevated above ground arc). CONDUCTIVE moves still hit Volatile at normal power. Volatile is a battle-state characteristic, not a permanent species trait. |
+
+**2.3  Liminal Species Reference**
+
+The following species qualify as Liminal for arena ecology purposes. This list is design-authoritative — it is derived from species lore, not from type or stats.
+
+| **Species** | **Liminal Basis** |
+| --- | --- |
+| Gastly / Haunter / Gengar (Spirit/Spectre/Phantom) | Ghost-type spirits. Direct embodiment of the boundary. |
+| Cubone / Marowak (Orphon / Garagara) | Haunted by the spirit of a deceased mother. The bone carried is her remains. |
+| Vulpix / Ninetales (Foxfire / Mikon) | Kitsune origin — fox spirits in Japanese folklore that collect souls and cross between worlds. |
+| Jynx (Rougela) | Yokai association in Japanese folk tradition. Boundary-crossing spiritual feminine archetype. |
+| Drowzee / Hypno (Sleeper / Sleepe) | Exist at the threshold of consciousness and sleep — partial access to the spirit realm. |
+| Omanyte / Omastar / Kabuto / Kabutops / Aerodactyl | Fossil Pokémon: life reconstructed from death. They have crossed the boundary from death back to existence. |
+
+**⚑ **Non-Liminal Ghost-type moves (from non-Liminal Pokémon) still interact with SPIRIT PRESSURE normally. Type ≠ Liminal status. The distinction is whether the species itself has a life/death boundary connection — not whether the move type is Ghost.
+
+**GYM 1  ·  Flying Type**
+
+**JIRO**
+
+LUCKY STRIKE
+
+**Competitive Theme: Turn Order and Critical Hits**
+
+**1.1  Core Environmental Model**
+
+**State Variable: **AIRFLOW — STILL / ACTIVE / FULL (linear; transitions via move categories)
+
+**Overlay A: **SANDSTORM — ABSENT / PRESENT (3 turns; independent expiry; triggered by SAND ATTACK in ACTIVE or FULL)
+
+**Overlay B: **HUMIDITY — ABSENT / PRESENT (3 turns; triggered by AQUATIC moves; reduces sandstorm chip)
+
+| **State** | **AIRFLOW** | **Description** |
+| --- | --- | --- |
+| STILL | 0 | All ventilation columns blocked or inactive. No current. Aerial Pokémon penalized. |
+| ACTIVE | 1 | Columns running. Moderate current. Aerial advantage begins. |
+| FULL | 2 (max) | Maximum output. Peak aerial dominance. The arena at full operational capacity. |
+
+**Transition Rules**
+
+- WIND category moves → +1 AIRFLOW (STILL→ACTIVE, ACTIVE→FULL). Capped at FULL.
+
+- SUPPRESSION category moves (String Shot, Smokescreen, Squid Ink, etc.) → immediate −1 AIRFLOW per use. Sticky or obstructing materials immediately clog the vent columns.
+
+- SAND ATTACK (SUPPRESSION) in ACTIVE or FULL → activates SANDSTORM overlay for 3 turns. In STILL, Sand Attack only reduces accuracy normally.
+
+- AQUATIC moves → activates HUMIDITY overlay for 3 turns. Does NOT suppress SANDSTORM. Both overlays can coexist.
+
+- SANDSTORM expires naturally after 3 turns. No move accelerates or extends it after triggering.
+
+- HUMIDITY expires naturally after 3 turns.
+
+**1.2  System Rules**
+
+| **State / Overlay** | **Effect on Aerial / Volatile Pokémon** | **Effect on Ground-bound Pokémon** | **First-Mover Effect** |
+| --- | --- | --- | --- |
+| STILL | −1 SPE (updraft collapse; they relied on the current). | No modifier. | No crit bonus. |
+| ACTIVE | +1 SPE. | No modifier. | +1 Crit Stage. |
+| FULL | +1 SPE. | −1 EVA (pressure differential disorients low-altitude movement). | +2 Crit Stages. |
+| + SANDSTORM | 1/8 HP damage end of turn. NOT immune to sandstorm damage (non-Ground, non-Rock type). | 1/8 HP damage end of turn. −1 EVA stacks in FULL. | Crit bonus from base AIRFLOW state still applies. |
+| + HUMIDITY | Sandstorm damage reduced to 1/16 (moisture dampens particulate). SPE modifier unchanged. | Sandstorm damage reduced to 1/16. | No crit interaction. |
+| THERMAL-HOT in ACTIVE/FULL | No direct effect. | No direct effect. | Enclosed warehouse retains heat: fire moves gain +10% power for 2 turns after any THERMAL-HOT use in ACTIVE or FULL. Both sides benefit equally. |
+
+**⚑ **Sandstorm affects ALL non-Mountain, non-Ground-type Pokémon — including Flying/Volatile. Jiro's own Aerial team is damaged by sandstorm equally. This is physically consistent: airborne Pokémon are exposed to the full particulate concentration with no terrain cover.
+
+**1.3  Interaction Matrix — Move Categories**
+
+| **Category** | **Effect on AIRFLOW / Overlays** | **Modified by Arena State** |
+| --- | --- | --- |
+| WIND | +1 AIRFLOW per use. | Wing Attack (WIND+CONTACT-BLADE) gains first-mover CRIT bonus AND AIRFLOW push in one action. Razor Wind (TWO-TURN WIND) pushes AIRFLOW only on execution turn — staging turn has no effect. Hurricane (WIND+MENTAL/Confusion) is the most powerful single AIRFLOW pusher. |
+| SUPPRESSION | Immediate −1 AIRFLOW per use. String Shot most efficient (clogging mechanism matches physically). | Most impactful at FULL — single use drops to ACTIVE, removing +2 CRIT peak and eliminating FULL EVA penalty. Jiro responds with Wind. One SUPPRESSION per two offensive turns is the sustainable management rhythm. |
+| SAND ATTACK | Triggers SANDSTORM overlay if ACTIVE or FULL. Standard accuracy reduction only in STILL. | SANDSTORM in FULL: player's Ground-bound team takes 1/8 damage AND −1 EVA simultaneously. Jiro's Aerial team takes 1/8 damage but retains +1 SPE (net: small SPE advantage at a chip cost to both). HUMIDITY reduces chip to 1/16 for both sides. |
+| AQUATIC | Activates HUMIDITY overlay (3 turns). Does NOT affect AIRFLOW or suppress SANDSTORM. | In ACTIVE/FULL, AQUATIC moves lose 10% accuracy (fine spray dispersal in airstream). HUMIDITY while active: sandstorm chip halved. Aquatic is a limited management tool, not a solution. |
+| THERMAL-HOT | No state transition. | In ACTIVE/FULL: enclosed warehouse retains heat. Fire moves +10% power for 2 turns after any THERMAL-HOT use. Ember establishes the effect; Flamethrower or Fireball exploits it. Jiro has Fire coverage on at least one team member to exploit this independently. |
+| PROJECTILE | No state transition. | In FULL: −10% accuracy from wind deflection. TRUE STRIKE moves (Swift, Tri Attack) ignore this penalty. PROJECTILE is the player's ranged option that doesn't feed AIRFLOW but suffers accuracy cost. |
+| POWDER/SPORE | No AIRFLOW transition. | In ACTIVE: −20% status accuracy (AIRFLOW disperses particulate before it settles). In FULL: −40%. Sleep Powder in FULL is high-risk. Most POWDER moves are functionally unreliable against Jiro's Aerial team in ACTIVE or FULL. |
+| GROUND-IMPACT | No state transition. | Unmodified. Mountain-archetype Pokémon use these at full power in all AIRFLOW states. Geodude line: cleanest structural answer. |
+| CONTACT | No state transition. | First-mover CONTACT in ACTIVE/FULL benefits from +1 or +2 CRIT Stage. Wing Attack (WIND+CONTACT) is the most efficient dual-category move in this arena. |
+
+**1.4  Pokémon Archetype Interactions**
+
+| **Characteristic** | **Habitat Examples** | **Interaction** |
+| --- | --- | --- |
+| Aerial / Volatile | Skies, Mysterious (Gastly line) | Primary beneficiary of AIRFLOW. +1 SPE in ACTIVE/FULL. −1 SPE in STILL. Sandstorm damages them equally (not immune). Wind moves natively available. POWDER/SPORE disperses around them in ACTIVE/FULL. |
+| Terrain-dweller / Ground-bound | Mountain, Grasslands, Forest | Mountain characteristic: immune to FULL EVA penalty. Immune to sandstorm damage. Ground-Impact moves at full power. Cleanest counter. Ground-bound: exposed to FULL EVA penalty, sandstorm chip, accuracy disruption from projectile in FULL. |
+| Swimmer | Sea, Water's Edge | No archetype advantage in an airborne arena. AQUATIC moves suffer accuracy penalty in ACTIVE/FULL. Wrong archetype for this environment. |
+| Subterranean | Forest, Mountain | Ground-bound equivalents here. No subterranean advantage when the arena is above-ground. EXCAVATING moves function but have no terrain surface to fracture in a warehouse. |
+
+**Species-Level Hooks**
+
+- Farfetch'd (Kamonegi) + Leek: item grants +2 crit stages. In FULL as first-mover: +2 additional stages = +4 = 100% crit. This is the fight's signature scenario. Leek Slap (HIGH CRIT CHANCE + CONTACT) is naturally a high-crit move (+1 base), Leek pushes to +3 normally and +4 in FULL first-mover. Farfetch'd is meaningfully faster in FULL — the player must suppress AIRFLOW to prevent Jiro reaching this state.
+
+- Pidgeot (Pigeot): Hurricane (WIND+Confusion) is the highest-power single AIRFLOW pusher. If Pidgeot gets a Hurricane turn while already in FULL, no additional AIRFLOW gain but Confusion effect applies. In ACTIVE, Hurricane pushes to FULL and applies Confusion simultaneously — two-function turn.
+
+- Geodude line (Mountain): Immune to EVA penalty and sandstorm. Rock Throw (PROJECTILE, −10% ACC in FULL) is accuracy-penalized. Rock Slide (GROUND-IMPACT) is not. Geodude should not rely on PROJECTILE in FULL.
+
+**1.5  Strategic Layer**
+
+**Core Decision Each Turn**
+
+The player is choosing between: using a SUPPRESSION move (−1 AIRFLOW, costs an offensive turn) vs. attacking into a progressively Jiro-favored environment. Jiro responds to each SUPPRESSION with WIND — so the player needs two consecutive SUPPRESSION actions to drop AIRFLOW one level, costing two offensive turns against Jiro's one.
+
+**Mountain Shortcut**
+
+Mountain-archetype Pokémon (Geodude line) ignore FULL EVA, sandstorm damage, and AIRFLOW effects entirely. They do not need to manage the arena — they simply fight. This is the lesson: knowing your team's ecological register is more efficient than managing the field with a mismatched team.
+
+**Thermal-Hot Window**
+
+The room temperature bonus (+10% fire power for 2 turns) is symmetric — both players benefit. If the player has a Fire-type, using Ember to establish the window and following with Flamethrower is a small but real 2-turn offensive boost. Jiro will have Fire coverage on at least one Pokémon for exactly this reason.
+
+**1.6  Type Interaction Reframing**
+
+| **Type** | **Why Still Effective** | **Arena Cost** |
+| --- | --- | --- |
+| Rock | Super-effective vs Flying. Mountain characteristic: immune to EVA, sandstorm, terrain. Cleanest. | Rock Throw (PROJECTILE) loses −10% ACC in FULL. Use Rock Slide (GROUND-IMPACT) instead — no accuracy penalty. |
+| Electric | Type-neutral but reliable. Not penalized by AIRFLOW. | No systemic risk. Consistent damage in all states. Not the structural answer but a stable tool. |
+| Ice | Not super-effective. Projectile category. | −10% accuracy in FULL as projectile. Minor cost. |
+| Water | Type-neutral vs Flying. AQUATIC available. | AQUATIC moves lose 10% accuracy in ACTIVE/FULL. Aquatic archetype has no advantage here. Water types are wrong archetype and accuracy-penalized in high AIRFLOW. |
+
+**1.7  AI Utilization Model**
+
+- Jiro leads with his fastest Aerial Pokémon. Immediately uses WIND if AIRFLOW is not yet ACTIVE.
+
+- At FULL AIRFLOW: stops using WIND (no gain). Focuses on CONTACT moves that benefit from first-mover CRIT window.
+
+- If AIRFLOW drops to STILL: Jiro prioritizes WIND to recover to ACTIVE before attacking. He will sacrifice a damage turn to restore the arena.
+
+- Deploys SAND ATTACK only after confirming AIRFLOW is ACTIVE or FULL. Never in STILL (wasted effect).
+
+- Uses at least one THERMAL-HOT move in ACTIVE/FULL to establish the temperature bonus, then switches to higher-power fire moves on the following turn.
+
+- Against Mountain-archetype opponents: recognizes the structural counter. Switches to non-AIRFLOW-dependent coverage moves. Does not waste WIND management turns against an opponent immune to the system.
+
+**GYM 2  ·  Ground Type**
+
+**BROCK**
+
+FAULT LINE
+
+**Competitive Theme: Speed Control and Terrain Restraint**
+
+**2.1  Core Environmental Model**
+
+**Field Constant: **All non-Terrain-dweller Pokémon begin with −1 SPE. Permanent; active in all terrain states.
+
+**State Variable 1: **TERRAIN — INTACT / CRACKED / FRACTURED (one-directional progression)
+
+**State Variable 2: **MOISTURE — DRY / MUDDY (toggleable; MUDDY has no natural decay — requires WIND to revert)
+
+**Overlay: **SANDSTORM — ABSENT / PRESENT (2 turns; triggered by WIND in DRY state)
+
+| **State Combination** | **Non-Terrain-dweller Effect** | **Ground-Impact Power** | **SANDSTORM Trigger Available** |
+| --- | --- | --- | --- |
+| INTACT + DRY | −1 SPE baseline only. | Standard. | Yes (WIND in DRY triggers sandstorm). |
+| CRACKED + DRY | −1 SPE baseline. 15% stumble chance on CONTACT by non-Terrain-dweller. | ×1.15 (fractures amplify seismic resonance). | Yes. |
+| FRACTURED + DRY | −1 SPE, −1 EVA. 25% stumble chance on CONTACT. | ×1.30. | Yes. |
+| ANY + MUDDY | Add −1 SPE, −1 EVA to terrain baseline. Stumble chance removed (mud cushions). | ×0.80 (wet earth absorbs impact). | No (WIND in MUDDY only transitions to DRY; no sandstorm). |
+
+**Transition Rules**
+
+- GROUND-IMPACT category moves → terrain fractures progressively: INTACT → CRACKED on first use; CRACKED → FRACTURED on subsequent use.
+
+- BLAST category (Self-Destruct, Explosion, Bye-Bye Punch) → INTACT → FRACTURED immediately. Skips CRACKED. The explosive force is sufficient to bypass gradual deterioration.
+
+- AQUATIC category → DRY → MUDDY. MUDDY does NOT decay naturally — it requires WIND to dry.
+
+- WIND category in DRY (any terrain tier) → activates SANDSTORM overlay for 2 turns AND does not itself transition MOISTURE. The sandstorm dries the surface further.
+
+- WIND category in MUDDY → MUDDY → DRY (dries terrain). Does not trigger SANDSTORM (damp terrain can't blow up sand).
+
+**⚑ **TERRAIN tier is permanent within the battle — cannot be restored once fractured. MOISTURE is the only reversible variable. The battlefield deteriorates over the course of the fight.
+
+**2.2  System Rules Detail**
+
+| **Mechanic** | **Description** |
+| --- | --- |
+| Stumble Chance | In CRACKED DRY: non-Terrain-dweller using a CONTACT move has 15% chance to lose their action this turn (slips on a crack mid-movement). In FRACTURED DRY: 25% chance. Stumble does not apply in MUDDY (the mud fills the cracks, cushioning movement). |
+| MUDDY + TERRAIN stack | MUDDY penalties stack on top of terrain penalties. FRACTURED + MUDDY = −2 SPE, −1 EVA, Ground-Impact ×0.80 (wet fractured earth). Worst combination for non-Terrain-dweller Pokémon. |
+| SANDSTORM (2 turns) | Standard sandstorm: 1/8 HP per turn to non-Mountain, non-Ground-type Pokémon. This includes Flying/Volatile. Terrain-dweller characteristic confers no inherent sandstorm immunity — that is determined by type (Ground, Rock, Steel). |
+| Terrain-dweller exemptions | Terrain-dweller characteristic: immune to all TERRAIN-tier SPE/EVA penalties (CRACKED and FRACTURED). Stumble chance: 0%. GROUND-IMPACT power scaling affects both sides equally — Terrain-dwellers hit hard and don't suffer the terrain costs. |
+
+**2.3  Interaction Matrix — Move Categories**
+
+| **Category** | **Effect on State** | **Modified by State** |
+| --- | --- | --- |
+| GROUND-IMPACT | TERRAIN progresses one tier per use (INTACT→CRACKED, CRACKED→FRACTURED). Cannot regress. | ×1.15 power in CRACKED DRY. ×1.30 power in FRACTURED DRY. ×0.80 in any MUDDY. Brock chains Ground-Impact to build both terrain deterioration and power. |
+| BLAST | TERRAIN progresses to FRACTURED immediately regardless of current tier. | BLAST at ×1.15 or ×1.30 depending on DRY tier it hits. At FRACTURED DRY after BLAST: worst terrain state immediately reached. Player Blast moves also deteriorate the player's own terrain. |
+| AQUATIC | DRY → MUDDY. Cannot be used to deliberately maintain DRY. | Type-correct against Ground. But MUDDY: −1 additional SPE/EVA to non-Terrain-dweller player team. Ground-Impact drops to ×0.80 for both sides. Aquatic archetype: immune to MUDDY penalties. |
+| WIND | In DRY: triggers SANDSTORM (2 turns). In MUDDY: clears MUDDY → DRY. Does not affect TERRAIN tier. | Sandstorm in any DRY tier: standard 1/8 HP non-Mountain/non-Ground. Player using WIND to clear MUDDY always risks triggering sandstorm from the resulting DRY state on the same or next turn. |
+| SONIC | No state transition. | In FRACTURED terrain, Sonic moves that create vibration (Screech, Loud Cry) have 20% chance to widen an existing crack further — this is flavor with no mechanical consequence (FRACTURED is already the maximum). The sound echoes meaningfully. |
+| CONTACT | No state transition. | Stumble chance applies to non-Terrain-dweller CONTACT users in DRY CRACKED/FRACTURED. Eliminated in MUDDY. Physical combat is increasingly hazardous on deteriorating terrain. |
+| DISPLACEMENT | No state transition. | In FRACTURED + MUDDY: Displacement moves on non-Terrain-dweller targets have +15% success rate (already destabilized in worst terrain). |
+
+**2.4  Strategic Layer**
+
+The player cannot prevent terrain deterioration — every GROUND-IMPACT from Brock progresses TERRAIN. They can only choose which combination of costs to accept. Terrain-dweller Pokémon ignore the deterioration entirely. The fight rewards preparation.
+
+- If player uses Water to weaken Brock's Ground-Impact: MUDDY doubles their own SPE/EVA penalty. Aquatic archetype is immune, but Ground-bound teammates aren't.
+
+- If player uses Wind to clear MUDDY: DRY triggers sandstorm possibility. WIND is a trade of one liability for another.
+
+- If player uses BLAST: immediately reaches FRACTURED, often harming the player's own non-Terrain-dweller team before Brock needs to.
+
+- Terrain-dweller (Mountain habitat Pokémon) bypass all of this. They fight normally while the arena collapses around everyone else. Brock's team is already adapted. The player's team needs to be too.
+
+**2.5  Type Interaction Reframing**
+
+| **Type** | **Why Still Effective** | **Arena Cost** |
+| --- | --- | --- |
+| Water | Weakens Brock's Ground-Impact (×0.80 in MUDDY). Type-effective vs Ground. | MUDDY doubles non-Terrain-dweller SPE/EVA penalty for the player's own team. Every Water use worsens the player's mobility. Aquatic archetype ignores this — Swimmer characteristic + Water type is the correct combination. |
+| Grass | Super-effective vs Ground. No MOISTURE interaction from Grass moves. | Ground-bound characteristic: −1 SPE always, −2 in MUDDY if player introduced it. Stumble chance in FRACTURED DRY. Type-correct but characteristic-exposed. |
+| Ground mirror | GROUND-IMPACT at ×1.15 or ×1.30 in DRY. Terrain-dweller characteristic. | Symmetric: Brock's Ground-Impact benefits identically. Mirror matchup favors whoever has better stats, not better type. |
+
+**2.6  AI Utilization Model**
+
+- Opens with GROUND-IMPACT immediately. Goal: CRACKED terrain before the player can respond.
+
+- Continues GROUND-IMPACT to FRACTURED as fast as possible. This is his primary investment.
+
+- Never uses AQUATIC (weakens own Ground-Impact). Never uses BLAST (removes the gradual power build; premature FRACTURED is less useful than FRACTURED reached after 1–2 turns of ×1.15 damage).
+
+- If player uses AQUATIC → MUDDY: Brock switches to non-Ground-Impact attacks and waits. He does not benefit from MUDDY. He waits for WIND or natural transition back to DRY.
+
+- Against Terrain-dweller opponents: recognizes structural immunity. Switches to non-Ground-Impact coverage moves. Does not invest in terrain deterioration that won't affect this opponent.
+
+**GYM 3  ·  Water Type**
+
+**MISTY**
+
+LITTLE MERMAID
+
+**Competitive Theme: Momentum and Accuracy Disruption**
+
+**3.1  Core Environmental Model**
+
+**Field Constant: **CONDUCTIVE BUOYS — Electric moves always hit regardless of accuracy modifiers. Power reduced to 50% (buoys absorb and redirect current). All non-Aquatic Pokémon −1 ACC baseline.
+
+**State Variable 1: **TIDE — NEUTRAL / PLAYER / OPPONENT (shifts with last AQUATIC use)
+
+**State Variable 2: **CONDITION — CLEAR / MIST / FROZEN
+
+| **State** | **TIDE** | **CONDITION** | **Active Effects** |
+| --- | --- | --- | --- |
+| NEUTRAL-CLEAR | Neither | Clear | Baseline only: −1 ACC non-Aquatic. |
+| OWNED-CLEAR | Player or Opp. | Clear | Tide owner's Aquatic Pokémon +50% power. Opposing non-Aquatic −1 additional ACC (total −2). |
+| ANY-MIST | Last owner (frozen) | MIST | TIDE suspended — no bonuses, no flipping. −1 ACC ALL Pokémon (Aquatic included). 3 turns. |
+| OWNED-FROZEN | Player or Opp. | FROZEN | TIDE locked — cannot flip. TIDE bonus active. 2 turns. |
+
+**Transition Rules**
+
+- AQUATIC moves in CLEAR → TIDE shifts to user immediately.
+
+- AQUATIC moves in MIST → TIDE does not shift (suspended). Damage applies normally.
+
+- AQUATIC moves in FROZEN → TIDE does not shift (locked). Damage applies normally.
+
+- THERMAL-HOT moves → CONDITION becomes MIST (3 turns). Overrides FROZEN. TIDE ownership freezes at current holder during MIST.
+
+- THERMAL-COLD moves when MIST → clears MIST immediately, then CONDITION → FROZEN (2 turns).
+
+- THERMAL-COLD moves in CLEAR or FROZEN → CONDITION → FROZEN (2 turns; resets duration if already FROZEN).
+
+**⚑ **Fire moves are type-neutral vs Water but have genuine strategic utility here: they create MIST, which suspends Misty's TIDE advantage and applies −1 ACC to all Pokémon including Aquatic. Fire is not a damage solution — it is a field disruption tool. This is the type-advantage mitigation principle in action.
+
+**3.2  System Rules**
+
+| **Mechanic** | **Description** |
+| --- | --- |
+| BUOYS constant | Electric always hits. 50% power. Paralysis secondary chance applies normally. Consistent in all CONDITION states. Electric is reliable but not dominant — the buoys prevent both catastrophic bilateral damage and full-power CONDUCTIVE sweeps. |
+| MIST ACC penalty | All Pokémon −1 ACC (including Aquatic). Stacks with the baseline non-Aquatic −1 ACC. Non-Aquatic in MIST: −2 total. Aquatic in MIST: −1 (first time they have any accuracy penalty in this arena). |
+| TIDE ownership bonus | Owning TIDE: user's Aquatic-archetype Pokémon deal +50% on all moves. Non-Aquatic Pokémon receive no TIDE bonus regardless of who owns the tide — it responds to the swimmer, not the trainer. |
+| FROZEN + TIDE lock | TIDE ownership is locked for 2 turns. The locked owner keeps the +50% Aquatic power bonus. The opponent cannot steal TIDE even with Aquatic moves. MIST (Thermal-Hot) overrides and cancels FROZEN. |
+
+**3.3  Interaction Matrix — Move Categories**
+
+| **Category** | **Effect on State** | **Modified by State** |
+| --- | --- | --- |
+| AQUATIC | Shifts TIDE in CLEAR. No shift in MIST or FROZEN. | Tide owner's Aquatic Pokémon: +50% power. Most powerful category in this arena when combined with TIDE ownership and Aquatic characteristic. |
+| THERMAL-HOT | CONDITION → MIST (3 turns). Overrides FROZEN. | Type-neutral vs Water. Strategic utility: MIST suspends Misty's TIDE bonus and applies −1 ACC to all Pokémon. The player who uses Fire while Misty owns TIDE loses 3 turns of her advantage. Also loses 3 turns of their own advantage if they held TIDE. Fire is disruption, not damage. |
+| THERMAL-COLD | Clears MIST → FROZEN. In CLEAR/FROZEN → extends/sets FROZEN. | Freezes TIDE ownership for 2 turns. Optimal sequence: gain TIDE → use THERMAL-COLD → FROZEN locks TIDE bonus for 2 turns → attack with Aquatic at +50% power. Misty's counter: use THERMAL-HOT to generate MIST (overrides FROZEN), resetting to neutral. |
+| CONDUCTIVE | No state transition. | Always hits via BUOYS (50% power). Paralysis still applies on secondary chance. Does not shift TIDE. Electrically reliable but never the primary strategy — just consistent. |
+| TRAP (AQUATIC dual: Whirlpool) | Shifts TIDE (AQUATIC component) AND immobilizes target (TRAP component). | Whirlpool is the only move in the game that simultaneously shifts TIDE and prevents the opponent from freely switching. Used while owning TIDE: +50% Whirlpool power AND traps Misty's team. Powerful sequencing tool. |
+| WIND | No TIDE or CONDITION transition. Disperses MIST 1 turn early (optional). | Hurricane (WIND): if used in MIST, clears MIST 1 turn ahead of natural expiry. Gives the player the option to re-engage TIDE contention early if MIST has neutralized a favorable TIDE they held. |
+
+**3.4  Strategic Layer**
+
+TIDE is the meta-game. Every AQUATIC move is simultaneously damage and territorial claim. The optimal play is gain TIDE → THERMAL-COLD → FROZEN → attack at +50% power for 2 turns. Misty breaks this with THERMAL-HOT (MIST overrides FROZEN). The fight is about who sequences their CONDITION transitions better.
+
+MIST equalizes the field. It hurts both sides but proportionally more: Misty's Aquatic team at −1 ACC vs. the player's Ground-bound team at −2 ACC. The player should never want to be in MIST unless it's disrupting Misty's TIDE advantage — and that is a valid strategic reason.
+
+**3.5  Type Interaction Reframing**
+
+| **Type** | **Why Still Effective** | **Arena Cost** |
+| --- | --- | --- |
+| Electric | Always hits (BUOYS). Reliable throughput. | 50% power. Does not shift TIDE. Paralysis chance retained — the buoy redirection makes it consistent but halved. The player who only uses Electric is dealing steady reduced damage without engaging the TIDE system. |
+| Grass | Super-effective vs Water. No CONDITION interaction. | Ground-bound characteristic: −1 ACC always, −2 when Misty owns TIDE. Platform penalty with no mitigation. Type-correct but characteristic-penalized. |
+| Ice | Not super-effective. CONDITION management tool. | None. Ice is the arena's tempo-control type — it FREEZES TIDE. No systemic risk. Pure upside in strategic use. |
+| Fire | Not super-effective. Creates MIST (disruptive utility). | MIST applies −1 ACC to the Fire user too. If the player holds TIDE when they use Fire, they suspend their own advantage. Fire is correct when it disrupts Misty's TIDE — incorrect when it disrupts the player's own. |
+
+**3.6  AI Utilization Model**
+
+- Misty reclaims TIDE every turn she loses it — first priority is AQUATIC for TIDE flip in CLEAR.
+
+- When she owns TIDE in CLEAR: uses THERMAL-COLD to FREEZE immediately (locks advantage).
+
+- When FROZEN but not by her: uses THERMAL-HOT to MIST (overrides FROZEN, resets to neutral).
+
+- She never uses THERMAL-HOT to help herself — it resets a FROZEN state she may hold. She uses it only to break an opponent-locked FROZEN.
+
+- Against Aquatic archetype players: fights purely on TIDE tempo — MIST from THERMAL-HOT only when the player has locked TIDE via FROZEN. She knows MIST hurts Aquatic too but less than losing TIDE for 2 turns.
+
+**GYM 4  ·  Electric Type**
+
+**SURGE**
+
+GENERAL ELECTRIC
+
+**Competitive Theme: Risk Management and Punish Windows**
+
+**4.1  Core Environmental Model**
+
+**Field Object: **TESLA COIL — shared field object with its own discrete state. One coil serves both sides.
+
+**State Variable: **COIL STATE — ACTIVE(0) / ACTIVE(1) / ACTIVE(2) / DISCHARGING(3) / SHORTED / DESTROYED
+
+**Field Constraint: **Metal container enclosure: EXCAVATING moves (Dig, Tunneling) are disabled — the floor cannot be penetrated. Sand Attack disabled (no sand material). Earthquake produces RESONANCE effect instead of standard ground-penetration.
+
+| **COIL State** | **Description** | **How Reached** |
+| --- | --- | --- |
+| ACTIVE 0 | Coil functional. No charge. No threat. | Battle start. After SHORTED expires. After DISCHARGING resets. |
+| ACTIVE 1–2 | Charge building. Discharge risk accumulates. | Conductive moves resolving without KO: +1 CHARGE. |
+| DISCHARGING (3) | Discharge fires this turn. Charge resets to 0 after. | CHARGE accumulates to 3. |
+| SHORTED | Coil disabled by water infiltration. 2 turns duration. | Any AQUATIC move → immediate SHORT. CHARGE resets to 0. Cannot accumulate during SHORT. Reactivates at ACTIVE 0 after 2 turns. |
+| DESTROYED | Coil permanently disabled. No more discharge for this battle. | 3 cumulative THERMAL-HOT moves used → OVERHEAT counter reaches 3 → permanent destruction. |
+
+**Transition Rules**
+
+- CONDUCTIVE moves resolving without KO → +1 CHARGE. KO produces no charge (energy fully discharged on impact, nothing retained in the system).
+
+- AQUATIC moves → COIL immediately SHORTED for 2 turns. CHARGE resets to 0.
+
+- THERMAL-HOT moves → OVERHEAT counter +1. At 3 cumulative: DESTROYED. Permanent.
+
+- GROUND-IMPACT moves (except disabled Dig) → RESONANCE: −1 CHARGE. Earthquake vibration grounds the accumulated charge through the metal structure. Earthquake deals standard damage AND reduces CHARGE simultaneously.
+
+- SONIC moves (Screech, Supersonic, Sonicboom) → RESONANCE partial: −0.5 CHARGE (rounds down, minimum −0 per turn, but contributes over two uses). Vibration frequency partially grounds the coil. Minor interaction, not a primary strategy.
+
+**⚑ **DESTROYED is irreversible. It requires 3 turns of off-type (non-Electric) THERMAL-HOT moves. This is a deliberate strategic commitment — 3 turns of suboptimal fire damage to permanently remove the coil threat. Surge has no ability to prevent this once the player commits.
+
+**4.2  System Rules**
+
+| **COIL State** | **Effect** |
+| --- | --- |
+| ACTIVE 0–2 | Standard field. No discharge hazard. Conductive moves deal normal damage with normal paralysis secondary chance. |
+| DISCHARGING (3) | Fixed damage to all non-Electric, non-Volatile Pokémon on both sides simultaneously. Damage value predetermined (based on Surge's highest ATK Pokémon stat). All survivors paralyzed for 2 turns. Paralyzed Pokémon take +30% damage from all sources. CHARGE resets to 0 after discharge. Volatile Pokémon (Fly state, levitating) are elevated above the ground arc — completely immune to discharge damage and paralysis. |
+| SHORTED (2 turns) | No CHARGE accumulation possible. No discharge risk. Conductive moves function normally as single-target attacks (coil offline, no system to accumulate into). Coil reactivates at ACTIVE 0 on turn 3. |
+| DESTROYED (permanent) | No CHARGE system. No discharge ever. Surge fights as a standard trainer. The arena's primary field mechanic is gone. |
+
+Metal container effects: Earthquake in a metal room creates RESONANCE (−1 CHARGE + standard damage). Dig and Tunneling are physically impossible (metal floor). Sand Attack produces nothing (no sand). The arena partially neutralizes the Ground-type toolset — structurally correct type, but one key tool disabled and the remaining tools (Earthquake) redirected through the RESONANCE mechanic.
+
+**4.3  Interaction Matrix — Move Categories**
+
+| **Category** | **Effect on COIL** | **Modified by COIL State** |
+| --- | --- | --- |
+| CONDUCTIVE | +1 CHARGE if no KO. 0 CHARGE on KO. | Standard single-target in all COIL states. Electric-type Pokémon immune to discharge and to the discharge paralysis. Volatile immune to discharge burst. Conductive is the primary charge source for both sides — KO'ing with Conductive is always the clean resolution. |
+| AQUATIC | SHORTED for 2 turns. CHARGE → 0. | Type-effective vs Electric. PRIMARY coil management tool. SHORT is temporary — 2 turns without accumulation, then reactivates. The player who uses AQUATIC every 2 turns maintains SHORT but sacrifices offensive output. Surge has anti-Water coverage to contest this. |
+| THERMAL-HOT | +1 OVERHEAT. At 3: DESTROYED permanently. | Off-type vs Electric. Trades 3 turns of suboptimal fire damage for permanent coil removal. No other move category offers permanent DESTROYED. Surge cannot prevent it — he can only deny the player 3 turns of Fire attacks through faster discharges. |
+| GROUND-IMPACT | −1 CHARGE (RESONANCE). Earthquake also deals standard damage. | Earthquake is dual-function: damages Electric-type Pokémon AND reduces CHARGE. Ground-type Pokémon immune to discharge and CONDUCTIVE. The structural counter — but EXCAVATING moves are disabled. Surge has Flying-type coverage specifically for Ground. |
+| EXCAVATING | DISABLED. Cannot penetrate metal floor. | The structural counter's primary move is disabled. Dig would have been the perfect solution. It is unavailable. Earthquake remains. |
+| SONIC | −0.5 CHARGE per use (rounds down; contributes over two uses). | Minor resonance grounding. Screech and Supersonic are standard elsewhere; here they have a trace-level CHARGE management effect. Not a primary strategy but an interesting secondary interaction on Pokémon that use Sonic naturally. |
+| BLAST | No COIL interaction. | Unmodified. Self-Destruct/Explosion deal standard damage in metal container. |
+
+**4.4  Strategic Layer**
+
+**Three Paths to COIL Management**
+
+SHORT (AQUATIC): efficient type-correct, temporary. Surge rebuilds at ACTIVE 0 after 2 turns. Ongoing water use is maintenance, not resolution.
+
+DESTROYED (THERMAL-HOT ×3): permanent but 3 off-type turns. Once DESTROYED, the fight normalizes. The investment pays out for the rest of the battle.
+
+RESONANCE (GROUND-IMPACT / Earthquake): dual-function — reduces CHARGE AND deals damage. But Surge has Flying coverage for Ground-types, and Dig is disabled. Earthquake is the best single-turn option but Surge anticipates it.
+
+**Discharge as Designed Threat**
+
+Surge manages CHARGE deliberately — stops Conductive at CHARGE 2, switches to Thunder Wave (paralysis without CHARGE accumulation) to set up the +30% damage multiplier before completing the discharge. He is not trying to discharge himself — he is engineering a state where discharge benefits only him.
+
+**4.5  Type Interaction Reframing**
+
+| **Type** | **Why Still Effective** | **Arena Cost** |
+| --- | --- | --- |
+| Ground | Immune to Conductive and discharge. Earthquake = RESONANCE (−1 CHARGE + damage). Structural counter. | Dig disabled (key Ground move). Surge has Flying coverage for Ground-types. Earthquake still works but is partially redirected to CHARGE management rather than pure offense. |
+| Water | Type-effective. SHORTS coil for 2 turns — immediate discharge prevention. | Temporary only. Surge rebuilds on SHORT expiry. If Surge has anti-Water coverage, SHORT cycle breaks. Water is correct but not permanent. |
+| Fire | Off-type. DESTROYED at 3 uses — permanent coil removal. | None after DESTROYED. The risk is the 3 turns of off-type fire damage on the path to DESTROYED. Surge plays fast and will try to discharge before the 3rd THERMAL-HOT lands. |
+| Electric mirror | Immune to discharge. STAB output. No inherent CHARGE risk. | Still accumulates CHARGE toward 3 for the opponent side. Surge benefits from Electric-vs-Electric CHARGE accumulation — his team is immune to discharge; the player's non-Electric teammates are not. |
+
+**4.6  AI Utilization Model**
+
+- Surge uses Conductive up to CHARGE 2, then stops — switches to Thunder Wave, Leer, or non-Conductive attacks. The paralysis setup turn maximizes the +30% bonus once discharge fires from the player's accumulation.
+
+- When player AQUATICS to SHORT: Surge uses coverage or non-Conductive attacks for 2 turns (SHORT is offline anyway), resumes Conductive the moment SHORT expires.
+
+- He never uses THERMAL-HOT (would burn his own OVERHEAT counter toward DESTROYED).
+
+- He targets Ground-type opponents with Flying-type coverage — he has anticipated the structural counter.
+
+- Optimal Surge sequence: CHARGE 2 → Thunder Wave → CHARGE 3 via player's Conductive → discharge + paralysis multiplier active → high-power follow-up.
+
+**GYM 5  ·  Ghost Type**
+
+**ERIKA**
+
+KODAMA
+
+**Competitive Theme: Resource Management (TP) and Coverage**
+
+**5.1  Core Environmental Model**
+
+**State Variable: **SPIRIT PRESSURE — 0 (DORMANT) through 4 (FRENZIED). Single variable encoding all arena effects.
+
+**Core Mechanic: **SPIRIT PRESSURE scales TP cost multiplier and recovery rate for non-Liminal Pokémon. The arena exhausts before it kills.
+
+| **PRESSURE** | **State** | **TP Cost ×** | **TP Recovery ×** | **Additional Effect** |
+| --- | --- | --- | --- | --- |
+| 0 | DORMANT | ×1.0 | ×1.0 | No effects. Standard field. |
+| 1 | STIRRING | ×1.25 | ×1.0 | The spirits are aware. |
+| 2 | PRESENT | ×1.5 | ×0.75 | Non-Liminal Pokémon feel the weight of the grove. |
+| 3 | ACTIVE | ×2.0 | ×0.5 | Non-Liminal Pokémon struggle to exert themselves. |
+| 4 | FRENZIED | ×2.5 | ×0.25 | CONTACT moves used by non-Liminal have 25% failure chance (phase-through). Struggle by non-Liminal vs Liminal target: +2 PRESSURE. |
+
+**Transition Rules**
+
+- Non-Liminal Pokémon using any DAMAGING move against a Liminal target → +1 PRESSURE.
+
+- Non-Liminal Pokémon fainting in the arena → +1 PRESSURE. Their life energy disperses into the grove.
+
+- Liminal Pokémon fainting → −1 PRESSURE. They return to their domain; the disruption settles.
+
+- 4 consecutive turns without a PRESSURE-increasing action → −1 PRESSURE (natural dissipation).
+
+- HAZE (MENTAL category) → −2 PRESSURE immediately. Most impactful single PRESSURE management tool.
+
+- Non-damaging moves (SUPPORT, PSYCHIC-WAVE shields, MENTAL status) by non-Liminal vs Liminal → +0 PRESSURE.
+
+- All moves by Liminal Pokémon (either side) → +0 PRESSURE. They belong here.
+
+**5.2  Interaction Matrix — Move Categories**
+
+| **Category** | **PRESSURE Effect** | **Modified by PRESSURE** |
+| --- | --- | --- |
+| Damaging (non-Liminal vs Liminal) | +1 per use. | At PRESSURE 3–4, TP drain means fewer turns before Struggle — the system naturally limits how many +1 escalations the player can force. |
+| SPECTRAL (Ghost moves by non-Liminal) | +1 (still a damaging move against Liminal; the spiritual register doesn't exempt the violence). | If user is Liminal: +0. Ghost moves by Liminal vs Liminal: cleanest offensive option in the arena. |
+| PSYCHIC-WAVE by non-Liminal against Liminal | +1 (same as any damaging move). | Alakazam using Psychokinesis in FRENZIED: ~1–2 turns before Struggle. STAB Psychic is type-correct and maximally self-destructive for resource management. |
+| CONTACT by non-Liminal | Same +1 as any damaging move. Additional: 25% failure chance in FRENZIED. | Failed Contact hits: TP still consumed, +0 PRESSURE from the miss (the move didn't connect — no spiritual disturbance). Double penalty of resource waste + no damage. |
+| DRAIN by Liminal | +0 PRESSURE (Liminal). | Liminal Drain moves (e.g., Dream Eater by Haunter) are the most TP-efficient damage source in the arena — no escalation cost, type-effective, HP-absorbing. |
+| MENTAL (Haze) | −2 PRESSURE immediately. | No damage. Pure field management. Haze is the single best PRESSURE management tool available. Player who brings HAZE has an explicit counter to escalation. |
+| REST by non-Liminal | No PRESSURE change. | TP multiplier treated as ×1.0 while asleep (reduced biological activity). TP does not restore from REST — only HP. Bag TP restoratives remain the only TP recovery during battle. |
+| THERMAL-HOT against Liminal | +1 (damaging move). | No PRESSURE bonus beyond standard +1. Fire has no special spiritual connection. Does not advance PRESSURE faster than any other damaging category. |
+
+**5.3  Strategic Layer**
+
+The composition decision is made before the battle. Liminal Pokémon bypass TP drain entirely and attack without PRESSURE escalation. Non-Liminal Pokémon with access to Dark-type moves (effective vs Ghost, no type-level Spectral resonance) are the secondary answer. HAZE as a carried move gives any Pokémon access to −2 PRESSURE.
+
+A player who enters with a non-Liminal Contact-heavy physical team will Struggle within 6–8 turns at PRESSURE 3–4. The arena teaches the lesson through exhaustion rather than through sudden KO — which is more pedagogically honest.
+
+**5.4  AI Utilization Model**
+
+- Erika uses damaging Spectral moves every turn (Liminal Pokémon, +0 PRESSURE from her actions).
+
+- She uses HAZE only when PRESSURE unexpectedly benefits the player (e.g., player is using Liminal Pokémon that are gaining from PRESSURE escalation somehow — rare edge case).
+
+- Against Liminal player teams: she fights as a standard type matchup. No TP system applies to her side. She switches to coverage moves if the PRESSURE system is neutralized.
+
+**GYM 6  ·  Poison Type**
+
+**KOGA**
+
+PURPLE HAZE
+
+**Competitive Theme: Attrition Management and Active Rotation**
+
+**6.1  Core Environmental Model**
+
+**Field Constant: **All non-Poison Pokémon are immediately poisoned upon entering the arena. Unconditional. The question is how fast the poison acts, not whether it acts.
+
+**State Variable: **MIASMA DENSITY — 0 (THIN) / 1 (LOW) / 2 (THICK) / 3 (DENSE)
+
+| **Archetype / Layer \ DENSITY** | **THIN (0)** | **LOW (1)** | **THICK (2)** | **DENSE (3)** |
+| --- | --- | --- | --- | --- |
+| Aerial (High layer) | 1/32/turn | 1/32/turn | 1/16/turn | 1/16/turn |
+| Mountain (Mid layer) | 1/16/turn | 1/16/turn | 1/8/turn | 1/8/turn |
+| Ground-bound / Cave / Swimmer (Floor) | 1/16/turn | 1/8/turn | 1/8/turn | 1/4/turn |
+| Poison-native (any layer) | Immune | Immune | Immune | Immune |
+
+**Transition Rules**
+
+- TOXIC category moves → +1 DENSITY.
+
+- POWDER/SPORE category moves (Sleep Powder, Spore, Moth Scales, Spike Barrage) → +1 DENSITY.
+
+- SMOKESCREEN (SUPPRESSION) → +1 DENSITY (occlusive particles amplify miasma).
+
+- BLAST category (Self-Destruct, Explosion) → +2 DENSITY immediately.
+
+- WIND category → −2 DENSITY per use. Primary active management tool.
+
+- DISPLACEMENT category → −1 DENSITY per use. Partial dispersal.
+
+- Rain Dance (weather SUPPORT) → −1 DENSITY (rainfall washes particulate down).
+
+- HAZE → DENSITY resets to 0 immediately.
+
+**6.2  Additional Mechanical Rules**
+
+| **Trigger** | **Effect** |
+| --- | --- |
+| ACID (TOXIC category) | Standard toxic damage + drops target one layer (permanently for this switch-in). A Floor Pokémon hit by Acid: if already at Floor, poisons at current DENSITY rate instantly (accelerated). Koga's most efficient double-function move. |
+| Contact moves by Aerial Pokémon | To reach a ground-level opponent, Aerial must descend through the miasma. On the turn a Contact move is used: Aerial takes the Floor layer poison rate for that turn, not their Aerial rate. Returns to Aerial rate next turn. Repeated Contact builds meaningful accumulated exposure. |
+| AGILITY used by non-Poison | SPE and EVA increase apply normally. Additional: increased movement speed = faster breathing = 1.5× current DENSITY poison rate for 2 turns post-use. The cost of speed in a toxic atmosphere. |
+| REST by non-Poison | During sleep: reduced biological activity = poison rate halved for sleep duration. Awakening resumes full DENSITY rate. REST provides a brief metabolic slowdown, not a cure. |
+| Antidote / Heal from Bag | Clears current poison status. Pokémon is immediately re-poisoned (still breathing miasma). Buys one clean turn before poison resumes at current DENSITY rate. Strategic delay tool — not a solution. |
+| Poison-native vs Koga coverage | Koga explicitly runs Psychic-type and Ground-type coverage for Poison-immune compositions. Structural immunity is anticipated. |
+
+**6.3  Key Move Interactions**
+
+| **Category** | **Effect on DENSITY** | **Specific Examples** |
+| --- | --- | --- |
+| TOXIC | +1 DENSITY. ACID additionally drops target layer. | Toxic, Acid, Venom Shot, Sludge, Poison Gas, Gastro Acid — all accumulate DENSITY. Koga chains these deliberately. |
+| POWDER/SPORE | +1 DENSITY. | Spore (signature of Parasyte — 100% sleep + DENSITY), Moth Scales (PARALYSIS/POISON/SLEEP + DENSITY), Sleep Powder, Stun Spore. Powder/Spore in this arena serves double duty: status AND DENSITY escalation. |
+| WIND | −2 DENSITY. | Gust, Whirlwind, Hurricane. Aerial Pokémon natively have Wind moves — they are simultaneously the most survivable archetype AND the most capable DENSITY managers. Pidgeot's Hurricane is the single best per-turn DENSITY management move available to the player. |
+| BLAST | +2 DENSITY. | Self-Destruct, Explosion. A player Pokémon using Explosion in this arena accelerates DENSITY for their remaining team. Double-penalty: explosion damage AND DENSITY spike. |
+| DISPLACEMENT | −1 DENSITY. | Whirlwind (also WIND: −2 DENSITY total when both apply), Roar. Partial dispersal. Less efficient than WIND alone but available on more Pokémon. |
+| HAZE | Resets DENSITY to 0. | Complete reset. Koga never uses HAZE himself. Player HAZE use is countered by Koga immediately using a TOXIC move to begin re-accumulation. |
+
+**6.4  Strategic Layer**
+
+Rotation timing is the core skill. The player's non-Poison Pokémon are on a timer determined by their archetype and the current DENSITY. The optimal rhythm: use a Ground-bound Pokémon for 1–2 turns, switch before DENSE kills it, let the switched-out Pokémon recover HP with bag items, bring it back when DENSITY has been partially reduced by a Wind user. Aerial Pokémon with Wind moves are the linchpin: they survive longest and actively reduce the field state.
+
+**6.5  Type Interaction Reframing**
+
+| **Type** | **Why Still Effective** | **Arena Cost** |
+| --- | --- | --- |
+| Poison | Complete DENSITY immunity. Full field freedom. | Koga has explicit Psychic and Ground coverage. Type immunity to miasma does not mean immunity to Koga's team. |
+| Flying | Aerial characteristic: best DENSITY survival. Wind moves available natively. | Contact-reliant Flying moves require descent to Floor layer on use turn. At DENSE: Floor layer = 1/4 HP that turn. Projectile Flying moves avoid this entirely. |
+| Ground | Immune to Poison-type moves (type immunity). | Ground characteristic = Floor layer exposure. Type immunity to Poison-type moves does NOT confer miasma immunity. Ground types breathe the same air. This is the key asymmetry: Ground types take 1/4 HP/turn from miasma at DENSE while being immune to Koga's Toxic moves. |
+| Psychic | Super-effective vs Poison. No DENSITY interaction from Psychic-Wave moves. | Ground-bound characteristic if using Ground-bound Psychic-types. Maximum floor exposure. |
+
+**6.6  AI Utilization Model**
+
+- Opens with ACID on the first Ground-bound Pokémon (if present) — immediately poisons and drops layer before the player can respond.
+
+- Chains TOXIC + POWDER/SPORE to reach DENSE (3) within 3–4 turns.
+
+- Against Aerial Pokémon: waits for a Contact move (descent turn), applies Toxic that turn to poison at Floor rate before they return to Aerial layer.
+
+- Against Poison-native teams: immediately switches to Psychic/Ground coverage. Does not waste TOXIC on immune targets.
+
+- When player uses Antidote: uses TOXIC the very next turn to immediately re-apply poison.
+
+- Never uses WIND or HAZE (both reduce his DENSITY investment).
+
+**GYM 7  ·  Fire Type — DOUBLE BATTLE**
+
+**COLEMAN**
+
+FIRE IN THE HOLE
+
+**Competitive Theme: Spread Attacks and Multi-Target Management**
+
+**7.1  Core Environmental Model**
+
+**Battle Format: **DOUBLE BATTLE. Coleman fields two Pokémon simultaneously. Player fields two Pokémon simultaneously.
+
+**State Variable 1: **COMBUSTION — 0 / 1 / 2 / 3 / 4 (INFERNO)
+
+**State Variable 2 / Overlay: **STEAM — ABSENT / PRESENT (3 turns; 4 turns after BLAST)
+
+**Field Constant: **Entry burn: 1/16 HP on switch-in (every switch). Fire-native type: immune to entry burn. Rock/Steel archetype (Terrain-dweller): immune to entry burn. Aquatic characteristic: 2× entry burn (thermal shock). Aerial: immune to entry burn (no channel contact).
+
+| **COMBUSTION** | **Fire Move Behavior** | **Ice Move Power** |
+| --- | --- | --- |
+| 0–1 | No spread. Single-target. +25% Fire power baseline. | −25% (ambient heat degrades cold). |
+| 2 | 25% chance to spread to one adjacent target at 50% power. | −25%. |
+| 3 | Auto-spread to one adjacent target at 75% power. No roll. | Fails: 0%. |
+| 4 (INFERNO) | All Fire moves hit all valid targets on both sides. Primary target: 100% power. All secondary targets: 50% power. | Fails: 0%. |
+
+**Transition Rules**
+
+- THERMAL-HOT category → +1 COMBUSTION per use. Capped at 4.
+
+- AQUATIC category → −2 COMBUSTION AND activates STEAM for 3 turns.
+
+- THERMAL-COLD → −1 COMBUSTION AND clears STEAM immediately.
+
+- BLAST (Self-Destruct, Explosion) → +2 COMBUSTION AND activates STEAM for 4 turns simultaneously. The detonation releases stored heat across the forge.
+
+- SUPPORT: HELPING HAND (Coleman's partner) targeting Coleman's attacker → +1 COMBUSTION immediately AND grants the next THERMAL-HOT move auto-spread regardless of actual COMBUSTION level. One-time override per HELPING HAND use. Coleman's most efficient two-turn escalation tool.
+
+**7.2  System Rules**
+
+| **State** | **Fire Power** | **Ice Power** | **All-Pokémon ACC** |
+| --- | --- | --- | --- |
+| COMBUSTION 0–1, DRY | +25% | −25% | Normal. |
+| COMBUSTION 2–3, DRY | +25% (spread begins). | 0% at 3. | Normal. |
+| COMBUSTION 4 (INFERNO), DRY | +50% | 0% | Normal. |
+| ANY COMBUSTION + STEAM | +10% above current COMBUSTION baseline. | 0% at 2+. | −1 all (Fire-native immune to ACC penalty). |
+| COMBUSTION 4 + STEAM | +60% total. | 0% | −2 all non-Fire-native. Worst-case state. |
+
+**Double Battle Specific Rules**
+
+- Earthquake and other GROUND-IMPACT spread moves in double battle: hit all non-Aerial on both sides. Player's own Ground-bound second Pokémon takes damage. Bringing an Aerial partner neutralizes self-damage.
+
+- Explosion/Self-Destruct at COMBUSTION 3+: hits all targets both sides at full power (not halved). At COMBUSTION 4 + STEAM: EXPLOSION deals full power to all four slots simultaneously.
+
+- Rock/Steel Terrain-dweller archetype: heat absorption — 2 full turns on field without switching grants +1 DEF. If struck by AQUATIC during the 2-turn window: +25% AQUATIC damage (thermal quench shock). Player must time Water hits outside the absorption window.
+
+**7.3  Interaction Matrix — Move Categories**
+
+| **Category** | **Effect on State** | **Modified by State** |
+| --- | --- | --- |
+| THERMAL-HOT | +1 COMBUSTION. | Power +25–50% depending on COMBUSTION. Each use improves next use's spread tier. Self-reinforcing escalation. Wildfire, Fireball, Flamethrower are primary COMBUSTION escalators. Flare Swirl (DOT+BURN) applies burn while escalating. |
+| AQUATIC | −2 COMBUSTION + STEAM 3 turns. | Type-correct. Significantly reduces spread tier. But STEAM: +10% fire power AND −1 ACC all for 3 turns. Every Water use simultaneously reduces COMBUSTION and raises effective fire damage. Aquatic archetype: 2× entry burn, but their moves are the best COMBUSTION managers. |
+| THERMAL-COLD | −1 COMBUSTION + clears STEAM. | Fails at 0% power at COMBUSTION 4 (INFERNO). At COMBUSTION 0–3: −25% power from ambient heat. Must reduce COMBUSTION with AQUATIC first before THERMAL-COLD has offensive value. Clears STEAM always regardless of damage. |
+| BLAST | +2 COMBUSTION + STEAM 4 turns. | At COMBUSTION 3+: hits all 4 slots at full power. Followed by 4-turn STEAM at elevated COMBUSTION. Coleman uses BLAST as his endgame sequence when a Pokémon drops below 30% HP. |
+| HELPING HAND (SUPPORT) | +1 COMBUSTION + auto-spread on next THERMAL-HOT. | Coleman's partner uses HELPING HAND → Coleman's attacker uses Wildfire/Flamethrower: guaranteed spread at any COMBUSTION level. Two-Pokémon coordination that makes the double battle format mechanically meaningful. |
+| GROUND-IMPACT | No COMBUSTION effect. | Rock/Steel archetype: entry burn immune, DEF gain at 2 turns. Earthquake in double: hits all non-Aerial both sides. Player must pair Ground-Impact user with an Aerial partner to avoid self-damage. |
+
+**7.4  Strategic Layer**
+
+The double battle format means two decisions per turn. Managing COMBUSTION (via AQUATIC from one slot) while maintaining offensive pressure (from the other slot) is the core rhythm. Rock/Steel + Water is the optimal dual composition: Rock/Steel walls Fire and is entry-burn immune, Water manages COMBUSTION while accepting the STEAM trade.
+
+EXPLOSION timing is the fight-defining threat. When Coleman's Pokémon drops below 30% HP: if STEAM is not active, his partner uses AQUATIC on the same turn (generating STEAM) and EXPLOSION follows the next turn. Player must track HP thresholds and reduce COMBUSTION below 3 before the threshold or ensure THERMAL-COLD was recently used to clear STEAM.
+
+**7.5  Type Interaction Reframing**
+
+| **Type** | **Why Still Effective** | **Arena Cost** |
+| --- | --- | --- |
+| Water | Type-effective. −2 COMBUSTION per use. Core spread-tier management. | 2× entry burn (Aquatic archetype). STEAM activates every use (+10% Fire power, −1 ACC all, 3 turns). Water is self-compounding — correct and costly simultaneously. |
+| Rock/Ground | Entry burn immune (Rock/Steel archetype). Walls Fire damage. Earthquake: GROUND-IMPACT spread. | Earthquake hits player's own non-Aerial second Pokémon in double battle. Must pair with Aerial partner to neutralize self-hit. Heat absorption window: quench risk if Water hits during 2-turn window. |
+| Ice | −1 COMBUSTION + clears STEAM. Strategic sequencing value. | 0% power at COMBUSTION 4. Requires prior AQUATIC use to reduce COMBUSTION below INFERNO. Ice is the second step in a two-step sequence, not an opener. |
+| Fire mirror | Fire-native: entry burn immune, ACC penalty immune, STAB. | Each use: +1 COMBUSTION. Player's Fire moves accelerate Coleman's INFERNO. Correct archetype (immune to the arena), counterproductive state contribution. |
+
+**7.6  AI Utilization Model**
+
+- Turn 1: Partner HELPING HAND + Coleman THERMAL-HOT. +1 COMBUSTION from HELPING HAND, +1 from Thermal-Hot, auto-spread applied to the fire move. Immediate multi-target pressure from turn 1.
+
+- Subsequent turns: Coleman Thermal-Hot every turn. Partner alternates between HELPING HAND and coverage/secondary attacks.
+
+- EXPLOSION sequence: Pokémon below 30% HP + STEAM not active → partner uses AQUATIC that turn to generate STEAM → Coleman detonates next turn. If STEAM already active: immediate detonation.
+
+- Against Rock/Steel: switches to Ground or Fighting coverage. Recognizes structural wall and adapts.
+
+- Against high-frequency player switching: accepts entry burn as passive chip damage — focuses main attacks on the player's second, less-protected Pokémon rather than chasing the Water user.
+
+**Gym Progression — Competitive Theme Summary**
+
+| **Gym** | **Leader** | **Type** | **Competitive Theme** |
+| --- | --- | --- | --- |
+| 1 | Jiro | Flying | Turn Order and Crits — speed creates the CRIT window. Farfetch'd+Leek+FULL is its expression. |
+| 2 | Brock | Ground | Terrain Restraint — the field deteriorates under you. Preparation determines who suffers. |
+| 3 | Misty | Water | Momentum — TIDE ownership compounds advantage. Timing CONDITION transitions is the fight. |
+| 4 | Surge | Electric | Risk Management — CHARGE accumulates toward a cascade. Three paths to management; each has a cost. |
+| 5 | Erika | Ghost | Resource Exhaustion (TP) — wrong team composition is punished through exhaustion before KO. |
+| 6 | Koga | Poison | Attrition and Rotation — your Pokémon are poisoned from moment 1. The fight is how long you last. |
+| 7 | Coleman | Fire | Spread and Sequencing — two-front battle where timing Water and predicting EXPLOSION are the win conditions. |
+
+**Pocket Monsters: Minamoto  ·  Arena Ecology System  ·  v2.1  ·  PrimordialRune**
