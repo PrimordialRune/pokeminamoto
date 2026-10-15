@@ -4212,7 +4212,9 @@ static void HandleTurnActionSelectionState(void)
                                                             gBattleMons[gActiveBattler].moves[i],
                                                             gBattleMons[gActiveBattler].ppBonuses,
                                                             i);
+                            moveInfo.tpCost[i] = GetMoveTPCost(gBattleMons[gActiveBattler].moves[i]);
                         }
+                        moveInfo.currentTp = GetBattlerTP(gActiveBattler);
 
                         BtlController_EmitChooseMove(B_COMM_TO_CONTROLLER, (gBattleTypeFlags & BATTLE_TYPE_DOUBLE) != 0, FALSE, &moveInfo);
                         MarkBattlerForControllerExec(gActiveBattler);

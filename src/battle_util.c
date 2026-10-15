@@ -1063,7 +1063,7 @@ u8 TrySetCantSelectMoveBattleScript(void)
         }
     }
 
-    if (gBattleMons[gActiveBattler].pp[gBattleBufferB[gActiveBattler][2]] == 0)
+    if (!CanBattlerAffordMoveSlot(gActiveBattler, gBattleBufferB[gActiveBattler][2]))
     {
         if (gBattleTypeFlags & BATTLE_TYPE_PALACE)
         {
@@ -1097,8 +1097,8 @@ u8 CheckMoveLimitations(u8 battler, u8 unusableMoves, u8 check)
         // No move
         if (gBattleMons[battler].moves[i] == MOVE_NONE && check & MOVE_LIMITATION_ZEROMOVE)
             unusableMoves |= gBitTable[i];
-        // No PP
-        if (gBattleMons[battler].pp[i] == 0 && check & MOVE_LIMITATION_PP)
+        // Not enough TP (replaces the PP check)
+        if (!CanBattlerAffordMoveSlot(battler, i) && check & MOVE_LIMITATION_PP)
             unusableMoves |= gBitTable[i];
         // Disable
         if (gBattleMons[battler].moves[i] == gDisableStructs[battler].disabledMove && check & MOVE_LIMITATION_DISABLED)
@@ -1458,6 +1458,7 @@ enum
     ENDTURN_TAUNT,
     ENDTURN_YAWN,
     ENDTURN_ITEMS2,
+    ENDTURN_TP_REGEN,
     ENDTURN_BATTLER_COUNT
 };
 
@@ -1767,6 +1768,11 @@ u8 DoBattlerEndTurnEffects(void)
                         effect++;
                     }
                 }
+                gBattleStruct->turnEffectsTracker++;
+                break;
+            case ENDTURN_TP_REGEN:  // technical points
+                if (gBattleMons[gActiveBattler].hp != 0)
+                    RegenBattlerTP(gActiveBattler);
                 gBattleStruct->turnEffectsTracker++;
                 break;
             case ENDTURN_BATTLER_COUNT:  // done
@@ -4035,4 +4041,62 @@ u8 IsMonDisobedient(void)
             return 1;
         }
     }
+}
+
+void InitBattleTP(void)
+{
+    s32 side, i;
+
+    for (side = 0; side < NUM_BATTLE_SIDES; side++)
+    {
+        for (i = 0; i < PARTY_SIZE; i++)
+            gBattleStruct->tp[side][i] = TP_MAX;
+    }
+}
+
+// Placeholder until species get their own INT stat: reuse base Sp. Def,
+// which the Gen 1 Special split leaves free.
+u8 GetSpeciesIntelligence(u16 species)
+{
+    return gSpeciesInfo[species].baseSpDefense;
+}
+
+u8 GetMoveTPCost(u16 move)
+{
+    return gBattleMoves[move].tpCost;
+}
+
+static u8 *GetBattlerTPPtr(u8 battler)
+{
+    return &gBattleStruct->tp[GetBattlerSide(battler)][gBattlerPartyIndexes[battler]];
+}
+
+u8 GetBattlerTP(u8 battler)
+{
+    return *GetBattlerTPPtr(battler);
+}
+
+bool8 CanBattlerAffordMoveSlot(u8 battler, u8 moveSlot)
+{
+    return GetBattlerTP(battler) >= GetMoveTPCost(gBattleMons[battler].moves[moveSlot]);
+}
+
+void SpendBattlerTP(u8 battler, u8 amount)
+{
+    u8 *tp = GetBattlerTPPtr(battler);
+
+    if (*tp > amount)
+        *tp -= amount;
+    else
+        *tp = 0;
+}
+
+void RegenBattlerTP(u8 battler)
+{
+    u8 *tp = GetBattlerTPPtr(battler);
+    u16 newTp = *tp + TP_REGEN_BASE + GetSpeciesIntelligence(gBattleMons[battler].species) / TP_REGEN_INT_DIVISOR;
+
+    if (newTp > TP_MAX)
+        newTp = TP_MAX;
+    *tp = newTp;
 }

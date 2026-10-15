@@ -225,11 +225,11 @@ static const struct WindowTemplate sStandardBattleWindowTemplates[] =
         .paletteNum = 5,
         .baseBlock = 0x0330,
     },
-    [B_WIN_PP] = {
+    [B_WIN_PP] = { // "TP" label
         .bg = 0,
         .tilemapLeft = 21,
         .tilemapTop = 55,
-        .width = 4,
+        .width = 3,
         .height = 2,
         .paletteNum = 5,
         .baseBlock = 0x0290,
@@ -243,14 +243,14 @@ static const struct WindowTemplate sStandardBattleWindowTemplates[] =
         .paletteNum = 5,
         .baseBlock = 0x0298,
     },
-    [B_WIN_PP_REMAINING] = {
+    [B_WIN_PP_REMAINING] = { // TP cost / current TP, wide enough for "xx/100"
         .bg = 0,
-        .tilemapLeft = 25,
+        .tilemapLeft = 24,
         .tilemapTop = 55,
-        .width = 4,
+        .width = 5,
         .height = 2,
         .paletteNum = 5,
-        .baseBlock = 0x0298,
+        .baseBlock = 0x0296,
     },
     [B_WIN_MOVE_TYPE] = {
         .bg = 0,
