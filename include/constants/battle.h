@@ -49,6 +49,12 @@ enum BattlerId
 #define B_SIDE_OPPONENT   1
 #define NUM_BATTLE_SIDES  2
 
+// Technical Points (TP) replace PP in battle. Every mon starts each battle at TP_MAX,
+// pays a move's tpCost to use it and regains TP_REGEN_BASE + INT / TP_REGEN_INT_DIVISOR at the end of each turn.
+#define TP_MAX                 100
+#define TP_REGEN_BASE          5
+#define TP_REGEN_INT_DIVISOR   8
+
 #define B_FLANK_LEFT  0
 #define B_FLANK_RIGHT 1
 
