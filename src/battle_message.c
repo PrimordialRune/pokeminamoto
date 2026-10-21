@@ -22,6 +22,7 @@
 #include "window.h"
 #include "constants/battle_dome.h"
 #include "constants/battle_string_ids.h"
+#include "constants/rgb.h"
 #include "constants/frontier_util.h"
 #include "constants/items.h"
 #include "constants/moves.h"
@@ -1274,13 +1275,21 @@ const u8 gText_WhatWillWallyDo[] = _("What will\nWALLY do?");
 const u8 gText_LinkStandby[] = _("{PAUSE 16}Link standby…");
 const u8 gText_BattleMenu[] = _("FIGHT{CLEAR_TO 56}BAG\nPOKéMON{CLEAR_TO 56}RUN");
 const u8 gText_SafariZoneMenu[] = _("BALL{CLEAR_TO 56}{POKEBLOCK}\nGO NEAR{CLEAR_TO 56}RUN");
+// Action menu buttons, in cursor order: top left, top right, bottom left, bottom right
+const u8 gText_BattleMenuFight[] = _("FIGHT");
+const u8 gText_BattleMenuPkmn[] = _("PKMN");
+const u8 gText_BattleMenuItem[] = _("ITEM");
+const u8 gText_BattleMenuRun[] = _("RUN");
+const u8 gText_SafariMenuBall[] = _("BALL");
+const u8 gText_SafariMenuBlock[] = _("{POKEBLOCK}");
+const u8 gText_SafariMenuNear[] = _("NEAR");
 const u8 gText_MoveInterfacePP[] = _("TP ");
 const u8 gText_MoveInterfaceType[] = _("TYPE/");
 const u8 gText_MoveInterfacePpType[] = _("{PALETTE 5}{COLOR_HIGHLIGHT_SHADOW DYNAMIC_COLOR4 DYNAMIC_COLOR5 DYNAMIC_COLOR6}PP\nTYPE/");
 const u8 gText_MoveInterfaceDynamicColors[] = _("{PALETTE 5}{COLOR_HIGHLIGHT_SHADOW DYNAMIC_COLOR4 DYNAMIC_COLOR5 DYNAMIC_COLOR6}");
 const u8 gText_WhichMoveToForget4[] = _("{PALETTE 5}{COLOR_HIGHLIGHT_SHADOW DYNAMIC_COLOR4 DYNAMIC_COLOR5 DYNAMIC_COLOR6}Which move should\nbe forgotten?");
 const u8 gText_BattleYesNoChoice[] = _("{PALETTE 5}{COLOR_HIGHLIGHT_SHADOW DYNAMIC_COLOR4 DYNAMIC_COLOR5 DYNAMIC_COLOR6}Yes\nNo");
-const u8 gText_BattleSwitchWhich[] = _("{PALETTE 5}{COLOR_HIGHLIGHT_SHADOW DYNAMIC_COLOR4 DYNAMIC_COLOR5 DYNAMIC_COLOR6}Switch\nwhich?");
+const u8 gText_BattleSwitchWhich[] = _("Switch\nwhich?");
 const u8 gText_BattleSwitchWhich2[] = _("{PALETTE 5}{COLOR_HIGHLIGHT_SHADOW DYNAMIC_COLOR4 DYNAMIC_COLOR5 DYNAMIC_COLOR6}");
 const u8 gText_BattleSwitchWhich3[] = _("{UP_ARROW}");
 const u8 gText_BattleSwitchWhich4[] = _("{ESCAPE 4}");
@@ -1498,104 +1507,104 @@ static const struct BattleWindowText sTextOnWindowsInfo_Normal[] =
         .shadowColor = 6,
     },
     [B_WIN_ACTION_MENU] = {
-        .fillValue = PIXEL_FILL(0xE),
+        .fillValue = PIXEL_FILL(B_UI_PAL_NAVY),
         .fontId = FONT_NORMAL,
         .x = 0,
         .y = 1,
         .speed = 0,
-        .fgColor = 13,
-        .bgColor = 14,
-        .shadowColor = 15,
+        .fgColor = B_UI_PAL_WHITE,
+        .bgColor = B_UI_PAL_NAVY,
+        .shadowColor = B_UI_PAL_CYAN_SHADOW,
     },
     [B_WIN_MOVE_NAME_1] = {
-        .fillValue = PIXEL_FILL(0xE),
+        .fillValue = PIXEL_FILL(B_UI_PAL_SLATE),
         .fontId = FONT_NARROW,
-        .x = 0,
+        .x = 1,
         .y = 1,
         .speed = 0,
-        .fgColor = 13,
-        .bgColor = 14,
-        .shadowColor = 15,
+        .fgColor = B_UI_PAL_WHITE,
+        .bgColor = B_UI_PAL_SLATE,
+        .shadowColor = B_UI_PAL_NAVY,
     },
     [B_WIN_MOVE_NAME_2] = {
-        .fillValue = PIXEL_FILL(0xE),
+        .fillValue = PIXEL_FILL(B_UI_PAL_SLATE),
         .fontId = FONT_NARROW,
-        .x = 0,
+        .x = 1,
         .y = 1,
         .speed = 0,
-        .fgColor = 13,
-        .bgColor = 14,
-        .shadowColor = 15,
+        .fgColor = B_UI_PAL_WHITE,
+        .bgColor = B_UI_PAL_SLATE,
+        .shadowColor = B_UI_PAL_NAVY,
     },
     [B_WIN_MOVE_NAME_3] = {
-        .fillValue = PIXEL_FILL(0xE),
+        .fillValue = PIXEL_FILL(B_UI_PAL_SLATE),
         .fontId = FONT_NARROW,
-        .x = 0,
+        .x = 1,
         .y = 1,
         .speed = 0,
-        .fgColor = 13,
-        .bgColor = 14,
-        .shadowColor = 15,
+        .fgColor = B_UI_PAL_WHITE,
+        .bgColor = B_UI_PAL_SLATE,
+        .shadowColor = B_UI_PAL_NAVY,
     },
     [B_WIN_MOVE_NAME_4] = {
-        .fillValue = PIXEL_FILL(0xE),
+        .fillValue = PIXEL_FILL(B_UI_PAL_SLATE),
         .fontId = FONT_NARROW,
-        .x = 0,
+        .x = 1,
         .y = 1,
         .speed = 0,
-        .fgColor = 13,
-        .bgColor = 14,
-        .shadowColor = 15,
+        .fgColor = B_UI_PAL_WHITE,
+        .bgColor = B_UI_PAL_SLATE,
+        .shadowColor = B_UI_PAL_NAVY,
     },
     [B_WIN_PP] = {
-        .fillValue = PIXEL_FILL(0xE),
+        .fillValue = PIXEL_FILL(B_UI_PAL_NAVY),
         .fontId = FONT_NARROW,
         .x = 0,
         .y = 1,
         .speed = 0,
-        .fgColor = 12,
-        .bgColor = 14,
-        .shadowColor = 11,
+        .fgColor = B_UI_PAL_LCD,
+        .bgColor = B_UI_PAL_NAVY,
+        .shadowColor = B_UI_PAL_NAVY,
     },
-    [B_WIN_DUMMY] = {
-        .fillValue = PIXEL_FILL(0xE),
-        .fontId = FONT_NORMAL,
-        .x = 0,
+    [B_WIN_TP_LEFT] = {
+        .fillValue = PIXEL_FILL(B_UI_PAL_NAVY),
+        .fontId = FONT_NARROW,
+        .x = 1,
         .y = 1,
         .speed = 0,
-        .fgColor = 13,
-        .bgColor = 14,
-        .shadowColor = 15,
+        .fgColor = B_UI_PAL_LCD,
+        .bgColor = B_UI_PAL_NAVY,
+        .shadowColor = B_UI_PAL_NAVY,
     },
     [B_WIN_PP_REMAINING] = {
-        .fillValue = PIXEL_FILL(0xE),
-        .fontId = FONT_NARROW, // fits "100/100"
-        .x = 2,
+        .fillValue = PIXEL_FILL(B_UI_PAL_NAVY),
+        .fontId = FONT_NARROW,
+        .x = 1,
         .y = 1,
         .speed = 0,
         .fgColor = 12,
-        .bgColor = 14,
+        .bgColor = B_UI_PAL_NAVY,
         .shadowColor = 11,
     },
     [B_WIN_MOVE_TYPE] = {
-        .fillValue = PIXEL_FILL(0xE),
-        .fontId = FONT_NARROW,
-        .x = 0,
+        .fillValue = PIXEL_FILL(B_UI_PAL_NAVY),
+        .fontId = FONT_NORMAL,
+        .x = 1,
         .y = 1,
         .speed = 0,
-        .fgColor = 13,
-        .bgColor = 14,
-        .shadowColor = 15,
+        .fgColor = B_UI_PAL_TYPE,
+        .bgColor = B_UI_PAL_NAVY,
+        .shadowColor = B_UI_PAL_NAVY,
     },
     [B_WIN_SWITCH_PROMPT] = {
-        .fillValue = PIXEL_FILL(0xE),
+        .fillValue = PIXEL_FILL(B_UI_PAL_NAVY),
         .fontId = FONT_NARROW,
         .x = 0,
         .y = 1,
         .speed = 0,
-        .fgColor = 13,
-        .bgColor = 14,
-        .shadowColor = 15,
+        .fgColor = B_UI_PAL_WHITE,
+        .bgColor = B_UI_PAL_NAVY,
+        .shadowColor = B_UI_PAL_NAVY,
     },
     [B_WIN_YESNO] = {
         .fillValue = PIXEL_FILL(0xE),
@@ -1797,7 +1806,7 @@ static const struct BattleWindowText sTextOnWindowsInfo_Arena[] =
         .bgColor = 14,
         .shadowColor = 11,
     },
-    [B_WIN_DUMMY] = {
+    [B_WIN_TP_LEFT] = {
         .fillValue = PIXEL_FILL(0xE),
         .fontId = FONT_NORMAL,
         .x = 0,
@@ -3030,21 +3039,28 @@ void BattlePutTextOnWindow(const u8 *text, u8 windowId)
     }
 }
 
+// TP cost colors in the move menu, as {text, shadow}, indexed by GetTPCostToCurrentTPState
+static const u16 sTPCostColors[][2] =
+{
+    [1] = {RGB(31, 23, 1), RGB(4, 3, 7)},   // affordable only once more: yellow
+    [2] = {RGB(28, 11, 13), RGB(4, 3, 7)},  // can't afford: coral red
+    [3] = {RGB(20, 24, 13), RGB(4, 3, 7)},  // fine: LCD green
+};
+
 void SetPpNumbersPaletteInMoveSelection(void)
 {
     struct ChooseMoveStruct *chooseMoveStruct = (struct ChooseMoveStruct *)(&gBattleBufferA[gActiveBattler][4]);
-    const u16 *palPtr = gPPTextPalette;
     u8 var = GetTPCostToCurrentTPState(chooseMoveStruct->tpCost[gMoveSelectionCursor[gActiveBattler]],
                                        chooseMoveStruct->currentTp);
 
-    gPlttBufferUnfaded[BG_PLTT_ID(5) + 12] = palPtr[(var * 2) + 0];
-    gPlttBufferUnfaded[BG_PLTT_ID(5) + 11] = palPtr[(var * 2) + 1];
+    gPlttBufferUnfaded[BG_PLTT_ID(5) + 12] = sTPCostColors[var][0];
+    gPlttBufferUnfaded[BG_PLTT_ID(5) + 11] = sTPCostColors[var][1];
 
     CpuCopy16(&gPlttBufferUnfaded[BG_PLTT_ID(5) + 12], &gPlttBufferFaded[BG_PLTT_ID(5) + 12], PLTT_SIZEOF(1));
     CpuCopy16(&gPlttBufferUnfaded[BG_PLTT_ID(5) + 11], &gPlttBufferFaded[BG_PLTT_ID(5) + 11], PLTT_SIZEOF(1));
 }
 
-// Picks the gPPTextPalette color for the TP numbers in the move menu:
+// Picks the sTPCostColors color for the TP cost in the move menu:
 // 3 = normal, 1 = affordable only once more, 2 = can't afford.
 u8 GetTPCostToCurrentTPState(u8 tpCost, u8 currentTp)
 {

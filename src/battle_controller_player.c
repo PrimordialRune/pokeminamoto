@@ -12,6 +12,7 @@
 #include "data.h"
 #include "item.h"
 #include "item_menu.h"
+#include "menu.h"
 #include "link.h"
 #include "main.h"
 #include "m4a.h"
@@ -102,6 +103,7 @@ static void MoveSelectionDisplayPpNumber(void);
 static void MoveSelectionDisplayPpString(void);
 static void MoveSelectionDisplayMoveType(void);
 static void MoveSelectionDisplayMoveNames(void);
+static void MoveSelectionDisplayEffectiveness(void);
 static void HandleMoveSwitching(void);
 static void SwitchIn_HandleSoundAndEnd(void);
 static void WaitForMonSelection(void);
@@ -251,11 +253,11 @@ static void HandleInputChooseAction(void)
         case 0: // Top left
             BtlController_EmitTwoReturnValues(B_COMM_TO_ENGINE, B_ACTION_USE_MOVE, 0);
             break;
-        case 1: // Top right
-            BtlController_EmitTwoReturnValues(B_COMM_TO_ENGINE, B_ACTION_USE_ITEM, 0);
-            break;
-        case 2: // Bottom left
+        case 1: // Top right, PKMN
             BtlController_EmitTwoReturnValues(B_COMM_TO_ENGINE, B_ACTION_SWITCH, 0);
+            break;
+        case 2: // Bottom left, ITEM
+            BtlController_EmitTwoReturnValues(B_COMM_TO_ENGINE, B_ACTION_USE_ITEM, 0);
             break;
         case 3: // Bottom right
             BtlController_EmitTwoReturnValues(B_COMM_TO_ENGINE, B_ACTION_RUN, 0);
@@ -265,7 +267,7 @@ static void HandleInputChooseAction(void)
     }
     else if (JOY_NEW(DPAD_LEFT))
     {
-        if (gActionSelectionCursor[gActiveBattler] & 1) // if is B_ACTION_USE_ITEM or B_ACTION_RUN
+        if (gActionSelectionCursor[gActiveBattler] & 1) // if is PKMN or RUN
         {
             PlaySE(SE_SELECT);
             ActionSelectionDestroyCursorAt(gActionSelectionCursor[gActiveBattler]);
@@ -275,7 +277,7 @@ static void HandleInputChooseAction(void)
     }
     else if (JOY_NEW(DPAD_RIGHT))
     {
-        if (!(gActionSelectionCursor[gActiveBattler] & 1)) // if is B_ACTION_USE_MOVE or B_ACTION_SWITCH
+        if (!(gActionSelectionCursor[gActiveBattler] & 1)) // if is FIGHT or ITEM
         {
             PlaySE(SE_SELECT);
             ActionSelectionDestroyCursorAt(gActionSelectionCursor[gActiveBattler]);
@@ -285,7 +287,7 @@ static void HandleInputChooseAction(void)
     }
     else if (JOY_NEW(DPAD_UP))
     {
-        if (gActionSelectionCursor[gActiveBattler] & 2) // if is B_ACTION_SWITCH or B_ACTION_RUN
+        if (gActionSelectionCursor[gActiveBattler] & 2) // if is ITEM or RUN
         {
             PlaySE(SE_SELECT);
             ActionSelectionDestroyCursorAt(gActionSelectionCursor[gActiveBattler]);
@@ -295,7 +297,7 @@ static void HandleInputChooseAction(void)
     }
     else if (JOY_NEW(DPAD_DOWN))
     {
-        if (!(gActionSelectionCursor[gActiveBattler] & 2)) // if is B_ACTION_USE_MOVE or B_ACTION_USE_ITEM
+        if (!(gActionSelectionCursor[gActiveBattler] & 2)) // if is FIGHT or PKMN
         {
             PlaySE(SE_SELECT);
             ActionSelectionDestroyCursorAt(gActionSelectionCursor[gActiveBattler]);
@@ -1486,66 +1488,222 @@ static void MoveSelectionDisplayPpNumber(void)
 
     SetPpNumbersPaletteInMoveSelection();
     moveInfo = (struct ChooseMoveStruct *)(&gBattleBufferA[gActiveBattler][4]);
-    // Shows the selected move's TP cost, then the mon's current TP
-    txtPtr = ConvertIntToDecimalStringN(gDisplayedStringBattle, moveInfo->tpCost[gMoveSelectionCursor[gActiveBattler]], STR_CONV_MODE_LEFT_ALIGN, 3);
-    *(txtPtr)++ = CHAR_SLASH;
-    ConvertIntToDecimalStringN(txtPtr, moveInfo->currentTp, STR_CONV_MODE_LEFT_ALIGN, 3);
-
+    // The selected move's TP cost, then the mon's current TP out of TP_MAX
+    ConvertIntToDecimalStringN(gDisplayedStringBattle, moveInfo->tpCost[gMoveSelectionCursor[gActiveBattler]], STR_CONV_MODE_LEFT_ALIGN, 3);
     BattlePutTextOnWindow(gDisplayedStringBattle, B_WIN_PP_REMAINING);
+
+    txtPtr = ConvertIntToDecimalStringN(gDisplayedStringBattle, moveInfo->currentTp, STR_CONV_MODE_LEFT_ALIGN, 3);
+    *(txtPtr)++ = CHAR_SLASH;
+    ConvertIntToDecimalStringN(txtPtr, TP_MAX, STR_CONV_MODE_LEFT_ALIGN, 3);
+    BattlePutTextOnWindow(gDisplayedStringBattle, B_WIN_TP_LEFT);
 }
+
+// Type names are printed in a color for their type, in BG palette 5 slot B_UI_PAL_TYPE
+static const u16 sTypeTextColors[NUMBER_OF_MON_TYPES] =
+{
+    [TYPE_NORMAL]   = RGB(25, 25, 22),
+    [TYPE_FIGHTING] = RGB(30, 17, 13),
+    [TYPE_FLYING]   = RGB(23, 21, 31),
+    [TYPE_POISON]   = RGB(26, 17, 27),
+    [TYPE_GROUND]   = RGB(29, 25, 15),
+    [TYPE_ROCK]     = RGB(26, 23, 12),
+    [TYPE_BUG]      = RGB(23, 26, 8),
+    [TYPE_GHOST]    = RGB(21, 18, 26),
+    [TYPE_STEEL]    = RGB(25, 25, 28),
+    [TYPE_MYSTERY]  = RGB(17, 24, 22),
+    [TYPE_FIRE]     = RGB(31, 18, 8),
+    [TYPE_WATER]    = RGB(13, 21, 31),
+    [TYPE_GRASS]    = RGB(20, 24, 13),
+    [TYPE_ELECTRIC] = RGB(31, 26, 8),
+    [TYPE_PSYCHIC]  = RGB(31, 17, 21),
+    [TYPE_ICE]      = RGB(21, 28, 28),
+    [TYPE_DRAGON]   = RGB(20, 16, 31),
+    [TYPE_DARK]     = RGB(23, 20, 18),
+};
 
 static void MoveSelectionDisplayMoveType(void)
 {
-    u8 *txtPtr;
     struct ChooseMoveStruct *moveInfo = (struct ChooseMoveStruct *)(&gBattleBufferA[gActiveBattler][4]);
+    u8 type = gBattleMoves[moveInfo->moves[gMoveSelectionCursor[gActiveBattler]]].type;
 
-    txtPtr = StringCopy(gDisplayedStringBattle, gText_MoveInterfaceType);
-    *(txtPtr)++ = EXT_CTRL_CODE_BEGIN;
-    *(txtPtr)++ = EXT_CTRL_CODE_FONT;
-    *(txtPtr)++ = FONT_NORMAL;
-
-    StringCopy(txtPtr, gTypeNames[gBattleMoves[moveInfo->moves[gMoveSelectionCursor[gActiveBattler]]].type]);
+    gPlttBufferUnfaded[BG_PLTT_ID(5) + B_UI_PAL_TYPE] = sTypeTextColors[type];
+    gPlttBufferFaded[BG_PLTT_ID(5) + B_UI_PAL_TYPE] = sTypeTextColors[type];
+    StringCopy(gDisplayedStringBattle, gTypeNames[type]);
     BattlePutTextOnWindow(gDisplayedStringBattle, B_WIN_MOVE_TYPE);
+    MoveSelectionDisplayEffectiveness();
 }
 
+enum {
+    EFFECT_ICON_NEUTRAL,
+    EFFECT_ICON_WEAK,
+    EFFECT_ICON_STRONG,
+    EFFECT_ICON_NONE,
+    EFFECT_ICON_HIDDEN,
+};
+
+// How the move's type matches up against the defender, read from gTypeEffectiveness.
+// Abilities and held items are left out: the icon shows the type chart only.
+static u8 GetMoveEffectivenessIcon(u16 move, u8 defender)
+{
+    s32 i;
+    u16 multiplier = TYPE_MUL_NORMAL;
+    u8 moveType = gBattleMoves[move].type;
+    u8 type1 = gBattleMons[defender].types[0];
+    u8 type2 = gBattleMons[defender].types[1];
+
+    if (move == MOVE_NONE || gBattleMoves[move].power == 0)
+        return EFFECT_ICON_HIDDEN;
+
+    for (i = 0; TYPE_EFFECT_ATK_TYPE(i) != TYPE_ENDTABLE; i += 3)
+    {
+        if (TYPE_EFFECT_ATK_TYPE(i) != moveType)
+            continue;
+        if (TYPE_EFFECT_DEF_TYPE(i) == type1)
+            multiplier = multiplier * TYPE_EFFECT_MULTIPLIER(i) / TYPE_MUL_NORMAL;
+        if (TYPE_EFFECT_DEF_TYPE(i) == type2 && type1 != type2)
+            multiplier = multiplier * TYPE_EFFECT_MULTIPLIER(i) / TYPE_MUL_NORMAL;
+    }
+
+    if (multiplier == TYPE_MUL_NO_EFFECT)
+        return EFFECT_ICON_NONE;
+    if (multiplier < TYPE_MUL_NORMAL)
+        return EFFECT_ICON_WEAK;
+    if (multiplier > TYPE_MUL_NORMAL)
+        return EFFECT_ICON_STRONG;
+    return EFFECT_ICON_NEUTRAL;
+}
+
+// Draws the effectiveness icon next to the move type: = neutral, down arrow not very effective,
+// up arrow super effective, x no effect. Single battles only, since doubles have two foes.
+static void MoveSelectionDisplayEffectiveness(void)
+{
+    struct ChooseMoveStruct *moveInfo = (struct ChooseMoveStruct *)(&gBattleBufferA[gActiveBattler][4]);
+    u16 tiles[4];
+    u8 icon = EFFECT_ICON_HIDDEN;
+    s32 i;
+
+    if (!(gBattleTypeFlags & BATTLE_TYPE_DOUBLE))
+        icon = GetMoveEffectivenessIcon(moveInfo->moves[gMoveSelectionCursor[gActiveBattler]],
+                                        GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT));
+
+    for (i = 0; i < 4; i++)
+    {
+        if (icon == EFFECT_ICON_HIDDEN)
+            tiles[i] = B_TEXTBOX_TILE_NAVY;
+        else
+            tiles[i] = B_TEXTBOX_TILE_EFFECT_ICON + icon * 4 + i;
+    }
+    CopyToBgTilemapBufferRect_ChangePalette(0, tiles, 27, 55, 2, 2, 0x11);
+    CopyBgTilemapBufferToVram(0);
+}
+
+enum {
+    MOVE_NAME_NORMAL,
+    MOVE_NAME_SELECTED,
+    MOVE_NAME_HELD, // the move picked up with SELECT to swap places
+};
+
+static void MoveSelectionDrawMoveName(u8 position, u8 style)
+{
+    struct ChooseMoveStruct *moveInfo = (struct ChooseMoveStruct *)(&gBattleBufferA[gActiveBattler][4]);
+    u8 windowId = B_WIN_MOVE_NAME_1 + position;
+    u8 colors[3];
+
+    switch (style)
+    {
+    default:
+    case MOVE_NAME_NORMAL:
+        colors[0] = B_UI_PAL_SLATE;
+        colors[1] = B_UI_PAL_WHITE;
+        colors[2] = B_UI_PAL_NAVY;
+        break;
+    case MOVE_NAME_SELECTED:
+        colors[0] = B_UI_PAL_NAVY;
+        colors[1] = B_UI_PAL_LCD;
+        colors[2] = B_UI_PAL_NAVY;
+        break;
+    case MOVE_NAME_HELD:
+        colors[0] = B_UI_PAL_CYAN;
+        colors[1] = B_UI_PAL_WHITE;
+        colors[2] = B_UI_PAL_CYAN_SHADOW;
+        break;
+    }
+    FillWindowPixelBuffer(windowId, PIXEL_FILL(colors[0]));
+    AddTextPrinterParameterized4(windowId, FONT_NARROW, 1, 1, 0, 0, colors, TEXT_SKIP_DRAW, gMoveNames[moveInfo->moves[position]]);
+    PutWindowTilemap(windowId);
+    CopyWindowToVram(windowId, COPYWIN_FULL);
+}
+
+// baseTileNum is Emerald's cursor graphic: 0 for the move cursor, 27 for the swap target, 29 for the held move
 static void MoveSelectionCreateCursorAt(u8 cursorPosition, u8 baseTileNum)
 {
-    u16 src[2];
-    src[0] = baseTileNum + 1;
-    src[1] = baseTileNum + 2;
-
-    CopyToBgTilemapBufferRect_ChangePalette(0, src, 9 * (cursorPosition & 1) + 1, 55 + (cursorPosition & 2), 1, 2, 0x11);
-    CopyBgTilemapBufferToVram(0);
+    MoveSelectionDrawMoveName(cursorPosition, baseTileNum == 29 ? MOVE_NAME_HELD : MOVE_NAME_SELECTED);
 }
 
 static void MoveSelectionDestroyCursorAt(u8 cursorPosition)
 {
-    u16 src[2];
-    src[0] = 0x1016;
-    src[1] = 0x1016;
+    MoveSelectionDrawMoveName(cursorPosition, MOVE_NAME_NORMAL);
+}
 
-    CopyToBgTilemapBufferRect_ChangePalette(0, src, 9 * (cursorPosition & 1) + 1, 55 + (cursorPosition & 2), 1, 2, 0x11);
-    CopyBgTilemapBufferToVram(0);
+#define ACTION_BUTTON_WIDTH  34
+#define ACTION_BUTTON_HEIGHT 15
+
+static const u8 *const sActionMenuLabels[] =
+{
+    gText_BattleMenuFight, gText_BattleMenuPkmn,
+    gText_BattleMenuItem,  gText_BattleMenuRun,
+};
+
+static const u8 *const sSafariMenuLabels[] =
+{
+    gText_SafariMenuBall, gText_SafariMenuBlock,
+    gText_SafariMenuNear, gText_BattleMenuRun,
+};
+
+// The action menu is four buttons drawn into B_WIN_ACTION_MENU. The selected one turns navy.
+static void DrawActionButton(u8 position, bool8 selected)
+{
+    const u8 *label = (gBattleTypeFlags & BATTLE_TYPE_SAFARI) ? sSafariMenuLabels[position] : sActionMenuLabels[position];
+    u8 x = 1 + (position & 1) * (ACTION_BUTTON_WIDTH + 2);
+    u8 y = 1 + (position >> 1) * (ACTION_BUTTON_HEIGHT + 1);
+    u8 colors[3];
+
+    colors[0] = TEXT_COLOR_TRANSPARENT;
+    colors[1] = B_UI_PAL_WHITE;
+    if (selected)
+    {
+        colors[2] = B_UI_PAL_NAVY;
+        FillWindowPixelRect(B_WIN_ACTION_MENU, PIXEL_FILL(B_UI_PAL_NAVY), x, y, ACTION_BUTTON_WIDTH, ACTION_BUTTON_HEIGHT);
+    }
+    else
+    {
+        colors[2] = B_UI_PAL_CYAN_SHADOW;
+        FillWindowPixelRect(B_WIN_ACTION_MENU, PIXEL_FILL(B_UI_PAL_CYAN), x, y, ACTION_BUTTON_WIDTH, ACTION_BUTTON_HEIGHT - 1);
+        FillWindowPixelRect(B_WIN_ACTION_MENU, PIXEL_FILL(B_UI_PAL_CYAN_SHADOW), x, y + ACTION_BUTTON_HEIGHT - 1, ACTION_BUTTON_WIDTH, 1);
+    }
+    AddTextPrinterParameterized4(B_WIN_ACTION_MENU, FONT_NORMAL, x + (ACTION_BUTTON_WIDTH - GetStringWidth(FONT_NORMAL, label, 0)) / 2, y,
+                                 0, 0, colors, TEXT_SKIP_DRAW, label);
+    PutWindowTilemap(B_WIN_ACTION_MENU);
+    CopyWindowToVram(B_WIN_ACTION_MENU, COPYWIN_FULL);
+}
+
+void ActionSelectionDrawMenu(void)
+{
+    s32 i;
+
+    FillWindowPixelBuffer(B_WIN_ACTION_MENU, PIXEL_FILL(B_UI_PAL_NAVY));
+    for (i = 0; i < 4; i++)
+        DrawActionButton(i, FALSE);
 }
 
 void ActionSelectionCreateCursorAt(u8 cursorPosition, u8 baseTileNum)
 {
-    u16 src[2];
-    src[0] = 1;
-    src[1] = 2;
-
-    CopyToBgTilemapBufferRect_ChangePalette(0, src, 7 * (cursorPosition & 1) + 16, 35 + (cursorPosition & 2), 1, 2, 0x11);
-    CopyBgTilemapBufferToVram(0);
+    DrawActionButton(cursorPosition, TRUE);
 }
 
 void ActionSelectionDestroyCursorAt(u8 cursorPosition)
 {
-    u16 src[2];
-    src[0] = 0x1016;
-    src[1] = 0x1016;
-
-    CopyToBgTilemapBufferRect_ChangePalette(0, src, 7 * (cursorPosition & 1) + 16, 35 + (cursorPosition & 2), 1, 2, 0x11);
-    CopyBgTilemapBufferToVram(0);
+    DrawActionButton(cursorPosition, FALSE);
 }
 
 void CB2_SetUpReshowBattleScreenAfterMenu(void)
@@ -2575,15 +2733,9 @@ static void HandleChooseActionAfterDma3(void)
 
 static void PlayerHandleChooseAction(void)
 {
-    s32 i;
-
     gBattlerControllerFuncs[gActiveBattler] = HandleChooseActionAfterDma3;
     BattleTv_ClearExplosionFaintCause();
-    BattlePutTextOnWindow(gText_BattleMenu, B_WIN_ACTION_MENU);
-
-    for (i = 0; i < 4; i++)
-        ActionSelectionDestroyCursorAt(i);
-
+    ActionSelectionDrawMenu();
     ActionSelectionCreateCursorAt(gActionSelectionCursor[gActiveBattler], 0);
     BattleStringExpandPlaceholdersToDisplayedString(gText_WhatWillPkmnDo);
     BattlePutTextOnWindow(gDisplayedStringBattle, B_WIN_ACTION_PROMPT);

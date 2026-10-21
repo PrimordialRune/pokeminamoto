@@ -164,9 +164,9 @@ static const struct WindowTemplate sStandardBattleWindowTemplates[] =
 {
     [B_WIN_MSG] = {
         .bg = 0,
-        .tilemapLeft = 2,
+        .tilemapLeft = 1,
         .tilemapTop = 15,
-        .width = 26,
+        .width = 27,
         .height = 4,
         .paletteNum = 0,
         .baseBlock = 0x0090,
@@ -184,14 +184,14 @@ static const struct WindowTemplate sStandardBattleWindowTemplates[] =
         .bg = 0,
         .tilemapLeft = 17,
         .tilemapTop = 35,
-        .width = 12,
+        .width = 9,
         .height = 4,
         .paletteNum = 5,
         .baseBlock = 0x0190,
     },
     [B_WIN_MOVE_NAME_1] = {
         .bg = 0,
-        .tilemapLeft = 2,
+        .tilemapLeft = 1,
         .tilemapTop = 55,
         .width = 8,
         .height = 2,
@@ -200,7 +200,7 @@ static const struct WindowTemplate sStandardBattleWindowTemplates[] =
     },
     [B_WIN_MOVE_NAME_2] = {
         .bg = 0,
-        .tilemapLeft = 11,
+        .tilemapLeft = 9,
         .tilemapTop = 55,
         .width = 8,
         .height = 2,
@@ -209,7 +209,7 @@ static const struct WindowTemplate sStandardBattleWindowTemplates[] =
     },
     [B_WIN_MOVE_NAME_3] = {
         .bg = 0,
-        .tilemapLeft = 2,
+        .tilemapLeft = 1,
         .tilemapTop = 57,
         .width = 8,
         .height = 2,
@@ -218,7 +218,7 @@ static const struct WindowTemplate sStandardBattleWindowTemplates[] =
     },
     [B_WIN_MOVE_NAME_4] = {
         .bg = 0,
-        .tilemapLeft = 11,
+        .tilemapLeft = 9,
         .tilemapTop = 57,
         .width = 8,
         .height = 2,
@@ -227,45 +227,45 @@ static const struct WindowTemplate sStandardBattleWindowTemplates[] =
     },
     [B_WIN_PP] = { // "TP" label
         .bg = 0,
-        .tilemapLeft = 21,
-        .tilemapTop = 55,
-        .width = 3,
+        .tilemapLeft = 19,
+        .tilemapTop = 57,
+        .width = 2,
         .height = 2,
         .paletteNum = 5,
         .baseBlock = 0x0290,
     },
-    [B_WIN_DUMMY] = {
-        .bg = 0,
-        .tilemapLeft = 21,
-        .tilemapTop = 57,
-        .width = 0,
-        .height = 0,
-        .paletteNum = 5,
-        .baseBlock = 0x0298,
-    },
-    [B_WIN_PP_REMAINING] = { // TP cost / current TP, wide enough for "xx/100"
+    [B_WIN_TP_LEFT] = { // the mon's current TP, "xx/100"
         .bg = 0,
         .tilemapLeft = 24,
-        .tilemapTop = 55,
+        .tilemapTop = 57,
         .width = 5,
         .height = 2,
         .paletteNum = 5,
-        .baseBlock = 0x0296,
+        .baseBlock = 0x029a,
     },
-    [B_WIN_MOVE_TYPE] = {
+    [B_WIN_PP_REMAINING] = { // TP cost of the selected move
         .bg = 0,
         .tilemapLeft = 21,
         .tilemapTop = 57,
-        .width = 8,
+        .width = 3,
         .height = 2,
         .paletteNum = 5,
-        .baseBlock = 0x02a0,
+        .baseBlock = 0x0294,
+    },
+    [B_WIN_MOVE_TYPE] = {
+        .bg = 0,
+        .tilemapLeft = 19,
+        .tilemapTop = 55,
+        .width = 6,
+        .height = 2,
+        .paletteNum = 5,
+        .baseBlock = 0x02a4,
     },
     [B_WIN_SWITCH_PROMPT] = {
         .bg = 0,
-        .tilemapLeft = 21,
+        .tilemapLeft = 19,
         .tilemapTop = 55,
-        .width = 8,
+        .width = 10,
         .height = 4,
         .paletteNum = 5,
         .baseBlock = 0x02b0,
@@ -455,7 +455,7 @@ static const struct WindowTemplate sBattleArenaWindowTemplates[] =
         .paletteNum = 5,
         .baseBlock = 0x0290,
     },
-    [B_WIN_DUMMY] = {
+    [B_WIN_TP_LEFT] = {
         .bg = 0,
         .tilemapLeft = 21,
         .tilemapTop = 57,
@@ -603,20 +603,20 @@ static const struct BattleBackground sBattleEnvironmentTable[] =
 {
     [BATTLE_ENVIRONMENT_GRASS] =
     {
-        .tileset = gBattleEnvironmentTiles_TallGrass,
-        .tilemap = gBattleEnvironmentTilemap_TallGrass,
+        .tileset = gBattleEnvironmentTiles_Field,
+        .tilemap = gBattleEnvironmentTilemap_Field,
         .entryTileset = gBattleEnvironmentAnimTiles_TallGrass,
         .entryTilemap = gBattleEnvironmentAnimTilemap_TallGrass,
-        .palette = gBattleEnvironmentPalette_TallGrass,
+        .palette = gBattleEnvironmentPalette_FieldGrass,
     },
 
     [BATTLE_ENVIRONMENT_LONG_GRASS] =
     {
-        .tileset = gBattleEnvironmentTiles_LongGrass,
-        .tilemap = gBattleEnvironmentTilemap_LongGrass,
+        .tileset = gBattleEnvironmentTiles_Field,
+        .tilemap = gBattleEnvironmentTilemap_Field,
         .entryTileset = gBattleEnvironmentAnimTiles_LongGrass,
         .entryTilemap = gBattleEnvironmentAnimTilemap_LongGrass,
-        .palette = gBattleEnvironmentPalette_LongGrass,
+        .palette = gBattleEnvironmentPalette_FieldLongGrass,
     },
 
     [BATTLE_ENVIRONMENT_SAND] =
@@ -684,11 +684,11 @@ static const struct BattleBackground sBattleEnvironmentTable[] =
 
     [BATTLE_ENVIRONMENT_PLAIN] =
     {
-        .tileset = gBattleEnvironmentTiles_Building,
-        .tilemap = gBattleEnvironmentTilemap_Building,
+        .tileset = gBattleEnvironmentTiles_Field,
+        .tilemap = gBattleEnvironmentTilemap_Field,
         .entryTileset = gBattleEnvironmentAnimTiles_Building,
         .entryTilemap = gBattleEnvironmentAnimTilemap_Building,
-        .palette = gBattleEnvironmentPalette_Plain,
+        .palette = gBattleEnvironmentPalette_FieldPlain,
     },
 };
 
