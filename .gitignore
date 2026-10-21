@@ -54,3 +54,6 @@ data/maps/*/scripts.inc
 data/scripts/*.inc
 /pokeemerald-*.png
 /pokeemerald_modern-*.png
+
+# Porytiles binary (tools/setup-cloud.sh downloads it)
+tools/porytiles/bin/

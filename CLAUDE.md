@@ -184,6 +184,10 @@ Helper macro in `species.h`:
 
 Tutor slots are **index-based** (not name-based). `TUTOR(MOVE_ROLLOUT)` means "bit for tutor slot TUTOR_MOVE_ROLLOUT", not the move Rollout. The actual move taught by each slot is defined in `gTutorMoves[]` in `src/data/pokemon/tutor_learnsets.h`. The slot→move mapping was updated so Gen 2/3 slots now teach Gen 1 equivalents, but the slot identifiers in `sTutorLearnsets[]` bitfields must remain as the original `TUTOR_MOVE_xxx` names.
 
+### Tilesets
+
+New Kanto tilesets are built with Porytiles 2.0.0 (installed by `tools/setup-cloud.sh` into `tools/porytiles/bin/`). `tools/porytiles/tileset.sh` turns a map mockup into a primary + secondary pair and packs palettes optimally; see `tools/porytiles/README.md`. Don't hand-edit `porytiles_bin/` or `porytiles/tilesets/*/config.yaml`: they are generated.
+
 ### Scripting
 
 Map and shared scripts are written in [Poryscript](https://github.com/huderlem/poryscript): edit `data/maps/*/scripts.pory` and `data/scripts/*.pory`. The generated `scripts.inc` and `data/scripts/*.inc` files are gitignored and rebuilt by `make` (or `make generated`) with the committed Linux binary `tools/poryscript/poryscript`. The `preproc` tool handles custom string encoding and script macros. Script constants live in `include/constants/`.

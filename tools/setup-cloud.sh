@@ -63,4 +63,28 @@ if command -v npm >/dev/null 2>&1; then
     done
 fi
 
+# --- 4. Porytiles (tileset compiler, not committed: the binary is ~100 MB) ------
+PORYTILES_VERSION=v2.0.0
+PORYTILES_SHA256=68c904c3ff707ed2d6de0372073f165e627ec3ee7855eedbb3363184cc9212a4
+if [ "$(uname -m)" = "x86_64" ] && ! [ -x tools/porytiles/bin/porytiles ]; then
+    echo ">> downloading Porytiles $PORYTILES_VERSION"
+    ptmp="$(mktemp -d)"
+    if curl -fsSL -o "$ptmp/pt.zip" \
+        "https://github.com/grunt-lucas/porytiles/releases/download/$PORYTILES_VERSION/porytiles-linux-amd64.zip" &&
+       echo "$PORYTILES_SHA256  $ptmp/pt.zip" | sha256sum -c --quiet; then
+        mkdir -p tools/porytiles/bin
+        python3 -c "import zipfile,sys; zipfile.ZipFile(sys.argv[1]).extract('porytiles-linux-amd64/porytiles', sys.argv[2])" \
+            "$ptmp/pt.zip" "$ptmp"
+        install -m 755 "$ptmp/porytiles-linux-amd64/porytiles" tools/porytiles/bin/porytiles
+    else
+        echo "!! Porytiles download failed; tools/porytiles/tileset.sh will be unavailable"
+    fi
+    rm -rf "$ptmp"
+fi
+# Python deps for tools/porytiles/*.py (optional)
+python3 -c "import PIL, ortools" 2>/dev/null || \
+    python3 -m pip install --quiet pillow ortools 2>/dev/null || \
+    python3 -m pip install --quiet --break-system-packages pillow ortools 2>/dev/null || \
+    echo "!! pip install pillow ortools failed; tools/porytiles/*.py will be unavailable"
+
 echo ">> done. Build with: make modern -j\$(nproc)   (classic: make -j\$(nproc))"
