@@ -130,7 +130,7 @@ def count(pals):
     return n_p, len(pals) - n_p
 
 
-def suggest_merges(prim, sec, eight_bit, keep_free, base, seconds):
+def suggest_merges(prim_sets, sec_sets, eight_bit, keep_free, base, seconds):
     """Try folding each color into its two nearest colors; list merges that free a palette."""
     colors = sorted(set().union(*prim_sets, *sec_sets))
 
