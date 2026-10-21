@@ -2,7 +2,7 @@
 # Rebuild Masara Town (gTileset_Kanto + gTileset_MasaraTown + LAYOUT_MASARA_TOWN)
 # from Omar's mockup. Run from WSL or Linux:
 #
-#   WATER_STYLE=soft WATER_SEED=80 tools/porytiles/masara.sh MAP.png BUILDINGS.png
+#   WATER_STYLE=calm WATER_SEED=1 tools/porytiles/masara.sh MAP.png BUILDINGS.png
 #
 # MAP.png = MyRes/Maps/Pallet_Town_v4.png without the Red sprite baked in by his
 # door, BUILDINGS.png = MyRes/Tilesets/pallet_v2.png. Steps: merge near-identical
@@ -20,7 +20,7 @@ mkdir -p "$out"
 
 python3 "$HERE/fit_tiles.py" "$map" "$ref" "$out/fit.png"
 python3 "$HERE/water_anim.py" "$out/fit.png" "$out/masara.png" "$out/anim/water" \
-    --style "${WATER_STYLE:-soft}" --seed "${WATER_SEED:-80}" --preview "$out/water.gif"
+    --style "${WATER_STYLE:-calm}" --seed "${WATER_SEED:-1}" --preview "$out/water.gif"
 # Crops (north field, lab garden, Red's planter) and the plaza flower bushes.
 flowers=()
 for b in 338,319,351 225,320,231 190,334,207 366,334,383 194,383,207 369,384,375 222,398,239 338,399,351; do

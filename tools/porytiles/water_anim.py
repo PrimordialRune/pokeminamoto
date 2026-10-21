@@ -34,6 +34,7 @@ WATER = np.array([0x6B, 0x63, 0xFF])
 FOAM = np.array([0xA8, 0xA3, 0xFF])
 FRAMES = 8
 REPEAT = 32
+CALM_BAND = 0
 
 DARK = np.array([0x58, 0x50, 0xE0])   # trough shade; the one color this adds
 FLIPS = [lambda t: t, lambda t: t[:, ::-1], lambda t: t[::-1], lambda t: t[::-1, ::-1]]
@@ -119,7 +120,7 @@ def wave_calm(k, ph):
 
 
 STYLES = {'swell': wave_swell, 'soft': wave_soft, 'gsc': wave_gsc, 'calm': wave_calm}
-wave = wave_soft
+wave = wave_calm
 
 
 def shore_distance(water):
@@ -143,6 +144,11 @@ def build(m, water, dist, cs):
     for k in range(FRAMES):
         f = m.copy()
         f[ys, xs] = wave(k, cs)[ys % REPEAT, xs % REPEAT]
+        if CALM_BAND:
+            # Still water along the bank: shore tiles then depend only on the
+            # bank shape and the foam, not on where the swells fall.
+            near = dd <= CALM_BAND
+            f[ys[near], xs[near]] = WATER
         # Foam periods divide the 32-pixel repeat, so tiles stay periodic.
         s1 = (dd == 1) & (((xs + ys) // 2 + k) % 4 != 0)
         s2 = (dd == 2) & (((xs - ys) // 2 + k) % 4 == 0) & (k % 4 < 2)
@@ -155,21 +161,33 @@ def build(m, water, dist, cs):
 
 def animated_tiles(F, water, fix):
     """Unique animated tiles (frame sequences). With fix, rewrite frame 0 of tiles
-    whose key frame clashes with a different sequence; returns the clash count."""
+    whose key frame clashes with a different sequence; returns the clash count.
+    Copies of one sequence get the same rewrite, so they still share a tile."""
     _, H, W, _ = F.shape
-    seqs, tiles, clashes = {}, [], 0
+    seqs, tiles, clashes, nudged = {}, [], 0, {}
+
+    def keys(seq):
+        kb, i = min((FLIPS[i](seq[0]).tobytes(), i) for i in range(4))
+        return kb, np.stack([FLIPS[i](s) for s in seq]).tobytes()
+
     for ty in range(0, H, 8):
         for tx in range(0, W, 8):
             if not water[ty:ty + 8, tx:tx + 8].any():
                 continue
             seq = F[:, ty:ty + 8, tx:tx + 8]
-            kb, i = min((FLIPS[i](seq[0]).tobytes(), i) for i in range(4))
-            cs = np.stack([FLIPS[i](s) for s in seq]).tobytes()
+            kb, cs = keys(seq)
+            if kb in seqs and seqs[kb] != cs:
+                clashes += 1
+                if not fix:
+                    continue
+                canon = min(np.stack([FLIPS[i](s) for s in seq]).tobytes() for i in range(4))
+                if canon not in nudged:
+                    # first later frame whose image is free to serve as this key
+                    nudged[canon] = next((j for j in range(1, FRAMES)
+                                          if keys(np.concatenate([seq[j:j + 1], seq[1:]]))[0] not in seqs), 1)
+                seq[0] = seq[nudged[canon]]
+                kb, cs = keys(seq)
             if kb in seqs:
-                if seqs[kb] != cs:
-                    clashes += 1
-                    if fix:
-                        F[0, ty:ty + 8, tx:tx + 8] = F[1 + clashes % (FRAMES - 1), ty:ty + 8, tx:tx + 8]
                 continue
             seqs[kb] = cs
             tiles.append(seq.copy())
@@ -182,13 +200,15 @@ def main():
     ap.add_argument('out_map')
     ap.add_argument('anim_dir')
     ap.add_argument('--seed', type=int, default=1)
-    ap.add_argument('--style', choices=sorted(STYLES), default='soft')
+    ap.add_argument('--style', choices=sorted(STYLES), default='calm')
     ap.add_argument('--frames', type=int, default=16, help='8 or 16 (the loop must divide 16 steps)')
+    ap.add_argument('--repeat', type=int, default=32, help='wave tile size in pixels: 32, or 16 (fewer tiles)')
+    ap.add_argument('--calm-band', type=int, default=0, help='no swells within this many pixels of the bank')
     ap.add_argument('--preview')
     a = ap.parse_args()
 
-    global FRAMES, wave
-    FRAMES, wave = a.frames, STYLES[a.style]
+    global FRAMES, REPEAT, CALM_BAND, wave
+    FRAMES, REPEAT, CALM_BAND, wave = a.frames, a.repeat, a.calm_band, STYLES[a.style]
     m = np.array(Image.open(a.map).convert('RGB'))
     water = (m == WATER).all(-1)
     dist = shore_distance(water)
