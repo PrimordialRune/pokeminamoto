@@ -104,6 +104,7 @@ static void MoveSelectionDisplayPpString(void);
 static void MoveSelectionDisplayMoveType(void);
 static void MoveSelectionDisplayMoveNames(void);
 static void MoveSelectionDisplayEffectiveness(void);
+static void ActionSelectionShowFoeInfo(void);
 static void HandleMoveSwitching(void);
 static void SwitchIn_HandleSoundAndEnd(void);
 static void WaitForMonSelection(void);
@@ -329,6 +330,38 @@ static void HandleInputChooseAction(void)
     {
         SwapHpBarsWithHpText();
     }
+    else if (JOY_NEW(R_BUTTON))
+    {
+        // Talk: a stub until the Talk system exists. It doesn't use up the turn.
+        PlaySE(SE_SELECT);
+        BattlePutTextOnWindow(gText_TalkStub, B_WIN_ACTION_PROMPT);
+    }
+    else if (JOY_NEW(SELECT_BUTTON))
+    {
+        // SEL.: info about the foe. For now its name and types; the full screen,
+        // filled in by battling a species more, comes later.
+        PlaySE(SE_SELECT);
+        ActionSelectionShowFoeInfo();
+    }
+}
+
+static void ActionSelectionShowFoeInfo(void)
+{
+    u8 foe = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
+    u8 *txtPtr;
+
+    if (gAbsentBattlerFlags & gBitTable[foe])
+        foe = GetBattlerAtPosition(B_POSITION_OPPONENT_RIGHT);
+
+    txtPtr = StringCopy(gDisplayedStringBattle, gSpeciesNames[gBattleMons[foe].species]);
+    *(txtPtr)++ = CHAR_NEWLINE;
+    txtPtr = StringCopy(txtPtr, gTypeNames[gBattleMons[foe].types[0]]);
+    if (gBattleMons[foe].types[1] != gBattleMons[foe].types[0])
+    {
+        *(txtPtr)++ = CHAR_SLASH;
+        StringCopy(txtPtr, gTypeNames[gBattleMons[foe].types[1]]);
+    }
+    BattlePutTextOnWindow(gDisplayedStringBattle, B_WIN_ACTION_PROMPT);
 }
 
 static void UNUSED UnusedEndBounceEffect(void)

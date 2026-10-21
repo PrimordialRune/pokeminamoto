@@ -1276,6 +1276,8 @@ const u8 gText_LinkStandby[] = _("{PAUSE 16}Link standby…");
 const u8 gText_BattleMenu[] = _("FIGHT{CLEAR_TO 56}BAG\nPOKéMON{CLEAR_TO 56}RUN");
 const u8 gText_SafariZoneMenu[] = _("BALL{CLEAR_TO 56}{POKEBLOCK}\nGO NEAR{CLEAR_TO 56}RUN");
 // Action menu buttons, in cursor order: top left, top right, bottom left, bottom right
+// Placeholders until Talk (R) and the battle info screen (SELECT) exist
+const u8 gText_TalkStub[] = _("You call out…\nNo answer yet.");
 const u8 gText_BattleMenuFight[] = _("FIGHT");
 const u8 gText_BattleMenuPkmn[] = _("PKMN");
 const u8 gText_BattleMenuItem[] = _("ITEM");
