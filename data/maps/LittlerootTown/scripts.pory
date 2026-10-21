@@ -1075,3 +1075,12 @@ text LittlerootTown_Text_Gen1ResearcherDeclined {
     }
 }
 
+
+// Masara Town uses the Kanto tilesets, which a map connection can't swap in,
+// so the south edge warps there instead.
+script LittlerootTown_EventScript_ToMasara {
+    lockall
+    warp(MAP_MASARA_TOWN, 15, 1)
+    waitstate
+    releaseall
+}

@@ -1049,6 +1049,14 @@ LittlerootTown_EventScript_Gen1Researcher_6:
 	goto LittlerootTown_EventScript_Gen1Researcher_1
 
 
+LittlerootTown_EventScript_ToMasara::
+	lockall
+	warp MAP_MASARA_TOWN, 15, 1
+	waitstate
+	releaseall
+	return
+
+
 LittlerootTown_Text_Gen1ResearcherGreeting::
 	.string "OLD MAN: I have spent my whole life\n"
 	.string "studying the original 151 POKéEMON.\l"

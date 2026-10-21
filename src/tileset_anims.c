@@ -1186,3 +1186,6 @@ static void BlendAnimPalette_BattleDome_FloorLightsNoBlend(u16 timer)
             sSecondaryTilesetAnimCallback = NULL;
     }
 }
+
+// [Porytiles] Auto-generated include. Do not remove.
+#include "porytiles_generated/tilesets/kanto/generated_anim_code.h"

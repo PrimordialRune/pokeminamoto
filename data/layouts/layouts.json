@@ -200,6 +200,16 @@
       "secondary_tileset": "gTileset_Lab",
       "border_filepath": "data/layouts/LittlerootTown_ProfessorBirchsLabWithTable/border.bin",
       "blockdata_filepath": "data/layouts/LittlerootTown_ProfessorBirchsLabWithTable/map.bin"
+    },
+    {
+      "id": "LAYOUT_MASARA_TOWN",
+      "name": "MasaraTown_Layout",
+      "width": 40,
+      "height": 36,
+      "primary_tileset": "gTileset_Kanto",
+      "secondary_tileset": "gTileset_MasaraTown",
+      "border_filepath": "data/layouts/MasaraTown/border.bin",
+      "blockdata_filepath": "data/layouts/MasaraTown/map.bin"
     }
   ]
 }

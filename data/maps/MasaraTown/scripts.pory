@@ -1,0 +1,16 @@
+mapscripts MasaraTown_MapScripts {}
+
+script MasaraTown_EventScript_TownSign {
+    msgbox(format("MASARA TOWN\nThe pure white beginning."), MSGBOX_SIGN)
+}
+
+script MasaraTown_EventScript_RouteSign {
+    msgbox(format("ROUTE 1\nMASARA TOWN - TOKIWA CITY"), MSGBOX_SIGN)
+}
+
+script MasaraTown_EventScript_ToLittleroot {
+    lockall
+    warp(MAP_LITTLEROOT_TOWN, 10, 18)
+    waitstate
+    releaseall
+}
