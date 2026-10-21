@@ -3058,6 +3058,7 @@ extern const u32 gTrainerPalette_RubySapphireBrendan[];
 extern const u32 gTrainerPalette_RubySapphireMay[];
 
 extern const u8 gTrainerBackPic_Brendan[];
+extern const u32 gTrainerBackPicPalette_Brendan[];
 extern const u8 gTrainerBackPic_May[];
 extern const u8 gTrainerBackPic_Red[];
 extern const u8 gTrainerBackPic_Leaf[];
