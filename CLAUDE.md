@@ -60,6 +60,10 @@ rm build/emerald/src/<filename>.o && make -j$(nproc)
 
 ## Debugging
 
+### Headless emulator for agents (cloud and WSL)
+
+The `gba-debug` MCP server's `emu_*` tools run the ROM in a headless mGBA core (`tools/gba-emu/gbaemu`, built by `tools/setup-cloud.sh` from apt `libmgba-dev` + `gdb-multiarch`). Agents can boot the game, press buttons, take screenshots, set breakpoints/watchpoints on symbols or `file.c:line`, read and write memory, save/load states, and run any gdb command with full types (`emu_gdb "print gPlayerParty[0]"`, `bt`, `next`). Build with `make modern DINFO=1` first. Details and a typical session: `tools/gba-emu/README.md`.
+
 ### printf-style via mGBA
 
 1. Comment out `#define NDEBUG` in `include/config.h`
@@ -211,8 +215,8 @@ The game uses a cooperative multitasking system (`include/task.h`). Nearly all g
 ## Working remotely
 
 - **Remote Control (home PC):** sessions started in the Claude desktop app on the PC connect to Remote Control automatically, so they can be driven from the phone or claude.ai/code. The PC must be on and not asleep (the app keeps it awake only while Claude is working). Claude on Windows reaches the repo through the symlink and runs git/make via `wsl.exe` (the WSL rule above). mGBA, GDB and the `gba-debug` GDB tools only work here.
-- **Cloud sessions (claude.ai/code, from GitHub):** the repo is cloned fresh into an Ubuntu container. Set the environment's setup script to `tools/setup-cloud.sh` (about a minute; it builds agbcc). Both `make modern` (apt gcc 13) and classic `make` (agbcc) build there. No emulator, so verify by building and reading code; in-game checks happen on the PC. Commit and push before the session ends; the container is discarded.
-- **MCP servers** (`.mcp.json`): `porymap` (maps, scripts, palettes, builds) and `gba-debug` (disassembly, symbols, addr2line, map lookup; its `gdb_*` tools need mGBA + devkitARM gdb, so PC only). Both run with `node`; `tools/setup-cloud.sh` installs their deps.
+- **Cloud sessions (claude.ai/code, from GitHub):** the repo is cloned fresh into an Ubuntu container. Set the environment's setup script to `tools/setup-cloud.sh` (about a minute; it builds agbcc). Both `make modern` (apt gcc 13) and classic `make` (agbcc) build there. The headless emulator (`emu_*` tools) runs there too, so agents can boot the ROM, debug and screenshot it; play-feel checks still happen on the PC. Commit and push before the session ends; the container is discarded.
+- **MCP servers** (`.mcp.json`): `porymap` (maps, scripts, palettes, builds) and `gba-debug` (headless emulator `emu_*` tools, disassembly, symbols, addr2line, map lookup; its `gdb_*` tools attach to an external mGBA, e.g. the desktop one on the PC). Both run with `node`; `tools/setup-cloud.sh` installs their deps.
 
 ## Agents
 
