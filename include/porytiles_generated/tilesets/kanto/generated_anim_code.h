@@ -15,6 +15,14 @@
 // Frame Data (INCBIN statements)
 // ============================================
 
+const u16 gTilesetAnims_PorytilesManaged_Kanto_Crops_FrameF0[] = INCBIN_U16("data/tilesets/primary/kanto/porytiles_bin/anim/crops/f0.4bpp");
+const u16 gTilesetAnims_PorytilesManaged_Kanto_Crops_FrameF1[] = INCBIN_U16("data/tilesets/primary/kanto/porytiles_bin/anim/crops/f1.4bpp");
+const u16 gTilesetAnims_PorytilesManaged_Kanto_Crops_FrameF2[] = INCBIN_U16("data/tilesets/primary/kanto/porytiles_bin/anim/crops/f2.4bpp");
+
+const u16 gTilesetAnims_PorytilesManaged_Kanto_Flowers_FrameF0[] = INCBIN_U16("data/tilesets/primary/kanto/porytiles_bin/anim/flowers/f0.4bpp");
+const u16 gTilesetAnims_PorytilesManaged_Kanto_Flowers_FrameF1[] = INCBIN_U16("data/tilesets/primary/kanto/porytiles_bin/anim/flowers/f1.4bpp");
+const u16 gTilesetAnims_PorytilesManaged_Kanto_Flowers_FrameF2[] = INCBIN_U16("data/tilesets/primary/kanto/porytiles_bin/anim/flowers/f2.4bpp");
+
 const u16 gTilesetAnims_PorytilesManaged_Kanto_Water_FrameF0[] = INCBIN_U16("data/tilesets/primary/kanto/porytiles_bin/anim/water/f0.4bpp");
 const u16 gTilesetAnims_PorytilesManaged_Kanto_Water_FrameF1[] = INCBIN_U16("data/tilesets/primary/kanto/porytiles_bin/anim/water/f1.4bpp");
 const u16 gTilesetAnims_PorytilesManaged_Kanto_Water_FrameF2[] = INCBIN_U16("data/tilesets/primary/kanto/porytiles_bin/anim/water/f2.4bpp");
@@ -27,6 +35,24 @@ const u16 gTilesetAnims_PorytilesManaged_Kanto_Water_FrameF7[] = INCBIN_U16("dat
 // ============================================
 // Frame Pointer Arrays
 // ============================================
+
+const u16 *const gTilesetAnims_PorytilesManaged_Kanto_Crops[] = {
+    gTilesetAnims_PorytilesManaged_Kanto_Crops_FrameF0,
+    gTilesetAnims_PorytilesManaged_Kanto_Crops_FrameF0,
+    gTilesetAnims_PorytilesManaged_Kanto_Crops_FrameF1,
+    gTilesetAnims_PorytilesManaged_Kanto_Crops_FrameF1,
+    gTilesetAnims_PorytilesManaged_Kanto_Crops_FrameF0,
+    gTilesetAnims_PorytilesManaged_Kanto_Crops_FrameF0,
+    gTilesetAnims_PorytilesManaged_Kanto_Crops_FrameF2,
+    gTilesetAnims_PorytilesManaged_Kanto_Crops_FrameF2
+};
+
+const u16 *const gTilesetAnims_PorytilesManaged_Kanto_Flowers[] = {
+    gTilesetAnims_PorytilesManaged_Kanto_Flowers_FrameF0,
+    gTilesetAnims_PorytilesManaged_Kanto_Flowers_FrameF1,
+    gTilesetAnims_PorytilesManaged_Kanto_Flowers_FrameF0,
+    gTilesetAnims_PorytilesManaged_Kanto_Flowers_FrameF2
+};
 
 const u16 *const gTilesetAnims_PorytilesManaged_Kanto_Water[] = {
     gTilesetAnims_PorytilesManaged_Kanto_Water_FrameF0,
@@ -43,10 +69,22 @@ const u16 *const gTilesetAnims_PorytilesManaged_Kanto_Water[] = {
 // Queue Functions
 // ============================================
 
+static void QueueAnimTiles_PorytilesManaged_Kanto_Crops(u16 timer)
+{
+    u16 i = timer % ARRAY_COUNT(gTilesetAnims_PorytilesManaged_Kanto_Crops);
+    AppendTilesetAnimToBuffer(gTilesetAnims_PorytilesManaged_Kanto_Crops[i], (u16 *)(BG_VRAM + TILE_OFFSET_4BPP(1)), 21 * TILE_SIZE_4BPP);
+}
+
+static void QueueAnimTiles_PorytilesManaged_Kanto_Flowers(u16 timer)
+{
+    u16 i = timer % ARRAY_COUNT(gTilesetAnims_PorytilesManaged_Kanto_Flowers);
+    AppendTilesetAnimToBuffer(gTilesetAnims_PorytilesManaged_Kanto_Flowers[i], (u16 *)(BG_VRAM + TILE_OFFSET_4BPP(22)), 30 * TILE_SIZE_4BPP);
+}
+
 static void QueueAnimTiles_PorytilesManaged_Kanto_Water(u16 timer)
 {
     u16 i = timer % ARRAY_COUNT(gTilesetAnims_PorytilesManaged_Kanto_Water);
-    AppendTilesetAnimToBuffer(gTilesetAnims_PorytilesManaged_Kanto_Water[i], (u16 *)(BG_VRAM + TILE_OFFSET_4BPP(1)), 82 * TILE_SIZE_4BPP);
+    AppendTilesetAnimToBuffer(gTilesetAnims_PorytilesManaged_Kanto_Water[i], (u16 *)(BG_VRAM + TILE_OFFSET_4BPP(52)), 82 * TILE_SIZE_4BPP);
 }
 
 // ============================================
@@ -57,6 +95,8 @@ static void TilesetAnim_PorytilesManaged_Kanto(u16 timer)
 {
     if (timer % 16 == 0)
     {
+        QueueAnimTiles_PorytilesManaged_Kanto_Crops(timer / 16);
+        QueueAnimTiles_PorytilesManaged_Kanto_Flowers(timer / 16);
         QueueAnimTiles_PorytilesManaged_Kanto_Water(timer / 16);
     }
 }

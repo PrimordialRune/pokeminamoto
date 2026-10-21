@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """GBA-style wave animation for every water tile of a map mockup.
 
-Every pixel of the flat water color becomes an 8-frame loop: small foam crests
-that grow, curl and break on a 32x32 repeat, plus foam that laps along the
-banks and around the pier posts. Only the two water colors are used (rule 8 of
-the style guide: animation never adds colors).
+Every pixel of the flat water color becomes an 8-frame loop on a 32x32 repeat:
+diagonal swells with a lit crest that drift and break up the way Emerald's
+water does, plus foam that laps along the banks and around the pier posts. It
+uses the two water colors plus one darker trough shade.
 
 Writes:
   OUT_MAP.png           the mockup with frame 0 drawn in (feed it to map2porytiles.py)
@@ -18,7 +18,7 @@ tiles that look the same in frame 0 must animate the same way. The script
 checks that, and nudges frame 0 of any tile that breaks it.
 
 Usage:
-  water_anim.py MAP.png OUT_MAP.png ANIM_DIR [--seed 22] [--preview water.gif]
+  water_anim.py MAP.png OUT_MAP.png ANIM_DIR [--seed 1] [--preview water.gif]
 """
 
 import argparse
@@ -34,40 +34,32 @@ FOAM = np.array([0xA8, 0xA3, 0xFF])
 FRAMES = 8
 REPEAT = 32
 
-# A crest's life, one entry per frame: offsets from its centre.
-LIFE = [[],
-        [(0, 0)],
-        [(-1, 0), (0, 0), (1, 0)],
-        [(-2, 1), (-1, 0), (0, 0), (1, 0), (2, 1)],
-        [(-3, 1), (-2, 0), (-1, 0), (1, 0), (2, 0), (3, 1)],
-        [(-3, 1), (-2, 0), (2, 0), (3, 1)],
-        [(-3, 0), (3, 0)],
-        []]
-
+DARK = np.array([0x58, 0x50, 0xE0])   # trough shade; the one color this adds
 FLIPS = [lambda t: t, lambda t: t[:, ::-1], lambda t: t[::-1], lambda t: t[::-1, ::-1]]
+TAU = 2 * np.pi
 
 
 def crests(seed):
-    # One crest per 8x8 cell of the repeat, at a random spot and phase, so every
-    # water tile has something on it in frame 0 (the key frame).
+    """Phases of the cross waves; another seed gives another (equally valid) pattern."""
     r = random.Random(seed)
-    phases = [1, 2, 3, 4, 5, 6, 1, 2, 3, 4, 5, 6, 2, 3, 4, 5]
-    r.shuffle(phases)
-    out = []
-    for i in range(16):
-        cy, cx = divmod(i, 4)
-        out.append((cx * 8 + r.randint(1, 4), cy * 8 + r.randint(1, 5), phases[i]))
-    return out
+    return [r.uniform(0, TAU) for _ in range(3)]
 
 
-def wave(k, cs):
+def wave(k, ph):
+    """Emerald-style water: diagonal swells (wave vector (-1, 2), one band per
+    loop) broken into blobs by cross waves that bob in place. Troughs take the
+    dark shade and the lit edge above each trough the foam color."""
+    y, x = np.mgrid[0:REPEAT, 0:REPEAT]
+    t = k / FRAMES
+    f = (np.sin(TAU * ((-x + 2 * y) / REPEAT - t))
+         + 0.35 * np.sin(TAU * (3 * x - y) / REPEAT + ph[0]) * np.cos(TAU * t)
+         + 0.30 * np.sin(TAU * ((-x + 3 * y) / REPEAT - t) + ph[1])
+         + 0.35 * np.sin(TAU * (2 * x + y) / REPEAT + ph[2]) * np.sin(TAU * t + 0.5))
     a = np.zeros((REPEAT, REPEAT, 3), np.uint8)
     a[:] = WATER
-    for cx, cy, ph in cs:
-        st = (k + ph) % FRAMES
-        drift = st // 2
-        for dx, dy in LIFE[st]:
-            a[(cy + dy) % REPEAT, (cx + dx + drift) % REPEAT] = FOAM
+    dark = f < -0.65
+    a[dark] = DARK
+    a[~dark & np.roll(dark, -1, 0)] = FOAM
     return a
 
 
@@ -130,7 +122,7 @@ def main():
     ap.add_argument('map')
     ap.add_argument('out_map')
     ap.add_argument('anim_dir')
-    ap.add_argument('--seed', type=int, default=22)
+    ap.add_argument('--seed', type=int, default=1)
     ap.add_argument('--preview')
     a = ap.parse_args()
 

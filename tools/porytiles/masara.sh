@@ -20,6 +20,15 @@ mkdir -p "$out"
 
 python3 "$HERE/fit_tiles.py" "$map" "$ref" "$out/fit.png"
 python3 "$HERE/water_anim.py" "$out/fit.png" "$out/masara.png" "$out/anim/water" --preview "$out/water.gif"
+# Crops (north field, lab garden, Red's planter) and the plaza flower bushes.
+flowers=()
+for b in 338,319,351 225,320,231 190,334,207 366,334,383 194,383,207 369,384,375 222,398,239 338,399,351; do
+    IFS=, read -r x0 y0 x1 <<< "$b"
+    flowers+=(--rect "flowers:$((x0-3)),$((y0-4)),$((x1+4)),$((y0+5)):20")
+done
+python3 "$HERE/sway_anim.py" "$out/masara.png" "$out/masara.png" "$out/anim" \
+    --rect crops:336,32,416,96:16 --rect crops:512,271,576,303:16 --rect crops:144,54,160,96:8 \
+    --leans crops:0,1,-1 "${flowers[@]}" --leans flowers:0,1,-1
 
 # The ROUTE 1 sign goes to the secondary so the primary keeps a little room.
 python3 - "$out/mask.png" <<'PY'
@@ -33,16 +42,24 @@ FORCE=1 SPLIT_MASK="$out/mask.png" "$HERE/tileset.sh" import "$out/masara.png" "
 
 anim=data/tilesets/primary/kanto/porytiles_src/anim
 rm -rf "$anim"; mkdir -p "$anim"
-cp -r "$out/anim/water" "$anim/"
-cat > "$anim/anim.json" <<'JSON'
-{
-  "water": {
-    "frames": ["f0", "f1", "f2", "f3", "f4", "f5", "f6", "f7"],
-    "frame_order": ["f0", "f1", "f2", "f3", "f4", "f5", "f6", "f7"],
-    "tile_offset": 1
-  }
+cp -r "$out/anim/water" "$out/anim/crops" "$out/anim/flowers" "$anim/"
+# Each animation gets its own run of tile slots (Porytiles rewrites the offsets on compile).
+python3 - "$anim" <<'PY'
+import json, os, sys
+from PIL import Image
+anim = sys.argv[1]
+order = {
+    'water': ['f0', 'f1', 'f2', 'f3', 'f4', 'f5', 'f6', 'f7'],
+    'crops': ['f0', 'f0', 'f1', 'f1', 'f0', 'f0', 'f2', 'f2'],   # slow: 32 frames per pose
+    'flowers': ['f0', 'f1', 'f0', 'f2'],
 }
-JSON
+out, offset = {}, 1
+for name, fo in order.items():
+    n = Image.open(os.path.join(anim, name, 'key.png')).width // 8
+    out[name] = {'frames': sorted(set(fo), key=fo.index), 'frame_order': fo, 'tile_offset': offset}
+    offset += n
+json.dump(out, open(os.path.join(anim, 'anim.json'), 'w'), indent=2)
+PY
 "$HERE/tileset.sh" compile gTileset_Kanto gTileset_MasaraTown
 python3 "$HERE/render_check.py" data/tilesets/primary/kanto/porytiles_bin \
     data/tilesets/secondary/masara_town/porytiles_bin "$out/map.bin" 40 "$out/masara.png"

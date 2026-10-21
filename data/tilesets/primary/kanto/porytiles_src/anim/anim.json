@@ -1,4 +1,36 @@
 {
+  "crops": {
+    "frames": [
+      "f0",
+      "f1",
+      "f2"
+    ],
+    "frame_order": [
+      "f0",
+      "f0",
+      "f1",
+      "f1",
+      "f0",
+      "f0",
+      "f2",
+      "f2"
+    ],
+    "tile_offset": 1
+  },
+  "flowers": {
+    "frames": [
+      "f0",
+      "f1",
+      "f2"
+    ],
+    "frame_order": [
+      "f0",
+      "f1",
+      "f0",
+      "f2"
+    ],
+    "tile_offset": 22
+  },
   "water": {
     "frames": [
       "f0",
@@ -20,6 +52,6 @@
       "f6",
       "f7"
     ],
-    "tile_offset": 1
+    "tile_offset": 52
   }
 }
