@@ -1,0 +1,9 @@
+# Porytiles project config (https://github.com/grunt-lucas/porytiles).
+# Limits come from include/fieldmap.h. Per-tileset palette hints are written to
+# porytiles/tilesets/<name>/config.yaml by tools/porytiles/palopt.py.
+tileset:
+  palettes:
+    packing:
+      # Fewest palettes on the Masara mockup when no hints are given (6+6 vs 6+7).
+      strategy: best-fusion
+      hints_enabled: true
