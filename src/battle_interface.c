@@ -1345,6 +1345,30 @@ void UpdateOamPriorityInAllHealthboxes(u8 priority)
     }
 }
 
+// Singles player box: low over the action and move screens, raised over the taller message panel
+#define PLAYER_HEALTHBOX_Y        87
+#define PLAYER_HEALTHBOX_Y_RAISED 79
+
+// Runs before AnimateSprites so the box's halves and bars all follow it on the same frame
+void SlidePlayerHealthbox(void)
+{
+    struct Sprite *healthbox;
+    s16 targetY;
+
+    if (IsDoubleBattle() || gBattlersCount == 0)
+        return;
+    healthbox = &gSprites[gHealthboxSpriteIds[GetBattlerAtPosition(B_POSITION_PLAYER_LEFT)]];
+    if (!healthbox->inUse || healthbox->template != &sHealthboxPlayerSpriteTemplates[0])
+        return;
+
+    // 1 px a frame toward its spot for the screen BG0 is showing
+    targetY = (gBattle_BG0_Y == 0) ? PLAYER_HEALTHBOX_Y_RAISED : PLAYER_HEALTHBOX_Y;
+    if (healthbox->y < targetY)
+        healthbox->y++;
+    else if (healthbox->y > targetY)
+        healthbox->y--;
+}
+
 void InitBattlerHealthboxCoords(u8 battler)
 {
     s16 x = 0, y = 0;
@@ -1354,7 +1378,7 @@ void InitBattlerHealthboxCoords(u8 battler)
         if (GetBattlerSide(battler) != B_SIDE_PLAYER)
             x = 34, y = 20;
         else
-            x = 160, y = 77;
+            x = 160, y = PLAYER_HEALTHBOX_Y;
     }
     else
     {

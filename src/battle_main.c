@@ -1862,6 +1862,7 @@ static void CB2_HandleStartMultiBattle(void)
 
 void BattleMainCB2(void)
 {
+    SlidePlayerHealthbox();
     AnimateSprites();
     BuildOamBuffer();
     RunTextPrinters();
