@@ -1598,7 +1598,7 @@ static void OpponentHandleChooseMove(void)
             {
                 chosenMoveId = MOD(Random(), MAX_MON_MOVES);
                 move = moveInfo->moves[chosenMoveId];
-            } while (move == MOVE_NONE);
+            } while (move == MOVE_NONE || moveInfo->tpCost[chosenMoveId] > moveInfo->currentTp);
 
             if (gBattleMoves[move].target & (MOVE_TARGET_USER_OR_SELECTED | MOVE_TARGET_USER))
                 BtlController_EmitTwoReturnValues(B_COMM_TO_ENGINE, 10, (chosenMoveId) | (gActiveBattler << 8));

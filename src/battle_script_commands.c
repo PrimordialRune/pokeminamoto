@@ -931,7 +931,7 @@ static void Cmd_attackcanceler(void)
         return;
     if (AbilityBattleEffects(ABILITYEFFECT_MOVES_BLOCK, gBattlerTarget, 0, 0, 0))
         return;
-    if (!gBattleMons[gBattlerAttacker].pp[gCurrMovePos] && gCurrentMove != MOVE_STRUGGLE && !(gHitMarker & (HITMARKER_ALLOW_NO_PP | HITMARKER_NO_ATTACKSTRING))
+    if (!CanBattlerAffordMoveSlot(gBattlerAttacker, gCurrMovePos) && gCurrentMove != MOVE_STRUGGLE && !(gHitMarker & (HITMARKER_ALLOW_NO_PP | HITMARKER_NO_ATTACKSTRING))
      && !(gBattleMons[gBattlerAttacker].status2 & STATUS2_MULTIPLETURNS))
     {
         gBattlescriptCurrInstr = BattleScript_NoPPForMove;
@@ -1227,23 +1227,16 @@ static void Cmd_ppreduce(void)
         }
     }
 
-    if (!(gHitMarker & (HITMARKER_NO_PPDEDUCT | HITMARKER_NO_ATTACKSTRING)) && gBattleMons[gBattlerAttacker].pp[gCurrMovePos])
+    // TP replaces PP: the move in the chosen slot costs its tpCost, once more for each Pressure foe.
+    // PP is no longer spent in battle.
+    if (!(gHitMarker & (HITMARKER_NO_PPDEDUCT | HITMARKER_NO_ATTACKSTRING)) && gCurrentMove != MOVE_STRUGGLE)
     {
+        s32 tpToSpend = GetMoveTPCost(gBattleMons[gBattlerAttacker].moves[gCurrMovePos]) * ppToDeduct;
+
         gProtectStructs[gBattlerAttacker].notFirstStrike = 1;
-
-        if (gBattleMons[gBattlerAttacker].pp[gCurrMovePos] > ppToDeduct)
-            gBattleMons[gBattlerAttacker].pp[gCurrMovePos] -= ppToDeduct;
-        else
-            gBattleMons[gBattlerAttacker].pp[gCurrMovePos] = 0;
-
-        if (MOVE_IS_PERMANENT(gBattlerAttacker, gCurrMovePos))
-        {
-            gActiveBattler = gBattlerAttacker;
-            BtlController_EmitSetMonData(B_COMM_TO_CONTROLLER, REQUEST_PPMOVE1_BATTLE + gCurrMovePos, 0,
-                                         sizeof(gBattleMons[gBattlerAttacker].pp[gCurrMovePos]),
-                                         &gBattleMons[gBattlerAttacker].pp[gCurrMovePos]);
-            MarkBattlerForControllerExec(gBattlerAttacker);
-        }
+        if (tpToSpend > TP_MAX)
+            tpToSpend = TP_MAX;
+        SpendBattlerTP(gBattlerAttacker, tpToSpend);
     }
 
     gHitMarker &= ~HITMARKER_NO_PPDEDUCT;
