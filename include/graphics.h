@@ -4096,6 +4096,7 @@ extern const u32 gBattleInterfaceGfx_BattleBar[];
 extern const u32 gSubstituteDollBackGfx[];
 extern const u32 gSubstituteDollFrontGfx[];
 extern const u32 gSubstituteDollPal[];
+extern const u8 gHealthboxTpBarGfx[][32];
 extern const u32 gHealthboxSinglesPlayerGfx[];
 extern const u32 gHealthboxSinglesOpponentGfx[];
 extern const u32 gHealthboxDoublesPlayerGfx[];

@@ -71,10 +71,11 @@ static const struct CompressedSpriteSheet sSpriteSheet_SafariHealthbox =
 
 static const struct CompressedSpriteSheet sSpriteSheets_HealthBar[MAX_BATTLERS_COUNT] =
 {
-    {gBlankGfxCompressed, 0x0100, TAG_HEALTHBAR_PLAYER1_TILE},
-    {gBlankGfxCompressed, 0x0120, TAG_HEALTHBAR_OPPONENT1_TILE},
-    {gBlankGfxCompressed, 0x0100, TAG_HEALTHBAR_PLAYER2_TILE},
-    {gBlankGfxCompressed, 0x0120, TAG_HEALTHBAR_OPPONENT2_TILE}
+    // HP bar tiles (8, or 9 with the opponent's end cap), then the TP bar's 8 at TP_BAR_TILE_OFFSET
+    {gBlankGfxCompressed, 0x02A0, TAG_HEALTHBAR_PLAYER1_TILE},
+    {gBlankGfxCompressed, 0x02A0, TAG_HEALTHBAR_OPPONENT1_TILE},
+    {gBlankGfxCompressed, 0x02A0, TAG_HEALTHBAR_PLAYER2_TILE},
+    {gBlankGfxCompressed, 0x02A0, TAG_HEALTHBAR_OPPONENT2_TILE}
 };
 
 static const struct SpritePalette sSpritePalettes_HealthBoxHealthBar[2] =

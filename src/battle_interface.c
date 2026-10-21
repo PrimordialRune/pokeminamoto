@@ -176,6 +176,9 @@ static void Task_HidePartyStatusSummary_DuringBattle(u8);
 
 static void SpriteCB_HealthBoxOther(struct Sprite *);
 static void SpriteCB_HealthBar(struct Sprite *);
+static u8 CreateTpBarSprite(u8 battler, u8 healthboxSpriteId);
+static void SpriteCB_TpBar(struct Sprite *);
+static u8 TpBarGfxBase(u8 battler);
 static void SpriteCB_StatusSummaryBar_Enter(struct Sprite *);
 static void SpriteCB_StatusSummaryBar_Exit(struct Sprite *);
 static void SpriteCB_StatusSummaryBalls_Enter(struct Sprite *);
@@ -861,10 +864,24 @@ static void UNUSED Debug_DrawNumberPair(s16 number1, s16 number2, u16 *dest)
 
 // data fields for healthboxRight
 #define hOther_HealthBoxSpriteId    data[5]
+#define hOther_TpBarSpriteId        data[6]
 
 // data fields for healthbar
 #define hBar_HealthBoxSpriteId      data[5]
 #define hBar_Data6                  data[6]
+
+// TP bar sprite: sits under the HP bar and redraws itself when the battler's TP changes
+#define hTp_HealthBoxSpriteId       data[5]
+#define hTp_Battler                 data[6]
+#define hTp_Shown                   data[7] // TP value currently drawn, -1 to force a redraw
+#define hTp_PipsSpriteId            data[4] // MAX_SPRITES in doubles, which have no pips
+#define hTp_PipsState               data[3] // 2 bits per party slot as drawn, -1 to force a redraw
+
+#define B_HEALTHBAR_PIXELS 48
+#define TP_BAR_TILE_OFFSET 9 // in the healthbar sprite sheet, after the HP bar's tiles
+#define TP_BAR_Y_OFFSET    7
+#define TP_BAR_GFX_PLAYER  11 // first player tile in gHealthboxTpBarGfx
+#define PARTY_PIPS_TILE_OFFSET 17 // 4 tiles after the TP bar's
 
 u8 CreateBattlerHealthboxSprites(u8 battler)
 {
@@ -892,7 +909,7 @@ u8 CreateBattlerHealthboxSprites(u8 battler)
 
             gSprites[healthboxRightSpriteId].oam.tileNum += 32;
 
-            data6 = 2;
+            data6 = 3;
         }
         gSprites[healthboxLeftSpriteId].oam.affineParam = healthboxRightSpriteId;
 
@@ -947,6 +964,8 @@ u8 CreateBattlerHealthboxSprites(u8 battler)
     healthBarSpritePtr->hBar_Data6 = data6;
     healthBarSpritePtr->invisible = TRUE;
 
+    gSprites[gSprites[healthboxLeftSpriteId].oam.affineParam].hOther_TpBarSpriteId = CreateTpBarSprite(battler, healthboxLeftSpriteId);
+
     return healthboxLeftSpriteId;
 }
 
@@ -968,6 +987,211 @@ u8 CreateSafariPlayerHealthboxSprites(void)
     gSprites[healthboxRightSpriteId].callback = SpriteCB_HealthBoxOther;
 
     return healthboxLeftSpriteId;
+}
+
+static u8 CreateTpBarSprite(u8 battler, u8 healthboxSpriteId)
+{
+    u8 spriteId = CreateSpriteAtEnd(&sHealthbarSpriteTemplates[gBattlerPositions[battler]], 140, 60, 0);
+    struct Sprite *sprite = &gSprites[spriteId];
+
+    sprite->oam.tileNum += TP_BAR_TILE_OFFSET;
+    SetSubspriteTables(sprite, &sHealthBar_SubspriteTables[B_SIDE_PLAYER]);
+    sprite->subspriteMode = SUBSPRITES_IGNORE_PRIORITY;
+    sprite->oam.priority = 1;
+    sprite->callback = SpriteCB_TpBar;
+    sprite->hTp_HealthBoxSpriteId = healthboxSpriteId;
+    sprite->hTp_Battler = battler;
+    sprite->hTp_Shown = -1;
+    sprite->hTp_PipsState = -1;
+    sprite->hTp_PipsSpriteId = MAX_SPRITES;
+    sprite->invisible = TRUE;
+    CpuCopy32((const void *)gHealthboxTpBarGfx[TpBarGfxBase(battler)], (void *)(OBJ_VRAM0 + sprite->oam.tileNum * TILE_SIZE_4BPP), 64);
+
+    if (!IsDoubleBattle())
+    {
+        u8 pipsId = CreateSpriteAtEnd(&sHealthbarSpriteTemplates[gBattlerPositions[battler]], 140, 60, 0);
+
+        gSprites[pipsId].oam.shape = SPRITE_SHAPE(8x32);
+        gSprites[pipsId].oam.size = SPRITE_SIZE(8x32);
+        gSprites[pipsId].oam.tileNum += PARTY_PIPS_TILE_OFFSET;
+        gSprites[pipsId].callback = SpriteCallbackDummy;
+        gSprites[pipsId].invisible = TRUE;
+        sprite->hTp_PipsSpriteId = pipsId;
+    }
+    return spriteId;
+}
+
+// The player's TP tiles have white top and bottom rows, to cover the HP numbers under them.
+static u8 TpBarGfxBase(u8 battler)
+{
+    return GetBattlerSide(battler) == B_SIDE_PLAYER ? TP_BAR_GFX_PLAYER : 0;
+}
+
+static void DrawTpBar(struct Sprite *sprite, s32 tp)
+{
+    u8 pixels = tp * B_HEALTHBAR_PIXELS / TP_MAX;
+    u8 base = TpBarGfxBase(sprite->hTp_Battler);
+    s32 i;
+
+    if (tp > 0 && pixels == 0)
+        pixels = 1;
+    for (i = 0; i < B_HEALTHBAR_PIXELS / 8; i++)
+    {
+        u8 filled = pixels > i * 8 + 8 ? 8 : (pixels > i * 8 ? pixels - i * 8 : 0);
+        CpuCopy32((const void *)gHealthboxTpBarGfx[base + 2 + filled], (void *)(OBJ_VRAM0 + (sprite->oam.tileNum + 2 + i) * TILE_SIZE_4BPP), 32);
+    }
+}
+
+enum {
+    PIP_EMPTY,
+    PIP_FAINTED,
+    PIP_STATUS,
+    PIP_HEALTHY,
+};
+
+// Top and bottom colour of each pip state, in the healthbar palette
+static const u8 sPartyPipColors[][2] =
+{
+    [PIP_FAINTED] = {5, 5},
+    [PIP_STATUS]  = {7, 7},
+    [PIP_HEALTHY] = {9, 2},
+};
+
+static u32 GetPartyPipsState(u8 battler)
+{
+    struct Pokemon *party = GetBattlerSide(battler) == B_SIDE_PLAYER ? gPlayerParty : gEnemyParty;
+    u32 state = 0;
+    s32 i;
+
+    for (i = 0; i < PARTY_SIZE; i++)
+    {
+        u32 pip;
+
+        if (GetMonData(&party[i], MON_DATA_SPECIES_OR_EGG) == SPECIES_NONE
+         || GetMonData(&party[i], MON_DATA_SPECIES_OR_EGG) == SPECIES_EGG)
+            pip = PIP_EMPTY;
+        else if (GetMonData(&party[i], MON_DATA_HP) == 0)
+            pip = PIP_FAINTED;
+        else if (GetMonData(&party[i], MON_DATA_STATUS) != 0)
+            pip = PIP_STATUS;
+        else
+            pip = PIP_HEALTHY;
+        state |= pip << (i * 2);
+    }
+    return state;
+}
+
+static void SetPipPixel(u8 *tiles, u32 x, u32 y, u32 color)
+{
+    u8 *byte = &tiles[(y / 8) * TILE_SIZE_4BPP + (y % 8) * 4 + x / 2];
+
+    if (x & 1)
+        *byte = (*byte & 0x0F) | (color << 4);
+    else
+        *byte = (*byte & 0xF0) | color;
+}
+
+// A column of six pips (8x32): a navy-ringed ball per party slot, red/white when healthy,
+// orange with a status, slate when fainted, a slate dot for an empty slot.
+static void DrawPartyPips(u8 pipsSpriteId, u32 state)
+{
+    u32 tiles[4 * TILE_SIZE_4BPP / 4] = {0};
+    u8 *px = (u8 *)tiles;
+    s32 i, x, y;
+
+    for (i = 0; i < PARTY_SIZE; i++)
+    {
+        u32 pip = (state >> (i * 2)) & 3;
+        u32 top = 1 + i * 5;
+
+        if (pip == PIP_EMPTY)
+        {
+            for (y = 1; y < 3; y++)
+                for (x = 3; x < 5; x++)
+                    SetPipPixel(px, x, top + y, 5);
+            continue;
+        }
+        for (x = 2; x < 6; x++)
+        {
+            SetPipPixel(px, x, top, 6);
+            SetPipPixel(px, x, top + 3, 6);
+            SetPipPixel(px, x, top + 1, sPartyPipColors[pip][0]);
+            SetPipPixel(px, x, top + 2, sPartyPipColors[pip][1]);
+        }
+        for (y = 1; y < 3; y++)
+        {
+            SetPipPixel(px, 1, top + y, 6);
+            SetPipPixel(px, 6, top + y, 6);
+        }
+    }
+    CpuCopy32(tiles, (void *)(OBJ_VRAM0 + gSprites[pipsSpriteId].oam.tileNum * TILE_SIZE_4BPP), sizeof(tiles));
+}
+
+// Puts the pips beside the box, on the side away from the speech tail.
+// A wild foe has no party to show.
+static void UpdatePartyPips(struct Sprite *sprite, struct Sprite *healthbox)
+{
+    struct Sprite *pips;
+    u8 battler = sprite->hTp_Battler;
+    u32 state;
+
+    if (sprite->hTp_PipsSpriteId == MAX_SPRITES)
+        return;
+    pips = &gSprites[sprite->hTp_PipsSpriteId];
+    if (GetBattlerSide(battler) == B_SIDE_PLAYER)
+    {
+        pips->x = healthbox->x + 83;
+        pips->y = healthbox->y - 9;
+    }
+    else
+    {
+        pips->x = healthbox->x - 25;
+        pips->y = healthbox->y - 9;
+    }
+    pips->x2 = healthbox->x2;
+    pips->y2 = healthbox->y2;
+    pips->oam.priority = sprite->oam.priority;
+    pips->invisible = healthbox->invisible
+                   || (GetBattlerSide(battler) == B_SIDE_OPPONENT && !(gBattleTypeFlags & BATTLE_TYPE_TRAINER));
+
+    state = GetPartyPipsState(battler);
+    if (sprite->hTp_PipsState != (s16)state)
+    {
+        sprite->hTp_PipsState = state;
+        DrawPartyPips(sprite->hTp_PipsSpriteId, state);
+    }
+}
+
+// Follows the HP bar, and moves the drawn TP one point per frame toward the battler's TP.
+// The player's bar hides when START shows HP numbers instead (SwapHpBarsWithHpText).
+static void SpriteCB_TpBar(struct Sprite *sprite)
+{
+    struct Sprite *healthbox = &gSprites[sprite->hTp_HealthBoxSpriteId];
+    struct Sprite *healthbar = &gSprites[healthbox->hMain_HealthBarSpriteId];
+    u8 battler = sprite->hTp_Battler;
+    s32 tp;
+
+    sprite->x = healthbar->x;
+    sprite->y = healthbar->y + TP_BAR_Y_OFFSET;
+    sprite->x2 = healthbox->x2;
+    sprite->y2 = healthbox->y2;
+    sprite->oam.priority = healthbar->oam.priority;
+    sprite->invisible = healthbox->invisible
+                     || (GetBattlerSide(battler) == B_SIDE_PLAYER && gBattleSpritesDataPtr->battlerData[battler].hpNumbersNoBars);
+    UpdatePartyPips(sprite, healthbox);
+
+    if (gBattleStruct == NULL)
+        return;
+    tp = gBattleStruct->tp[GetBattlerSide(battler)][gBattlerPartyIndexes[battler]];
+    if (sprite->hTp_Shown == tp)
+        return;
+    if (sprite->hTp_Shown < 0)
+        sprite->hTp_Shown = tp;
+    else if (sprite->hTp_Shown < tp)
+        sprite->hTp_Shown++;
+    else
+        sprite->hTp_Shown--;
+    DrawTpBar(sprite, sprite->hTp_Shown);
 }
 
 static const u8 *GetHealthboxElementGfxPtr(u8 elementId)
@@ -994,6 +1218,10 @@ static void SpriteCB_HealthBar(struct Sprite *sprite)
     default:
         sprite->x = gSprites[healthboxSpriteId].x + 8;
         sprite->y = gSprites[healthboxSpriteId].y;
+        break;
+    case 3: // singles foe: one pixel up, so the TP bar fits in the box under it
+        sprite->x = gSprites[healthboxSpriteId].x + 8;
+        sprite->y = gSprites[healthboxSpriteId].y - 1;
         break;
     }
 
@@ -1023,6 +1251,7 @@ void SetBattleBarStruct(u8 battler, u8 healthboxSpriteId, s32 maxVal, s32 oldVal
 
 void SetHealthboxSpriteInvisible(u8 healthboxSpriteId)
 {
+    // the TP bar follows the healthbox's visibility in SpriteCB_TpBar
     gSprites[healthboxSpriteId].invisible = TRUE;
     gSprites[gSprites[healthboxSpriteId].hMain_HealthBarSpriteId].invisible = TRUE;
     gSprites[gSprites[healthboxSpriteId].oam.affineParam].invisible = TRUE;
@@ -1043,6 +1272,11 @@ static void UpdateSpritePos(u8 spriteId, s16 x, s16 y)
 
 void DestoryHealthboxSprite(u8 healthboxSpriteId)
 {
+    struct Sprite *tpBar = &gSprites[gSprites[gSprites[healthboxSpriteId].oam.affineParam].hOther_TpBarSpriteId];
+
+    if (tpBar->hTp_PipsSpriteId != MAX_SPRITES)
+        DestroySprite(&gSprites[tpBar->hTp_PipsSpriteId]);
+    DestroySprite(&gSprites[gSprites[gSprites[healthboxSpriteId].oam.affineParam].hOther_TpBarSpriteId]);
     DestroySprite(&gSprites[gSprites[healthboxSpriteId].oam.affineParam]);
     DestroySprite(&gSprites[gSprites[healthboxSpriteId].hMain_HealthBarSpriteId]);
     DestroySprite(&gSprites[healthboxSpriteId]);
@@ -1380,9 +1614,9 @@ void SwapHpBarsWithHpText(void)
 
     for (i = 0; i < gBattlersCount; i++)
     {
+        // In singles START toggles the player's TP bar off, showing the HP numbers it covers
         if (gSprites[gHealthboxSpriteIds[i]].callback == SpriteCallbackDummy
-         && GetBattlerSide(i) != B_SIDE_OPPONENT
-         && (IsDoubleBattle() || GetBattlerSide(i) != B_SIDE_PLAYER))
+         && GetBattlerSide(i) != B_SIDE_OPPONENT)
         {
             bool8 noBars;
 
@@ -2233,7 +2467,6 @@ void UpdateHealthboxAttribute(u8 healthboxSpriteId, struct Pokemon *mon, u8 elem
 }
 
 #define B_EXPBAR_PIXELS 64
-#define B_HEALTHBAR_PIXELS 48
 
 s32 MoveBattleBar(u8 battler, u8 healthboxSpriteId, u8 whichBar, u8 unused)
 {
