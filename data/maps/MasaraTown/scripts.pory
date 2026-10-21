@@ -1,7 +1,27 @@
 mapscripts MasaraTown_MapScripts {}
 
 script MasaraTown_EventScript_TownSign {
-    msgbox(format("MASARA TOWN\nThe pure white beginning."), MSGBOX_SIGN)
+    lockall
+    msgbox(format("MASARA TOWN\nThe pure white beginning."))
+    // Test builds: cycle the time of day so day/night can be checked anywhere.
+    msgbox(format("(Test) Change the time of day?"), MSGBOX_YESNO)
+    if (var(VAR_RESULT) == YES) {
+        addvar(VAR_TIME_OF_DAY_OVERRIDE, 1)
+        if (var(VAR_TIME_OF_DAY_OVERRIDE) > 3) {
+            setvar(VAR_TIME_OF_DAY_OVERRIDE, 0)
+        }
+        switch (var(VAR_TIME_OF_DAY_OVERRIDE)) {
+            case 1: msgbox(format("It's morning."))
+            case 2: msgbox(format("It's daytime."))
+            case 3: msgbox(format("It's night."))
+            default: msgbox(format("The time follows the clock again."))
+        }
+        closemessage
+        getplayerxy(VAR_0x8004, VAR_0x8005)
+        warpsilent(MAP_MASARA_TOWN, VAR_0x8004, VAR_0x8005)
+        waitstate
+    }
+    releaseall
 }
 
 script MasaraTown_EventScript_RouteSign {

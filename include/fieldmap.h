@@ -44,6 +44,8 @@ void InitTrainerHillMap(void);
 void InitBattlePyramidMap(bool8 setPlayerPosition);
 void CopyMapTilesetsToVram(struct MapLayout const *mapLayout);
 void LoadMapTilesetPalettes(struct MapLayout const *mapLayout);
+u8 GetTimeOfDay(void);
+void ApplyTimeOfDayTint(u16 offset, u16 count);
 void LoadSecondaryTilesetPalette(struct MapLayout const *mapLayout);
 void CopySecondaryTilesetToVramUsingHeap(struct MapLayout const *mapLayout);
 void CopyPrimaryTilesetToVram(struct MapLayout const *mapLayout);
@@ -51,6 +53,15 @@ void CopySecondaryTilesetToVram(struct MapLayout const *mapLayout);
 const struct MapHeader *const GetMapHeaderFromConnection(const struct MapConnection *connection);
 const struct MapConnection *GetMapConnectionAtPos(s16 x, s16 y);
 void MapGridSetMetatileImpassabilityAt(int x, int y, bool32 impassable);
+
+enum
+{
+    TIME_OF_DAY_MORN,
+    TIME_OF_DAY_DAY,
+    TIME_OF_DAY_NITE,
+};
+
+extern bool8 gTintFieldSprites;
 
 // field_region_map.c
 void FieldInitRegionMap(MainCallback callback);
