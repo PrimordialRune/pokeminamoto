@@ -31,6 +31,14 @@ const u16 gTilesetAnims_PorytilesManaged_Kanto_Water_FrameF4[] = INCBIN_U16("dat
 const u16 gTilesetAnims_PorytilesManaged_Kanto_Water_FrameF5[] = INCBIN_U16("data/tilesets/primary/kanto/porytiles_bin/anim/water/f5.4bpp");
 const u16 gTilesetAnims_PorytilesManaged_Kanto_Water_FrameF6[] = INCBIN_U16("data/tilesets/primary/kanto/porytiles_bin/anim/water/f6.4bpp");
 const u16 gTilesetAnims_PorytilesManaged_Kanto_Water_FrameF7[] = INCBIN_U16("data/tilesets/primary/kanto/porytiles_bin/anim/water/f7.4bpp");
+const u16 gTilesetAnims_PorytilesManaged_Kanto_Water_FrameF8[] = INCBIN_U16("data/tilesets/primary/kanto/porytiles_bin/anim/water/f8.4bpp");
+const u16 gTilesetAnims_PorytilesManaged_Kanto_Water_FrameF9[] = INCBIN_U16("data/tilesets/primary/kanto/porytiles_bin/anim/water/f9.4bpp");
+const u16 gTilesetAnims_PorytilesManaged_Kanto_Water_FrameF10[] = INCBIN_U16("data/tilesets/primary/kanto/porytiles_bin/anim/water/f10.4bpp");
+const u16 gTilesetAnims_PorytilesManaged_Kanto_Water_FrameF11[] = INCBIN_U16("data/tilesets/primary/kanto/porytiles_bin/anim/water/f11.4bpp");
+const u16 gTilesetAnims_PorytilesManaged_Kanto_Water_FrameF12[] = INCBIN_U16("data/tilesets/primary/kanto/porytiles_bin/anim/water/f12.4bpp");
+const u16 gTilesetAnims_PorytilesManaged_Kanto_Water_FrameF13[] = INCBIN_U16("data/tilesets/primary/kanto/porytiles_bin/anim/water/f13.4bpp");
+const u16 gTilesetAnims_PorytilesManaged_Kanto_Water_FrameF14[] = INCBIN_U16("data/tilesets/primary/kanto/porytiles_bin/anim/water/f14.4bpp");
+const u16 gTilesetAnims_PorytilesManaged_Kanto_Water_FrameF15[] = INCBIN_U16("data/tilesets/primary/kanto/porytiles_bin/anim/water/f15.4bpp");
 
 // ============================================
 // Frame Pointer Arrays
@@ -62,7 +70,15 @@ const u16 *const gTilesetAnims_PorytilesManaged_Kanto_Water[] = {
     gTilesetAnims_PorytilesManaged_Kanto_Water_FrameF4,
     gTilesetAnims_PorytilesManaged_Kanto_Water_FrameF5,
     gTilesetAnims_PorytilesManaged_Kanto_Water_FrameF6,
-    gTilesetAnims_PorytilesManaged_Kanto_Water_FrameF7
+    gTilesetAnims_PorytilesManaged_Kanto_Water_FrameF7,
+    gTilesetAnims_PorytilesManaged_Kanto_Water_FrameF8,
+    gTilesetAnims_PorytilesManaged_Kanto_Water_FrameF9,
+    gTilesetAnims_PorytilesManaged_Kanto_Water_FrameF10,
+    gTilesetAnims_PorytilesManaged_Kanto_Water_FrameF11,
+    gTilesetAnims_PorytilesManaged_Kanto_Water_FrameF12,
+    gTilesetAnims_PorytilesManaged_Kanto_Water_FrameF13,
+    gTilesetAnims_PorytilesManaged_Kanto_Water_FrameF14,
+    gTilesetAnims_PorytilesManaged_Kanto_Water_FrameF15
 };
 
 // ============================================

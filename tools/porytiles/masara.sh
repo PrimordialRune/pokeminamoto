@@ -2,7 +2,7 @@
 # Rebuild Masara Town (gTileset_Kanto + gTileset_MasaraTown + LAYOUT_MASARA_TOWN)
 # from Omar's mockup. Run from WSL or Linux:
 #
-#   tools/porytiles/masara.sh MAP.png BUILDINGS.png
+#   WATER_STYLE=soft WATER_SEED=80 tools/porytiles/masara.sh MAP.png BUILDINGS.png
 #
 # MAP.png = MyRes/Maps/Pallet_Town_v4.png without the Red sprite baked in by his
 # door, BUILDINGS.png = MyRes/Tilesets/pallet_v2.png. Steps: merge near-identical
@@ -19,7 +19,8 @@ out=build/porytiles/masara_town
 mkdir -p "$out"
 
 python3 "$HERE/fit_tiles.py" "$map" "$ref" "$out/fit.png"
-python3 "$HERE/water_anim.py" "$out/fit.png" "$out/masara.png" "$out/anim/water" --preview "$out/water.gif"
+python3 "$HERE/water_anim.py" "$out/fit.png" "$out/masara.png" "$out/anim/water" \
+    --style "${WATER_STYLE:-soft}" --seed "${WATER_SEED:-80}" --preview "$out/water.gif"
 # Crops (north field, lab garden, Red's planter) and the plaza flower bushes.
 flowers=()
 for b in 338,319,351 225,320,231 190,334,207 366,334,383 194,383,207 369,384,375 222,398,239 338,399,351; do
@@ -49,7 +50,7 @@ import json, os, sys
 from PIL import Image
 anim = sys.argv[1]
 order = {
-    'water': ['f0', 'f1', 'f2', 'f3', 'f4', 'f5', 'f6', 'f7'],
+    'water': sorted((f[:-4] for f in os.listdir(os.path.join(anim, 'water')) if f[0] == 'f'), key=lambda f: int(f[1:])),
     'crops': ['f0', 'f0', 'f1', 'f1', 'f0', 'f0', 'f2', 'f2'],   # slow: 32 frames per pose
     'flowers': ['f0', 'f1', 'f0', 'f2'],
 }
