@@ -260,6 +260,9 @@ class Playthrough:
         self.struggle_battles[kind] += b.stats.struggles["foe"] > 0
         seg = self.segment
         seg["battles"] += 1
+        seg["special"] += b.stats.special_uses
+        seg["special_" + kind] = seg.get("special_" + kind, 0) + b.stats.special_uses
+        seg["n_" + kind] = seg.get("n_" + kind, 0) + 1
         seg["attacks"] += sum(b.stats.rank_use["player"]) + b.stats.struggles["player"]
         if b.stats.struggles["player"]:
             seg["struggle_battles"] += 1
@@ -286,7 +289,7 @@ class Playthrough:
 
     def new_segment(self, start):
         self.segment = {"start": start, "battles": 0, "attacks": 0, "struggle_battles": 0, "limited_battles": 0,
-                        "first_limited": None}
+                        "first_limited": None, "special": 0}
 
     def close_segment(self, end):
         seg = self.segment
@@ -341,6 +344,7 @@ class Playthrough:
                 rec["multi_rank"] = stats.multi_rank_turns / max(1, stats.turns)
                 rec["rank_choice"] = list(stats.rank_choice)
                 rec["species"] = self.party[0].species if self.party else ""
+                rec["special"] = stats.special_uses
                 if is_boss:
                     rec.update(arrival=arrival, levels=levels, grind=grinded, target=step.get("target"),
                                wild_battles=self.wild_battles)
@@ -441,6 +445,19 @@ def cmd_run(args):
                 ("%.1f (%s)" % (statistics.mean(firsts), pct(len(firsts) / len(segs)).strip())) if firsts else "never",
                 statistics.mean(sg["limited_battles"] for sg in segs), statistics.mean(sg["struggle_battles"] for sg in segs),
                 statistics.mean(sg["tp_left"][0] for sg in segs)))
+    if ctx.rules.special_power:
+        print("\nSpecial (power %d, %d TP, from Lv %d, %s):" % (ctx.rules.special_power, ctx.rules.special_cost,
+              ctx.rules.special_level, ctx.rules.special_habit))
+        for name, recs in by_step.items():
+            if recs[0]["boss"]:
+                print("  %-26s uses per fight %.2f" % (name[:26], statistics.mean(r["special"] for r in recs)))
+        nseg = min(len(pt.segments) for pt in finals)
+        for i in range(nseg):
+            segs = [pt.segments[i] for pt in finals]
+            per = lambda k: sum(sg.get("special_" + k, 0) for sg in segs) / max(1, sum(sg.get("n_" + k, 0) for sg in segs))
+            print("  %-34s uses per wild battle %.2f, per trainer %.2f, share of attacks %s" % (
+                (segs[0]["start"] + " -> " + segs[0]["end"])[:34], per("wild"), per("trainer"),
+                pct(sum(sg["special"] for sg in segs) / max(1, sum(sg["attacks"] for sg in segs)))))
     bl = [pt.blackouts for pt in finals]
     print()
     print("blackouts per playthrough: %s" % summarize(bl))

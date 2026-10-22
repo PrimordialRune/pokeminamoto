@@ -202,6 +202,99 @@ too), and every family's one star costs 5 TP whatever its PP. Habit A, 100 playt
 Command: the section 7 command plus `--set cplus=true --set cplus_level_fallback=22,40
 --set cplus_single_stage=22,40 --set cplus_star1_cost=5`.
 
+## 10. A smooth TP cost curve, no ranks (Omar dropped move ranks)
+
+Omar dropped move ranks: regular level-up learnsets plus one Special per Pokémon, earned through a
+per-mon quest. The design thread asked for a continuous cost curve to replace the PP-tier steps.
+
+**Formula** (`costcurve.py`, `--set tp_curve=true`): `TP = round(1 + 0.13 x value)`, where value is
+one use's worth in base-power units:
+
+- damaging: power x accuracy x hits (3 for 2-5 hits, 2 for double hits), x0.6 two-turn or recharge,
+  x1.1 high crit or priority, x0.85 recoil, x1.25 drain, x1.05 never-miss, plus secondary chance x the
+  secondary's value (burn or paralysis 50, poison 45, freeze 70, flinch 30, one stat stage 20-30).
+  Fixed-damage moves count as a power (Seismic Toss 60, Super Fang 70, Sonic Boom 40).
+- status: the turns of value it buys in the same units, x accuracy: sleep 80, paralysis 50, poison 45,
+  Toxic 60, confusion 45, Leech Seed 55, heal 60, one stat stage 20-25, two stages 30-45.
+
+Whole-game range: 4 TP (Harden) to 14 (Flamethrower, Earthquake, Body Slam, Double-Edge). Hydro Pump
+13, Hyper Beam 12, Solar Beam 10 (two-turn), Spore 11, Toxic 8. Cost per 10 value is 1.4-1.7 for every
+damaging move, so a stronger move is pricier but not worse value; the +1 base makes the weakest fillers
+slightly worse value. No early core move is above 10 (Bite is the top at 10).
+
+| Move | Power | Value | TP | TP per 10 value |
+|---|---|---|---|---|
+| Harden | 0 | 20 | 4 | 2.0 |
+| Rage | 20 | 20 | 4 | 2.0 |
+| Whirlwind | 0 | 20 | 4 | 2.0 |
+| Withdraw | 0 | 20 | 4 | 2.0 |
+| Bubble | 20 | 22 | 4 | 1.8 |
+| Focus Energy | 0 | 25 | 4 | 1.6 |
+| Growl | 0 | 25 | 4 | 1.6 |
+| Growth | 0 | 25 | 4 | 1.6 |
+| Leer | 0 | 25 | 4 | 1.6 |
+| Tail Whip | 0 | 25 | 4 | 1.6 |
+| Poison Sting | 15 | 28 | 5 | 1.8 |
+| Double Team | 0 | 30 | 5 | 1.7 |
+| Sand Attack | 0 | 30 | 5 | 1.7 |
+| Smokescreen | 0 | 30 | 5 | 1.7 |
+| Tackle | 35 | 33 | 5 | 1.5 |
+| Poison Powder | 0 | 34 | 5 | 1.5 |
+| Peck | 35 | 35 | 6 | 1.7 |
+| Vine Whip | 35 | 35 | 6 | 1.7 |
+| Fury Attack | 15 | 38 | 6 | 1.6 |
+| Gust | 40 | 40 | 6 | 1.5 |
+| Scratch | 40 | 40 | 6 | 1.5 |
+| Water Gun | 40 | 40 | 6 | 1.5 |
+| Fury Swipes | 18 | 43 | 7 | 1.6 |
+| Quick Attack | 40 | 44 | 7 | 1.6 |
+| Ember | 40 | 45 | 7 | 1.6 |
+| Thunder Shock | 40 | 45 | 7 | 1.6 |
+| Leech Seed | 0 | 50 | 7 | 1.4 |
+| Thunder Wave | 0 | 50 | 8 | 1.6 |
+| Razor Leaf | 55 | 57 | 8 | 1.4 |
+| Double Kick | 30 | 60 | 9 | 1.5 |
+| Slam | 80 | 60 | 9 | 1.5 |
+| Sleep Powder | 0 | 60 | 9 | 1.5 |
+| Wing Attack | 60 | 60 | 9 | 1.5 |
+| Horn Attack | 65 | 65 | 9 | 1.4 |
+| Bite | 60 | 69 | 10 | 1.4 |
+| Flamethrower | 95 | 100 | 14 | 1.4 |
+| Thunderbolt | 95 | 100 | 14 | 1.4 |
+
+**Regen.** With persistent TP and rest-only recovery, regen `3 + INT/32` per turn (Charmander 4,
+Squirtle and Bulbasaur 5) puts the first TP-short battle near the end of each long stretch:
+
+| Starter | Route 2 to Nibi (25-27 battles) | Nibi to Mt. Moon (24-30) | Mt. Moon to Hanada (28) | TP-short battles per stretch |
+|---|---|---|---|---|
+| Charmander | 22.6 | 22.4 | 15.1 | 2.5 / 5.3 / 6.1 |
+| Squirtle | never (1%) | 19.5 | 18.6 | 0 / 4.5 / 7.8 |
+| Bulbasaur | never | 18.6 (69% of runs) | 21.4 (44%) | 0 / 2.2 / 1.5 |
+
+`2 + INT/32` is tighter (Charmander's Mt. Moon stretch goes short at 14), `2 + INT/16` is loose
+(Bulbasaur almost never runs short). Charmander runs short first because his INT (base Sp. Def 50) is
+lowest; that is INT doing its job, but worth knowing.
+
+**Special.** Modelled as a STAB hit of power 100, 100% accuracy, earned at Lv 20 (`--set
+special_power=100 --set special_level=20 --set special_cost=N`), used like any other move: the player
+takes the cheapest move that KOs, otherwise the strongest affordable one. 100 playthroughs per cost.
+
+| Special cost | Uses per trainer battle after Hanada, Char / Squ / Bulb | Share of attacks there | Misty fight uses | First TP-short, Mt. Moon to Hanada (none: 15-21) |
+|---|---|---|---|---|
+| 15 | 2.8 / 2.1 / 1.2 | 35-70% | 1.0-2.9 | 12-14 |
+| 20 | 2.6 / 1.7 / 1.1 | 34-64% | 1.0-2.8 | 11-14 |
+| 25 | 2.5 / 1.6 / 1.1 | 30-62% | 1.0-2.9 | 10-13 |
+| 30 | 2.4 / 1.4 / 1.0 | 25-58% | 1.0-2.8 | 10-13 |
+| 40 | 1.8 / 1.0 / 0.8 | 17-42% | 1.0-2.0 | 9-14 |
+| 50 | 1.8 / 1.1 / 0.7 | 20-42% | 1.0-2.0 | 9-15 |
+
+A Special stays a finisher (about one use per trainer battle, a fifth of the attacks) from about
+**40 TP**, i.e. 3x the strongest regular move and 40% of the TP bar, so two uses empty most of a full
+bar. Below 30 it becomes the default attack in trainer battles. Above 50 it barely changes use
+(the player still fires it when it KOs) but drains long stretches harder. Wild battles hardly use it
+at any cost (0.05-0.3 per battle) because a regular move already KOs. Charmander leans on it most
+because nothing else he has hurts Hanada's Water types. Suggested: 40-50 TP at TP_MAX 100.
+
 ## Open inputs for the model
 
 - Gym 1-3 teams, levels and movesets; where Jiro's gym sits on the route.

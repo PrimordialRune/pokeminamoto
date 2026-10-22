@@ -6,6 +6,7 @@ import math
 import random
 from dataclasses import dataclass, field
 
+from costcurve import curve_cost
 from gamedata import PHYSICAL_TYPES, exp_for_level
 
 # gStatStageRatios / sAccuracyStageRatios, index 0..12 = stage -6..+6
@@ -64,6 +65,13 @@ class Rules:
     cplus_level_fallback: list = field(default_factory=list)   # e.g. 22,40: 2 and 3 stars by level if evolution is later
     cplus_star1_cost: int = 0       # e.g. 5: every family's one-star rank costs this, whatever its PP
     tp_formula: str = ""            # "" = the ROM's tpCost; else a Python expression of power/acc/status/rank
+    tp_curve: bool = False          # continuous cost curve: round(curve_base + curve_k * value), see costcurve.py
+    curve_base: float = 1.0
+    curve_k: float = 0.13
+    special_power: int = 0          # 0 = off; else every player mon gets a STAB Special of this power
+    special_cost: int = 30          # TP per use of the Special
+    special_level: int = 25         # level the Special is earned at
+    special_habit: str = "greedy"   # greedy: used like any move; trainers: kept for trainer battles
     rank_costs: list = field(default_factory=list)          # e.g. 5,15,30: cost by move rank (overrides the rest)
     rank_status_costs: list = field(default_factory=list)   # e.g. 10,20,30 for status moves; defaults to rank_costs
     crit_table: list = field(default_factory=lambda: [16, 8, 4, 2, 1])   # 1 in N per stage
@@ -83,9 +91,13 @@ class Rules:
     def tp_cost(self, move):
         if move["name"] == "STRUGGLE":
             return 0
+        if move.get("special"):
+            return self.special_cost
         if self.rank_costs:
             ladder = self.rank_status_costs if move["power"] == 0 and self.rank_status_costs else self.rank_costs
             return ladder[move.get("rank", 1) - 1]
+        if self.tp_curve:
+            return curve_cost(move, self.curve_base, self.curve_k)
         if not self.tp_formula:
             return move["tp"]
         env = {"power": move["power"], "acc": move["acc"], "status": move["power"] == 0, "rank": move.get("rank", 1),
@@ -185,6 +197,7 @@ class Stats:
         self.rank_use = {"player": [0, 0, 0], "foe": [0, 0, 0]}   # damaging moves used, by rank
         self.chose_lower = {"player": 0, "foe": 0}      # used a lower rank while a higher one was affordable
         self.forced_lower = {"player": 0, "foe": 0}     # used a lower rank because the higher was unaffordable
+        self.special_uses = 0
         self.unmodelled = set()
 
 
@@ -388,15 +401,36 @@ class Battle:
         me, foe = self.active[side], self.active[self._other(side)]
         if self.rules.cplus and side == "player":
             return self.choose_cplus(side, me, foe)
-        affordable = [mv for mv in me.moves if mv != "STRUGGLE" and me.tp >= self.cost(mv)]
+        special = self.special_move(side, me)
+        moves = me.moves + ([special] if special else [])
+        affordable = [mv for mv in moves if mv != "STRUGGLE" and me.tp >= self.cost(mv)]
         if not affordable:
             self.stats.struggles[side] += 1
             return "STRUGGLE"
         policy = self.ai[side]
-        scored = sorted(((self.expected_damage(side, me, foe, self._move(mv)), mv) for mv in me.moves if mv != "STRUGGLE"), reverse=True)
-        best_any = scored[0][1] if scored else None
-        if best_any and best_any not in affordable:
+        scored = sorted(((self.expected_damage(side, me, foe, self._move(mv)), mv) for mv in moves if mv != "STRUGGLE"), reverse=True)
+        regular = [mv for d, mv in scored if mv != special]
+        if regular and regular[0] not in affordable:
             self.stats.tp_starved_turns[side] += 1
+        choice = self._pick(side, policy, me, foe, scored, affordable)
+        if special and choice == special:
+            self.stats.special_uses += 1
+        return choice
+
+    def special_move(self, side, mon):
+        """The mon's Special (a STAB hit of special_power), once earned, or None."""
+        r = self.rules
+        if side != "player" or not r.special_power or mon.level < r.special_level:
+            return None
+        if r.special_habit == "trainers" and self.kind == "wild":
+            return None
+        name = "SPECIAL_" + mon.types[0]
+        if name not in self.data.moves:
+            self.data.moves[name] = {"name": name, "effect": "HIT", "power": r.special_power, "type": mon.types[0],
+                                     "acc": 100, "tp": 0, "pp": 5, "chance": 0, "priority": 0, "special": True}
+        return name
+
+    def _pick(self, side, policy, me, foe, scored, affordable):
         if policy == "random":
             return random.choice(affordable)
         if policy == "rank":

@@ -24,6 +24,9 @@ python3 sim.py duel SQUIRTLE:L "KAMONEGI:11@LEEK" --boss --levels 8-16
 # Damage ranges and hits to KO for each of the attacker's moves.
 python3 sim.py ttk STARMIE:21 IVYSAUR:21
 
+# The continuous TP cost curve as a table (python3 costcurve.py --markdown for Markdown)
+python3 costcurve.py --base 1 --k 0.13
+
 # TP economy: regen per turn and how many uses in a row each cost allows.
 python3 sim.py tp CHARMANDER SQUIRTLE BULBASAUR PIDGE --moves ember water_gun vine_whip
 
@@ -49,6 +52,8 @@ of its level-up learnset, like a wild or trainer mon in Emerald.
 | `tp_regen_base`, `tp_int_div` | 5, 8 | `TP_REGEN_BASE`, `TP_REGEN_INT_DIVISOR`; INT = base Sp. Def; `tp_int_div=0` drops INT |
 | `cplus`, `cplus_single_stage`, `cplus_wild_rank1` | off, 20/35, true | C+ move ranks: family slots, rank cap by evolution stage (FINDINGS section 9) |
 | `cplus_level_fallback`, `cplus_star1_cost` | off, 0 | e.g. `22,40`: two and three stars by level if evolution comes later; e.g. `5`: every one star costs 5 TP (section 9b) |
+| `tp_curve`, `curve_base`, `curve_k` | off, 1, 0.13 | continuous cost `round(base + k x value)` from power, accuracy and effects (`costcurve.py`, FINDINGS section 10) |
+| `special_power`, `special_cost`, `special_level`, `special_habit` | off, 30, 25, greedy | a STAB Special for player mons (`trainers` keeps it for trainer battles) |
 | `tp_persist` | false | TP carries over between battles and refills only on a heal (not in the ROM yet) |
 | `tp_formula` | ROM `tpCost` | any Python expression of `power`, `acc`, `status`, `rank`, `pp` (the move's PP); `round5()` available |
 | `rank_costs`, `rank_status_costs` | off | cost by move rank, e.g. `5,15,40` and `10,20,30` (rank: Notion stars for family moves, else a power tier) |
