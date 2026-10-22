@@ -103,6 +103,18 @@ def animate_bush(b, seed):
                     mx = int(round(2 * cx - x))
                     if flower[y, mx] or inner[y, mx]:
                         f[y, mx] = b[y, x]
+        # The crown leans with the wind: the top rows of the bush shift a pixel
+        # (frames 1 and 3, opposite ways), the lower body stays rooted.
+        lean = (0, 1, 0, -1)[k]
+        if lean:
+            rows = np.nonzero(canopy.any(1))[0]
+            top = rows[0] if len(rows) else 0
+            for y in range(top, min(top + 4, f.shape[0])):
+                src = f[y].copy()
+                shifted = np.roll(src, lean, 0)
+                # Only canopy pixels move; the grass around stays where it is.
+                row_canopy = canopy[y] | np.roll(canopy[y], lean)
+                f[y][row_canopy] = np.where(np.roll(canopy[y], lean)[row_canopy, None], shifted[row_canopy], b[y][row_canopy])
         frames.append(f)
     return frames
 
