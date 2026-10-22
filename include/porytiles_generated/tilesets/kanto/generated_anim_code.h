@@ -23,6 +23,15 @@ const u16 gTilesetAnims_PorytilesManaged_Kanto_Flowers_FrameF0[] = INCBIN_U16("d
 const u16 gTilesetAnims_PorytilesManaged_Kanto_Flowers_FrameF1[] = INCBIN_U16("data/tilesets/primary/kanto/porytiles_bin/anim/flowers/f1.4bpp");
 const u16 gTilesetAnims_PorytilesManaged_Kanto_Flowers_FrameF2[] = INCBIN_U16("data/tilesets/primary/kanto/porytiles_bin/anim/flowers/f2.4bpp");
 
+const u16 gTilesetAnims_PorytilesManaged_Kanto_Smoke_FrameF0[] = INCBIN_U16("data/tilesets/primary/kanto/porytiles_bin/anim/smoke/f0.4bpp");
+const u16 gTilesetAnims_PorytilesManaged_Kanto_Smoke_FrameF1[] = INCBIN_U16("data/tilesets/primary/kanto/porytiles_bin/anim/smoke/f1.4bpp");
+const u16 gTilesetAnims_PorytilesManaged_Kanto_Smoke_FrameF2[] = INCBIN_U16("data/tilesets/primary/kanto/porytiles_bin/anim/smoke/f2.4bpp");
+const u16 gTilesetAnims_PorytilesManaged_Kanto_Smoke_FrameF3[] = INCBIN_U16("data/tilesets/primary/kanto/porytiles_bin/anim/smoke/f3.4bpp");
+const u16 gTilesetAnims_PorytilesManaged_Kanto_Smoke_FrameF4[] = INCBIN_U16("data/tilesets/primary/kanto/porytiles_bin/anim/smoke/f4.4bpp");
+const u16 gTilesetAnims_PorytilesManaged_Kanto_Smoke_FrameF5[] = INCBIN_U16("data/tilesets/primary/kanto/porytiles_bin/anim/smoke/f5.4bpp");
+const u16 gTilesetAnims_PorytilesManaged_Kanto_Smoke_FrameF6[] = INCBIN_U16("data/tilesets/primary/kanto/porytiles_bin/anim/smoke/f6.4bpp");
+const u16 gTilesetAnims_PorytilesManaged_Kanto_Smoke_FrameF7[] = INCBIN_U16("data/tilesets/primary/kanto/porytiles_bin/anim/smoke/f7.4bpp");
+
 const u16 gTilesetAnims_PorytilesManaged_Kanto_Water_FrameF0[] = INCBIN_U16("data/tilesets/primary/kanto/porytiles_bin/anim/water/f0.4bpp");
 const u16 gTilesetAnims_PorytilesManaged_Kanto_Water_FrameF1[] = INCBIN_U16("data/tilesets/primary/kanto/porytiles_bin/anim/water/f1.4bpp");
 const u16 gTilesetAnims_PorytilesManaged_Kanto_Water_FrameF2[] = INCBIN_U16("data/tilesets/primary/kanto/porytiles_bin/anim/water/f2.4bpp");
@@ -62,6 +71,17 @@ const u16 *const gTilesetAnims_PorytilesManaged_Kanto_Flowers[] = {
     gTilesetAnims_PorytilesManaged_Kanto_Flowers_FrameF2
 };
 
+const u16 *const gTilesetAnims_PorytilesManaged_Kanto_Smoke[] = {
+    gTilesetAnims_PorytilesManaged_Kanto_Smoke_FrameF0,
+    gTilesetAnims_PorytilesManaged_Kanto_Smoke_FrameF1,
+    gTilesetAnims_PorytilesManaged_Kanto_Smoke_FrameF2,
+    gTilesetAnims_PorytilesManaged_Kanto_Smoke_FrameF3,
+    gTilesetAnims_PorytilesManaged_Kanto_Smoke_FrameF4,
+    gTilesetAnims_PorytilesManaged_Kanto_Smoke_FrameF5,
+    gTilesetAnims_PorytilesManaged_Kanto_Smoke_FrameF6,
+    gTilesetAnims_PorytilesManaged_Kanto_Smoke_FrameF7
+};
+
 const u16 *const gTilesetAnims_PorytilesManaged_Kanto_Water[] = {
     gTilesetAnims_PorytilesManaged_Kanto_Water_FrameF0,
     gTilesetAnims_PorytilesManaged_Kanto_Water_FrameF1,
@@ -97,10 +117,16 @@ static void QueueAnimTiles_PorytilesManaged_Kanto_Flowers(u16 timer)
     AppendTilesetAnimToBuffer(gTilesetAnims_PorytilesManaged_Kanto_Flowers[i], (u16 *)(BG_VRAM + TILE_OFFSET_4BPP(22)), 30 * TILE_SIZE_4BPP);
 }
 
+static void QueueAnimTiles_PorytilesManaged_Kanto_Smoke(u16 timer)
+{
+    u16 i = timer % ARRAY_COUNT(gTilesetAnims_PorytilesManaged_Kanto_Smoke);
+    AppendTilesetAnimToBuffer(gTilesetAnims_PorytilesManaged_Kanto_Smoke[i], (u16 *)(BG_VRAM + TILE_OFFSET_4BPP(52)), 5 * TILE_SIZE_4BPP);
+}
+
 static void QueueAnimTiles_PorytilesManaged_Kanto_Water(u16 timer)
 {
     u16 i = timer % ARRAY_COUNT(gTilesetAnims_PorytilesManaged_Kanto_Water);
-    AppendTilesetAnimToBuffer(gTilesetAnims_PorytilesManaged_Kanto_Water[i], (u16 *)(BG_VRAM + TILE_OFFSET_4BPP(52)), 82 * TILE_SIZE_4BPP);
+    AppendTilesetAnimToBuffer(gTilesetAnims_PorytilesManaged_Kanto_Water[i], (u16 *)(BG_VRAM + TILE_OFFSET_4BPP(57)), 82 * TILE_SIZE_4BPP);
 }
 
 // ============================================
@@ -113,6 +139,7 @@ static void TilesetAnim_PorytilesManaged_Kanto(u16 timer)
     {
         QueueAnimTiles_PorytilesManaged_Kanto_Crops(timer / 16);
         QueueAnimTiles_PorytilesManaged_Kanto_Flowers(timer / 16);
+        QueueAnimTiles_PorytilesManaged_Kanto_Smoke(timer / 16);
         QueueAnimTiles_PorytilesManaged_Kanto_Water(timer / 16);
     }
 }

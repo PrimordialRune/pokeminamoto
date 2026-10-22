@@ -31,6 +31,29 @@
     ],
     "tile_offset": 22
   },
+  "smoke": {
+    "frames": [
+      "f0",
+      "f1",
+      "f2",
+      "f3",
+      "f4",
+      "f5",
+      "f6",
+      "f7"
+    ],
+    "frame_order": [
+      "f0",
+      "f1",
+      "f2",
+      "f3",
+      "f4",
+      "f5",
+      "f6",
+      "f7"
+    ],
+    "tile_offset": 52
+  },
   "water": {
     "frames": [
       "f0",
@@ -68,6 +91,6 @@
       "f14",
       "f15"
     ],
-    "tile_offset": 52
+    "tile_offset": 57
   }
 }

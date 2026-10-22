@@ -30,20 +30,26 @@ done
 python3 "$HERE/sway_anim.py" "$out/masara.png" "$out/masara.png" "$out/anim" \
     --rect crops:336,32,416,96:16 --rect crops:512,271,576,303:16 --rect crops:144,54,160,96:8 \
     --leans crops:0,1,-1 "${flowers[@]}" --leans flowers:0,1,-1
+# Smoke from the chimney of Red's house.
+python3 "$HERE/smoke_anim.py" "$out/masara.png" "$out/masara.png" "$out/anim/smoke" \
+    --mouth 121,41 --box 112,16,128,40 --preview "$out/smoke.gif"
 
-# The ROUTE 1 sign goes to the secondary so the primary keeps a little room.
+# The ROUTE 1 sign goes to the secondary so the primary keeps a little room;
+# the chimney cell stays in the primary.
 python3 - "$out/mask.png" <<'PY'
 import sys
 from PIL import Image, ImageDraw
 im = Image.new('RGB', (640, 576))
 ImageDraw.Draw(im).rectangle((272, 16, 319, 47), fill=(255, 0, 0))
+# The chimney cell holds animated smoke, and animations live in the primary.
+ImageDraw.Draw(im).rectangle((112, 32, 127, 47), fill=(0, 0, 255))
 im.save(sys.argv[1])
 PY
 FORCE=1 SPLIT_MASK="$out/mask.png" "$HERE/tileset.sh" import "$out/masara.png" "$ref" gTileset_Kanto gTileset_MasaraTown
 
 anim=data/tilesets/primary/kanto/porytiles_src/anim
 rm -rf "$anim"; mkdir -p "$anim"
-cp -r "$out/anim/water" "$out/anim/crops" "$out/anim/flowers" "$anim/"
+cp -r "$out/anim/water" "$out/anim/crops" "$out/anim/flowers" "$out/anim/smoke" "$anim/"
 # Each animation gets its own run of tile slots (Porytiles rewrites the offsets on compile).
 python3 - "$anim" <<'PY'
 import json, os, sys
@@ -53,6 +59,7 @@ order = {
     'water': sorted((f[:-4] for f in os.listdir(os.path.join(anim, 'water')) if f[0] == 'f'), key=lambda f: int(f[1:])),
     'crops': ['f0', 'f0', 'f1', 'f1', 'f0', 'f0', 'f2', 'f2'],   # slow: 32 frames per pose
     'flowers': ['f0', 'f1', 'f0', 'f2'],
+    'smoke': [f'f{i}' for i in range(8)],
 }
 out, offset = {}, 1
 for name, fo in order.items():
@@ -70,4 +77,6 @@ mkdir -p data/layouts/MasaraTown
 python3 "$HERE/collision.py" "$out/masara.png" "$out/map.bin" data/layouts/MasaraTown/map.bin \
     --walk 17,30,19,33 --walk 15,0,16,0 --block 24,15,30,19 > "$out/collision.txt"
 mv data/layouts/MasaraTown/collision.png "$out/"
+# make does not track map.bin, only layouts.json: touch it so maps.o picks up the new layout.
+touch data/layouts/layouts.json
 echo "Masara rebuilt. Budget: $out/report.md  Collision preview: $out/collision.png"
