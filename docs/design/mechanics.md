@@ -75,7 +75,7 @@ $\mathsf{Damage=\Bigg[\frac{\left ( \frac{2\times Level}{5}+2 \right )\: \times\
 
 (Level 1-100; Power 0-250; Attack and Defense < 255.) Compared to Emerald there is no "+2" outside the bracket and the Modifier set differs.
 
-**In the game (2026-10-22):** the flat +2 is gone from `CalculateBaseDamage` (`src/pokemon.c`); damaging moves still deal at least 1.
+**In the game (2026-10-22):** Emerald's flat +2 is kept on purpose (Omar's call): without it, Lv 5 fights took about twice as long in the early-game balance model (`/mnt/project-files/balance-model/FINDINGS.md` §2).
 
 $\mathsf{ Modifier = Badges \times Critical \times RNG \times STAB \times Type \times Other }$
 

@@ -3364,11 +3364,8 @@ s32 CalculateBaseDamage(struct BattlePokemon *attacker, struct BattlePokemon *de
     if (ShouldGetTypeBadgeBoost(type, battlerIdAtk))
         damage = (125 * damage) / 100;
 
-    // GDD damage formula has no flat +2, so keep the old floor of 1 for any damaging move
-    if (damage == 0 && type != TYPE_MYSTERY)
-        damage = 1;
-
-    return damage;
+    // Emerald's flat +2 stays (Omar, 2026-10-22): without it Lv 5 fights run twice as long
+    return damage + 2;
 }
 
 u8 CountAliveMonsInBattle(u8 caseId)
