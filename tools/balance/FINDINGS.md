@@ -177,6 +177,31 @@ affordable rank on trainers. Habit B: always the strongest affordable rank. 150 
 Try it: add `--set cplus=true` (and `--set cplus_wild_rank1=false` for habit B, `run --no-evolve`)
 to the section 7 command.
 
+### 9b. Revised C+: level fallback and a flat 5 TP one star
+
+Two changes from the design thread: the cap is the evolution stage or a level, whichever comes first
+(two stars at the middle form or Lv 22, three at the final form or Lv 40; single-stage species 22/40
+too), and every family's one star costs 5 TP whatever its PP. Habit A, 100 playthroughs per row.
+
+| Starter | Misty first-try win, evolves / never evolves (was) | TP-short battles per stretch, Route 2 / Nibi to Mt. Moon / to Hanada (was) | Blackouts, evolves / never (was) |
+|---|---|---|---|
+| Charmander | 0% / 0% (1% / 0%); Brock 38% / 2% (33% / 1%) | 1.6 / 8.5 / 10.7 (5.4 / 10.4 / 9.9) | 22.5 / 31.9 (24.0 / 34.1) |
+| Squirtle | 95% / 45% (95% / 0%) | 0.8 / 6.0 / 5.8 (same) | 16.8 / 20.3 (16.8 / 30.0) |
+| Bulbasaur | 100% / 98% (100% / 60%) | 2.8 / 5.2 / 5.9 (6.1 / 16.7 / 13.0) | 18.5 / 20.2 (19.6 / 22.7) |
+
+1. **Brock is unchanged**: starters arrive at Lv 13-17, below 22, so the fallback never fires there.
+   **At Misty (Lv 23-26) every lead now has two stars on offer**, evolved or not, and uses them every turn.
+2. **The fallback closes most of the unevolved gap.** Squirtle that refuses to evolve goes from 0% to
+   45% against Misty, Bulbasaur from 60% to 98%; unevolved blackouts drop by 2-10. Charmander is stuck
+   on type, not rank (Charmeleon also loses to Misty).
+3. **5 TP one stars fix Vine Whip.** Bulbasaur's TP-short battles fall from 13-17 to 5-6 per stretch,
+   in line with Squirtle, and its first TP-short battle moves from battle 4 to battle 17 of the
+   Nibi to Mt. Moon stretch. Charmander's Route 2 stretch drops from 5.4 to 1.6. TP still runs short
+   in every long stretch (first short battle around 17-26), so resting stays necessary.
+
+Command: the section 7 command plus `--set cplus=true --set cplus_level_fallback=22,40
+--set cplus_single_stage=22,40 --set cplus_star1_cost=5`.
+
 ## Open inputs for the model
 
 - Gym 1-3 teams, levels and movesets; where Jiro's gym sits on the route.

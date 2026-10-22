@@ -61,6 +61,8 @@ class Rules:
     cplus: bool = False             # C+ move ranks: a slot holds a family, rank cap rises with evolution stage
     cplus_single_stage: list = field(default_factory=lambda: [20, 35])   # levels for 2 and 3 stars without evolutions
     cplus_wild_rank1: bool = True   # player uses one star against wild mons, highest affordable rank vs trainers
+    cplus_level_fallback: list = field(default_factory=list)   # e.g. 22,40: 2 and 3 stars by level if evolution is later
+    cplus_star1_cost: int = 0       # e.g. 5: every family's one-star rank costs this, whatever its PP
     tp_formula: str = ""            # "" = the ROM's tpCost; else a Python expression of power/acc/status/rank
     rank_costs: list = field(default_factory=list)          # e.g. 5,15,30: cost by move rank (overrides the rest)
     rank_status_costs: list = field(default_factory=list)   # e.g. 10,20,30 for status moves; defaults to rank_costs
@@ -229,7 +231,9 @@ class Battle:
         if me.base["ability"] == "INTIMIDATE":
             foe.stages["atk"] = max(-6, foe.stages["atk"] - 1)
 
-    def cost(self, move_name):
+    def cost(self, move_name, mon=None):
+        if mon is not None and self.rules.cplus and self.rules.cplus_star1_cost and move_name in getattr(mon, "star1", ()):
+            return self.rules.cplus_star1_cost
         return self.rules.tp_cost(self._move(move_name))
 
     def _move(self, name):
@@ -335,8 +339,13 @@ class Battle:
         stage, final = self.data.evo_stage(mon.species)
         if stage == 1 and final:
             lv2, lv3 = self.rules.cplus_single_stage
-            return 1 + (mon.level >= lv2) + (mon.level >= lv3)
-        return 3 if final else stage
+            cap = 1 + (mon.level >= lv2) + (mon.level >= lv3)
+        else:
+            cap = 3 if final else stage
+        if self.rules.cplus_level_fallback:
+            lv2, lv3 = self.rules.cplus_level_fallback
+            cap = max(cap, 1 + (mon.level >= lv2) + (mon.level >= lv3))
+        return cap
 
     def slot_options(self, mon, slot):
         """Moves a C+ slot offers this turn, lowest rank first."""
@@ -351,13 +360,14 @@ class Battle:
     def choose_cplus(self, side, me, foe):
         st = self.stats
         slots = [self.slot_options(me, s) for s in me.moves if s != "STRUGGLE"]
+        me.star1 = {o[0] for o in slots if self.data.slot_family(o[0])}
         st.multi_rank_turns += any(len(o) > 1 for o in slots)
         conservative = self.rules.cplus_wild_rank1 and self.kind == "wild" and self.ai["player"] == "smart"
         wanted, picks = [], []
         for opts in slots:
             want = opts[0] if conservative else opts[-1]
             wanted.append(want)
-            pick = next((mv for mv in reversed(opts[:opts.index(want) + 1]) if me.tp >= self.cost(mv)), None)
+            pick = next((mv for mv in reversed(opts[:opts.index(want) + 1]) if me.tp >= self.cost(mv, me)), None)
             if pick:
                 picks.append(pick)
         ev = lambda mv: self.expected_damage(side, me, foe, self._move(mv))
@@ -369,7 +379,7 @@ class Battle:
         choice = max(picks, key=ev)
         if ev(choice) <= 0:
             choice = random.choice(picks)
-        if best_wanted != choice and me.tp < self.cost(best_wanted):
+        if best_wanted != choice and me.tp < self.cost(best_wanted, me):
             st.tp_starved_turns[side] += 1
         st.rank_choice[next((o.index(choice) for o in slots if choice in o), 0)] += 1
         return choice
@@ -458,7 +468,7 @@ class Battle:
             return
         # two-turn moves: charge now, fire next turn (TP is paid on the charging turn)
         if move["effect"] in TWO_TURN and me.charging is None:
-            me.tp -= min(me.tp, self.cost(move_name))
+            me.tp -= min(me.tp, self.cost(move_name, me))
             self._track_tp(side, me)
             me.charging = move_name
             return
@@ -467,7 +477,7 @@ class Battle:
         if move["power"] and move_name != "STRUGGLE" and not charged:
             self._track_rank(side, me, move)
         if not charged:
-            me.tp -= min(me.tp, self.cost(move_name))
+            me.tp -= min(me.tp, self.cost(move_name, me))
             self._track_tp(side, me)
         e = move["effect"]
         if e not in PLAIN_HIT and e not in STAT_MOVES and e not in SECONDARY_STAT and e not in SECONDARY_STATUS \
