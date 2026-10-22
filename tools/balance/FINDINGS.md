@@ -142,6 +142,41 @@ folders are identical. A copy of `newMM/data` and its main files is in
   (mean 10). The tool now offers it: `run --battles gamma`. With it, the persistent-TP result of
   section 7 holds: Squirtle first runs short at battle 14-24 of the long stretches.
 
+## 9. "C+" move ranks on persistent TP (asked by the design thread)
+
+Proposal: a slot holds a move family; the rank cap rises with evolution (basic form one star, middle
+form two, final form three; single-stage species two stars at Lv 20 and three at 35); the player
+picks the rank each use. Families are Notion's (NORMAL subcategories, ELEMENTAL types). Ranks the ROM
+lacks (Fireball, Hydro Jet, Lunge...) are plain hits with Notion's power. A learned ROM move maps to
+its Notion family, or to its type's family (Vine Whip and Razor Leaf share the Grass slot, Bubble and
+Water Gun the Water slot). Costs: PP tiers, with two stars counted as PP 15 (10 TP) and three stars as
+PP 5 (20 TP). Regen 2 + INT/32, TP persists between battles. Habit A: one star on wild mons, highest
+affordable rank on trainers. Habit B: always the strongest affordable rank. 150 playthroughs per row.
+
+| Starter | Rank choice at Brock | Rank choice at Misty | TP-short battles, Nibi to Mt. Moon / Mt. Moon to Hanada, habit A vs B | Misty first-try win, evolves / never evolves |
+|---|---|---|---|---|
+| Charmander | 83% of turns (Charmeleon by then) | 100% | 10.4 vs 12.5 / 9.9 vs 12.1 | 1% / 0% (Brock 33% vs 1%) |
+| Squirtle | 41% (Wartortle in 61% of runs) | 100% | 6.0 vs 9.6 / 5.6 vs 13.0 | 95% / 0% |
+| Bulbasaur | 0% (still Bulbasaur) | 100% | 16.7 vs 16.7 / 13.0 vs 15.7 | 100% / 60% |
+
+1. **A one-star vs two-star choice only exists after the first evolution (Lv 16).** By Brock it
+   depends on the arrival level. Arrival levels here run high (Charmander about 16.6, Squirtle 14.7,
+   Bulbasaur 13.2) because lost Jiro attempts still pay EXP. By Misty every evolved starter has the
+   choice on every turn and picks two stars all the time against her.
+2. **Route 2 + forest to Pewter: no difference between the habits**, about 5-6 TP-short battles for
+   Charmander and Bulbasaur and under 1 for Squirtle, because nobody has evolved yet, so one star is the
+   only rank. After evolving, the one-star habit saves 2-7 TP-short battles per long stretch
+   (Squirtle 13.0 to 5.6 on Mt. Moon to Hanada). Bulbasaur is TP-short in 13-17 battles per stretch
+   either way: its one-star Grass move is Vine Whip (10 PP, so 20 TP), the core-move cost problem from
+   section 7.
+3. **An unevolved mon falls behind badly.** Squirtle never beats Misty at Lv 24 without evolving
+   (Wartortle wins 95%); Charmander's Brock win rate drops from 33% to 1%; Bulbasaur's Misty win rate
+   drops from 100% to 60%. Blackouts per playthrough rise by 3-13. The cap ties power to evolution
+   much more tightly than stats alone do.
+
+Try it: add `--set cplus=true` (and `--set cplus_wild_rank1=false` for habit B, `run --no-evolve`)
+to the section 7 command.
+
 ## Open inputs for the model
 
 - Gym 1-3 teams, levels and movesets; where Jiro's gym sits on the route.

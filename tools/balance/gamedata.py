@@ -90,6 +90,7 @@ class GameData:
         self._load_type_chart()
         self._load_aliases()
         self._load_ranks()
+        self._load_families()
 
     def _load_species(self):
         for name, body in _blocks(_read("src/data/pokemon/species_info.h"), "SPECIES"):
@@ -186,6 +187,54 @@ class GameData:
             else:
                 p = m["power"]
                 m["rank"], m["rank_source"] = (1 if p <= 45 else 2 if p <= 75 else 3), "power"
+
+    def _load_families(self):
+        """Move families with ranks (Notion NORMAL subcategories and ELEMENTAL types) for the C+ proposal.
+
+        A rank the ROM doesn't have becomes a plain damaging move with Notion's power, type and accuracy.
+        Family costs follow the PP-tier idea by rank: one star keeps the ROM move's PP (35 if new),
+        two stars count as PP 15, three stars as PP 5.
+        """
+        self.families = {}       # family -> [move for rank 1, 2, 3]
+        self.family_of = {}      # move -> family
+        path = os.path.join(ROOT, "docs/design/data/moves.csv")
+        if not os.path.exists(path):
+            return
+        with open(path, encoding="utf-8") as f:
+            rows = [r for r in csv.DictReader(f) if r["category"] in ("NORMAL", "ELEMENTAL") and r["rank"]]
+        for r in rows:
+            fam = r["subcategory"] if r["category"] == "NORMAL" else r["type"]
+            if not fam or not r["power"] or r["power"] == "0":
+                continue
+            rank = len(r["rank"])
+            key = r["name"].upper().replace(" ", "_").replace("-", "_")
+            rom = self.moves.get(key)
+            if rom is None or (rom["power"] == 0) != (int(r["power"]) == 0):
+                key = "FAM_" + key if rom is not None else key
+                self.moves[key] = {"name": key, "effect": "HIT", "power": int(r["power"]), "type": r["type"],
+                                   "acc": int(r["accuracy"] or 100), "tp": 0, "pp": 35, "chance": 0, "priority": 0,
+                                   "rank": rank, "rank_source": "notion", "synthetic": True}
+            m = self.moves[key]
+            m["family_pp"] = m["pp"] if rank == 1 else (15 if rank == 2 else 5)
+            self.families.setdefault(fam, [None, None, None])[rank - 1] = key
+            self.family_of[key] = fam
+
+    def slot_family(self, move):
+        """Family a learned ROM move occupies: its own Notion family, else its type's elemental family."""
+        if move in self.family_of:
+            return self.family_of[move]
+        m = self.moves[move]
+        if m["power"] > 0 and m["type"] in self.families and m["type"] != "NORMAL":
+            return m["type"]
+        return None
+
+    def evo_stage(self, species):
+        """(stage, final): stage 1 basic, 2 middle, 3 final of a three-stage line."""
+        pre = {to: frm for frm, (_, to) in self.evolutions.items()}
+        stage, sp = 1, species
+        while sp in pre:
+            stage, sp = stage + 1, pre[sp]
+        return stage, species not in self.evolutions
 
     def resolve(self, name):
         """Species constant from an English constant, English name or Minamoto name (KAMONEGI)."""

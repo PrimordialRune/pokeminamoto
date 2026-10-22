@@ -47,6 +47,7 @@ of its level-up learnset, like a wild or trainer mon in Emerald.
 |---|---|---|
 | `tp_max` | 100 | `TP_MAX` |
 | `tp_regen_base`, `tp_int_div` | 5, 8 | `TP_REGEN_BASE`, `TP_REGEN_INT_DIVISOR`; INT = base Sp. Def; `tp_int_div=0` drops INT |
+| `cplus`, `cplus_single_stage`, `cplus_wild_rank1` | off, 20/35, true | C+ move ranks: family slots, rank cap by evolution stage (FINDINGS section 9) |
 | `tp_persist` | false | TP carries over between battles and refills only on a heal (not in the ROM yet) |
 | `tp_formula` | ROM `tpCost` | any Python expression of `power`, `acc`, `status`, `rank`, `pp` (the move's PP); `round5()` available |
 | `rank_costs`, `rank_status_costs` | off | cost by move rank, e.g. `5,15,40` and `10,20,30` (rank: Notion stars for family moves, else a power tier) |

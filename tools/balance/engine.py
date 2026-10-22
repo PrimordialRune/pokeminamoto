@@ -58,6 +58,9 @@ class Rules:
     tp_regen_base: int = 5
     tp_int_div: int = 8             # 0 = no INT term
     tp_persist: bool = False        # TP carries over between battles and only refills on heal (rest)
+    cplus: bool = False             # C+ move ranks: a slot holds a family, rank cap rises with evolution stage
+    cplus_single_stage: list = field(default_factory=lambda: [20, 35])   # levels for 2 and 3 stars without evolutions
+    cplus_wild_rank1: bool = True   # player uses one star against wild mons, highest affordable rank vs trainers
     tp_formula: str = ""            # "" = the ROM's tpCost; else a Python expression of power/acc/status/rank
     rank_costs: list = field(default_factory=list)          # e.g. 5,15,30: cost by move rank (overrides the rest)
     rank_status_costs: list = field(default_factory=list)   # e.g. 10,20,30 for status moves; defaults to rank_costs
@@ -84,7 +87,7 @@ class Rules:
         if not self.tp_formula:
             return move["tp"]
         env = {"power": move["power"], "acc": move["acc"], "status": move["power"] == 0, "rank": move.get("rank", 1),
-               "pp": move.get("pp", 0),
+               "pp": move.get("family_pp", move.get("pp", 0)) if self.cplus else move.get("pp", 0),
                "round5": lambda x: int(5 * round(x / 5)), "math": math, "max": max, "min": min}
         return max(0, int(eval(self.tp_formula, {"__builtins__": {}}, env)))
 
@@ -175,6 +178,8 @@ class Stats:
         self.crits = {"player": 0, "foe": 0}
         self.hits = {"player": 0, "foe": 0}
         self.sash_saves = 0
+        self.multi_rank_turns = 0
+        self.rank_choice = [0, 0, 0]
         self.rank_use = {"player": [0, 0, 0], "foe": [0, 0, 0]}   # damaging moves used, by rank
         self.chose_lower = {"player": 0, "foe": 0}      # used a lower rank while a higher one was affordable
         self.forced_lower = {"player": 0, "foe": 0}     # used a lower rank because the higher was unaffordable
@@ -325,8 +330,54 @@ class Battle:
         return None
 
     # ---------------------------------------------------------------- choice
+    def rank_cap(self, mon):
+        """Basic form 1 star, middle form 2, final form 3; single-stage species unlock by level."""
+        stage, final = self.data.evo_stage(mon.species)
+        if stage == 1 and final:
+            lv2, lv3 = self.rules.cplus_single_stage
+            return 1 + (mon.level >= lv2) + (mon.level >= lv3)
+        return 3 if final else stage
+
+    def slot_options(self, mon, slot):
+        """Moves a C+ slot offers this turn, lowest rank first."""
+        fam = self.data.slot_family(slot)
+        if fam is None:
+            return [slot]
+        ranks = list(self.data.families[fam])
+        if slot not in ranks:
+            ranks[0] = slot          # a type-mapped ROM move (Vine Whip) stands in as the one-star rank
+        return [mv for mv in ranks[:self.rank_cap(mon)] if mv]
+
+    def choose_cplus(self, side, me, foe):
+        st = self.stats
+        slots = [self.slot_options(me, s) for s in me.moves if s != "STRUGGLE"]
+        st.multi_rank_turns += any(len(o) > 1 for o in slots)
+        conservative = self.rules.cplus_wild_rank1 and self.kind == "wild" and self.ai["player"] == "smart"
+        wanted, picks = [], []
+        for opts in slots:
+            want = opts[0] if conservative else opts[-1]
+            wanted.append(want)
+            pick = next((mv for mv in reversed(opts[:opts.index(want) + 1]) if me.tp >= self.cost(mv)), None)
+            if pick:
+                picks.append(pick)
+        ev = lambda mv: self.expected_damage(side, me, foe, self._move(mv))
+        if not picks:
+            st.struggles[side] += 1
+            st.tp_starved_turns[side] += 1
+            return "STRUGGLE"
+        best_wanted = max(wanted, key=ev)
+        choice = max(picks, key=ev)
+        if ev(choice) <= 0:
+            choice = random.choice(picks)
+        if best_wanted != choice and me.tp < self.cost(best_wanted):
+            st.tp_starved_turns[side] += 1
+        st.rank_choice[next((o.index(choice) for o in slots if choice in o), 0)] += 1
+        return choice
+
     def choose(self, side):
         me, foe = self.active[side], self.active[self._other(side)]
+        if self.rules.cplus and side == "player":
+            return self.choose_cplus(side, me, foe)
         affordable = [mv for mv in me.moves if mv != "STRUGGLE" and me.tp >= self.cost(mv)]
         if not affordable:
             self.stats.struggles[side] += 1
@@ -581,7 +632,7 @@ class Battle:
         return res or "timeout"
 
 
-def level_up(mon, log=None):
+def level_up(mon, log=None, cplus=False, evolve=True):
     """Apply pending EXP: levels, new moves (replacing the weakest if full) and level evolutions."""
     data = mon.data
     growth = mon.base["growth"]
@@ -590,18 +641,27 @@ def level_up(mon, log=None):
         mon.calc_stats()
         for lvl, mv in data.learnsets.get(mon.species, []):
             if lvl == mon.level and mv not in mon.moves:
-                learn(mon, mv, log)
+                learn(mon, mv, log, cplus)
     evo = data.evolutions.get(mon.species)
-    if evo and mon.level >= evo[0] and evo[1] in data.species:
+    if evolve and evo and mon.level >= evo[0] and evo[1] in data.species:
         if log is not None:
             log.append("%s evolved into %s at L%d" % (mon.species, evo[1], mon.level))
         mon.species = evo[1]
         mon.calc_stats()
 
 
-def learn(mon, mv, log=None):
+def learn(mon, mv, log=None, cplus=False):
     data = mon.data
     new = data.moves[mv]
+    if cplus:
+        fam = data.slot_family(mv)
+        same = [m for m in mon.moves if data.slot_family(m) == fam] if fam else []
+        if same:
+            # one slot per family; a stronger type-mapped move (Water Gun over Bubble) becomes its one-star rank
+            old = same[0]
+            if mv not in data.family_of and new["power"] > data.moves[old]["power"] and old not in data.families[fam][1:]:
+                mon.moves[mon.moves.index(old)] = mv
+            return
     if len(mon.moves) < 4:
         mon.moves.append(mv)
         return

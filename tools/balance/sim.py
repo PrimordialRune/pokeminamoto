@@ -35,6 +35,7 @@ class Context:
         self.proxies = {}
         self.trainer_ai = getattr(args, "foe_ai", None) or "trainer"
         self.battles_model = getattr(args, "battles", None) or "scenario"
+        self.no_evolve = getattr(args, "no_evolve", False)
 
     def species(self, name):
         name = name.strip()
@@ -267,7 +268,7 @@ class Playthrough:
             if seg["first_limited"] is None:
                 seg["first_limited"] = seg["battles"]
         for m in self.party:
-            level_up(m, self.log)
+            level_up(m, self.log, cplus=self.ctx.rules.cplus, evolve=not self.ctx.no_evolve)
         if res != "win":
             self.blackouts += 1
             for m in self.party:
@@ -337,6 +338,9 @@ class Playthrough:
                        "crit_share": stats.crit_damage["player"] / stats.damage["player"] if stats.damage["player"] else 0,
                        "struggled": stats.struggles["player"] > 0, "tp_limited": stats.tp_starved_turns["player"] > 0,
                        "min_tp": stats.min_tp["player"], "foe_crit_share": stats.crit_damage["foe"] / stats.damage["foe"] if stats.damage["foe"] else 0}
+                rec["multi_rank"] = stats.multi_rank_turns / max(1, stats.turns)
+                rec["rank_choice"] = list(stats.rank_choice)
+                rec["species"] = self.party[0].species if self.party else ""
                 if is_boss:
                     rec.update(arrival=arrival, levels=levels, grind=grinded, target=step.get("target"),
                                wild_battles=self.wild_battles)
@@ -402,6 +406,19 @@ def cmd_run(args):
             print("%-28s %7s %6.1f %6s %6s %7s  %s" % (name[:28], pct(row["first_try_win"]), row["turns"], pct(row["crit_share"]),
                   pct(row["tp_limited"]), pct(row["struggled"]), extra))
         out.append(row)
+    if ctx.rules.cplus:
+        print("\nC+ ranks at the gym leaders (player's lead):")
+        for name, recs in by_step.items():
+            if not recs[0]["boss"]:
+                continue
+            rc = [sum(r["rank_choice"][i] for r in recs) for i in range(3)]
+            tot = sum(rc) or 1
+            forms = {}
+            for r in recs:
+                forms[r["species"]] = forms.get(r["species"], 0) + 1
+            print("  %-26s turns with 2+ ranks on offer %s; moves used 1*/2*/3*: %s / %s / %s; lead %s" % (
+                name[:26], pct(statistics.mean(r["multi_rank"] for r in recs)), pct(rc[0] / tot), pct(rc[1] / tot), pct(rc[2] / tot),
+                ", ".join("%s %s" % (k.title(), pct(v / len(recs)).strip()) for k, v in sorted(forms.items(), key=lambda kv: -kv[1]))))
     if ctx.rules.rank_costs:
         for side in ("player", "foe"):
             use = [sum(pt.rank_use[side][i] for pt in finals) for i in range(3)]
@@ -477,6 +494,7 @@ def main(argv=None):
     r.add_argument("--log", action="store_true")
     r.add_argument("--battles", choices=["scenario", "gamma"], default="scenario",
                    help="wild battles per area: the scenario's counts, or MathModels' gamma(2,5) draw")
+    r.add_argument("--no-evolve", action="store_true", help="the player's mons never evolve (C+ rank caps stay low)")
     r.add_argument("--segments", action="store_true", help="show the stretches between rests even without tp_persist")
     r.add_argument("--json", metavar="FILE")
     r.set_defaults(func=cmd_run)
