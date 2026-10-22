@@ -178,7 +178,7 @@ def wave_deep(k, ph):
 
 STYLES = {'swell': wave_swell, 'soft': wave_soft, 'gsc': wave_gsc, 'calm': wave_calm,
           'glint': wave_glint, 'breeze': wave_breeze, 'deep': wave_deep}
-wave = wave_calm
+wave = wave_glint
 
 
 def shore_distance(water):
@@ -258,7 +258,7 @@ def main():
     ap.add_argument('out_map')
     ap.add_argument('anim_dir')
     ap.add_argument('--seed', type=int, default=1)
-    ap.add_argument('--style', choices=sorted(STYLES), default='calm')
+    ap.add_argument('--style', choices=sorted(STYLES), default='glint')
     ap.add_argument('--frames', type=int, default=16, help='8 or 16 (the loop must divide 16 steps)')
     ap.add_argument('--repeat', type=int, default=32, help='wave tile size in pixels: 32, or 16 (fewer tiles)')
     ap.add_argument('--calm-band', type=int, default=0, help='no swells within this many pixels of the bank')
