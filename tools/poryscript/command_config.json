@@ -51,6 +51,12 @@
     "multichoicegrid": {
       "var_name": "VAR_RESULT"
     },
+    "dynmultichoice": {
+      "var_name": "VAR_RESULT"
+    },
+    "dynmultistack": {
+      "var_name": "VAR_RESULT"
+    },
     "givemon": {
       "var_name": "VAR_RESULT"
     },
