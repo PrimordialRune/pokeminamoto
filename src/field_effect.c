@@ -3085,7 +3085,7 @@ u8 FldEff_RayquazaSpotlight(void)
     struct Sprite *sprite = &gSprites[spriteId];
 
     sprite->oam.priority = 1;
-    sprite->oam.paletteNum = 4;
+    sprite->oam.paletteNum = LoadObjectPaletteForLegacySlot(PALSLOT_NPC_3);
     sprite->data[0] = 0;
     sprite->data[1] = 0;
     sprite->data[2] = 0;

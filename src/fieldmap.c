@@ -1030,7 +1030,8 @@ void LoadMapTilesetPalettes(struct MapLayout const *mapLayout)
             u8 i;
             for (i = 0; i < 16; i++)
             {
-                if (GetSpritePaletteTagByPaletteNum(i) != TAG_NONE)
+                // Tagged palettes plus the player's fixed, untagged slots.
+                if (GetSpritePaletteTagByPaletteNum(i) != TAG_NONE || i < gReservedSpritePaletteCount)
                     ApplyTimeOfDayTint(OBJ_PLTT_ID(i), 16);
             }
         }
