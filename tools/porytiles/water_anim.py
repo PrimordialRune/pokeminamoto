@@ -119,7 +119,65 @@ def wave_calm(k, ph):
     return a
 
 
-STYLES = {'swell': wave_swell, 'soft': wave_soft, 'gsc': wave_gsc, 'calm': wave_calm}
+def calm_field(k, ph):
+    y, x = np.mgrid[0:REPEAT, 0:REPEAT]
+    t = k / FRAMES
+    f = (np.sin(TAU * (2 * y / REPEAT + 0.12 * np.sin(TAU * x / REPEAT + ph[0]) - t))
+         + 0.30 * np.sin(TAU * (x + 2 * y) / REPEAT + ph[1]) * np.cos(TAU * t)
+         + 0.25 * np.sin(TAU * (-2 * x + 2 * y) / REPEAT + ph[2]) * np.sin(TAU * t))
+    e = (np.sin(TAU * ((2 * x + y) / REPEAT - t) + ph[0])
+         + 0.6 * np.sin(TAU * (-x + y) / REPEAT + ph[1]) * np.cos(TAU * t))
+    return f, e
+
+
+def wave_glint(k, ph):
+    """Calm pond plus sun glints: single bright pixels that flash for two
+    steps and fade through the mid tone, each on its own beat."""
+    a = wave_calm(k, ph)
+    r = random.Random(int(ph[0] * 1000))
+    for _ in range(REPEAT * REPEAT // 48):
+        gx, gy, beat = r.randrange(REPEAT), r.randrange(REPEAT), r.randrange(FRAMES)
+        age = (k - beat) % FRAMES
+        if age < 2:
+            a[gy, gx] = FOAM
+            a[gy, (gx - 1) % REPEAT] = a[gy, (gx + 1) % REPEAT] = MID
+        elif age == 2:
+            a[gy, gx] = MID
+    return a
+
+
+def wave_breeze(k, ph):
+    """Calm pond pushed by a breeze: long, thin crest lines drifting right as
+    they roll down, each with a bright head and a mid-tone tail."""
+    y, x = np.mgrid[0:REPEAT, 0:REPEAT]
+    t = k / FRAMES
+    f = (np.sin(TAU * (2 * y / REPEAT + 0.10 * np.sin(TAU * (x / REPEAT - t) + ph[0]) - t))
+         + 0.25 * np.sin(TAU * (x + 2 * y) / REPEAT + ph[1]) * np.cos(TAU * t))
+    e = np.sin(TAU * (x / REPEAT - 2 * t) + ph[2]) + 0.5 * np.sin(TAU * (2 * x / REPEAT + y / REPEAT) + ph[1])
+    a = np.zeros((REPEAT, REPEAT, 3), np.uint8)
+    a[:] = WATER
+    crest = (f >= np.roll(f, 1, 0)) & (f > np.roll(f, -1, 0)) & (f > 0.6)
+    lit = crest & (e > -0.2)
+    head = lit & ~np.roll(lit, -1, 1)          # right end of each lit run
+    a[lit] = MID
+    a[head | (lit & (e > 0.9))] = FOAM
+    return a
+
+
+def wave_deep(k, ph):
+    """Calm pond with depth: each crest casts a thin trough shadow below it,
+    so the swells read as rolling shapes rather than flat lines."""
+    f, e = calm_field(k, ph)
+    a = wave_calm(k, ph)
+    crest = (f >= np.roll(f, 1, 0)) & (f > np.roll(f, -1, 0))
+    lit = crest & (f > 0.5) & (e > -0.6)
+    shadow = np.roll(lit, 2, 0) & ~lit & ~np.roll(lit, 1, 0)
+    a[shadow & (e > -0.2)] = DARK
+    return a
+
+
+STYLES = {'swell': wave_swell, 'soft': wave_soft, 'gsc': wave_gsc, 'calm': wave_calm,
+          'glint': wave_glint, 'breeze': wave_breeze, 'deep': wave_deep}
 wave = wave_calm
 
 
