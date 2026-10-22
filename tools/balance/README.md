@@ -30,6 +30,7 @@ python3 sim.py tp CHARMANDER SQUIRTLE BULBASAUR PIDGE --moves ember water_gun vi
 # Whole early game (Masara to Hanada), N playthroughs. --all lists every trainer.
 python3 sim.py run scenarios/early_game.yaml --starter BULBASAUR --n 300
 python3 sim.py run scenarios/early_game.yaml --team --grind      # catch Pidgey/Nidoran, grind to boss targets
+python3 sim.py run scenarios/early_game.yaml --battles gamma    # MathModels' battles-per-area draw, gamma(2,5)
 
 # Any rule can be overridden on any command (put --set before the command):
 python3 sim.py --set flat_plus2=true --set tp_regen_base=2 duel ...

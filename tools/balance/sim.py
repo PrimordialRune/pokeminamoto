@@ -34,6 +34,7 @@ class Context:
         self.starter = self.data.resolve(getattr(args, "starter", None) or "CHARMANDER")
         self.proxies = {}
         self.trainer_ai = getattr(args, "foe_ai", None) or "trainer"
+        self.battles_model = getattr(args, "battles", None) or "scenario"
 
     def species(self, name):
         name = name.strip()
@@ -206,6 +207,7 @@ class Playthrough:
     def __init__(self, ctx, scenario, team_mode, grind):
         self.ctx, self.sc, self.team_mode, self.grind = ctx, scenario, team_mode, grind
         self.party = ctx.team(scenario["party"], "player")
+        self.battles_model = ctx.battles_model
         self.badges = []
         self.potions = 0
         self.last_wild = None
@@ -274,6 +276,13 @@ class Playthrough:
             self.patch_up()
         return res, b.stats
 
+    def area_battles(self, step):
+        """Fixed count from the scenario, or Omar's MathModels rule (newMM/main.py LocationSimulation):
+        round(gamma(2, 5)) clamped to 1..64, a mean of 10 battles per area."""
+        if self.battles_model == "gamma":
+            return int(max(min(round(random.gammavariate(2.0, 5.0)), 64), 1))
+        return step.get("battles", 0)
+
     def new_segment(self, start):
         self.segment = {"start": start, "battles": 0, "attacks": 0, "struggle_battles": 0, "limited_battles": 0,
                         "first_limited": None}
@@ -299,7 +308,7 @@ class Playthrough:
                 self.potions += self.sc.get("potions_per_town", 0)
             elif "area" in step:
                 self.last_wild = step["wild"]
-                for _ in range(step.get("battles", 0)):
+                for _ in range(self.area_battles(step)):
                     self.fight([self.wild_mon(step["wild"])], "wild", step["area"], ai="random")
                     self.wild_battles += 1
             elif "catch" in step:
@@ -466,6 +475,8 @@ def main(argv=None):
     r.add_argument("--all", action="store_true", help="show every trainer, not only bosses")
     r.add_argument("--foe-ai", default="trainer", choices=["random", "trainer", "smart", "rank"])
     r.add_argument("--log", action="store_true")
+    r.add_argument("--battles", choices=["scenario", "gamma"], default="scenario",
+                   help="wild battles per area: the scenario's counts, or MathModels' gamma(2,5) draw")
     r.add_argument("--segments", action="store_true", help="show the stretches between rests even without tp_persist")
     r.add_argument("--json", metavar="FILE")
     r.set_defaults(func=cmd_run)

@@ -127,10 +127,23 @@ about 27 battles), Nibi to the Mt. Moon Center (Route 3, about 24) and Mt. Moon 
 
 Try it: `python3 sim.py --set tp_persist=true --set "tp_formula=5 if pp>=30 else 7 if pp>=20 else 10 if pp>=15 else 20" --set tp_regen_base=2 --set tp_int_div=32 run scenarios/early_game.yaml --starter SQUIRTLE`
 
+## 8. Omar's MathModels folder (read from his PC, 2026-10-22)
+
+`PKMN_Minamoto\MathModels` holds the 2023 scripts (`Battle.py`, `Pokemon.py`, `pokemon_simulations.py`,
+`old/`) and the `newMM/` rewrite (entities, repos, Gen 1 DVs 0-15, stat EXP, data loader). Both data
+folders are identical. A copy of `newMM/data` and its main files is in
+`/mnt/project-files/balance-model/mathmodels/`. There is no TP or INT in any of it.
+
+- `bosses.yaml` has one boss: Brock's Onix, Lv 14, Gen 1 stats (35/45/160/30/70), Tackle and
+  Rock Throw. That matches the scenario's Onix.
+- `encounters.yaml` covers Route 1, "Route 13" (Pidgey/Rattata 3-5, Mankey/Nidoran F 2-4, between
+  Route 1 and Route 2, probably the LP table's "Route 12-1"), Route 2, Viridian Forest and Route 3.
+- `newMM/main.py` draws the number of battles in each area as round(gamma(2, 5)), clamped to 1-64
+  (mean 10). The tool now offers it: `run --battles gamma`. With it, the persistent-TP result of
+  section 7 holds: Squirtle first runs short at battle 14-24 of the long stretches.
+
 ## Open inputs for the model
 
-- Omar's local `MathModels/` folder: `data/bosses.yaml`, `encounters.yaml`, `pokemon.yaml` and the
-  newer `newMM/` rewrite, which weren't in Notion.
 - Gym 1-3 teams, levels and movesets; where Jiro's gym sits on the route.
 - Real TP costs and a real INT stat.
 - The arena states (AIRFLOW, TERRAIN, TIDE) are the next thing to add to the engine.
