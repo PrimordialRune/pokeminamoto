@@ -21,13 +21,14 @@
     "frames": [
       "f0",
       "f1",
-      "f2"
+      "f2",
+      "f3"
     ],
     "frame_order": [
       "f0",
       "f1",
-      "f0",
-      "f2"
+      "f2",
+      "f3"
     ],
     "tile_offset": 22
   },
@@ -52,7 +53,7 @@
       "f6",
       "f7"
     ],
-    "tile_offset": 52
+    "tile_offset": 35
   },
   "water": {
     "frames": [
@@ -91,6 +92,6 @@
       "f14",
       "f15"
     ],
-    "tile_offset": 57
+    "tile_offset": 40
   }
 }

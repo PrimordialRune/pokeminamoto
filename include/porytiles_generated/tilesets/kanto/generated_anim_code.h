@@ -22,6 +22,7 @@ const u16 gTilesetAnims_PorytilesManaged_Kanto_Crops_FrameF2[] = INCBIN_U16("dat
 const u16 gTilesetAnims_PorytilesManaged_Kanto_Flowers_FrameF0[] = INCBIN_U16("data/tilesets/primary/kanto/porytiles_bin/anim/flowers/f0.4bpp");
 const u16 gTilesetAnims_PorytilesManaged_Kanto_Flowers_FrameF1[] = INCBIN_U16("data/tilesets/primary/kanto/porytiles_bin/anim/flowers/f1.4bpp");
 const u16 gTilesetAnims_PorytilesManaged_Kanto_Flowers_FrameF2[] = INCBIN_U16("data/tilesets/primary/kanto/porytiles_bin/anim/flowers/f2.4bpp");
+const u16 gTilesetAnims_PorytilesManaged_Kanto_Flowers_FrameF3[] = INCBIN_U16("data/tilesets/primary/kanto/porytiles_bin/anim/flowers/f3.4bpp");
 
 const u16 gTilesetAnims_PorytilesManaged_Kanto_Smoke_FrameF0[] = INCBIN_U16("data/tilesets/primary/kanto/porytiles_bin/anim/smoke/f0.4bpp");
 const u16 gTilesetAnims_PorytilesManaged_Kanto_Smoke_FrameF1[] = INCBIN_U16("data/tilesets/primary/kanto/porytiles_bin/anim/smoke/f1.4bpp");
@@ -67,8 +68,8 @@ const u16 *const gTilesetAnims_PorytilesManaged_Kanto_Crops[] = {
 const u16 *const gTilesetAnims_PorytilesManaged_Kanto_Flowers[] = {
     gTilesetAnims_PorytilesManaged_Kanto_Flowers_FrameF0,
     gTilesetAnims_PorytilesManaged_Kanto_Flowers_FrameF1,
-    gTilesetAnims_PorytilesManaged_Kanto_Flowers_FrameF0,
-    gTilesetAnims_PorytilesManaged_Kanto_Flowers_FrameF2
+    gTilesetAnims_PorytilesManaged_Kanto_Flowers_FrameF2,
+    gTilesetAnims_PorytilesManaged_Kanto_Flowers_FrameF3
 };
 
 const u16 *const gTilesetAnims_PorytilesManaged_Kanto_Smoke[] = {
@@ -114,19 +115,19 @@ static void QueueAnimTiles_PorytilesManaged_Kanto_Crops(u16 timer)
 static void QueueAnimTiles_PorytilesManaged_Kanto_Flowers(u16 timer)
 {
     u16 i = timer % ARRAY_COUNT(gTilesetAnims_PorytilesManaged_Kanto_Flowers);
-    AppendTilesetAnimToBuffer(gTilesetAnims_PorytilesManaged_Kanto_Flowers[i], (u16 *)(BG_VRAM + TILE_OFFSET_4BPP(22)), 30 * TILE_SIZE_4BPP);
+    AppendTilesetAnimToBuffer(gTilesetAnims_PorytilesManaged_Kanto_Flowers[i], (u16 *)(BG_VRAM + TILE_OFFSET_4BPP(22)), 13 * TILE_SIZE_4BPP);
 }
 
 static void QueueAnimTiles_PorytilesManaged_Kanto_Smoke(u16 timer)
 {
     u16 i = timer % ARRAY_COUNT(gTilesetAnims_PorytilesManaged_Kanto_Smoke);
-    AppendTilesetAnimToBuffer(gTilesetAnims_PorytilesManaged_Kanto_Smoke[i], (u16 *)(BG_VRAM + TILE_OFFSET_4BPP(52)), 5 * TILE_SIZE_4BPP);
+    AppendTilesetAnimToBuffer(gTilesetAnims_PorytilesManaged_Kanto_Smoke[i], (u16 *)(BG_VRAM + TILE_OFFSET_4BPP(35)), 5 * TILE_SIZE_4BPP);
 }
 
 static void QueueAnimTiles_PorytilesManaged_Kanto_Water(u16 timer)
 {
     u16 i = timer % ARRAY_COUNT(gTilesetAnims_PorytilesManaged_Kanto_Water);
-    AppendTilesetAnimToBuffer(gTilesetAnims_PorytilesManaged_Kanto_Water[i], (u16 *)(BG_VRAM + TILE_OFFSET_4BPP(57)), 82 * TILE_SIZE_4BPP);
+    AppendTilesetAnimToBuffer(gTilesetAnims_PorytilesManaged_Kanto_Water[i], (u16 *)(BG_VRAM + TILE_OFFSET_4BPP(40)), 82 * TILE_SIZE_4BPP);
 }
 
 // ============================================

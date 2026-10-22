@@ -21,15 +21,18 @@ mkdir -p "$out"
 python3 "$HERE/fit_tiles.py" "$map" "$ref" "$out/fit.png"
 python3 "$HERE/water_anim.py" "$out/fit.png" "$out/masara.png" "$out/anim/water" \
     --style "${WATER_STYLE:-glint}" --seed "${WATER_SEED:-1}" --preview "$out/water.gif"
-# Crops (north field, lab garden, Red's planter) and the plaza flower bushes.
+# Crops (north field, lab garden, Red's planter) sway.
+python3 "$HERE/sway_anim.py" "$out/masara.png" "$out/masara.png" "$out/anim" \
+    --rect crops:336,32,416,96:16 --rect crops:512,271,576,303:16 --rect crops:144,54,160,96:8 \
+    --leans crops:0,1,-1
+# The plaza flower bushes: blossoms bob and turn, leaf highlights ripple.
 flowers=()
 for b in 338,319,351 225,320,231 190,334,207 366,334,383 194,383,207 369,384,375 222,398,239 338,399,351; do
     IFS=, read -r x0 y0 x1 <<< "$b"
-    flowers+=(--rect "flowers:$((x0-3)),$((y0-4)),$((x1+4)),$((y0+5)):20")
+    flowers+=(--rect "$((x0-3)),$((y0-4)),$((x1+4)),$((y0+12))")
 done
-python3 "$HERE/sway_anim.py" "$out/masara.png" "$out/masara.png" "$out/anim" \
-    --rect crops:336,32,416,96:16 --rect crops:512,271,576,303:16 --rect crops:144,54,160,96:8 \
-    --leans crops:0,1,-1 "${flowers[@]}" --leans flowers:0,1,-1
+python3 "$HERE/flower_anim.py" "$out/masara.png" "$out/masara.png" "$out/anim/flowers" "${flowers[@]}" \
+    --preview "$out/flowers.gif"
 # Smoke from the chimney of Red's house.
 python3 "$HERE/smoke_anim.py" "$out/masara.png" "$out/masara.png" "$out/anim/smoke" \
     --mouth 121,41 --box 112,16,128,40 --preview "$out/smoke.gif"
@@ -58,7 +61,7 @@ anim = sys.argv[1]
 order = {
     'water': sorted((f[:-4] for f in os.listdir(os.path.join(anim, 'water')) if f[0] == 'f'), key=lambda f: int(f[1:])),
     'crops': ['f0', 'f0', 'f1', 'f1', 'f0', 'f0', 'f2', 'f2'],   # slow: 32 frames per pose
-    'flowers': ['f0', 'f1', 'f0', 'f2'],
+    'flowers': ['f0', 'f1', 'f2', 'f3'],
     'smoke': [f'f{i}' for i in range(8)],
 }
 out, offset = {}, 1
@@ -73,10 +76,14 @@ python3 "$HERE/render_check.py" data/tilesets/primary/kanto/porytiles_bin \
     data/tilesets/secondary/masara_town/porytiles_bin "$out/map.bin" 40 "$out/masara.png"
 
 mkdir -p data/layouts/MasaraTown
-# Walkable: the pier deck and the ROUTE 1 gap. Blocked: the lab's roof.
-python3 "$HERE/collision.py" "$out/masara.png" "$out/map.bin" data/layouts/MasaraTown/map.bin \
-    --walk 17,30,19,33 --walk 15,0,16,0 --block 24,15,30,19 > "$out/collision.txt"
-mv data/layouts/MasaraTown/collision.png "$out/"
+# Collision is edited by hand in Porymap: keep what the committed layout has.
+# GUESS_COLLISION=1 guesses it from the colors again (pier deck and ROUTE 1 gap
+# walkable, the lab's roof blocked).
+keep=(--keep data/layouts/MasaraTown/map.bin)
+if [ -n "${GUESS_COLLISION:-}" ]; then keep=(); fi
+python3 "$HERE/collision.py" "$out/masara.png" "$out/map.bin" "$out/map_collision.bin" \
+    --walk 17,29,19,33 --walk 15,0,16,0 --block 24,15,30,19 --start 5,8 "${keep[@]}" > "$out/collision.txt"
+mv "$out/map_collision.bin" data/layouts/MasaraTown/map.bin
 # make does not track map.bin, only layouts.json: touch it so maps.o picks up the new layout.
 touch data/layouts/layouts.json
 echo "Masara rebuilt. Budget: $out/report.md  Collision preview: $out/collision.png"
