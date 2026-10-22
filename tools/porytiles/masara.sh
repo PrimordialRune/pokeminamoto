@@ -48,7 +48,18 @@ ImageDraw.Draw(im).rectangle((272, 16, 319, 47), fill=(255, 0, 0))
 ImageDraw.Draw(im).rectangle((112, 32, 127, 47), fill=(0, 0, 255))
 im.save(sys.argv[1])
 PY
-FORCE=1 SPLIT_MASK="$out/mask.png" "$HERE/tileset.sh" import "$out/masara.png" "$ref" gTileset_Kanto gTileset_MasaraTown
+# Before the tilesets are recompiled: carry over behaviors set by hand in Porymap
+# (for cells that still look the same) and give thin fences edge collision.
+# FENCE_EDGES_ALL=1 redoes the fence edges on unchanged cells too.
+kbin=data/tilesets/primary/kanto/porytiles_bin
+sbin=data/tilesets/secondary/masara_town/porytiles_bin
+rm -f "$out/old.png"
+python3 "$HERE/render_check.py" "$kbin" "$sbin" data/layouts/MasaraTown/map.bin 40 "$out/masara.png" \
+    --out "$out/old.png" > /dev/null 2>&1 || true
+python3 "$HERE/behaviors.py" "$out/masara.png" "$out/old.png" "$kbin" "$sbin" data/layouts/MasaraTown/map.bin 40 \
+    "$out/behaviors.csv" --open-out "$out/open.txt" ${FENCE_EDGES_ALL:+--all} --preview "$out/edges.png"
+
+BEHAVIORS="$out/behaviors.csv" FORCE=1 SPLIT_MASK="$out/mask.png" "$HERE/tileset.sh" import "$out/masara.png" "$ref" gTileset_Kanto gTileset_MasaraTown
 
 anim=data/tilesets/primary/kanto/porytiles_src/anim
 rm -rf "$anim"; mkdir -p "$anim"
@@ -76,13 +87,14 @@ python3 "$HERE/render_check.py" data/tilesets/primary/kanto/porytiles_bin \
     data/tilesets/secondary/masara_town/porytiles_bin "$out/map.bin" 40 "$out/masara.png"
 
 mkdir -p data/layouts/MasaraTown
-# Collision is edited by hand in Porymap: keep what the committed layout has.
+# Collision is edited by hand in Porymap: keep what the committed layout has
+# where the cell looks the same, guess it for new or changed cells.
 # GUESS_COLLISION=1 guesses it from the colors again (pier deck and ROUTE 1 gap
 # walkable, the lab's roof blocked).
-keep=(--keep data/layouts/MasaraTown/map.bin)
+keep=(--keep data/layouts/MasaraTown/map.bin --keep-if-same "$out/old.png")
 if [ -n "${GUESS_COLLISION:-}" ]; then keep=(); fi
 python3 "$HERE/collision.py" "$out/masara.png" "$out/map.bin" "$out/map_collision.bin" \
-    --walk 17,29,19,33 --walk 15,0,16,0 --block 24,15,30,19 --start 5,8 "${keep[@]}" > "$out/collision.txt"
+    --walk 17,29,19,33 --walk 15,0,16,0 --block 24,15,30,19 --start 5,8 --open "$out/open.txt" "${keep[@]}" > "$out/collision.txt"
 mv "$out/map_collision.bin" data/layouts/MasaraTown/map.bin
 # make does not track map.bin, only layouts.json: touch it so maps.o picks up the new layout.
 touch data/layouts/layouts.json

@@ -22,8 +22,14 @@ Outputs, in --out:
   report.md        tile, metatile and color budgets against pokeemerald limits
   overlay.png      the map with over-budget trouble marked (see report)
 
+Behaviors:
+  --behaviors CSV        x,y,MB_NAME per cell (behaviors.py writes it); two cells
+                         that look the same but have different behaviors become
+                         separate metatiles. Cells left out are MB_NORMAL.
+
 Usage:
   map2porytiles.py MAP.png --out DIR [--secondary-ref SHEET.png] [--split-mask MASK.png]
+                   [--behaviors CSV]
 """
 
 import argparse
@@ -100,7 +106,7 @@ def estimate_palettes(color_sets):
     return bins
 
 
-def write_sheets(metatiles, src_px, outdir):
+def write_sheets(metatiles, src_px, outdir, behaviors=()):
     os.makedirs(outdir, exist_ok=True)
     rows = max(1, (len(metatiles) + SHEET_WIDTH_METATILES - 1) // SHEET_WIDTH_METATILES)
     size = (SHEET_WIDTH_METATILES * 16, rows * 16)
@@ -117,6 +123,9 @@ def write_sheets(metatiles, src_px, outdir):
         Image.new("RGBA", size, MAGENTA).save(os.path.join(outdir, layer + ".png"))
     with open(os.path.join(outdir, "attributes.csv"), "w") as f:
         f.write("id,behavior\n")
+        for i, b in enumerate(behaviors):
+            if b != "MB_NORMAL":
+                f.write(f"{i},{b}\n")
 
 
 def main():
@@ -125,7 +134,14 @@ def main():
     ap.add_argument("--out", required=True)
     ap.add_argument("--secondary-ref")
     ap.add_argument("--split-mask")
+    ap.add_argument("--behaviors")
     args = ap.parse_args()
+
+    cell_behavior = {}
+    if args.behaviors:
+        for line in open(args.behaviors).read().split()[1:]:
+            x, y, b = line.split(",")
+            cell_behavior[(int(x), int(y))] = b
 
     im, px = load_rgba(args.map)
     W, H = im.size
@@ -164,10 +180,11 @@ def main():
     for my in range(mh):
         for mx in range(mw):
             subs = tuple(subtile(px, mx * 16 + sx * 8, my * 16 + sy * 8) for sy in (0, 1) for sx in (0, 1))
-            if subs not in meta_key:
-                meta_key[subs] = len(meta_first)
+            key = (subs, cell_behavior.get((mx, my), "MB_NORMAL"))
+            if key not in meta_key:
+                meta_key[key] = len(meta_first)
                 meta_first.append(((mx, my), subs))
-            cell_meta[(mx, my)] = meta_key[subs]
+            cell_meta[(mx, my)] = meta_key[key]
 
     # Primary/secondary decision per unique metatile. A metatile used in several
     # places goes to the secondary if any of its cells is forced there.
@@ -229,7 +246,8 @@ def main():
 
     os.makedirs(args.out, exist_ok=True)
     for s in ("primary", "secondary"):
-        write_sheets([meta_first[mid][0] for mid in groups[s]], px, os.path.join(args.out, s))
+        write_sheets([meta_first[mid][0] for mid in groups[s]], px, os.path.join(args.out, s),
+                     [cell_behavior.get(meta_first[mid][0], "MB_NORMAL") for mid in groups[s]])
 
     with open(os.path.join(args.out, "map.bin"), "wb") as f:
         for my in range(mh):

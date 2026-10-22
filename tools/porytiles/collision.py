@@ -10,10 +10,14 @@ and a collision.png preview next to OUT.bin.
 
 With --keep OLD.bin, collision and elevation are copied cell by cell from
 OLD.bin instead (a layout already hand-edited in Porymap), so only the
-metatile ids change.
+metatile ids change. Add --keep-if-same OLD_RENDER.png (render_check.py --out
+of the old layout) to copy only cells that look the same in the new mockup and
+guess the rest. --open OPEN.txt (x,y per line, from behaviors.py) makes cells
+walkable, for fences that block with an edge instead.
 
 Usage:
-  collision.py MAP.png IN.bin OUT.bin [--walk 17,30,19,33] [--block 24,15,30,19] [--keep OLD.bin]
+  collision.py MAP.png IN.bin OUT.bin [--walk 17,30,19,33] [--block 24,15,30,19]
+               [--keep OLD.bin [--keep-if-same OLD_RENDER.png]] [--open OPEN.txt]
 """
 
 import argparse
@@ -45,6 +49,8 @@ def main():
     ap.add_argument('--walk', type=rect, action='append', default=[])
     ap.add_argument('--block', type=rect, action='append', default=[])
     ap.add_argument('--keep')
+    ap.add_argument('--keep-if-same')
+    ap.add_argument('--open')
     ap.add_argument('--max-object-pixels', type=int, default=12,
                     help='a cell with more non-ground pixels than this is blocked')
     ap.add_argument('--start', type=rect, help='X,Y: drop walkable cells not reachable from here')
@@ -67,6 +73,16 @@ def main():
         else:
             print('collision.py: --keep layout has another size, guessing instead')
 
+    old = None
+    if keep and a.keep_if_same and os.path.exists(a.keep_if_same):
+        o = np.array(Image.open(a.keep_if_same).convert('RGB')).astype(int)
+        old = o if o.shape == m.shape else np.zeros_like(m) - 1
+    same = lambda x, y: old is None or ((old[y * 16:y * 16 + 16, x * 16:x * 16 + 16] >> 3)
+                                        == (m[y * 16:y * 16 + 16, x * 16:x * 16 + 16] >> 3)).all()
+    opened = set()
+    if a.open and os.path.exists(a.open):
+        opened = {tuple(int(v) for v in l.split(',')) for l in open(a.open).read().split()}
+
     inside = lambda x, y, r: r[0] <= x <= r[2] and r[1] <= y <= r[3]
     blocked = np.zeros((mh, mw), bool)
     for y in range(mh):
@@ -79,14 +95,16 @@ def main():
                 ok = True
             if any(inside(x, y, r) for r in a.block):
                 ok = False
-            if keep:
+            if (x, y) in opened:
+                ok = True
+            elif keep and same(x, y):
                 ok = not (keep[y * mw + x] >> 10) & 3
                 cells[y * mw + x] = (cells[y * mw + x] & 0x3FF) | (keep[y * mw + x] & 0xFC00)
                 blocked[y, x] = not ok
                 continue
             blocked[y, x] = not ok
             cells[y * mw + x] = (cells[y * mw + x] & 0x3FF) | (int(not ok) << 10) | (3 << 12)
-    if a.start and not keep:
+    if a.start and (not keep or old is not None):
         # Grass pockets between trees pass the color test but can't be reached.
         seen, todo = set(), [a.start]
         while todo:

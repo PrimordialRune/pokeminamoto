@@ -7,7 +7,8 @@
 #       sheets into their porytiles_src folders and write the layout to
 #       build/porytiles/<secondary>/map.bin. Refuses to overwrite sheets you have
 #       already edited unless FORCE=1. SPLIT_MASK=mask.png is passed to
-#       map2porytiles.py --split-mask (red cells -> secondary, blue -> primary).
+#       map2porytiles.py --split-mask (red cells -> secondary, blue -> primary),
+#       BEHAVIORS=cells.csv to --behaviors.
 #
 #   tools/porytiles/tileset.sh compile gTileset_Kanto gTileset_MasaraTown
 #       Solve the minimum palette layout (palopt.py), write it as Porytiles palette
@@ -42,7 +43,7 @@ import)
     out="build/porytiles/$(folder "$sec")"
     mkdir -p "$out"
     python3 "$HERE/map2porytiles.py" "$map" --secondary-ref "$ref" --out "$out" \
-        ${SPLIT_MASK:+--split-mask "$SPLIT_MASK"}
+        ${SPLIT_MASK:+--split-mask "$SPLIT_MASK"} ${BEHAVIORS:+--behaviors "$BEHAVIORS"}
     [ -d "$psrc" ] || "$PT" create-tileset "$prim"
     [ -d "$ssrc" ] || "$PT" create-tileset --secondary --primary-pairing-mode manual \
         --primary-pairing-partners="$prim" -- "$sec"
