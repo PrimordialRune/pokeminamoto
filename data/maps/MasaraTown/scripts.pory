@@ -1,4 +1,40 @@
-mapscripts MasaraTown_MapScripts {}
+mapscripts MasaraTown_MapScripts {
+    MAP_SCRIPT_ON_TRANSITION {
+        if (var(VAR_LITTLEROOT_INTRO_STATE) == 0) {
+            call(MasaraTown_EventScript_NewGameSetup)
+        }
+    }
+}
+
+// A new game starts here instead of in the moving truck. Put Littleroot in the
+// state the truck intro, the move-in and the clock scene would leave it in, so
+// its cutscenes don't fire and the route to Prof. Birch is open.
+script MasaraTown_EventScript_NewGameSetup {
+    checkplayergender
+    if (var(VAR_RESULT) == MALE) {
+        setrespawn(HEAL_LOCATION_LITTLEROOT_TOWN_BRENDANS_HOUSE_2F)
+        setflag(FLAG_HIDE_LITTLEROOT_TOWN_MAYS_HOUSE_MOM)
+        setflag(FLAG_HIDE_LITTLEROOT_TOWN_MAYS_HOUSE_TRUCK)
+        setflag(FLAG_HIDE_LITTLEROOT_TOWN_BRENDANS_HOUSE_TRUCK)
+        setflag(FLAG_HIDE_LITTLEROOT_TOWN_BRENDANS_HOUSE_RIVAL_MOM)
+        setflag(FLAG_HIDE_LITTLEROOT_TOWN_BRENDANS_HOUSE_RIVAL_SIBLING)
+        setflag(FLAG_HIDE_LITTLEROOT_TOWN_BRENDANS_HOUSE_2F_POKE_BALL)
+        setvar(VAR_LITTLEROOT_HOUSES_STATE_BRENDAN, 1)
+    } else {
+        setrespawn(HEAL_LOCATION_LITTLEROOT_TOWN_MAYS_HOUSE_2F)
+        setflag(FLAG_HIDE_LITTLEROOT_TOWN_BRENDANS_HOUSE_MOM)
+        setflag(FLAG_HIDE_LITTLEROOT_TOWN_BRENDANS_HOUSE_TRUCK)
+        setflag(FLAG_HIDE_LITTLEROOT_TOWN_MAYS_HOUSE_TRUCK)
+        setflag(FLAG_HIDE_LITTLEROOT_TOWN_MAYS_HOUSE_RIVAL_MOM)
+        setflag(FLAG_HIDE_LITTLEROOT_TOWN_MAYS_HOUSE_RIVAL_SIBLING)
+        setflag(FLAG_HIDE_LITTLEROOT_TOWN_MAYS_HOUSE_2F_POKE_BALL)
+        setvar(VAR_LITTLEROOT_HOUSES_STATE_MAY, 1)
+    }
+    setflag(FLAG_HIDE_LITTLEROOT_TOWN_MOM_OUTSIDE)
+    clearflag(FLAG_HIDE_LITTLEROOT_TOWN_FAT_MAN)
+    setvar(VAR_LITTLEROOT_INTRO_STATE, 7)
+    setvar(VAR_LITTLEROOT_TOWN_STATE, 1)
+}
 
 script MasaraTown_EventScript_TownSign {
     lockall
