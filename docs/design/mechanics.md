@@ -75,6 +75,8 @@ $\mathsf{Damage=\Bigg[\frac{\left ( \frac{2\times Level}{5}+2 \right )\: \times\
 
 (Level 1-100; Power 0-250; Attack and Defense < 255.) Compared to Emerald there is no "+2" outside the bracket and the Modifier set differs.
 
+**In the game (2026-10-22):** the flat +2 is gone from `CalculateBaseDamage` (`src/pokemon.c`); damaging moves still deal at least 1.
+
 $\mathsf{ Modifier = Badges \times Critical \times RNG \times STAB \times Type \times Other }$
 
 - **Badges**: a move used by a player's Pokemon that has the same type as a defeated badge: x1.25, else x1. (See Badge boost below.)
@@ -93,6 +95,7 @@ MoveAccuracy 1-100; Accuracy/Evasion are the stage boosts; RNG 1-100; some moves
 
 ### Critical hits (arena_ecology 0.3, global)
 Stage table: +0 6.25%, +1 12.5%, +2 25%, +3 50%, +4 100% (stages +3/+4 raised from standard). Pathways: high-crit moves +1; Focus Energy / Leek / arena first-mover bonus +2; etc. **Engine impact (inferred):** `gCriticalHitChance` table `sCriticalHitChance[]` in `battle_script_commands.c`; ROM-only change.
+**In the game (2026-10-22):** `sCriticalHitChance[]` is `{16, 8, 4, 2, 1}`.
 
 ### Cost / Technical Points (TP) - replaces PP
 - Each Pokemon starts a battle with **100 TP** (a dynamic battle property). Moves cost TP (5-100). A move can only be used if enough TP remain. A part of TP is recovered at the end of each turn depending on INT.
@@ -156,6 +159,7 @@ An activatable modification of opposing trainer AI via moves or in-battle dialog
 - Uses in design: INN Take room needs Charisma >= threshold; NPC info; subquest access; prices; informal transactions can reduce Charisma.
 - Charisma is described as hidden in the project description and as visible-to-NPC-effects in GDD; no UI for it documented (open-question).
 - **Engine impact (inferred):** one persistent byte (0-100) in SaveBlock (`gSaveBlock1Ptr` free vars area, or a `VAR_` script variable - `gSaveBlock1Ptr->vars` slots are 16-bit and cost no new space if an unused VAR is used). Script commands for `addvar` thresholds; no battle RAM. Recommend implementing as an overworld `VAR_CHARISMA`, **no new save fields needed** (inferred).
+- **In the game (2026-10-22):** `VAR_CHARISMA` (was unused var 0x404E), capped at `CHARISMA_MAX` 100. Scripts change it with `addcharisma(N)` (negative subtracts, clamps 0-100, clobbers `VAR_0x8004`) and read it with `var(VAR_CHARISMA)`; C uses `GetCharisma()` / `ChangeCharisma()` in `src/field_specials.c`. Nothing reads it yet.
 
 ## 7. Talk action
 
@@ -177,6 +181,7 @@ $\mathsf{Escape \: Probability = \frac{UserSpeed \times 32}{(EnemySpeed \div 4) 
 
 ## 9. Badge boost (GDD)
 A move used by a player-owned Pokemon with the same type as a defeated gym badge gets x1.25 power (Modifier term "Badges"). **Engine impact (inferred):** reuses existing badge flags; ROM table of badge-to-type; the Gym types here are Flying, Ground, Water, Electric, Ghost, Poison, Fire (plus Gym 8 not detailed). No save data.
+**In the game (2026-10-22):** `sBadgeTypes[]` in `src/pokemon.c` maps badges 1-7 to Flying, Ground, Water, Electric, Ghost, Poison, Fire (arena doc gym order); badge 8 is `TYPE_MYSTERY` until gym 8 is designed. Emerald's x1.1 stat badge boosts are removed. Off in link and Frontier battles.
 
 ## 10. Arena Ecology (per-gym environment mechanics)
 Each gym has its own state variables (AIRFLOW, TERRAIN/MOISTURE, TIDE/CONDITION, COIL/CHARGE, SPIRIT PRESSURE, MIASMA DENSITY, COMBUSTION/STEAM) driven by the move-ecology categories (see `roster-and-encounters.md`). **Engine impact (inferred):** large: a per-gym battle script hook plus arena state vars in battle RAM (a handful of bytes, some with turn timers), a move->ecology-category table in ROM (22 categories, multi-tag per move, likely 3 bytes per move), special-case speed/accuracy/evasion modifiers, status changes, Focus Sash globally for gym/Boss mons (`gBattleStruct` flag per mon), AI logic per leader. The Double Battle at Coleman uses Emerald's double-battle engine (already present). Persistent save data: none required (all transient).

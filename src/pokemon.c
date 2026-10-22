@@ -68,7 +68,7 @@ static union PokemonSubstruct *GetSubstruct(struct BoxPokemon *boxMon, u32 perso
 static void EncryptBoxMon(struct BoxPokemon *boxMon);
 static void DecryptBoxMon(struct BoxPokemon *boxMon);
 static void Task_PlayMapChosenOrBattleBGM(u8 taskId);
-static bool8 ShouldGetStatBadgeBoost(u16 flagId, u8 battler);
+static bool8 ShouldGetTypeBadgeBoost(u8 type, u8 battler);
 static u16 GiveMoveToBoxMon(struct BoxPokemon *boxMon, u16 move);
 static bool8 ShouldSkipFriendshipChange(void);
 static u8 CopyMonToPC(struct Pokemon *mon);
@@ -3159,15 +3159,6 @@ s32 CalculateBaseDamage(struct BattlePokemon *attacker, struct BattlePokemon *de
     if (attacker->ability == ABILITY_HUGE_POWER || attacker->ability == ABILITY_PURE_POWER)
         attack *= 2;
 
-    if (ShouldGetStatBadgeBoost(FLAG_BADGE01_GET, battlerIdAtk))
-        attack = (110 * attack) / 100;
-    if (ShouldGetStatBadgeBoost(FLAG_BADGE05_GET, battlerIdDef))
-        defense = (110 * defense) / 100;
-    if (ShouldGetStatBadgeBoost(FLAG_BADGE07_GET, battlerIdAtk))
-        spAttack = (110 * spAttack) / 100;
-    if (ShouldGetStatBadgeBoost(FLAG_BADGE07_GET, battlerIdDef))
-        spDefense = (110 * spDefense) / 100;
-
     // Apply type-bonus hold item
     for (i = 0; i < ARRAY_COUNT(sHoldEffectToType); i++)
     {
@@ -3369,7 +3360,15 @@ s32 CalculateBaseDamage(struct BattlePokemon *attacker, struct BattlePokemon *de
             damage = (15 * damage) / 10;
     }
 
-    return damage + 2;
+    // Badges x1.25: the player's moves of a type whose badge they own (GDD damage modifier)
+    if (ShouldGetTypeBadgeBoost(type, battlerIdAtk))
+        damage = (125 * damage) / 100;
+
+    // GDD damage formula has no flat +2, so keep the old floor of 1 for any damaging move
+    if (damage == 0 && type != TYPE_MYSTERY)
+        damage = 1;
+
+    return damage;
 }
 
 u8 CountAliveMonsInBattle(u8 caseId)
@@ -3405,18 +3404,37 @@ u8 CountAliveMonsInBattle(u8 caseId)
     return retVal;
 }
 
-static bool8 ShouldGetStatBadgeBoost(u16 badgeFlag, u8 battler)
+// Type boosted by each badge, in badge order (gyms 1-7 from arena_ecology v2.1).
+// Gym 8 isn't designed yet: TYPE_MYSTERY matches no move.
+static const u8 sBadgeTypes[NUM_BADGES] =
 {
+    TYPE_FLYING,
+    TYPE_GROUND,
+    TYPE_WATER,
+    TYPE_ELECTRIC,
+    TYPE_GHOST,
+    TYPE_POISON,
+    TYPE_FIRE,
+    TYPE_MYSTERY,
+};
+
+static bool8 ShouldGetTypeBadgeBoost(u8 type, u8 battler)
+{
+    u32 i;
+
     if (gBattleTypeFlags & (BATTLE_TYPE_LINK | BATTLE_TYPE_EREADER_TRAINER | BATTLE_TYPE_RECORDED_LINK | BATTLE_TYPE_FRONTIER))
         return FALSE;
-    else if (GetBattlerSide(battler) != B_SIDE_PLAYER)
+    if (GetBattlerSide(battler) != B_SIDE_PLAYER)
         return FALSE;
-    else if (gBattleTypeFlags & BATTLE_TYPE_TRAINER && gTrainerBattleOpponent_A == TRAINER_SECRET_BASE)
+    if (gBattleTypeFlags & BATTLE_TYPE_TRAINER && gTrainerBattleOpponent_A == TRAINER_SECRET_BASE)
         return FALSE;
-    else if (FlagGet(badgeFlag))
-        return TRUE;
-    else
-        return FALSE;
+
+    for (i = 0; i < NUM_BADGES; i++)
+    {
+        if (sBadgeTypes[i] == type && FlagGet(FLAG_BADGE01_GET + i))
+            return TRUE;
+    }
+    return FALSE;
 }
 
 u8 GetDefaultMoveTarget(u8 battler)

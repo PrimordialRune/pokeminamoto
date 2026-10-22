@@ -1971,3 +1971,9 @@
 	setvar VAR_0x8006, \item
 	special CreateEnemyEventMon
 	.endm
+
+	@ Adds amount (negative to subtract) to the player's Charisma, clamped to 0-CHARISMA_MAX. Clobbers VAR_0x8004.
+	.macro addcharisma amount:req
+	setvar VAR_0x8004, \amount
+	special AddCharisma
+	.endm
