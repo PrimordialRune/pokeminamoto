@@ -127,7 +127,7 @@ async function handleRebuildFileDebug({ source_file, modern = true }) {
     fs.unlinkSync(obj);
   }
 
-  const makeTarget = modern ? "modern" : "all";
+  const makeTarget = modern ? "modern" : "classic";
   const makeArgs = [makeTarget, `O_LEVEL=0`, `DINFO=1`, `-j${NPROC}`];
   const { stdout, stderr, code } = await runProc("make", makeArgs);
 
