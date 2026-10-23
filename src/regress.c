@@ -13,6 +13,7 @@
 #include "gba/io_reg.h"
 #include "item.h"
 #include "main.h"
+#include "map_name_popup.h"
 #include "money.h"
 #include "overworld.h"
 #include "palette.h"
@@ -378,6 +379,7 @@ void Regress_OverworldTick(void)
     case REGRESS_CMD_TV:
         FlagSet(FLAG_SYS_TV_START);
         FlagClear(FLAG_SYS_TV_WATCH);
+        HideMapNamePopUpWindow(); // what pressing A on a TV does first
         ScriptContext_SetupScript(EventScript_TV);
         break;
     }
