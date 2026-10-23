@@ -123,7 +123,8 @@ static void Setup(void)
     }
     CalculatePlayerPartyCount();
 
-    // 40 mons in boxes 1-2, plus a few in the last box
+    // 40 mons in boxes 1-2, plus a few in box 12 (the last box since the PC
+    // went from 14 to 12 boxes; a fixed box keeps runs comparable across that)
     for (i = 0; i < 40; i++)
     {
         u16 species = SPECIES_BULBASAUR + (i * 7) % SPECIES_GEN1_MAX;
@@ -133,7 +134,7 @@ static void Setup(void)
     for (i = 0; i < 3; i++)
     {
         CreateBoxMon(&boxMon, SPECIES_EEVEE + i, 20 + i, 10, TRUE, 0x3000 + i, OT_ID_PLAYER_ID, 0);
-        SetBoxMonAt(TOTAL_BOXES_COUNT - 1, i, &boxMon);
+        SetBoxMonAt(11, i, &boxMon);
     }
 
     for (i = SPECIES_BULBASAUR; i <= SPECIES_GEN1_MAX; i += 2)
