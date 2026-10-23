@@ -10194,8 +10194,9 @@ void HandleBattleWindow(u8 xStart, u8 yStart, u8 xEnd, u8 yEnd, u8 flags)
 void BattleCreateYesNoCursorAt(u8 cursorPosition)
 {
     u16 src[2];
-    src[0] = 1;
-    src[1] = 2;
+    // The arrow tiles use the Yes/No window's palette (5), not the message box's
+    src[0] = 1 | (5 << 12);
+    src[1] = 2 | (5 << 12);
 
     CopyToBgTilemapBufferRect_ChangePalette(0, src, 0x19, 9 + (2 * cursorPosition), 1, 2, 0x11);
     CopyBgTilemapBufferToVram(0);
