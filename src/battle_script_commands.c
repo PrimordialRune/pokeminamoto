@@ -10241,6 +10241,8 @@ static void Cmd_trygivecaughtmonnick(void)
         if (JOY_NEW(A_BUTTON))
         {
             PlaySE(SE_SELECT);
+            // Emerald left the box up during "...was transferred to the PC"
+            HandleBattleWindow(YESNOBOX_X_Y, WINDOW_CLEAR);
             if (gBattleCommunication[CURSOR_POSITION] == 0)
             {
                 gBattleCommunication[MULTIUSE_STATE]++;
@@ -10254,6 +10256,7 @@ static void Cmd_trygivecaughtmonnick(void)
         else if (JOY_NEW(B_BUTTON))
         {
             PlaySE(SE_SELECT);
+            HandleBattleWindow(YESNOBOX_X_Y, WINDOW_CLEAR);
             gBattleCommunication[MULTIUSE_STATE] = 4;
         }
         break;
