@@ -49,6 +49,8 @@
 #include "constants/weather.h"
 #include "constants/removed_maps.h"
 
+STATIC_ASSERT(MAX_REMATCH_ENTRIES >= REMATCH_TABLE_ENTRIES, RematchEntriesFit);
+
 enum {
     TRANSITION_TYPE_NORMAL,
     TRANSITION_TYPE_CAVE,

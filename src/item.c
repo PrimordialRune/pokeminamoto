@@ -23,6 +23,8 @@ EWRAM_DATA struct BagPocket gBagPockets[POCKETS_COUNT] = {0};
 #include "data/text/item_descriptions.h"
 #include "data/items.h"
 
+STATIC_ASSERT(BAG_TMHM_COUNT >= NUM_TECHNICAL_MACHINES + NUM_HIDDEN_MACHINES, TMHMPocketFits);
+
 static u16 GetBagItemQuantity(u16 *quantity)
 {
     return gSaveBlock2Ptr->encryptionKey ^ *quantity;

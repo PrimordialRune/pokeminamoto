@@ -122,6 +122,9 @@
 
 	@ Defines the table of event data for a map. Mirrors the struct layout of MapEvents in include/global.fieldmap.h
 	.macro map_events npcs:req, warps:req, traps:req, signs:req
+	.if _num_npcs > OBJECT_EVENT_TEMPLATES_COUNT
+	.error "Map has more object events than OBJECT_EVENT_TEMPLATES_COUNT (include/constants/global.h)"
+	.endif
 	.byte _num_npcs, _num_warps, _num_traps, _num_signs
 	.4byte \npcs, \warps, \traps, \signs
 	reset_map_events
