@@ -137,6 +137,7 @@ static void Setup(void)
     AddBagItem(ITEM_POTION, 10);
     AddBagItem(ITEM_SUPER_POTION, 3);
     AddBagItem(ITEM_RARE_CANDY, 5);
+    AddBagItem(ITEM_MASTER_BALL, 1); // first in the pocket, so the catch scene never fails
     AddBagItem(ITEM_POKE_BALL, 20);
     AddBagItem(ITEM_ULTRA_BALL, 2);
     AddBagItem(ITEM_TM01, 1);

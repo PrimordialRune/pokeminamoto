@@ -112,15 +112,19 @@ def main():
     lines.append("")
     lines.append("## Checkpoint screenshots")
     os.makedirs(os.path.join(args.new, "diff"), exist_ok=True)
-    for name, sa in a["scenes"].items():
-        sb = b["scenes"].get(name)
-        if not sb:
+    shots_a = {**{k: v["shot"] for k, v in a["scenes"].items()}, **a.get("snaps", {})}
+    shots_b = {**{k: v["shot"] for k, v in b["scenes"].items()}, **b.get("snaps", {})}
+    same = 0
+    for name, pa in shots_a.items():
+        pb = shots_b.get(name)
+        if not pb:
+            lines.append(f"- {name}: MISSING in new run")
             continue
-        ia = Image.open(os.path.join(args.base, sa["shot"])).convert("RGB")
-        ib = Image.open(os.path.join(args.new, sb["shot"])).convert("RGB")
+        ia = Image.open(os.path.join(args.base, pa)).convert("RGB")
+        ib = Image.open(os.path.join(args.new, pb)).convert("RGB")
         bbox = ImageChops.difference(ia, ib).getbbox()
         if bbox is None:
-            lines.append(f"- {name}: pixel-identical")
+            same += 1
         else:
             px = sum(1 for p in ImageChops.difference(ia, ib).getdata() if p != (0, 0, 0))
             side = Image.new("RGB", (ia.width * 2 + 4, ia.height), (255, 0, 255))
@@ -129,6 +133,8 @@ def main():
             out = os.path.join(args.new, "diff", f"{name}.png")
             side.resize((side.width * 2, side.height * 2), Image.NEAREST).save(out)
             lines.append(f"- {name}: {px} pixels differ in {bbox} (see diff/{name}.png)")
+
+    lines.append(f"- {same} of {len(shots_a)} screenshots pixel-identical")
 
     ma, mb = mem_use(args.base_elf), mem_use(args.new_elf)
     if ma and mb:

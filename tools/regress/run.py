@@ -47,11 +47,13 @@ class Emu:
         self.p = subprocess.Popen([EMU], env=env, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                                   text=True, bufsize=1, cwd=ROOT)
         self.sym = {}
+        self.all_syms = {}
         for line in subprocess.run(["arm-none-eabi-nm", elf], capture_output=True,
                                    text=True, check=True).stdout.splitlines():
             parts = line.split()
             if len(parts) == 3:
                 self.sym.setdefault(parts[2], int(parts[0], 16))
+                self.all_syms.setdefault(parts[2], []).append(int(parts[0], 16))
         self.out = out
         self.record = False
         self.recordable = record
@@ -118,6 +120,13 @@ class Emu:
         return dict(magic=magic, cmd=cmd, done=done, ready=ready, heapPeak=heap_peak,
                     heapFails=heap_fails, dmaPeak=dma_peak, dmaFull=dma_full, frames=frames,
                     lagFrames=lag, busySum=busy_sum, busyMax=busy_max, dumpWords=dump_words)
+
+    def player_choosing_action(self):
+        # The player controller's HandleInputChooseAction is the static one
+        # closest below its HandleInputChooseMove (another controller has one too).
+        move = self.sym["HandleInputChooseMove"]
+        act = max(a for a in self.all_syms["HandleInputChooseAction"] if a < move)
+        return (self.u32(self.sym["gBattlerControllerFuncs"]) & ~1) == act
 
     def field_ready(self):
         return self.in_overworld() and self.u8(self.rs + 6) == 1
@@ -200,6 +209,8 @@ def decode_dump(emu):
 
 
 def scene(emu, report, name, fn):
+    os.makedirs(os.path.join(emu.out, "states"), exist_ok=True)
+    emu.cmd(f"savestate {os.path.join(emu.out, 'states', name + '.ss')}")
     emu.reset_stats()
     before = emu.regress()
     fn()
@@ -239,7 +250,7 @@ def main():
         shutil.rmtree(args.out)
     os.makedirs(args.out)
     emu = Emu(args.rom, elf, args.out, not args.no_video)
-    report = {"rom": args.rom, "scenes": {}, "dumps": {}, "checks": {}}
+    report = {"rom": args.rom, "scenes": {}, "snaps": {}, "dumps": {}, "checks": {}}
 
     # --- New game, mash through the intro until the truck --------------
     print("boot + intro", flush=True)
@@ -255,6 +266,10 @@ def main():
     wait_field(emu)
     report["checks"]["introPresses"] = presses
 
+    def snap(name):
+        path = emu.screenshot(f"{len(report['snaps']):02d}_{name}")
+        report["snaps"][name] = os.path.relpath(path, emu.out)
+
     emu.record = True
     scene(emu, report, "setup", lambda: (emu.command(CMD_SETUP), wait_field(emu)))
     report["dumps"]["setup"] = decode_dump(emu)
@@ -263,13 +278,16 @@ def main():
         for key in ["DOWN", "RIGHT", "UP", "LEFT"]:
             emu.hold(key, 32)
             emu.run(8)
+            snap("walk_" + key.lower())
     scene(emu, report, "walk", walk)
 
     def pokedex():
         menu_to(emu, "POKEDEX")
         emu.run(90)
+        snap("dex_list")
         emu.press("DOWN", after=20)
         emu.press("A", after=120)    # open an entry
+        snap("dex_entry")
         emu.press("B", after=60)
         emu.press("B", after=90)
         emu.press("B", after=40)     # close start menu
@@ -279,11 +297,15 @@ def main():
     def party():
         menu_to(emu, "POKEMON")
         emu.run(60)
+        snap("party")
         emu.press("A", after=30)     # first mon -> submenu
         emu.press("A", after=90)     # SUMMARY
-        for _ in range(3):
+        snap("summary_info")
+        for page in ("skills", "moves", "page4"):
             emu.press("RIGHT", after=40)
+            snap("summary_" + page)
         emu.press("DOWN", after=40)  # next mon
+        snap("summary_next_mon")
         emu.press("B", after=80)
         emu.press("B", after=60)
         emu.press("B", after=40)
@@ -293,8 +315,10 @@ def main():
     def bag():
         menu_to(emu, "BAG")
         emu.run(60)
-        for _ in range(4):
+        snap("bag_pocket0")
+        for i in range(4):
             emu.press("RIGHT", after=30)
+            snap(f"bag_pocket{i + 1}")
         emu.press("B", after=60)
         emu.press("B", after=40)
         wait_field(emu, mash="B")
@@ -303,7 +327,9 @@ def main():
     def card():
         menu_to(emu, "PLAYER")
         emu.run(60)
+        snap("card_front")
         emu.press("A", after=60)     # flip
+        snap("card_back")
         emu.press("B", after=80)
         emu.press("B", after=40)
         wait_field(emu, mash="B")
@@ -316,12 +342,16 @@ def main():
         emu.press("DOWN", after=12)  # MOVE POKEMON
         emu.press("A", after=120)
         emu.press("RIGHT", after=16)
-        emu.press("A", after=30)     # pick up menu on a mon
+        emu.press("A", after=30)     # menu on a mon
+        snap("pc_mon_menu")
         emu.press("B", after=20)
-        emu.press("R", after=40)     # next box
-        emu.press("R", after=40)
-        emu.press("B", after=30)     # exit prompt
-        emu.press("A", after=120)    # yes
+        emu.press("UP", after=16)    # box title
+        emu.press("RIGHT", after=50) # box 2
+        emu.press("RIGHT", after=50) # box 3
+        snap("pc_box3")
+        emu.press("B", after=30)     # "Continue BOX operations?"
+        emu.press("DOWN", after=12)  # NO
+        emu.press("A", after=120)
         emu.press("B", after=40)     # leave PC menu
         wait_field(emu, mash="B")
     scene(emu, report, "pc", pc)
@@ -334,6 +364,13 @@ def main():
             frames += 10
         if not emu.in_battle():
             raise Fail("wild battle never started")
+        for _ in range(300):
+            if emu.player_choosing_action():
+                break
+            emu.press("B", hold=4, after=6)
+        snap("wild_action_menu")
+        emu.press("A", after=30)
+        snap("wild_move_menu")
         wait_field(emu, limit=20000, mash="A")
     scene(emu, report, "wild_battle", wild)
     report["dumps"]["after_wild"] = decode_dump(emu)
@@ -346,6 +383,11 @@ def main():
             frames += 10
         if not emu.in_battle():
             raise Fail("trainer battle never started")
+        for _ in range(300):
+            if emu.player_choosing_action():
+                break
+            emu.press("B", hold=4, after=6)
+        snap("trainer_action_menu")
         wait_field(emu, limit=30000, mash="A")
     scene(emu, report, "trainer_battle", trainer)
     report["dumps"]["after_trainer"] = decode_dump(emu)
@@ -359,26 +401,38 @@ def main():
         if not emu.in_battle():
             raise Fail("catch battle never started")
         for attempt in range(6):
-            emu.run(700 if attempt == 0 else 60)  # intro text to the action menu
-            emu.press("RIGHT", after=10)           # BAG
+            for _ in range(300):                   # advance text to the action menu
+                if emu.player_choosing_action() or emu.field_ready():
+                    break
+                emu.press("B", hold=4, after=6)
+            if emu.field_ready():
+                return
+            emu.press("DOWN", after=10)            # ITEM (battle UI v0.1: FIGHT PKMN / ITEM RUN)
             emu.press("A", after=90)
             pocket_addr = emu.sym["gBagPosition"] + 5
             for _ in range(5):
                 if emu.u8(pocket_addr) == 1:       # BALLS_POCKET
                     break
                 emu.press("RIGHT", after=30)
-            emu.press("A", after=20)               # Poke Ball
+            snap("battle_bag")
+            emu.press("A", after=20)               # Master Ball
             emu.press("A", after=60)               # USE
+            emu.run(400)
+            snap("catch_throw")
             for _ in range(150):                   # throw, catch, Pokedex page, nickname: No
                 emu.press("B", hold=4, after=6)
                 if emu.field_ready():
                     return
         wait_field(emu, limit=3000, mash="B")
+    if os.environ.get("REGRESS_STOP_BEFORE") == "catch":
+        emu.cmd(f"savestate {os.path.join(emu.out, 'states', 'catch.ss')}")
+        return 0
     scene(emu, report, "catch", catch)
     report["dumps"]["after_catch"] = decode_dump(emu)
 
     def save():
         menu_to(emu, "SAVE")
+        snap("save_prompt")
         emu.press("A", after=60)     # yes, save
         emu.run(300)
         emu.press("A", after=40)
@@ -398,7 +452,7 @@ def main():
             raise Fail("continue never reached the overworld")
     wait_field(emu)
     emu.record = True
-    scene(emu, report, "continue", lambda: emu.run(60))
+    scene(emu, report, "continue", lambda: (emu.run(60), snap("continued")))
     report["dumps"]["reloaded"] = decode_dump(emu)
 
     saved, reloaded = report["dumps"]["saved"], report["dumps"]["reloaded"]
