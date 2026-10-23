@@ -40,7 +40,7 @@ Tasks are defined in `.vscode/tasks.json`. To run one:
 |------|---------|-------------|
 | `Build debug ROM` | `make modern DINFO=1 O_LEVEL=g` | **Default.** GDB-friendly build — variables visible, breakpoints reliable |
 | `Build and ensure firewall` | parallel: build + firewall check | Use before a debug session after a reboot |
-| `Build classic ROM (agbcc)` | `make` | Test with the legacy agbcc compiler → `pokeemerald.gba` |
+| `Build classic ROM (agbcc)` | `make classic` | Optional legacy agbcc build → `pokeemerald.gba` (needs agbcc: `CLASSIC=1 tools/setup-cloud.sh`) |
 | `Build modern ROM (release)` | `make modern` | `-O2` optimized, no debug symbols → `pokeemerald_modern.gba` |
 | `Build modern ROM (keep temps)` | `make modern … KEEP_TEMPS=1` | Keeps intermediate `.i` (preprocessed C) and `.s` (assembly) files in `build/modern/src/` for inspection |
 | `Rebuild single file (debug)` | `rm <file>.o && make modern …` | Prompts for a filename stem (e.g. `battle_main`) — deletes that object and rebuilds only it |
@@ -228,8 +228,9 @@ Current branch: `copilot/refactor-gen-1-build`
 Run these in the integrated terminal (`Ctrl+\``):
 
 ```bash
-make -j$(nproc)                              # Classic ROM (agbcc) → pokeemerald.gba
-make modern -j$(nproc)                       # Modern ROM (release) → pokeemerald_modern.gba
+make -j$(nproc)                              # Main build: modern ROM (release) → pokeemerald_modern.gba
+make modern -j$(nproc)                       # Same (alias)
+make classic -j$(nproc)                      # Optional classic ROM (agbcc) → pokeemerald.gba
 make modern DINFO=1 O_LEVEL=g -j$(nproc)    # Debug ROM for GDB (what Ctrl+Shift+B does)
 make tidy                                    # Remove build outputs, keep tools/assets
 make tidymodern                              # Remove only modern build outputs
