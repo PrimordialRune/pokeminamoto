@@ -11,6 +11,46 @@
 #include "mystery_gift.h"
 #include "constants/mystery_gift.h"
 
+#ifdef FREE_MYSTERY_GIFT
+// Mystery Gift has no save space, so there is never a Wonder Card or Wonder
+// News, and IsMysteryGiftEnabled() keeps the menu hidden. Only the questionnaire
+// still needs somewhere to put its 4 words.
+static EWRAM_DATA u16 sQuestionnaireWords[NUM_QUESTIONNAIRE_WORDS] = {0};
+
+void ClearMysteryGift(void)
+{
+    InitQuestionnaireWords();
+}
+
+struct WonderNews *GetSavedWonderNews(void) { return NULL; }
+struct WonderCard *GetSavedWonderCard(void) { return NULL; }
+struct WonderCardMetadata *GetSavedWonderCardMetadata(void) { return NULL; }
+struct WonderNewsMetadata *GetSavedWonderNewsMetadata(void) { return NULL; }
+u16 *GetQuestionnaireWordsPtr(void) { return sQuestionnaireWords; }
+void ClearSavedWonderNewsAndRelated(void) {}
+void ClearSavedWonderCardAndRelated(void) {}
+bool32 SaveWonderNews(const struct WonderNews *news) { return FALSE; }
+bool32 SaveWonderCard(const struct WonderCard *card) { return FALSE; }
+bool32 ValidateSavedWonderNews(void) { return FALSE; }
+bool32 ValidateSavedWonderCard(void) { return FALSE; }
+bool32 IsWonderNewsSameAsSaved(const u8 *news) { return FALSE; }
+bool32 IsSendingSavedWonderNewsAllowed(void) { return FALSE; }
+bool32 IsSendingSavedWonderCardAllowed(void) { return FALSE; }
+u16 GetWonderCardFlagID(void) { return 0; }
+void DisableWonderCardSending(struct WonderCard *card) {}
+bool32 IsSavedWonderCardGiftNotReceived(void) { return FALSE; }
+bool32 MysteryGift_TrySaveStamp(const u16 *stamp) { return FALSE; }
+void MysteryGift_LoadLinkGameData(struct MysteryGiftLinkGameData *data, bool32 isWonderNews) { CpuFill32(0, data, sizeof(*data)); }
+bool32 MysteryGift_ValidateLinkGameData(const struct MysteryGiftLinkGameData *data, bool32 isWonderNews) { return FALSE; }
+u32 MysteryGift_CompareCardFlags(const u16 *flagId, const struct MysteryGiftLinkGameData *data, const void *unused) { return HAS_NO_CARD; }
+u32 MysteryGift_CheckStamps(const u16 *stamp, const struct MysteryGiftLinkGameData *data, const void *unused) { return 0; }
+bool32 MysteryGift_DoesQuestionnaireMatch(const struct MysteryGiftLinkGameData *data, const u16 *words) { return FALSE; }
+u16 MysteryGift_GetCardStatFromLinkData(const struct MysteryGiftLinkGameData *data, u32 stat) { return 0; }
+u16 MysteryGift_GetCardStat(u32 stat) { return 0; }
+void MysteryGift_DisableStats(void) {}
+bool32 MysteryGift_TryEnableStatsByFlagId(u16 flagId) { return FALSE; }
+void MysteryGift_TryIncrementStat(u32 stat, u32 trainerId) {}
+#else
 static EWRAM_DATA bool32 sStatsEnabled = FALSE;
 
 static void ClearSavedWonderNewsMetadata(void);
@@ -664,3 +704,4 @@ static void IncrementCardStatForNewTrainer(u32 stat, u32 trainerId, u32 *trainer
     if (RecordTrainerId(trainerId, trainerIds, size))
         IncrementCardStat(stat);
 }
+#endif // FREE_MYSTERY_GIFT
