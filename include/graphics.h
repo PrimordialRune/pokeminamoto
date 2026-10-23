@@ -3058,6 +3058,7 @@ extern const u32 gTrainerPalette_RubySapphireBrendan[];
 extern const u32 gTrainerPalette_RubySapphireMay[];
 
 extern const u8 gTrainerBackPic_Brendan[];
+extern const u32 gTrainerBackPicPalette_Brendan[];
 extern const u8 gTrainerBackPic_May[];
 extern const u8 gTrainerBackPic_Red[];
 extern const u8 gTrainerBackPic_Leaf[];
@@ -3216,6 +3217,11 @@ extern const u32 gMultiBattleIntroBg_Opponent_Tilemap[];
 extern const u32 gMultiBattleIntroBg_Player_Tilemap[];
 
 // battle environments
+extern const u32 gBattleEnvironmentTiles_Field[];
+extern const u32 gBattleEnvironmentTilemap_Field[];
+extern const u32 gBattleEnvironmentPalette_FieldGrass[];
+extern const u32 gBattleEnvironmentPalette_FieldLongGrass[];
+extern const u32 gBattleEnvironmentPalette_FieldPlain[];
 extern const u32 gBattleEnvironmentTiles_TallGrass[];
 extern const u32 gBattleEnvironmentTilemap_TallGrass[];
 extern const u32 gBattleEnvironmentAnimTiles_TallGrass[];
@@ -4091,6 +4097,11 @@ extern const u32 gBattleInterfaceGfx_BattleBar[];
 extern const u32 gSubstituteDollBackGfx[];
 extern const u32 gSubstituteDollFrontGfx[];
 extern const u32 gSubstituteDollPal[];
+extern const u8 gHealthboxTpBarGfx[][32];
+extern const u8 gHealthboxStatusTagGfx[][32];
+extern const u8 gBattleMoveGridGfx[];
+extern const u8 gBattleMoveInfoGfx[];
+extern const u8 gBattleActionMenuGfx[];
 extern const u32 gHealthboxSinglesPlayerGfx[];
 extern const u32 gHealthboxSinglesOpponentGfx[];
 extern const u32 gHealthboxDoublesPlayerGfx[];

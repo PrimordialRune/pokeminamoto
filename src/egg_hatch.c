@@ -260,10 +260,10 @@ static const struct WindowTemplate sWinTemplates_EggHatch[] =
 {
     {
         .bg = 0,
-        .tilemapLeft = 2,
-        .tilemapTop = 15,
+        .tilemapLeft = 1,
+        .tilemapTop = 16,
         .width = 26,
-        .height = 4,
+        .height = 3,
         .paletteNum = 0,
         .baseBlock = 64
     },
@@ -653,7 +653,7 @@ static void CB2_EggHatch(void)
         // "{mon} hatched from egg" message/fanfare
         GetMonNickname2(&gPlayerParty[sEggHatchData->eggPartyId], gStringVar1);
         StringExpandPlaceholders(gStringVar4, gText_HatchedFromEgg);
-        EggHatchPrintMessage(sEggHatchData->windowId, gStringVar4, 0, 3, TEXT_SKIP_DRAW);
+        EggHatchPrintMessage(sEggHatchData->windowId, gStringVar4, 0, 0, TEXT_SKIP_DRAW);
         PlayFanfare(MUS_EVOLVED);
         sEggHatchData->state++;
         PutWindowTilemap(sEggHatchData->windowId);
@@ -671,7 +671,7 @@ static void CB2_EggHatch(void)
         // Ready the nickname prompt
         GetMonNickname2(&gPlayerParty[sEggHatchData->eggPartyId], gStringVar1);
         StringExpandPlaceholders(gStringVar4, gText_NicknameHatchPrompt);
-        EggHatchPrintMessage(sEggHatchData->windowId, gStringVar4, 0, 2, 1);
+        EggHatchPrintMessage(sEggHatchData->windowId, gStringVar4, 0, 0, 1);
         sEggHatchData->state++;
         break;
     case 9:
@@ -920,7 +920,7 @@ static void EggHatchPrintMessage(u8 windowId, u8 *string, u8 x, u8 y, u8 speed)
     sEggHatchData->textColor[0] = 0;
     sEggHatchData->textColor[1] = 5;
     sEggHatchData->textColor[2] = 6;
-    AddTextPrinterParameterized4(windowId, FONT_NORMAL, x, y, 0, 0, sEggHatchData->textColor, speed, string);
+    AddTextPrinterParameterized4(windowId, FONT_SMALL, x, y, 0, 0, sEggHatchData->textColor, speed, string);
 }
 
 u8 GetEggCyclesToSubtract(void)

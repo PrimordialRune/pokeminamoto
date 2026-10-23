@@ -355,9 +355,9 @@ enum BattlerId
 #define B_WIN_MOVE_NAME_2         4 // Top right
 #define B_WIN_MOVE_NAME_3         5 // Bottom left
 #define B_WIN_MOVE_NAME_4         6 // Bottom right
-#define B_WIN_PP                  7
-#define B_WIN_DUMMY               8
-#define B_WIN_PP_REMAINING        9
+#define B_WIN_PP                  7 // "TP" label
+#define B_WIN_TP_LEFT             8 // the mon's current TP
+#define B_WIN_PP_REMAINING        9 // TP cost of the selected move
 #define B_WIN_MOVE_TYPE          10
 #define B_WIN_SWITCH_PROMPT      11 // "Switch which?"
 #define B_WIN_YESNO              12
@@ -382,6 +382,20 @@ enum BattlerId
 #define ARENA_WIN_BODY             20
 #define ARENA_WIN_JUDGMENT_TITLE   21
 #define ARENA_WIN_JUDGMENT_TEXT    22
+
+// Battle UI colors in BG palette 5 (graphics/battle_interface/text.pal).
+// 11-15 stay Emerald's for the level-up box, yes/no box and link windows.
+#define B_UI_PAL_NAVY          5
+#define B_UI_PAL_CYAN          6
+#define B_UI_PAL_SLATE         7
+#define B_UI_PAL_LCD           8
+#define B_UI_PAL_TYPE          9  // set per move type in the move menu
+#define B_UI_PAL_CYAN_SHADOW  10
+#define B_UI_PAL_WHITE        14
+
+// Battle textbox tiles (tools/battle_ui/gen_textbox.py)
+#define B_TEXTBOX_TILE_NAVY        0x7F
+#define B_TEXTBOX_TILE_EFFECT_ICON 0x80 // 2x2 tiles each: neutral, not very effective, super effective, no effect
 
 // Flag for BattlePutTextOnWindow. Never set
 #define B_WIN_COPYTOVRAM (1 << 7)

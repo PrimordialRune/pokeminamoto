@@ -448,14 +448,8 @@ static void HandleChooseActionAfterDma3(void)
 
 static void SafariHandleChooseAction(void)
 {
-    s32 i;
-
     gBattlerControllerFuncs[gActiveBattler] = HandleChooseActionAfterDma3;
-    BattlePutTextOnWindow(gText_SafariZoneMenu, B_WIN_ACTION_MENU);
-
-    for (i = 0; i < 4; i++)
-        ActionSelectionDestroyCursorAt(i);
-
+    ActionSelectionDrawMenu();
     ActionSelectionCreateCursorAt(gActionSelectionCursor[gActiveBattler], 0);
     BattleStringExpandPlaceholdersToDisplayedString(gText_WhatWillPkmnDo2);
     BattlePutTextOnWindow(gDisplayedStringBattle, B_WIN_ACTION_PROMPT);
