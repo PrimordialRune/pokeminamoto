@@ -122,10 +122,17 @@ ifeq ($(MODERN),0)
   LIB := $(LIBPATH) -lgcc -lc -L../../libagbsyscall -lagbsyscall
 else
   # Note: The makefile must be set up to not call these if modern == 0
+  # Warnings for the modern build, after pokeemerald-expansion's set. Most are reported
+  # without stopping the build because vanilla code still trips them; the ones listed
+  # with -Werror= are always real bugs, so they fail it.
+  MODERN_WARNINGS := -Wall -Wno-strict-aliasing -Wno-attribute-alias -Woverride-init -Wnonnull -Wenum-conversion \
+                     -Wno-pointer-sign -Wno-missing-braces -Wno-array-parameter \
+                     -Werror=return-type -Werror=implicit-function-declaration -Werror=implicit-int \
+                     -Werror=int-conversion -Werror=incompatible-pointer-types -Werror=parentheses
   MODERNCC := $(PREFIX)gcc
   PATH_MODERNCC := PATH="$(PATH)" $(MODERNCC)
   CC1 := $(shell $(PATH_MODERNCC) --print-prog-name=cc1) -quiet
-  override CFLAGS += -mthumb -mthumb-interwork -O$(O_LEVEL) -mabi=apcs-gnu -mtune=arm7tdmi -march=armv4t -fno-toplevel-reorder -Wno-pointer-to-int-cast
+  override CFLAGS += -mthumb -mthumb-interwork -O$(O_LEVEL) -mabi=apcs-gnu -mtune=arm7tdmi -march=armv4t -fno-toplevel-reorder -Wno-pointer-to-int-cast $(MODERN_WARNINGS)
   LIBPATH := -L "$(dir $(shell $(PATH_MODERNCC) -mthumb -print-file-name=libgcc.a))" -L "$(dir $(shell $(PATH_MODERNCC) -mthumb -print-file-name=libnosys.a))" -L "$(dir $(shell $(PATH_MODERNCC) -mthumb -print-file-name=libc.a))"
   LIB := $(LIBPATH) -lc -lnosys -lgcc -L../../libagbsyscall -lagbsyscall
 endif

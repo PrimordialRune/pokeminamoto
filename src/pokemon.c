@@ -3557,30 +3557,30 @@ static void DecryptBoxMon(struct BoxPokemon *boxMon)
 #define SUBSTRUCT_CASE(n, v1, v2, v3, v4)                               \
 case n:                                                                 \
     {                                                                   \
-    union PokemonSubstruct *substructs0 = boxMon->secure.substructs;    \
-    union PokemonSubstruct *substructs1 = boxMon->secure.substructs;    \
-    union PokemonSubstruct *substructs2 = boxMon->secure.substructs;    \
-    union PokemonSubstruct *substructs3 = boxMon->secure.substructs;    \
-    union PokemonSubstruct *substructs4 = boxMon->secure.substructs;    \
-    union PokemonSubstruct *substructs5 = boxMon->secure.substructs;    \
-    union PokemonSubstruct *substructs6 = boxMon->secure.substructs;    \
-    union PokemonSubstruct *substructs7 = boxMon->secure.substructs;    \
-    union PokemonSubstruct *substructs8 = boxMon->secure.substructs;    \
-    union PokemonSubstruct *substructs9 = boxMon->secure.substructs;    \
-    union PokemonSubstruct *substructs10 = boxMon->secure.substructs;   \
-    union PokemonSubstruct *substructs11 = boxMon->secure.substructs;   \
-    union PokemonSubstruct *substructs12 = boxMon->secure.substructs;   \
-    union PokemonSubstruct *substructs13 = boxMon->secure.substructs;   \
-    union PokemonSubstruct *substructs14 = boxMon->secure.substructs;   \
-    union PokemonSubstruct *substructs15 = boxMon->secure.substructs;   \
-    union PokemonSubstruct *substructs16 = boxMon->secure.substructs;   \
-    union PokemonSubstruct *substructs17 = boxMon->secure.substructs;   \
-    union PokemonSubstruct *substructs18 = boxMon->secure.substructs;   \
-    union PokemonSubstruct *substructs19 = boxMon->secure.substructs;   \
-    union PokemonSubstruct *substructs20 = boxMon->secure.substructs;   \
-    union PokemonSubstruct *substructs21 = boxMon->secure.substructs;   \
-    union PokemonSubstruct *substructs22 = boxMon->secure.substructs;   \
-    union PokemonSubstruct *substructs23 = boxMon->secure.substructs;   \
+    UNUSED union PokemonSubstruct *substructs0 = boxMon->secure.substructs;    \
+    UNUSED union PokemonSubstruct *substructs1 = boxMon->secure.substructs;    \
+    UNUSED union PokemonSubstruct *substructs2 = boxMon->secure.substructs;    \
+    UNUSED union PokemonSubstruct *substructs3 = boxMon->secure.substructs;    \
+    UNUSED union PokemonSubstruct *substructs4 = boxMon->secure.substructs;    \
+    UNUSED union PokemonSubstruct *substructs5 = boxMon->secure.substructs;    \
+    UNUSED union PokemonSubstruct *substructs6 = boxMon->secure.substructs;    \
+    UNUSED union PokemonSubstruct *substructs7 = boxMon->secure.substructs;    \
+    UNUSED union PokemonSubstruct *substructs8 = boxMon->secure.substructs;    \
+    UNUSED union PokemonSubstruct *substructs9 = boxMon->secure.substructs;    \
+    UNUSED union PokemonSubstruct *substructs10 = boxMon->secure.substructs;   \
+    UNUSED union PokemonSubstruct *substructs11 = boxMon->secure.substructs;   \
+    UNUSED union PokemonSubstruct *substructs12 = boxMon->secure.substructs;   \
+    UNUSED union PokemonSubstruct *substructs13 = boxMon->secure.substructs;   \
+    UNUSED union PokemonSubstruct *substructs14 = boxMon->secure.substructs;   \
+    UNUSED union PokemonSubstruct *substructs15 = boxMon->secure.substructs;   \
+    UNUSED union PokemonSubstruct *substructs16 = boxMon->secure.substructs;   \
+    UNUSED union PokemonSubstruct *substructs17 = boxMon->secure.substructs;   \
+    UNUSED union PokemonSubstruct *substructs18 = boxMon->secure.substructs;   \
+    UNUSED union PokemonSubstruct *substructs19 = boxMon->secure.substructs;   \
+    UNUSED union PokemonSubstruct *substructs20 = boxMon->secure.substructs;   \
+    UNUSED union PokemonSubstruct *substructs21 = boxMon->secure.substructs;   \
+    UNUSED union PokemonSubstruct *substructs22 = boxMon->secure.substructs;   \
+    UNUSED union PokemonSubstruct *substructs23 = boxMon->secure.substructs;   \
                                                                         \
         switch (substructType)                                          \
         {                                                               \
