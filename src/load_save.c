@@ -3,6 +3,7 @@
 #include "berry_powder.h"
 #include "item.h"
 #include "load_save.h"
+#include "regress.h"
 #include "main.h"
 #include "overworld.h"
 #include "pokemon.h"
@@ -129,6 +130,7 @@ void MoveSaveBlocks_ResetHeap(void)
     encryptionKey = (Random() << 16) + (Random());
     ApplyNewEncryptionKeyToAllEncryptedData(encryptionKey);
     gSaveBlock2Ptr->encryptionKey = encryptionKey;
+    REGRESS_RESEED();
 }
 
 u32 UseContinueGameWarp(void)

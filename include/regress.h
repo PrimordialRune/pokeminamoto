@@ -50,12 +50,14 @@ void Regress_NoteDmaFull(void);
 void Regress_FrameEnd(void);
 void Regress_OverworldTick(void);
 bool8 Regress_ScriptIdle(void);
+void Regress_Reseed(void);
 
 #define REGRESS_NOTE_ALLOC(start, ptr, size) Regress_NoteAlloc(start, ptr, size)
 #define REGRESS_NOTE_DMA_QUEUE(pending) Regress_NoteDmaQueue(pending)
 #define REGRESS_NOTE_DMA_FULL() Regress_NoteDmaFull()
 #define REGRESS_FRAME_END() Regress_FrameEnd()
 #define REGRESS_OVERWORLD_TICK() Regress_OverworldTick()
+#define REGRESS_RESEED() Regress_Reseed()
 
 #else
 
@@ -64,6 +66,7 @@ bool8 Regress_ScriptIdle(void);
 #define REGRESS_NOTE_DMA_FULL()
 #define REGRESS_FRAME_END()
 #define REGRESS_OVERWORLD_TICK()
+#define REGRESS_RESEED()
 
 #endif // REGRESS_HOOKS
 

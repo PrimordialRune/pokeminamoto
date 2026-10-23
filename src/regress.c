@@ -165,6 +165,17 @@ static void Setup(void)
     DoWarp();
 }
 
+// Called when a battle starts or ends (MoveSaveBlocks_ResetHeap) and before
+// each battle command. Loading speed changes how many frames pass before a
+// random roll, so without this a faster build would roll different damage.
+void Regress_Reseed(void)
+{
+    static u16 sCount;
+    sCount++;
+    SeedRng(0x5EED + sCount);
+    SeedRng2(0x5EED + sCount);
+}
+
 static void StartWild(void)
 {
     u8 *s = sScript;
@@ -346,9 +357,11 @@ void Regress_OverworldTick(void)
         Setup();
         break;
     case REGRESS_CMD_WILD:
+        Regress_Reseed();
         StartWild();
         break;
     case REGRESS_CMD_TRAINER:
+        Regress_Reseed();
         StartTrainer();
         break;
     case REGRESS_CMD_PC:
