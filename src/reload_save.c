@@ -18,7 +18,7 @@ void ReloadSave(void)
     ClearGpuRegBits(REG_OFFSET_DISPCNT, DISPCNT_FORCED_BLANK);
     REG_IME = imeBackup;
     gMain.inBattle = FALSE;
-    SetSaveBlocksPointers(GetSaveBlocksPointersBaseOffset());
+    SetSaveBlocksPointers();
     ResetMenuAndMonGlobals();
     Save_ResetSaveCounters();
     LoadGameSave(SAVE_NORMAL);

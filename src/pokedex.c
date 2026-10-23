@@ -4274,6 +4274,8 @@ s8 GetSetPokedexFlag(u16 nationalDexNo, u8 caseID)
     bit = nationalDexNo % 8;
     mask = 1 << bit;
     retVal = 0;
+    if (nationalDexNo >= POKEDEX_FLAG_COUNT) // also catches 0, which wrapped around
+        return 0;
     switch (caseID)
     {
     case FLAG_GET_SEEN:

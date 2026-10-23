@@ -1351,3 +1351,6 @@ SECTIONS {
         *(*);
     }
 }
+
+/* IntrMain (src/crt0.s) runs from a copy in IntrMain_Buffer (src/main.c). */
+ASSERT(IntrMain_End - IntrMain <= 0x180, "IntrMain no longer fits IntrMain_Buffer in src/main.c")

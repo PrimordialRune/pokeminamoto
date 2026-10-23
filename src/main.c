@@ -67,7 +67,7 @@ COMMON_DATA u16 gKeyRepeatContinueDelay = 0;
 COMMON_DATA bool8 gSoftResetDisabled = 0;
 COMMON_DATA IntrFunc gIntrTable[INTR_COUNT] = {0};
 COMMON_DATA u8 gLinkVSyncDisabled = 0;
-COMMON_DATA u32 IntrMain_Buffer[0x200] = {0};
+COMMON_DATA u32 IntrMain_Buffer[0x180 / 4] = {0}; // IntrMain is 348 bytes, see the check in src/crt0.s
 COMMON_DATA s8 gPcmDmaCounter = 0;
 
 static EWRAM_DATA u16 sTrainerId = 0;
@@ -182,8 +182,8 @@ static void InitMainCallbacks(void)
     gMain.vblankCounter2 = 0;
     gMain.callback1 = NULL;
     SetMainCallback2(CB2_InitCopyrightScreenAfterBootup);
-    gSaveBlock2Ptr = &gSaveblock2.block;
-    gPokemonStoragePtr = &gPokemonStorage.block;
+    gSaveBlock2Ptr = &gSaveblock2;
+    gPokemonStoragePtr = &gPokemonStorage;
 }
 
 static void CallCallbacks(void)

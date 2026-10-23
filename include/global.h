@@ -142,9 +142,11 @@
 
 #define ROUND_BITS_TO_BYTES(numBits) DIV_ROUND_UP(numBits, 8)
 
-// NUM_DEX_FLAG_BYTES allocates more flags than it needs to, as NUM_SPECIES includes the "old unown"
-// values that don't appear in the Pokédex. NATIONAL_DEX_COUNT does not include these values.
-#define NUM_DEX_FLAG_BYTES ROUND_BITS_TO_BYTES(NUM_SPECIES)
+// Pokédex seen/caught flags exist for national dex numbers 1 to POKEDEX_FLAG_COUNT:
+// the 151 Gen 1 species plus room for new ones. GetSetPokedexFlag treats any
+// higher number as never seen. Raising it changes the save layout.
+#define POKEDEX_FLAG_COUNT 200
+#define NUM_DEX_FLAG_BYTES ROUND_BITS_TO_BYTES(POKEDEX_FLAG_COUNT)
 #define NUM_FLAG_BYTES ROUND_BITS_TO_BYTES(FLAGS_COUNT)
 #define NUM_TRENDY_SAYING_BYTES ROUND_BITS_TO_BYTES(NUM_TRENDY_SAYINGS)
 
@@ -213,7 +215,7 @@ struct Pokedex
     /*0x08*/ u32 spindaPersonality; // set when you first see Spinda
     /*0x0C*/ u32 unknown3;
     /*0x10*/ u8 owned[NUM_DEX_FLAG_BYTES];
-    /*0x44*/ u8 seen[NUM_DEX_FLAG_BYTES];
+    /*0x29*/ u8 seen[NUM_DEX_FLAG_BYTES];
 };
 
 struct PokemonJumpRecords

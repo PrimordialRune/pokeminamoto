@@ -340,7 +340,6 @@ CableClub_EventScript_TryEnterColosseum::
 CableClub_EventScript_EnterColosseum::
 	special HealPlayerParty
 	special SavePlayerParty
-	special LoadPlayerBag
 	copyvar VAR_CABLE_CLUB_STATE, VAR_0x8004
 	messageautoscroll CableClub_Text_PleaseEnter
 	waitmessage

@@ -122,5 +122,8 @@ IntrMain_RetAddr:
 	bx lr
 
 	.pool
+@ IntrMain runs from a copy in IWRAM, IntrMain_Buffer in src/main.c. The
+@ linker scripts check that it still fits.
+IntrMain_End::
 
 	.align 2, 0 @ Don't pad with nop.

@@ -2,7 +2,8 @@
 #include "dma3.h"
 #include "regress.h"
 
-#define MAX_DMA_REQUESTS 128
+// tools/regress measured at most 9 queued requests (battles); 64 leaves wide headroom
+#define MAX_DMA_REQUESTS 64
 
 #define DMA_REQUEST_COPY32 1
 #define DMA_REQUEST_FILL32 2

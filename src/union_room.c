@@ -1580,7 +1580,6 @@ void StartUnionRoomBattle(u16 battleFlags)
 {
     HealPlayerParty();
     SavePlayerParty();
-    LoadPlayerBag();
     gLinkPlayers[0].linkType = LINKTYPE_BATTLE;
     gLinkPlayers[GetMultiplayerId()].id = GetMultiplayerId();
     gLinkPlayers[GetMultiplayerId() ^ 1].id = GetMultiplayerId() ^ 1;
@@ -1671,7 +1670,6 @@ static void Task_StartActivity(u8 taskId)
         CreateTrainerCardInBuffer(gBlockSendBuffer, TRUE);
         HealPlayerParty();
         SavePlayerParty();
-        LoadPlayerBag();
         WarpForCableClubActivity(MAP_GROUP(MAP_BATTLE_COLOSSEUM_2P), MAP_NUM(MAP_BATTLE_COLOSSEUM_2P), 6, 8, USING_SINGLE_BATTLE);
         SetMainCallback2(CB2_TransitionToCableClub);
         break;
@@ -1679,7 +1677,6 @@ static void Task_StartActivity(u8 taskId)
         CleanupOverworldWindowsAndTilemaps();
         HealPlayerParty();
         SavePlayerParty();
-        LoadPlayerBag();
         CreateTrainerCardInBuffer(gBlockSendBuffer, TRUE);
         WarpForCableClubActivity(MAP_GROUP(MAP_BATTLE_COLOSSEUM_2P), MAP_NUM(MAP_BATTLE_COLOSSEUM_2P), 6, 8, USING_DOUBLE_BATTLE);
         SetMainCallback2(CB2_TransitionToCableClub);
@@ -1688,7 +1685,6 @@ static void Task_StartActivity(u8 taskId)
         CleanupOverworldWindowsAndTilemaps();
         HealPlayerParty();
         SavePlayerParty();
-        LoadPlayerBag();
         CreateTrainerCardInBuffer(gBlockSendBuffer, TRUE);
         WarpForCableClubActivity(MAP_GROUP(MAP_BATTLE_COLOSSEUM_4P), MAP_NUM(MAP_BATTLE_COLOSSEUM_4P), 5, 8, USING_MULTI_BATTLE);
         SetMainCallback2(CB2_TransitionToCableClub);
