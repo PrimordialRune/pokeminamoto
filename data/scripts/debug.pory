@@ -1,0 +1,23 @@
+// Scratch scripts for testing, run from the overworld debug menu (R + START > Scripts).
+// Put whatever you want to try in them; they start with the player locked.
+// The debug menu isn't in release builds, so nothing else can reach these.
+
+script Debug_Script_1 {
+    msgbox("Debug script 1 is empty.\nEdit data/scripts/debug.pory.")
+    releaseall
+}
+
+script Debug_Script_2 {
+    msgbox("Debug script 2 is empty.\nEdit data/scripts/debug.pory.")
+    releaseall
+}
+
+script Debug_Script_3 {
+    msgbox("Debug script 3 is empty.\nEdit data/scripts/debug.pory.")
+    releaseall
+}
+
+script Debug_Script_4 {
+    msgbox("Debug script 4 is empty.\nEdit data/scripts/debug.pory.")
+    releaseall
+}
