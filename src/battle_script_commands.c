@@ -603,7 +603,8 @@ static const struct StatFractions sAccuracyStageRatios[] =
 };
 
 // The chance is 1/N for each stage.
-static const u16 sCriticalHitChance[] = {16, 8, 4, 3, 2};
+// 1 in N per crit stage: 6.25%, 12.5%, 25%, 50%, 100% (arena_ecology v2.1, rule 0.3)
+static const u16 sCriticalHitChance[] = {16, 8, 4, 2, 1};
 
 static const u32 sStatusFlagsForMoveEffects[NUM_MOVE_EFFECTS] =
 {
