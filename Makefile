@@ -26,6 +26,13 @@ ifeq (compare,$(MAKECMDGOALS))
   MODERN := 0
   COMPARE := 1
 endif
+# Release builds leave out the debug menus (see DEBUG_MENUS in include/config.h).
+# They build in their own folder and get a _release suffix, so switching between
+# release and normal builds never mixes objects.
+RELEASE     ?= 0
+ifeq (release,$(MAKECMDGOALS))
+  RELEASE := 1
+endif
 
 # Default make rule
 all: rom
@@ -72,10 +79,13 @@ else
   CPP := $(PREFIX)cpp
 endif
 
-ROM_NAME := $(FILE_NAME).gba
-OBJ_DIR_NAME := $(BUILD_DIR)/emerald
-MODERN_ROM_NAME := $(FILE_NAME)_modern.gba
-MODERN_OBJ_DIR_NAME := $(BUILD_DIR)/modern
+ifeq ($(RELEASE),1)
+  RELEASE_SUFFIX := _release
+endif
+ROM_NAME := $(FILE_NAME)$(RELEASE_SUFFIX).gba
+OBJ_DIR_NAME := $(BUILD_DIR)/emerald$(RELEASE_SUFFIX)
+MODERN_ROM_NAME := $(FILE_NAME)_modern$(RELEASE_SUFFIX).gba
+MODERN_OBJ_DIR_NAME := $(BUILD_DIR)/modern$(RELEASE_SUFFIX)
 
 ELF_NAME := $(ROM_NAME:.gba=.elf)
 MAP_NAME := $(ROM_NAME:.gba=.map)
@@ -119,6 +129,9 @@ INCLUDE_SCANINC_ARGS := $(INCLUDE_DIRS:%=-I %)
 
 O_LEVEL ?= 2
 CPPFLAGS := $(INCLUDE_CPP_ARGS) -Wno-trigraphs -DMODERN=$(MODERN)
+ifeq ($(RELEASE),1)
+  CPPFLAGS += -DRELEASE
+endif
 ifeq ($(MODERN),0)
   CPPFLAGS += -I tools/agbcc/include -I tools/agbcc -nostdinc -undef -std=gnu89
   CC1 := tools/agbcc/bin/agbcc$(EXE)
@@ -181,7 +194,7 @@ MAKEFLAGS += --no-print-directory
 .DELETE_ON_ERROR:
 
 RULES_NO_SCAN += libagbsyscall clean clean-assets tidy tidymodern tidynonmodern generated clean-generated
-.PHONY: all rom modern classic compare
+.PHONY: all rom modern classic compare release
 .PHONY: $(RULES_NO_SCAN)
 
 infoshell = $(foreach line, $(shell $1 | sed "s/ /__SPACE__/g"), $(info $(subst __SPACE__, ,$(line))))
@@ -246,6 +259,7 @@ $(shell mkdir -p $(SUBDIRS))
 # Pretend rules that are actually flags defer to `make all`
 modern: all
 classic: all
+release: all
 compare: all
 
 # Other rules
@@ -372,7 +386,7 @@ ifneq ($(NODEP),1)
 endif
 
 $(DATA_ASM_BUILDDIR)/%.o: $(DATA_ASM_SUBDIR)/%.s
-	$(PREPROC) $< charmap.txt | $(CPP) $(INCLUDE_SCANINC_ARGS) - | $(PREPROC) -ie $< charmap.txt | $(AS) $(ASFLAGS) -o $@
+	$(PREPROC) $< charmap.txt | $(CPP) $(INCLUDE_SCANINC_ARGS) $(if $(filter 1,$(RELEASE)),-DRELEASE) - | $(PREPROC) -ie $< charmap.txt | $(AS) $(ASFLAGS) -o $@
 
 $(DATA_ASM_BUILDDIR)/%.d: $(DATA_ASM_SUBDIR)/%.s
 	$(SCANINC) -M $@ $(INCLUDE_SCANINC_ARGS) -I "" $<
