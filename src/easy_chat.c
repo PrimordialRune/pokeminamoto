@@ -1538,7 +1538,14 @@ void ShowEasyChatScreen(void)
         words = &gSaveBlock1Ptr->lilycoveLady.quiz.correctAnswer;
         break;
     case EASY_CHAT_TYPE_APPRENTICE:
+#ifdef FREE_APPRENTICE
+        // No saved Apprentice to write to: edit a scratch copy and drop it.
+        words = (u16 *)gStringVar3;
+        for (i = 0; i < ARRAY_COUNT(SAVED_APPRENTICES[0].speechWon); i++)
+            words[i] = EC_EMPTY_WORD;
+#else
         words = gSaveBlock2Ptr->apprentices[0].speechWon;
+#endif
         break;
     case EASY_CHAT_TYPE_QUESTIONNAIRE:
         words = GetQuestionnaireWordsPtr();

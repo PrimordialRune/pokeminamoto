@@ -93,7 +93,9 @@ static struct DewfordTrend *sDewfordTrendsSave;
 static struct RecordMixingDaycareMail *sRecordMixMailSave;
 static void *sBattleTowerSave;
 static LilycoveLady *sLilycoveLadySave;
+#ifndef FREE_APPRENTICE
 static void *sApprenticesSave;
+#endif
 static void *sBattleTowerSave_Duplicate;
 static u32 sRecordStructSize;
 static u8 sDaycareMailRandSum;
@@ -121,8 +123,10 @@ static void CalculateDaycareMailRandSum(const u8 *);
 static void ReceiveDaycareMailData(struct RecordMixingDaycareMail *, size_t, u8, TVShow *);
 static void ReceiveGiftItem(u16 *, u8 );
 static void Task_DoRecordMixing(u8);
+#ifndef FREE_APPRENTICE
 static void GetSavedApprentices(struct Apprentice *, struct Apprentice *);
 static void ReceiveApprenticeData(struct Apprentice *, size_t, u32);
+#endif
 #ifndef FREE_RECORD_MIXING_HALL_RECORDS
 static void ReceiveRankingHallRecords(struct PlayerHallRecords *, size_t, u32);
 #endif
@@ -183,7 +187,9 @@ static void SetSrcLookupPointers(void)
     sRecordMixMailSave = &sRecordMixMail;
     sBattleTowerSave = &gSaveBlock2Ptr->frontier.towerPlayer;
     sLilycoveLadySave = &gSaveBlock1Ptr->lilycoveLady;
+#ifndef FREE_APPRENTICE
     sApprenticesSave = gSaveBlock2Ptr->apprentices;
+#endif
     sBattleTowerSave_Duplicate = &gSaveBlock2Ptr->frontier.towerPlayer;
 }
 
@@ -249,7 +255,13 @@ static void PrepareExchangePacket(void)
         if (GetMultiplayerId() == 0)
             sSentRecord->emerald.giftItem = GetRecordMixingGift();
 
+#ifdef FREE_APPRENTICE
+        // Send "no Apprentice" so a partner's game doesn't save one
+        sSentRecord->emerald.apprentices[0] = gEmptyApprentices[0];
+        sSentRecord->emerald.apprentices[1] = gEmptyApprentices[1];
+#else
         GetSavedApprentices(sSentRecord->emerald.apprentices, sApprenticesSave);
+#endif
         GetPlayerHallRecords(&sSentRecord->emerald.hallRecords);
     }
 }
@@ -282,7 +294,9 @@ static void ReceiveExchangePacket(u32 multiplayerId)
         ReceiveBattleTowerData(&sReceivedRecords->emerald.battleTowerRecord, sizeof(sReceivedRecords->emerald), multiplayerId);
         ReceiveGiftItem(&sReceivedRecords->emerald.giftItem, multiplayerId);
         ReceiveLilycoveLadyData(&sReceivedRecords->emerald.lilycoveLady, sizeof(sReceivedRecords->emerald), multiplayerId);
+#ifndef FREE_APPRENTICE
         ReceiveApprenticeData(sReceivedRecords->emerald.apprentices, sizeof(sReceivedRecords->emerald), (u8)multiplayerId);
+#endif
 #ifndef FREE_RECORD_MIXING_HALL_RECORDS
         ReceiveRankingHallRecords(&sReceivedRecords->emerald.hallRecords, sizeof(sReceivedRecords->emerald), (u8)multiplayerId);
 #endif
@@ -1065,6 +1079,7 @@ static void Task_DoRecordMixing(u8 taskId)
     }
 }
 
+#ifndef FREE_APPRENTICE
 static void GetSavedApprentices(struct Apprentice *dst, struct Apprentice *src)
 {
     s32 i, id;
@@ -1119,6 +1134,8 @@ static void GetSavedApprentices(struct Apprentice *dst, struct Apprentice *src)
     }
 }
 
+#endif // FREE_APPRENTICE
+
 void GetPlayerHallRecords(struct PlayerHallRecords *dst)
 {
     s32 i, j;
@@ -1158,6 +1175,7 @@ void GetPlayerHallRecords(struct PlayerHallRecords *dst)
     }
 }
 
+#ifndef FREE_APPRENTICE
 static bool32 IsApprenticeAlreadySaved(struct Apprentice *mixApprentice, struct Apprentice *apprentices)
 {
     s32 i;
@@ -1209,6 +1227,8 @@ static void ReceiveApprenticeData(struct Apprentice *records, size_t recordSize,
         break;
     }
 }
+
+#endif // FREE_APPRENTICE
 
 #ifndef FREE_RECORD_MIXING_HALL_RECORDS
 static void GetNewHallRecords(struct RecordMixingHallRecords *dst, void *records, size_t recordSize, u32 multiplayerId, s32 linkPlayerCount)

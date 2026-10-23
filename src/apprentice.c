@@ -56,6 +56,7 @@
  *   and the current Apprentice is stored in struct PlayersApprentice playerApprentice of SaveBlock2
  */
 
+#ifndef FREE_APPRENTICE
 #define PLAYER_APPRENTICE gSaveBlock2Ptr->playerApprentice
 #define CURRENT_QUESTION_NUM  PLAYER_APPRENTICE.questionsAnswered - NUM_WHICH_MON_QUESTIONS
 
@@ -114,8 +115,27 @@ static void SetPlayerApprenticeTrainerGfxId(void);
 static void GetShouldApprenticeLeave(void);
 static void ShiftSavedApprentices(void);
 
+#endif // FREE_APPRENTICE
+
 #include "data/battle_frontier/apprentice.h"
 
+#ifdef FREE_APPRENTICE
+// The Battle Tower Apprentice is removed (FREE_APPRENTICE in config.h). These
+// are the entry points the rest of the game still calls; the saved
+// Apprentices read as empty (SAVED_APPRENTICES in global.h).
+void BufferApprenticeChallengeText(u8 saveApprenticeId)
+{
+    gStringVar4[0] = EOS;
+}
+
+void ResetAllApprenticeData(void)
+{
+}
+
+void CallApprenticeFunction(void)
+{
+}
+#else
 void BufferApprenticeChallengeText(u8 saveApprenticeId)
 {
     u8 i, num;
@@ -131,6 +151,8 @@ void BufferApprenticeChallengeText(u8 saveApprenticeId)
     challengeText = sApprenticeChallengeTexts[gSaveBlock2Ptr->apprentices[saveApprenticeId].id];
     StringExpandPlaceholders(gStringVar4, challengeText);
 }
+
+#endif // FREE_APPRENTICE
 
 void Apprentice_ScriptContext_Enable(void)
 {
@@ -148,6 +170,7 @@ void ResetApprenticeStruct(struct Apprentice *apprentice)
     apprentice->id = NUM_APPRENTICES;
 }
 
+#ifndef FREE_APPRENTICE
 void ResetAllApprenticeData(void)
 {
     u8 i, j;
@@ -1259,6 +1282,8 @@ static void GetShouldApprenticeLeave(void)
     gSpecialVar_0x8004 = TRUE;
 }
 
+#endif // FREE_APPRENTICE
+
 const u8 *GetApprenticeNameInLanguage(u32 apprenticeId, s32 language)
 {
     const struct ApprenticeTrainer *apprentice = &gApprentices[apprenticeId];
@@ -1281,6 +1306,7 @@ const u8 *GetApprenticeNameInLanguage(u32 apprenticeId, s32 language)
     }
 }
 
+#ifndef FREE_APPRENTICE
 static void UNUSED Task_SwitchToFollowupFuncAfterButtonPress(u8 taskId)
 {
     if (JOY_NEW(A_BUTTON) || JOY_NEW(B_BUTTON))
@@ -1309,3 +1335,4 @@ static void UNUSED ExecuteFollowupFuncAfterButtonPress(TaskFunc task)
     u8 taskId = CreateTask(Task_SwitchToFollowupFuncAfterButtonPress, 1);
     SetTaskFuncWithFollowupFunc(taskId, Task_SwitchToFollowupFuncAfterButtonPress, task);
 }
+#endif // FREE_APPRENTICE

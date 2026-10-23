@@ -534,8 +534,10 @@ struct SaveBlock2
     /*0xA0*/ struct Time lastBerryTreeUpdate;
     /*0xA8*/ u32 gcnLinkFlags; // Read by Pokémon Colosseum/XD
     /*0xAC*/ u32 encryptionKey;
+#ifndef FREE_APPRENTICE
     /*0xB0*/ struct PlayersApprentice playerApprentice;
     /*0xDC*/ struct Apprentice apprentices[APPRENTICE_COUNT];
+#endif
     /*0x1EC*/ struct BerryCrush berryCrush;
     /*0x1FC*/ struct PokemonJumpRecords pokeJump;
     /*0x20C*/ struct BerryPickingResults berryPick;
@@ -1103,6 +1105,15 @@ extern const struct EnigmaBerry gEmptyEnigmaBerry;
 #define ENIGMA_BERRY gEmptyEnigmaBerry
 #else
 #define ENIGMA_BERRY gSaveBlock1Ptr->enigmaBerry
+#endif
+
+// The Apprentices saved from the Battle Tower lobby and record mixing, read
+// the same way as ENIGMA_BERRY. When freed they read as never met.
+#ifdef FREE_APPRENTICE
+extern const struct Apprentice gEmptyApprentices[APPRENTICE_COUNT];
+#define SAVED_APPRENTICES gEmptyApprentices
+#else
+#define SAVED_APPRENTICES gSaveBlock2Ptr->apprentices
 #endif
 
 // The e-Reader Battle Tower trainer, read the same way as ENIGMA_BERRY.

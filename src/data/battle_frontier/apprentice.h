@@ -426,6 +426,7 @@ const struct ApprenticeTrainer gApprentices[NUM_APPRENTICES] =
     },
 };
 
+#ifndef FREE_APPRENTICE
 // Sequence of 4 messages for the first meeting with the apprentice
 static const u8 *const sApprenticeFirstMeetingTexts[NUM_APPRENTICES][4] =
 {
@@ -791,3 +792,4 @@ static void (*const sApprenticeFunctions[])(void) =
 
 // The first Apprentice can only be one of these
 static const u8 sInitialApprenticeIds[8] = {0, 1, 2, 3, 6, 7, 8, 9};
+#endif // FREE_APPRENTICE

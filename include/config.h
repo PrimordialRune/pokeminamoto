@@ -58,6 +58,7 @@
 #define FREE_BATTLE_TOWER_E_READER      // e-Reader Battle Tower trainer (188 B)
 #define FREE_EXTRA_SEEN_FLAGS           // the two anti-cheat copies of Pokedex seen flags (104 B)
 #define FREE_ENIGMA_BERRY               // e-Reader Enigma Berry (52 B)
+#define FREE_APPRENTICE                 // Battle Tower Apprentice and the 4 saved ones (316 B)
 
 // Debug menus (overworld: hold R + START, battle: hold L + SELECT). Every modern
 // build has them except `make release`, which defines RELEASE. See include/debug_menu.h.
