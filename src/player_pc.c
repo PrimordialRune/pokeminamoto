@@ -101,6 +101,7 @@ static void InitPlayerPCMenu(u8);
 static void PlayerPCProcessMenuInput(u8);
 static void InitItemStorageMenu(u8, u8);
 
+#if PC_MAILBOX_COUNT > 0
 static u8 GetMailboxMailCount(void);
 static void Mailbox_CompactMailList(void);
 static void Mailbox_DrawMailboxMenu(u8);
@@ -109,12 +110,16 @@ static void Mailbox_PrintWhatToDoWithPlayerMailText(u8);
 static void Mailbox_ReturnToPlayerPC(u8);
 static void Mailbox_PrintMailOptions(u8);
 static void Mailbox_MailOptionsProcessInput(u8);
+#endif // PC_MAILBOX_COUNT
 
 static void PlayerPC_ItemStorage(u8);
+#if PC_MAILBOX_COUNT > 0
 static void PlayerPC_Mailbox(u8);
+#endif // PC_MAILBOX_COUNT
 static void PlayerPC_Decoration(u8);
 static void PlayerPC_TurnOff(u8);
 
+#if PC_MAILBOX_COUNT > 0
 static void Mailbox_DoMailMoveToBag(u8);
 static void Mailbox_DoMailRead(u8);
 static void Mailbox_MoveToBag(u8);
@@ -132,6 +137,7 @@ static void Mailbox_ReturnToFieldFromReadMail(void);
 static void Mailbox_ReshowAfterMail(void);
 static void Mailbox_HandleReturnToProcessInput(u8);
 static void Mailbox_UpdateMailListAfterDeposit(void);
+#endif // PC_MAILBOX_COUNT
 
 static void ItemStorage_Withdraw(u8);
 static void ItemStorage_Deposit(u8);
@@ -192,7 +198,9 @@ static const u8 *const sItemStorage_OptionDescriptions[] =
 static const struct MenuAction sPlayerPCMenuActions[] =
 {
     [MENU_ITEMSTORAGE] = { gText_ItemStorage, {PlayerPC_ItemStorage} },
+#if PC_MAILBOX_COUNT > 0
     [MENU_MAILBOX]     = { gText_Mailbox,     {PlayerPC_Mailbox} },
+#endif // PC_MAILBOX_COUNT
     [MENU_DECORATION]  = { gText_Decoration,  {PlayerPC_Decoration} },
     [MENU_TURNOFF]     = { gText_TurnOff,     {PlayerPC_TurnOff} }
 };
@@ -200,7 +208,9 @@ static const struct MenuAction sPlayerPCMenuActions[] =
 static const u8 sBedroomPC_OptionOrder[] =
 {
     MENU_ITEMSTORAGE,
+#if PC_MAILBOX_COUNT > 0
     MENU_MAILBOX,
+#endif // PC_MAILBOX_COUNT
     MENU_DECORATION,
     MENU_TURNOFF
 };
@@ -209,7 +219,9 @@ static const u8 sBedroomPC_OptionOrder[] =
 static const u8 sPlayerPC_OptionOrder[] =
 {
     MENU_ITEMSTORAGE,
+#if PC_MAILBOX_COUNT > 0
     MENU_MAILBOX,
+#endif // PC_MAILBOX_COUNT
     MENU_TURNOFF
 };
 #define NUM_PLAYER_PC_OPTIONS ARRAY_COUNT(sPlayerPC_OptionOrder)
@@ -228,6 +240,7 @@ static const u16 sNewGamePCItems[][2] =
     { ITEM_NONE, 0 }
 };
 
+#if PC_MAILBOX_COUNT > 0
 const struct MenuAction gMailboxMailOptions[] =
 {
     { gText_Read,      {Mailbox_DoMailRead} },
@@ -235,6 +248,7 @@ const struct MenuAction gMailboxMailOptions[] =
     { gText_Give2,     {Mailbox_Give} },
     { gText_Cancel2,   {Mailbox_Cancel} }
 };
+#endif // PC_MAILBOX_COUNT
 
 static const struct WindowTemplate sWindowTemplates_MainMenus[] =
 {
@@ -454,6 +468,7 @@ static void PlayerPC_ItemStorage(u8 taskId)
     gTasks[taskId].func = ItemStorageMenuProcessInput;
 }
 
+#if PC_MAILBOX_COUNT > 0
 static void PlayerPC_Mailbox(u8 taskId)
 {
     gPlayerPCItemPageInfo.count = GetMailboxMailCount();
@@ -483,6 +498,7 @@ static void PlayerPC_Mailbox(u8 taskId)
         }
     }
 }
+#endif // PC_MAILBOX_COUNT
 
 static void PlayerPC_Decoration(u8 taskId)
 {
@@ -665,6 +681,7 @@ static void ItemStorage_EraseMainMenu(u8 taskId)
     ScheduleBgCopyTilemapToVram(0);
 }
 
+#if PC_MAILBOX_COUNT > 0
 static u8 GetMailboxMailCount(void)
 {
     u8 mailInPC, i;
@@ -940,6 +957,7 @@ static void Mailbox_Cancel(u8 taskId)
     ScheduleBgCopyTilemapToVram(0);
     gTasks[taskId].func = Mailbox_ProcessInput;
 }
+#endif // PC_MAILBOX_COUNT
 
 static void ItemStorage_Init(void)
 {

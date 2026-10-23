@@ -421,7 +421,7 @@ void MysteryGift_LoadLinkGameData(struct MysteryGiftLinkGameData *data, bool32 i
     CopyTrainerId(data->playerTrainerId, gSaveBlock2Ptr->playerTrainerId);
     StringCopy(data->playerName, gSaveBlock2Ptr->playerName);
     for (i = 0; i < EASY_CHAT_BATTLE_WORDS_COUNT; i++)
-        data->easyChatProfile[i] = gSaveBlock1Ptr->easyChatProfile[i];
+        data->easyChatProfile[i] = EASY_CHAT_PROFILE[i];
 
     memcpy(data->romHeaderGameCode, RomHeaderGameCode, GAME_CODE_LENGTH);
     data->romHeaderSoftwareVersion = RomHeaderSoftwareVersion;

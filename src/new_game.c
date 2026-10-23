@@ -160,7 +160,9 @@ void NewGameInitData(void)
     ClearSav1();
     ClearAllMail();
     gSaveBlock2Ptr->specialSaveWarpFlags = 0;
+#ifndef FREE_GCN_LINK
     gSaveBlock2Ptr->gcnLinkFlags = 0;
+#endif
     InitPlayerTrainerId();
     PlayTimeCounter_Reset();
     ClearPokedexFlags();

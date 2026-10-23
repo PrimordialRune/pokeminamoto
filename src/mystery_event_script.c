@@ -100,6 +100,17 @@ void SetMysteryEventScriptStatus(u32 status)
     sMysteryEventScriptContext.mStatus = status;
 }
 
+#ifdef FREE_MYSTERY_EVENT_BUFFERS
+// No record mixing gift is saved (FREE_MYSTERY_EVENT_BUFFERS in config.h).
+static void SetRecordMixingGift(u8 unk, u8 quantity, u16 itemId)
+{
+}
+
+u16 GetRecordMixingGift(void)
+{
+    return 0;
+}
+#else
 static int CalcRecordMixingGiftChecksum(void)
 {
     unsigned int i;
@@ -168,6 +179,8 @@ u16 GetRecordMixingGift(void)
         return itemId;
     }
 }
+
+#endif // FREE_MYSTERY_EVENT_BUFFERS
 
 bool8 MEScrCmd_end(struct ScriptContext *ctx)
 {

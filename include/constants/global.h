@@ -44,7 +44,8 @@
 #define DAYCARE_MON_COUNT 2
 #define POKEBLOCKS_COUNT 40
 #define OBJECT_EVENTS_COUNT 16
-#define MAIL_COUNT (10 + PARTY_SIZE)
+#define PC_MAILBOX_COUNT 0 // Emerald had a 10-letter PC mailbox; Minamoto keeps only mail held by the party
+#define MAIL_COUNT (PARTY_SIZE + PC_MAILBOX_COUNT)
 #define SECRET_BASES_COUNT 20
 #define POKE_NEWS_COUNT 16
 #define PC_ITEMS_COUNT 50

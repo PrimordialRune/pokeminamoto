@@ -532,7 +532,9 @@ struct SaveBlock2
     /*0x90*/ u8 filler_90[0x8];
     /*0x98*/ struct Time localTimeOffset;
     /*0xA0*/ struct Time lastBerryTreeUpdate;
+#ifndef FREE_GCN_LINK
     /*0xA8*/ u32 gcnLinkFlags; // Read by Pokémon Colosseum/XD
+#endif
     /*0xAC*/ u32 encryptionKey;
 #ifndef FREE_APPRENTICE
     /*0xB0*/ struct PlayersApprentice playerApprentice;
@@ -1056,10 +1058,12 @@ struct SaveBlock1
     /*0x2BA1*/ u8 outbreakPokemonProbability;
     /*0x2BA2*/ u16 outbreakDaysLeft;
     /*0x2BA4*/ struct GabbyAndTyData gabbyAndTyData;
+#ifndef FREE_EASY_CHAT_PHRASES
     /*0x2BB0*/ u16 easyChatProfile[EASY_CHAT_BATTLE_WORDS_COUNT];
     /*0x2BBC*/ u16 easyChatBattleStart[EASY_CHAT_BATTLE_WORDS_COUNT];
     /*0x2BC8*/ u16 easyChatBattleWon[EASY_CHAT_BATTLE_WORDS_COUNT];
     /*0x2BD4*/ u16 easyChatBattleLost[EASY_CHAT_BATTLE_WORDS_COUNT];
+#endif
     /*0x2BE0*/ struct Mail mail[MAIL_COUNT];
     /*0x2E20*/ u8 unlockedTrendySayings[NUM_TRENDY_SAYING_BYTES]; // Bitfield for unlockable Easy Chat words in EC_GROUP_TRENDY_SAYING
     /*0x2E25*/ //u8 padding5[3];
@@ -1069,8 +1073,10 @@ struct SaveBlock1
     /*0x3030*/ struct DayCare daycare;
     /*0x3150*/ struct LinkBattleRecords linkBattleRecords;
     /*0x31A8*/ u8 giftRibbons[GIFT_RIBBONS_COUNT];
+#ifndef FREE_GCN_LINK
     /*0x31B3*/ struct ExternalEventData externalEventData;
     /*0x31C7*/ struct ExternalEventFlags externalEventFlags;
+#endif
     /*0x31DC*/ struct Roamer roamer;
 #ifndef FREE_ENIGMA_BERRY
     /*0x31F8*/ struct EnigmaBerry enigmaBerry;
@@ -1082,7 +1088,9 @@ struct SaveBlock1
 #ifndef FREE_MYSTERY_EVENT_BUFFERS
     /*0x3728*/ struct RamScript ramScript;
 #endif
+#ifndef FREE_MYSTERY_EVENT_BUFFERS
     /*0x3B14*/ struct RecordMixingGift recordMixingGift;
+#endif
 #ifndef FREE_EXTRA_SEEN_FLAGS
     /*0x3B24*/ u8 seen2[NUM_DEX_FLAG_BYTES];
 #endif
@@ -1114,6 +1122,24 @@ extern const struct Apprentice gEmptyApprentices[APPRENTICE_COUNT];
 #define SAVED_APPRENTICES gEmptyApprentices
 #else
 #define SAVED_APPRENTICES gSaveBlock2Ptr->apprentices
+#endif
+
+// The trainer card profile and the link battle lines, read the same way as
+// ENIGMA_BERRY. When freed they are always the new-game defaults.
+#ifdef FREE_EASY_CHAT_PHRASES
+extern const u16 gDefaultEasyChatProfile[];
+extern const u16 gDefaultEasyChatBattleStart[];
+extern const u16 gDefaultEasyChatBattleWon[];
+extern const u16 gDefaultEasyChatBattleLost[];
+#define EASY_CHAT_PROFILE      gDefaultEasyChatProfile
+#define EASY_CHAT_BATTLE_START gDefaultEasyChatBattleStart
+#define EASY_CHAT_BATTLE_WON   gDefaultEasyChatBattleWon
+#define EASY_CHAT_BATTLE_LOST  gDefaultEasyChatBattleLost
+#else
+#define EASY_CHAT_PROFILE      gSaveBlock1Ptr->easyChatProfile
+#define EASY_CHAT_BATTLE_START gSaveBlock1Ptr->easyChatBattleStart
+#define EASY_CHAT_BATTLE_WON   gSaveBlock1Ptr->easyChatBattleWon
+#define EASY_CHAT_BATTLE_LOST  gSaveBlock1Ptr->easyChatBattleLost
 #endif
 
 // The e-Reader Battle Tower trainer, read the same way as ENIGMA_BERRY.

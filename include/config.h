@@ -51,13 +51,15 @@
 // e-Reader system that Minamoto never reaches, freeing EWRAM and flash.
 // Comment one out to bring that system's data back. Changing any of these
 // changes the save layout, so older saves stop loading.
-#define FREE_MYSTERY_EVENT_BUFFERS      // ramScript, Mystery Event scripts (1104 B)
+#define FREE_MYSTERY_EVENT_BUFFERS      // ramScript, Mystery Event scripts, record mixing gift item (1120 B)
 #define FREE_MYSTERY_GIFT               // Wonder Cards/News and their flags (876 B)
 #define FREE_RECORD_MIXING_HALL_RECORDS // Battle Frontier Ranking Hall records (1032 B)
 #define FREE_UNION_ROOM_CHAT            // Union Room chat registered texts (210 B)
 #define FREE_BATTLE_TOWER_E_READER      // e-Reader Battle Tower trainer (188 B)
 #define FREE_EXTRA_SEEN_FLAGS           // the two anti-cheat copies of Pokedex seen flags (104 B)
 #define FREE_ENIGMA_BERRY               // e-Reader Enigma Berry (52 B)
+#define FREE_GCN_LINK                   // data Colosseum/XD read and write over the GameCube link (45 B)
+#define FREE_EASY_CHAT_PHRASES          // editable trainer card profile and link battle lines, now fixed (48 B)
 #define FREE_APPRENTICE                 // Battle Tower Apprentice and the 4 saved ones (316 B)
 
 // Debug menus (overworld: hold R + START, battle: hold L + SELECT). Every modern

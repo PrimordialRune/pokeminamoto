@@ -308,7 +308,9 @@ static void PartyMenuRemoveWindow(u8 *);
 static void CB2_SetUpExitToBattleScreen(void);
 static void Task_ClosePartyMenuAfterText(u8);
 static void TryTutorSelectedMon(u8);
+#if PC_MAILBOX_COUNT > 0
 static void TryGiveMailToSelectedMon(u8);
+#endif // PC_MAILBOX_COUNT
 static void TryGiveItemOrMailToSelectedMon(u8);
 static void SwitchSelectedMons(u8);
 static void TryEnterMonForMinigame(u8, u8);
@@ -1325,6 +1327,7 @@ static void HandleChooseMonSelection(u8 taskId, s8 *slotPtr)
                 TryTutorSelectedMon(taskId);
             }
             break;
+#if PC_MAILBOX_COUNT > 0
         case PARTY_ACTION_GIVE_MAILBOX_MAIL:
             if (IsSelectedMonNotEgg((u8 *)slotPtr))
             {
@@ -1333,6 +1336,7 @@ static void HandleChooseMonSelection(u8 taskId, s8 *slotPtr)
                 TryGiveMailToSelectedMon(taskId);
             }
             break;
+#endif // PC_MAILBOX_COUNT
         case PARTY_ACTION_GIVE_ITEM:
         case PARTY_ACTION_GIVE_PC_ITEM:
             if (IsSelectedMonNotEgg((u8 *)slotPtr))
@@ -5538,6 +5542,7 @@ static bool8 ReturnGiveItemToBagOrPC(u16 item)
         return AddPCItem(item, 1);
 }
 
+#if PC_MAILBOX_COUNT > 0
 void ChooseMonToGiveMailFromMailbox(void)
 {
     InitPartyMenu(PARTY_MENU_TYPE_FIELD, PARTY_LAYOUT_SINGLE, PARTY_ACTION_GIVE_MAILBOX_MAIL, FALSE, PARTY_MSG_GIVE_TO_WHICH_MON, Task_HandleChooseMonInput, Mailbox_ReturnToMailListAfterDeposit);
@@ -5563,6 +5568,7 @@ static void TryGiveMailToSelectedMon(u8 taskId)
     ScheduleBgCopyTilemapToVram(2);
     gTasks[taskId].func = Task_UpdateHeldItemSpriteAndClosePartyMenu;
 }
+#endif // PC_MAILBOX_COUNT
 
 void InitChooseHalfPartyForBattle(u8 unused)
 {

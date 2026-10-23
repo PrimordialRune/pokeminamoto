@@ -149,8 +149,10 @@ static const struct GFRomHeader sGFRomHeader = {
     .playerGenderOffset = offsetof(struct SaveBlock2, playerGender),
     .frontierStatusOffset = offsetof(struct SaveBlock2, frontier.challengeStatus),
     .frontierStatusOffset2 = offsetof(struct SaveBlock2, frontier.challengeStatus),
+#ifndef FREE_GCN_LINK
     .externalEventFlagsOffset = offsetof(struct SaveBlock1, externalEventFlags),
     .externalEventDataOffset = offsetof(struct SaveBlock1, externalEventData),
+#endif
     .unk18 = 0x00000000,
     .speciesInfo = gSpeciesInfo,
     .abilityNames = gAbilityNames,
@@ -159,7 +161,9 @@ static const struct GFRomHeader sGFRomHeader = {
     .moves = gBattleMoves,
     .ballGfx = gBallSpriteSheets,
     .ballPalettes = gBallSpritePalettes,
+#ifndef FREE_GCN_LINK
     .gcnLinkFlagsOffset = offsetof(struct SaveBlock2, gcnLinkFlags),
+#endif
     .gameClearFlag = FLAG_SYS_GAME_CLEAR,
     .ribbonFlag = FLAG_SYS_RIBBON_GET,
     .bagCountItems = BAG_ITEMS_COUNT,

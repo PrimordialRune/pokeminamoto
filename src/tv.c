@@ -2333,8 +2333,8 @@ void TryPutTrainerFanClubOnAir(void)
         show->trainerFanClub.kind = TVSHOW_TRAINER_FAN_CLUB;
         show->trainerFanClub.active = FALSE; // NOTE: Show is not active until passed via Record Mix.
         StringCopy(show->trainerFanClub.playerName, gSaveBlock2Ptr->playerName);
-        show->trainerFanClub.words[0] = gSaveBlock1Ptr->easyChatProfile[0];
-        show->trainerFanClub.words[1] = gSaveBlock1Ptr->easyChatProfile[1];
+        show->trainerFanClub.words[0] = EASY_CHAT_PROFILE[0];
+        show->trainerFanClub.words[1] = EASY_CHAT_PROFILE[1];
         StorePlayerIdInRecordMixShow(show);
         show->trainerFanClub.language = gGameLanguage;
     }

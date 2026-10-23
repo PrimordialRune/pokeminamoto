@@ -28,10 +28,14 @@
 
 extern const struct CompressedSpriteSheet gMonFrontPicTable[];
 
+#if PC_MAILBOX_COUNT > 0
 EWRAM_DATA static u8 sMailboxWindowIds[MAILBOXWIN_COUNT] = {0};
 EWRAM_DATA static struct ListMenuItem *sMailboxList = NULL;
+#endif // PC_MAILBOX_COUNT
 
+#if PC_MAILBOX_COUNT > 0
 static void MailboxMenu_MoveCursorFunc(s32, bool8, struct ListMenu *);
+#endif // PC_MAILBOX_COUNT
 static void ConditionGraph_CalcRightHalf(struct ConditionGraph *);
 static void ConditionGraph_CalcLeftHalf(struct ConditionGraph *);
 static void MoveRelearnerCursorCallback(s32, bool8, struct ListMenu *);
@@ -194,6 +198,7 @@ static const struct ListMenuTemplate sMoveRelearnerMovesListTemplate =
 // Mailbox menu
 //--------------
 
+#if PC_MAILBOX_COUNT > 0
 bool8 MailboxMenu_Alloc(u8 count)
 {
     u8 i;
@@ -305,6 +310,7 @@ void MailboxMenu_Free(void)
 {
     Free(sMailboxList);
 }
+#endif // PC_MAILBOX_COUNT
 
 //---------------------------------------
 // Condition graph
