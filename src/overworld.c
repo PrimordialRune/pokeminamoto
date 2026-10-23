@@ -1,4 +1,5 @@
 #include "global.h"
+#include "regress.h"
 #include "overworld.h"
 #include "battle_pyramid.h"
 #include "battle_setup.h"
@@ -1404,6 +1405,7 @@ void CB2_OverworldBasic(void)
 void CB2_Overworld(void)
 {
     bool32 fading = (gPaletteFade.active != 0);
+    REGRESS_OVERWORLD_TICK();
     if (fading)
         SetVBlankCallback(NULL);
     OverworldBasic();

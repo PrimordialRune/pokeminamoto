@@ -1,5 +1,6 @@
 #include "global.h"
 #include "dma3.h"
+#include "regress.h"
 
 #define MAX_DMA_REQUESTS 128
 
@@ -47,6 +48,18 @@ void ProcessDma3Requests(void)
         return;
 
     bytesTransferred = 0;
+
+#ifdef REGRESS_HOOKS
+    {
+        u32 pending = 0, cursor = sDma3RequestCursor;
+        while (pending < MAX_DMA_REQUESTS && sDma3Requests[cursor].size != 0)
+        {
+            pending++;
+            cursor = (cursor + 1) % MAX_DMA_REQUESTS;
+        }
+        REGRESS_NOTE_DMA_QUEUE(pending);
+    }
+#endif
 
     // as long as there are DMA requests to process (unless size or vblank is an issue), do not exit
     while (sDma3Requests[sDma3RequestCursor].size != 0)
@@ -124,6 +137,7 @@ s16 RequestDma3Copy(const void *src, void *dest, u16 size, u8 mode)
         i++;
     }
     sDma3ManagerLocked = FALSE;
+    REGRESS_NOTE_DMA_FULL();
     return -1;  // no free DMA request was found
 }
 
@@ -157,6 +171,7 @@ s16 RequestDma3Fill(s32 value, void *dest, u16 size, u8 mode)
         i++;
     }
     sDma3ManagerLocked = FALSE;
+    REGRESS_NOTE_DMA_FULL();
     return -1;  // no free DMA request was found
 }
 

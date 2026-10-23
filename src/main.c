@@ -1,4 +1,5 @@
 #include "global.h"
+#include "regress.h"
 #include "crt0.h"
 #include "malloc.h"
 #include "link.h"
@@ -409,6 +410,7 @@ static void IntrDummy(void)
 
 static void WaitForVBlank(void)
 {
+    REGRESS_FRAME_END();
     gMain.intrCheck &= ~INTR_FLAG_VBLANK;
 
     while (!(gMain.intrCheck & INTR_FLAG_VBLANK))

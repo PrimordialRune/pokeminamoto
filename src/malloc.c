@@ -1,5 +1,6 @@
 #include "global.h"
 #include "malloc.h"
+#include "regress.h"
 
 static void *sHeapStart;
 static u32 sHeapSize;
@@ -91,12 +92,16 @@ void *AllocInternal(void *heapStart, u32 size)
                         splitBlock->next->prev = splitBlock;
                 }
 
+                REGRESS_NOTE_ALLOC(heapStart, pos->data, size);
                 return pos->data;
             }
         }
 
         if (pos->next == head)
+        {
+            REGRESS_NOTE_ALLOC(heapStart, NULL, size);
             return NULL;
+        }
 
         pos = pos->next;
     }

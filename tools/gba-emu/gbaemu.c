@@ -294,6 +294,14 @@ static void cmdLoad(const char* path) {
 	core = c;
 	snprintf(romPath, sizeof(romPath), "%s", path);
 
+	// GBAEMU_RTC=<unix seconds> starts the cartridge clock at that time and
+	// advances it with emulated frames, so runs don't depend on the host clock.
+	const char* rtc = getenv("GBAEMU_RTC");
+	if (rtc && *rtc) {
+		core->rtc.override = RTC_FAKE_EPOCH;
+		core->rtc.value = strtoll(rtc, NULL, 0) * 1000LL;
+	}
+
 	stub = calloc(1, sizeof(*stub));
 	GDBStubCreate(stub);
 	stubEntered = stub->d.entered;

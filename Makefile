@@ -82,6 +82,12 @@ endif
 ifeq ($(RELEASE),1)
   RELEASE_SUFFIX := _release
 endif
+# `make REGRESS=1` adds the test hooks tools/regress drives (include/regress.h).
+# It builds in its own folder with a _regress suffix, like release builds.
+REGRESS ?= 0
+ifeq ($(REGRESS),1)
+  RELEASE_SUFFIX := $(RELEASE_SUFFIX)_regress
+endif
 ROM_NAME := $(FILE_NAME)$(RELEASE_SUFFIX).gba
 OBJ_DIR_NAME := $(BUILD_DIR)/emerald$(RELEASE_SUFFIX)
 MODERN_ROM_NAME := $(FILE_NAME)_modern$(RELEASE_SUFFIX).gba
@@ -131,6 +137,9 @@ O_LEVEL ?= 2
 CPPFLAGS := $(INCLUDE_CPP_ARGS) -Wno-trigraphs -DMODERN=$(MODERN)
 ifeq ($(RELEASE),1)
   CPPFLAGS += -DRELEASE
+endif
+ifeq ($(REGRESS),1)
+  CPPFLAGS += -DREGRESS_HOOKS
 endif
 ifeq ($(MODERN),0)
   CPPFLAGS += -I tools/agbcc/include -I tools/agbcc -nostdinc -undef -std=gnu89

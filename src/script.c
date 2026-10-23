@@ -198,6 +198,14 @@ bool8 ArePlayerFieldControlsLocked(void)
 // which yields control back to native code should the script make a wait call.
 
 // Checks if the global script context is able to be run right now.
+#ifdef REGRESS_HOOKS
+// For tools/regress: true only when no global script runs or waits.
+bool8 Regress_ScriptIdle(void)
+{
+    return sGlobalScriptContextStatus == CONTEXT_SHUTDOWN;
+}
+#endif
+
 bool8 ScriptContext_IsEnabled(void)
 {
     if (sGlobalScriptContextStatus == CONTEXT_RUNNING)
