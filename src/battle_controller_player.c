@@ -28,6 +28,7 @@
 #include "text.h"
 #include "util.h"
 #include "window.h"
+#include "debug_menu.h"
 #include "constants/battle_anim.h"
 #include "constants/items.h"
 #include "constants/moves.h"
@@ -106,6 +107,10 @@ static void HandleMoveSwitching(void);
 static void SwitchIn_HandleSoundAndEnd(void);
 static void WaitForMonSelection(void);
 static void CompleteWhenChoseItem(void);
+#ifdef DEBUG_MENUS
+static void OpenBattleDebugMenu(void);
+static void ReturnFromBattleDebugMenu(void);
+#endif
 static void Task_LaunchLvlUpAnim(u8);
 static void Task_PrepareToGiveExpWithExpBar(u8);
 static void DestroyExpTaskAndCompleteOnInactiveTextPrinter(u8);
@@ -323,6 +328,14 @@ static void HandleInputChooseAction(void)
             PlayerBufferExecCompleted();
         }
     }
+#ifdef DEBUG_MENUS
+    else if (JOY_NEW(SELECT_BUTTON) && JOY_HELD(L_BUTTON))
+    {
+        PlaySE(SE_SELECT);
+        BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 16, RGB_BLACK);
+        gBattlerControllerFuncs[gActiveBattler] = OpenBattleDebugMenu;
+    }
+#endif
     else if (JOY_NEW(START_BUTTON))
     {
         SwapHpBarsWithHpText();
@@ -1382,6 +1395,27 @@ static void OpenBagAndChooseItem(void)
         CB2_BagMenuFromBattle();
     }
 }
+
+#ifdef DEBUG_MENUS
+static void OpenBattleDebugMenu(void)
+{
+    if (!gPaletteFade.active)
+    {
+        gBattlerControllerFuncs[gActiveBattler] = ReturnFromBattleDebugMenu;
+        ReshowBattleScreenDummy();
+        FreeAllWindowBuffers();
+        SetMainCallback2(CB2_BattleDebugMenu);
+    }
+}
+
+// Back on the battle screen: show the action menu again, still answering the
+// same ChooseAction request.
+static void ReturnFromBattleDebugMenu(void)
+{
+    if (gMain.callback2 == BattleMainCB2 && !gPaletteFade.active)
+        PlayerHandleChooseAction();
+}
+#endif
 
 static void CompleteWhenChoseItem(void)
 {

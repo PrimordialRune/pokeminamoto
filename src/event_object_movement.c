@@ -22,6 +22,7 @@
 #include "trainer_see.h"
 #include "trainer_hill.h"
 #include "util.h"
+#include "debug_menu.h"
 #include "constants/event_object_movement.h"
 #include "constants/event_objects.h"
 #include "constants/field_effects.h"
@@ -4658,6 +4659,11 @@ static u8 GetCollisionInDirection(struct ObjectEvent *objectEvent, u8 direction)
 u8 GetCollisionAtCoords(struct ObjectEvent *objectEvent, s16 x, s16 y, u32 dir)
 {
     u8 direction = dir;
+#ifdef DEBUG_MENUS
+    // Debug no-clip: the player only stops at the edge of the world
+    if (objectEvent->isPlayer && DebugToggleOn(DEBUG_TOGGLE_NO_COLLISION))
+        return (GetMapBorderIdAt(x, y) == CONNECTION_INVALID) ? COLLISION_IMPASSABLE : COLLISION_NONE;
+#endif
     if (IsCoordOutsideObjectEventMovementRange(objectEvent, x, y))
         return COLLISION_OUTSIDE_RANGE;
     else if (MapGridGetCollisionAt(x, y) || GetMapBorderIdAt(x, y) == CONNECTION_INVALID || IsMetatileDirectionallyImpassable(objectEvent, x, y, direction))
