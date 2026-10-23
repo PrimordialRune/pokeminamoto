@@ -91,7 +91,11 @@ void EnableMysteryEvent(void)
 
 bool32 IsMysteryEventEnabled(void)
 {
+#ifdef FREE_MYSTERY_EVENT_BUFFERS
+    return FALSE;
+#else
     return FlagGet(FLAG_SYS_MYSTERY_EVENT_ENABLE);
+#endif
 }
 
 void DisableMysteryGift(void)
@@ -106,7 +110,11 @@ void EnableMysteryGift(void)
 
 bool32 IsMysteryGiftEnabled(void)
 {
+#ifdef FREE_MYSTERY_GIFT
+    return FALSE;
+#else
     return FlagGet(FLAG_SYS_MYSTERY_GIFT_ENABLE);
+#endif
 }
 
 void ClearMysteryGiftFlags(void)

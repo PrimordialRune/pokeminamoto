@@ -217,6 +217,7 @@ The game uses a cooperative multitasking system (`include/task.h`). Nearly all g
 - **Tutor bitfields** in `sTutorLearnsets[]` use `TUTOR_MOVE_xxx` slot names (defined in `include/constants/party_menu.h`), never Gen 1 move names directly.
 - The starters are `SPECIES_BULBASAUR`, `SPECIES_CHARMANDER`, `SPECIES_SQUIRTLE` (set in `src/starter_choose.c`).
 - See `GEN1_ONLY_CHANGES.md` for the full replacement mapping reference.
+- **Save-block cleanup:** the `FREE_*` defines in `include/config.h` drop save data for unreachable Hoenn/e-Reader systems (Mystery Event/Gift, Enigma Berry, e-Reader trainer, Frontier hall records, Union Room chat texts, extra dex copies), about 3.85 KB of EWRAM. Reads go through `ENIGMA_BERRY` / `EREADER_TRAINER` (empty ROM copies when freed). Changing any of them changes the save layout.
 
 ## Working remotely
 

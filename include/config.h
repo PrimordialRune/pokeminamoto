@@ -47,6 +47,18 @@
 // Fixes the bugs identified in vanilla (see every #ifdef BUGFIX)
 #define BUGFIX
 
+// Save-block cleanup: each define below removes save data for a Hoenn or
+// e-Reader system that Minamoto never reaches, freeing EWRAM and flash.
+// Comment one out to bring that system's data back. Changing any of these
+// changes the save layout, so older saves stop loading.
+#define FREE_MYSTERY_EVENT_BUFFERS      // ramScript, Mystery Event scripts (1104 B)
+#define FREE_MYSTERY_GIFT               // Wonder Cards/News and their flags (876 B)
+#define FREE_RECORD_MIXING_HALL_RECORDS // Battle Frontier Ranking Hall records (1032 B)
+#define FREE_UNION_ROOM_CHAT            // Union Room chat registered texts (210 B)
+#define FREE_BATTLE_TOWER_E_READER      // e-Reader Battle Tower trainer (188 B)
+#define FREE_EXTRA_SEEN_FLAGS           // the two anti-cheat copies of Pokedex seen flags (104 B)
+#define FREE_ENIGMA_BERRY               // e-Reader Enigma Berry (52 B)
+
 // Various undefined behavior bugs may or may not prevent compilation with
 // newer compilers. So always fix them when using a modern compiler.
 #if MODERN || defined(BUGFIX)
