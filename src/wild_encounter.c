@@ -347,6 +347,9 @@ static u16 GenerateFishingWildMon(const struct WildPokemonInfo *wildMonInfo, u8 
 
 static bool8 SetUpMassOutbreakEncounter(u8 flags)
 {
+#ifdef FREE_TV
+    return FALSE; // no outbreaks without TV news (FREE_TV)
+#else
     u16 i;
 
     if (flags & WILD_CHECK_REPEL && !IsWildLevelAllowedByRepel(gSaveBlock1Ptr->outbreakPokemonLevel))
@@ -357,10 +360,12 @@ static bool8 SetUpMassOutbreakEncounter(u8 flags)
         SetMonMoveSlot(&gEnemyParty[0], gSaveBlock1Ptr->outbreakPokemonMoves[i], i);
 
     return TRUE;
+#endif
 }
 
 static bool8 DoMassOutbreakEncounterTest(void)
 {
+#ifndef FREE_TV
     if (gSaveBlock1Ptr->outbreakPokemonSpecies != SPECIES_NONE
      && gSaveBlock1Ptr->location.mapNum == gSaveBlock1Ptr->outbreakLocationMapNum
      && gSaveBlock1Ptr->location.mapGroup == gSaveBlock1Ptr->outbreakLocationMapGroup)
@@ -368,6 +373,7 @@ static bool8 DoMassOutbreakEncounterTest(void)
         if (Random() % 100 < gSaveBlock1Ptr->outbreakPokemonProbability)
             return TRUE;
     }
+#endif
     return FALSE;
 }
 

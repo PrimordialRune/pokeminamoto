@@ -9659,6 +9659,65 @@ bool32 AnyStorageMonWithMove(u16 move)
 //------------------------------------------------------------------------------
 
 
+#ifdef FREE_WALDA_PHRASE
+// Walda's wallpaper is removed (FREE_WALDA_PHRASE in config.h): it is never
+// unlocked and her phrase is always empty.
+static const u16 sWaldaDefaultColors[] = {RGB(21, 25, 30), RGB(6, 12, 24)};
+
+void ResetWaldaWallpaper(void)
+{
+}
+
+void SetWaldaWallpaperLockedOrUnlocked(bool32 unlocked)
+{
+}
+
+bool32 IsWaldaWallpaperUnlocked(void)
+{
+    return FALSE;
+}
+
+u32 GetWaldaWallpaperPatternId(void)
+{
+    return 0;
+}
+
+void SetWaldaWallpaperPatternId(u8 id)
+{
+}
+
+u32 GetWaldaWallpaperIconId(void)
+{
+    return 0;
+}
+
+void SetWaldaWallpaperIconId(u8 id)
+{
+}
+
+const u16 *GetWaldaWallpaperColorsPtr(void)
+{
+    return sWaldaDefaultColors;
+}
+
+void SetWaldaWallpaperColors(u16 color1, u16 color2)
+{
+}
+
+const u8 *GetWaldaPhrasePtr(void)
+{
+    return gText_EmptyString2;
+}
+
+void SetWaldaPhrase(const u8 *src)
+{
+}
+
+bool32 IsWaldaPhraseEmpty(void)
+{
+    return TRUE;
+}
+#else
 void ResetWaldaWallpaper(void)
 {
     gSaveBlock1Ptr->waldaPhrase.iconId = 0;
@@ -9701,7 +9760,7 @@ void SetWaldaWallpaperIconId(u8 id)
         gSaveBlock1Ptr->waldaPhrase.iconId = id;
 }
 
-u16 *GetWaldaWallpaperColorsPtr(void)
+const u16 *GetWaldaWallpaperColorsPtr(void)
 {
     return gSaveBlock1Ptr->waldaPhrase.colors;
 }
@@ -9712,7 +9771,7 @@ void SetWaldaWallpaperColors(u16 color1, u16 color2)
     gSaveBlock1Ptr->waldaPhrase.colors[1] = color2;
 }
 
-u8 *GetWaldaPhrasePtr(void)
+const u8 *GetWaldaPhrasePtr(void)
 {
     return gSaveBlock1Ptr->waldaPhrase.text;
 }
@@ -9726,6 +9785,7 @@ bool32 IsWaldaPhraseEmpty(void)
 {
     return (gSaveBlock1Ptr->waldaPhrase.text[0] == EOS);
 }
+#endif // FREE_WALDA_PHRASE
 
 
 //------------------------------------------------------------------------------

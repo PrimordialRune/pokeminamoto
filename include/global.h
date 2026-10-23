@@ -1043,6 +1043,7 @@ struct SaveBlock1
     /*0x2798*/ u8 decorationDolls[40];
     /*0x27C0*/ u8 decorationCushions[10];
     /*0x27CA*/ //u8 padding4[2];
+#ifndef FREE_TV
     /*0x27CC*/ TVShow tvShows[TV_SHOWS_COUNT];
     /*0x2B50*/ PokeNews pokeNews[POKE_NEWS_COUNT];
     /*0x2B90*/ u16 outbreakPokemonSpecies;
@@ -1056,6 +1057,7 @@ struct SaveBlock1
     /*0x2BA1*/ u8 outbreakPokemonProbability;
     /*0x2BA2*/ u16 outbreakDaysLeft;
     /*0x2BA4*/ struct GabbyAndTyData gabbyAndTyData;
+#endif
 #ifndef FREE_EASY_CHAT_PHRASES
     /*0x2BB0*/ u16 easyChatProfile[EASY_CHAT_BATTLE_WORDS_COUNT];
     /*0x2BBC*/ u16 easyChatBattleStart[EASY_CHAT_BATTLE_WORDS_COUNT];
@@ -1065,8 +1067,12 @@ struct SaveBlock1
     /*0x2BE0*/ struct Mail mail[MAIL_COUNT];
     /*0x2E20*/ u8 unlockedTrendySayings[NUM_TRENDY_SAYING_BYTES]; // Bitfield for unlockable Easy Chat words in EC_GROUP_TRENDY_SAYING
     /*0x2E25*/ //u8 padding5[3];
+#ifndef FREE_MAUVILLE_OLD_MAN
     /*0x2E28*/ OldMan oldMan;
+#endif
+#ifndef FREE_DEWFORD_TRENDS
     /*0x2e64*/ struct DewfordTrend dewfordTrends[SAVED_TRENDS_COUNT];
+#endif
     /*0x2e90*/ struct ContestWinner contestWinners[NUM_CONTEST_WINNERS]; // see CONTEST_WINNER_*
     /*0x3030*/ struct DayCare daycare;
     /*0x3150*/ struct LinkBattleRecords linkBattleRecords;
@@ -1092,13 +1098,17 @@ struct SaveBlock1
 #ifndef FREE_EXTRA_SEEN_FLAGS
     /*0x3B24*/ u8 seen2[NUM_DEX_FLAG_BYTES];
 #endif
+#ifndef FREE_LILYCOVE_LADY
     /*0x3B58*/ LilycoveLady lilycoveLady;
+#endif
     /*0x3B98*/ struct TrainerNameRecord trainerNameRecords[20];
 #ifndef FREE_UNION_ROOM_CHAT
     /*0x3C88*/ u8 registeredTexts[UNION_ROOM_KB_ROW_COUNT][21];
 #endif
     /*0x3D64*/ struct TrainerHillSave trainerHill;
+#ifndef FREE_WALDA_PHRASE
     /*0x3D70*/ struct WaldaPhrase waldaPhrase;
+#endif
     // sizeof: 0x3D88 in vanilla; smaller with the FREE_* options in config.h
 };
 
@@ -1138,6 +1148,14 @@ extern const u16 gDefaultEasyChatBattleLost[];
 #define EASY_CHAT_BATTLE_START gSaveBlock1Ptr->easyChatBattleStart
 #define EASY_CHAT_BATTLE_WON   gSaveBlock1Ptr->easyChatBattleWon
 #define EASY_CHAT_BATTLE_LOST  gSaveBlock1Ptr->easyChatBattleLost
+#endif
+
+// The Dewford trendy phrases, read the same way as ENIGMA_BERRY.
+#ifdef FREE_DEWFORD_TRENDS
+extern const struct DewfordTrend gEmptyDewfordTrends[SAVED_TRENDS_COUNT];
+#define DEWFORD_TRENDS gEmptyDewfordTrends
+#else
+#define DEWFORD_TRENDS gSaveBlock1Ptr->dewfordTrends
 #endif
 
 // The e-Reader Battle Tower trainer, read the same way as ENIGMA_BERRY.

@@ -64,6 +64,7 @@ enum {
     ROULETTE,
 };
 
+#ifndef FREE_TV
 COMMON_DATA s8 sCurTVShowSlot = 0;
 COMMON_DATA u16 sTV_SecretBaseVisitMovesTemp[8] = {0};
 COMMON_DATA u8 sTV_DecorationsBuffer[DECOR_MAX_SECRET_BASE] = {0};
@@ -82,13 +83,17 @@ static EWRAM_DATA u16 sPokemonAnglerAttemptCounters = 0;
 static EWRAM_DATA u16 sFindThatGamerCoinsSpent = 0;
 static EWRAM_DATA u8 sFindThatGamerWhichGame = SLOT_MACHINE;
 static EWRAM_DATA ALIGNED(4) u8 sRecordMixingPartnersWithoutShowsToShare = 0;
+#endif // FREE_TV
 static EWRAM_DATA ALIGNED(4) u8 sTVShowState = 0;
+#ifndef FREE_TV
 static EWRAM_DATA u8 sTVSecretBaseSecretsRandomValues[3] = {};
 
 static void ClearPokeNews(void);
 static u8 GetTVGroupByShowId(u8);
 static u8 FindFirstActiveTVShowThatIsNotAMassOutbreak(void);
+#endif // FREE_TV
 static void SetTVMetatilesOnMap(int, int, u16);
+#ifndef FREE_TV
 static u8 FindAnyPokeNewsOnTheAir(void);
 static void TakeGabbyAndTyOffTheAir(void);
 static bool8 BernoulliTrial(u16 ratio);
@@ -156,7 +161,9 @@ static void InterviewBefore_BravoTrainerBTProfile(void);
 static void InterviewBefore_ContestLiveUpdates(void);
 static void InterviewBefore_3CheersForPokeblocks(void);
 static void InterviewBefore_FanClubSpecial(void);
+#endif // FREE_TV
 static void ChangeBoxPokemonNickname_CB(void);
+#ifndef FREE_TV
 static void DoTVShowPokemonFanClubLetter(void);
 static void DoTVShowRecentHappenings(void);
 static void DoTVShowPokemonFanClubOpinions(void);
@@ -281,6 +288,7 @@ static const u8 *const sPokeNewsTextGroup_Ending[NUM_POKENEWS_TYPES + 1] = {
     [POKENEWS_LILYCOVE]    = gPokeNewsTextLilycove_Ending,
     [POKENEWS_BLENDMASTER] = gPokeNewsTextBlendMaster_Ending
 };
+#endif // FREE_TV
 
 u8 *const gTVStringVarPtrs[] = {
     gStringVar1,
@@ -288,6 +296,7 @@ u8 *const gTVStringVarPtrs[] = {
     gStringVar3
 };
 
+#ifndef FREE_TV
 static const u8 *const sTVFanClubTextGroup[] = {
     gTVFanClubText00,
     gTVFanClubText01,
@@ -851,6 +860,7 @@ void UpdateTVScreensOnMap(int width, int height)
         break;
     }
 }
+#endif // FREE_TV
 
 static void SetTVMetatilesOnMap(int width, int height, u16 metatileId)
 {
@@ -880,6 +890,7 @@ void TurnOnTVScreen(void)
 }
 
 // gSpecialVar_0x8004 here is set from GetRandomActiveShowIdx in EventScript_TryDoTVShow
+#ifndef FREE_TV
 u8 GetSelectedTVShow(void)
 {
     return gSaveBlock1Ptr->tvShows[gSpecialVar_0x8004].common.kind;
@@ -2274,6 +2285,7 @@ void TryPutSpotTheCutiesOnAir(struct Pokemon *pokemon, u8 ribbonMonDataIdx)
             show->cuties.pokemonNameLanguage = GetMonData(pokemon, MON_DATA_LANGUAGE);
     }
 }
+#endif // FREE_TV
 
 u8 GetRibbonCount(struct Pokemon *pokemon)
 {
@@ -2300,6 +2312,7 @@ u8 GetRibbonCount(struct Pokemon *pokemon)
     return nRibbons;
 }
 
+#ifndef FREE_TV
 static u8 MonDataIdxToRibbon(u8 monDataIdx)
 {
     if (monDataIdx == MON_DATA_CHAMPION_RIBBON) return CHAMPION_RIBBON;
@@ -2735,6 +2748,7 @@ static void UpdatePokeNewsCountdown(u16 days)
     }
     CompactPokeNews();
 }
+#endif // FREE_TV
 
 void CopyContestRankToStringVar(u8 varIdx, u8 rank)
 {
@@ -2779,8 +2793,12 @@ void CopyContestCategoryToStringVar(u8 varIdx, u8 category)
 
 void SetContestCategoryStringVarForInterview(void)
 {
+#ifdef FREE_TV
+    CopyContestCategoryToStringVar(1, gSpecialVar_ContestCategory);
+#else
     TVShow *show = &gSaveBlock1Ptr->tvShows[gSpecialVar_0x8004];
     CopyContestCategoryToStringVar(1, show->bravoTrainer.contestCategory);
+#endif
 }
 
 void ConvertIntToDecimalString(u8 varIdx, int value)
@@ -2803,6 +2821,7 @@ size_t CountDigits(int value)
     return 1;
 }
 
+#ifndef FREE_TV
 static void SmartShopper_BufferPurchaseTotal(u8 varIdx, TVShow *show)
 {
     u8 i;
@@ -3007,6 +3026,7 @@ static void InterviewBefore_FanClubSpecial(void)
         InitializeEasyChatWordArray(gSaveBlock1Ptr->tvShows[sCurTVShowSlot].fanClubSpecial.words,
                         ARRAY_COUNT(gSaveBlock1Ptr->tvShows[sCurTVShowSlot].fanClubSpecial.words));
 }
+#endif // FREE_TV
 
 static bool8 IsPartyMonNicknamedOrNotEnglish(u8 monIdx)
 {
@@ -3027,6 +3047,7 @@ bool8 IsLeadMonNicknamedOrNotEnglish(void)
     return IsPartyMonNicknamedOrNotEnglish(GetLeadMonIndex());
 }
 
+#ifndef FREE_TV
 static void DeleteTVShowInArrayByIdx(TVShow *shows, u8 idx)
 {
     u8 i;
@@ -3289,6 +3310,7 @@ bool8 TryPutNameRaterShowOnTheAir(void)
     PutNameRaterShowOnTheAir();
     return TRUE;
 }
+#endif // FREE_TV
 
 void ChangePokemonNickname(void)
 {
@@ -3335,6 +3357,7 @@ void IsMonOTIDNotPlayers(void)
         gSpecialVar_Result = TRUE;
 }
 
+#ifndef FREE_TV
 static u8 GetTVGroupByShowId(u8 kind)
 {
     if (kind == TVSHOW_OFF_AIR)
@@ -3351,6 +3374,7 @@ static u8 GetTVGroupByShowId(u8 kind)
 
     return TVGROUP_NONE;
 }
+#endif // FREE_TV
 
 u32 GetPlayerIDAsU32(void)
 {
@@ -3440,6 +3464,7 @@ void GetMomOrDadStringForTVMessage(void)
     }
 }
 
+#ifndef FREE_TV
 void HideBattleTowerReporter(void)
 {
     VarSet(VAR_BRAVO_TRAINER_BATTLE_TOWER_ON, 0);
@@ -3953,6 +3978,7 @@ static void ClearPokeNewsIfGameNotComplete(void)
             gSaveBlock1Ptr->pokeNews[i].state = POKENEWS_STATE_INACTIVE;
     }
 }
+#endif // FREE_TV
 
 #define SetStrLanguage(strptr, langptr, langfix) \
 if (IsStringJapanese(strptr)) \
@@ -3964,6 +3990,7 @@ else \
     (langptr) = langfix; \
 }
 
+#ifndef FREE_TV
 static void UNUSED TranslateShowNames(TVShow *show, u32 language)
 {
     int i;
@@ -6822,8 +6849,329 @@ static void TVShowDone(void)
     sTVShowState = 0;
     gSaveBlock1Ptr->tvShows[gSpecialVar_0x8004].common.active = FALSE;
 }
+#endif // FREE_TV
 
 void ResetTVShowState(void)
 {
     sTVShowState = 0;
 }
+
+#ifdef FREE_TV
+// TV shows, PokéNews, mass outbreaks and Gabby & Ty are removed (FREE_TV in
+// config.h). Nothing is ever on the air: TVs only say "Mom might like this
+// program", interviewers have nothing to ask and no outbreak ever starts.
+// The Name Rater, nickname and contest string helpers above stay.
+
+void ClearTVShowData(void)
+{
+}
+
+u8 GetRandomActiveShowIdx(void)
+{
+    return 0xFF;
+}
+
+u8 FindAnyTVShowOnTheAir(void)
+{
+    return 0xFF;
+}
+
+void UpdateTVScreensOnMap(int width, int height)
+{
+    FlagSet(FLAG_SYS_TV_WATCH);
+    if (CheckForPlayersHouseNews() == PLAYERS_HOUSE_TV_LATI)
+        SetTVMetatilesOnMap(width, height, METATILE_Building_TV_On);
+}
+
+u8 GetSelectedTVShow(void)
+{
+    return 0;
+}
+
+u8 GetNextActiveShowIfMassOutbreak(void)
+{
+    return 0xFF;
+}
+
+void ResetGabbyAndTy(void)
+{
+}
+
+void GabbyAndTyBeforeInterview(void)
+{
+}
+
+void GabbyAndTyAfterInterview(void)
+{
+}
+
+u8 GabbyAndTyGetBattleNum(void)
+{
+    return 0;
+}
+
+bool8 IsGabbyAndTyShowOnTheAir(void)
+{
+    return FALSE;
+}
+
+bool8 GabbyAndTyGetLastQuote(void)
+{
+    return FALSE;
+}
+
+u8 GabbyAndTyGetLastBattleTrivia(void)
+{
+    return 0;
+}
+
+void GetGabbyAndTyLocalIds(void)
+{
+}
+
+void InterviewBefore(void)
+{
+    // TRUE means "no room for a new show", so interviewers don't ask
+    gSpecialVar_Result = TRUE;
+}
+
+void InterviewAfter(void)
+{
+}
+
+void TryPutPokemonTodayOnAir(void)
+{
+}
+
+void PutBattleUpdateOnTheAir(u8 opponentLinkPlayerId, u16 move, u16 speciesPlayer, u16 speciesOpponent)
+{
+}
+
+bool8 Put3CheersForPokeblocksOnTheAir(const u8 *partnersName, u8 flavor, u8 color, u8 sheen, u8 language)
+{
+    return FALSE;
+}
+
+void PutFanClubSpecialOnTheAir(void)
+{
+}
+
+void ContestLiveUpdates_Init(u8 round1Placing)
+{
+}
+
+void ContestLiveUpdates_SetRound2Placing(u8 round2Placing)
+{
+}
+
+void ContestLiveUpdates_SetWinnerAppealFlag(u8 flag)
+{
+}
+
+void ContestLiveUpdates_SetWinnerMoveUsed(u16 move)
+{
+}
+
+void ContestLiveUpdates_SetLoserData(u8 flag, u8 loser)
+{
+}
+
+void BravoTrainerPokemonProfile_BeforeInterview1(u16 move)
+{
+}
+
+void BravoTrainerPokemonProfile_BeforeInterview2(u8 contestStandingPlace)
+{
+}
+
+void TryPutSmartShopperOnAir(void)
+{
+}
+
+void PutNameRaterShowOnTheAir(void)
+{
+}
+
+void StartMassOutbreak(void)
+{
+}
+
+void PutLilycoveContestLadyShowOnTheAir(void)
+{
+}
+
+void EndMassOutbreak(void)
+{
+}
+
+void UpdateTVShowsPerDay(u16 days)
+{
+}
+
+void RecordFishingAttemptForTV(bool8 caughtFish)
+{
+}
+
+void SetPokemonAnglerSpecies(u16 species)
+{
+}
+
+void TryPutTodaysRivalTrainerOnAir(void)
+{
+}
+
+void TryPutTrendWatcherOnAir(const u16 *words)
+{
+}
+
+void TryPutTreasureInvestigatorsOnAir(void)
+{
+}
+
+void TryPutFindThatGamerOnAir(u16 nCoinsPaidOut)
+{
+}
+
+void AlertTVThatPlayerPlayedSlotMachine(u16 nCoinsSpent)
+{
+}
+
+void AlertTVThatPlayerPlayedRoulette(u16 nCoinsSpent)
+{
+}
+
+void TryPutSecretBaseVisitOnAir(void)
+{
+}
+
+void TryPutBreakingNewsOnAir(void)
+{
+}
+
+void TryPutLotteryWinnerReportOnAir(void)
+{
+}
+
+void TryPutBattleSeminarOnAir(u16 foeSpecies, u16 species, u8 moveIndex, const u16 *movePtr, u16 betterMove)
+{
+}
+
+void TryPutSafariFanClubOnAir(u8 monsCaught, u8 pokeblocksUsed)
+{
+}
+
+void TryPutSpotTheCutiesOnAir(struct Pokemon *pokemon, u8 ribbonMonDataIdx)
+{
+}
+
+void TryPutTrainerFanClubOnAir(void)
+{
+}
+
+bool8 ShouldHideFanClubInterviewer(void)
+{
+    return TRUE;
+}
+
+bool8 ShouldAirFrontierTVShow(void)
+{
+    return FALSE;
+}
+
+void TryPutFrontierTVShowOnAir(u16 winStreak, u8 facilityAndMode)
+{
+}
+
+void TryPutSecretBaseSecretsOnAir(void)
+{
+}
+
+void IncrementDailySlotsUses(void)
+{
+}
+
+void IncrementDailyRouletteUses(void)
+{
+}
+
+void IncrementDailyWildBattles(void)
+{
+}
+
+void IncrementDailyBerryBlender(void)
+{
+}
+
+void IncrementDailyPlantedBerries(void)
+{
+}
+
+void IncrementDailyPickedBerries(void)
+{
+}
+
+void IncrementDailyBattlePoints(u16 delta)
+{
+}
+
+void DoPokeNews(void)
+{
+    gSpecialVar_Result = FALSE;
+}
+
+bool8 IsPokeNewsActive(u8 newsKind)
+{
+    return FALSE;
+}
+
+bool8 IsTVShowAlreadyInQueue(void)
+{
+    return TRUE;
+}
+
+// The Name Rater's script uses this to tell whether the nickname changed.
+bool8 TryPutNameRaterShowOnTheAir(void)
+{
+    GetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_NICKNAME, gStringVar1);
+    return StringCompare(gStringVar3, gStringVar1) != 0;
+}
+
+void HideBattleTowerReporter(void)
+{
+}
+
+void ReceiveTvShowsData(void *src, u32 size, u8 playersLinkId)
+{
+}
+
+void DeactivateAllNormalTVShows(void)
+{
+}
+
+void ReceivePokeNewsData(void *src, u32 size, u8 playersLinkId)
+{
+}
+
+void SanitizeTVShowsForRuby(TVShow *shows)
+{
+}
+
+void SanitizeTVShowLocationsForRuby(TVShow *shows)
+{
+}
+
+void DoTVShow(void)
+{
+    gSpecialVar_Result = TRUE;
+}
+
+void DoTVShowInSearchOfTrainers(void)
+{
+    gSpecialVar_Result = TRUE;
+}
+
+u8 SecretBaseSecrets_GetNumActionsTaken(TVShow *show)
+{
+    return 0;
+}
+#endif // FREE_TV

@@ -66,9 +66,9 @@ u32 GetWaldaWallpaperPatternId(void);
 void SetWaldaWallpaperPatternId(u8 id);
 u32 GetWaldaWallpaperIconId(void);
 void SetWaldaWallpaperIconId(u8 id);
-u16 *GetWaldaWallpaperColorsPtr(void);
+const u16 *GetWaldaWallpaperColorsPtr(void);
 void SetWaldaWallpaperColors(u16 color1, u16 color2);
-u8 *GetWaldaPhrasePtr(void);
+const u8 *GetWaldaPhrasePtr(void);
 void SetWaldaPhrase(const u8 *src);
 bool32 IsWaldaPhraseEmpty(void);
 

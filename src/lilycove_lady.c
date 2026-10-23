@@ -17,6 +17,7 @@
 #include "contest.h"
 #include "strings.h"
 #include "constants/lilycove_lady.h"
+#ifndef FREE_LILYCOVE_LADY
 
 #include "data/lilycove_lady.h"
 
@@ -718,10 +719,6 @@ void BufferContestLadyLanguage(u8 *dest)
     *dest = sContestLadyPtr->language;
 }
 
-void BufferContestName(u8 *dest, u8 category)
-{
-    StringCopy(dest, sContestNames[category]);
-}
 
 // Used by the Contest Lady's TV show to determine how well she performed
 u8 GetContestLadyPokeblockState(void)
@@ -782,4 +779,247 @@ u8 GetContestLadyCategory(void)
 {
     sContestLadyPtr = &gSaveBlock1Ptr->lilycoveLady.contest;
     return sContestLadyPtr->category;
+}
+
+#else // FREE_LILYCOVE_LADY
+
+// No Lilycove Lady (FREE_LILYCOVE_LADY): her specials do nothing and record mixing sends an empty one.
+
+u8 GetLilycoveLadyId(void)
+{
+    return 0;
+}
+
+void SetLilycoveLadyGfx(void)
+{
+}
+
+void InitLilycoveLady(void)
+{
+}
+
+void ResetLilycoveLadyForRecordMix(void)
+{
+}
+
+void Script_GetLilycoveLadyId(void)
+{
+}
+
+u8 GetFavorLadyState(void)
+{
+    return 0;
+}
+
+void BufferFavorLadyRequest(void)
+{
+}
+
+bool8 HasAnotherPlayerGivenFavorLadyItem(void)
+{
+    return 0;
+}
+
+void BufferFavorLadyItemName(void)
+{
+}
+
+void BufferFavorLadyPlayerName(void)
+{
+}
+
+bool8 DidFavorLadyLikeItem(void)
+{
+    return 0;
+}
+
+void Script_FavorLadyOpenBagMenu(void)
+{
+}
+
+bool8 Script_DoesFavorLadyLikeItem(void)
+{
+    return 0;
+}
+
+bool8 IsFavorLadyThresholdMet(void)
+{
+    return 0;
+}
+
+u16 FavorLadyGetPrize(void)
+{
+    return 0;
+}
+
+void SetFavorLadyState_Complete(void)
+{
+}
+
+void FieldCallback_FavorLadyEnableScriptContexts(void)
+{
+    ScriptContext_Enable();
+}
+
+u8 GetQuizLadyState(void)
+{
+    return 0;
+}
+
+u8 GetQuizAuthor(void)
+{
+    return 0;
+}
+
+void BufferQuizPrizeName(void)
+{
+}
+
+bool8 BufferQuizAuthorNameAndCheckIfLady(void)
+{
+    return 0;
+}
+
+bool8 IsQuizLadyWaitingForChallenger(void)
+{
+    return 0;
+}
+
+void QuizLadyGetPlayerAnswer(void)
+{
+}
+
+bool8 IsQuizAnswerCorrect(void)
+{
+    return 0;
+}
+
+void BufferQuizPrizeItem(void)
+{
+}
+
+void SetQuizLadyState_Complete(void)
+{
+}
+
+void SetQuizLadyState_GivePrize(void)
+{
+}
+
+void ClearQuizLadyPlayerAnswer(void)
+{
+}
+
+void Script_QuizLadyOpenBagMenu(void)
+{
+}
+
+void QuizLadyPickNewQuestion(void)
+{
+}
+
+void ClearQuizLadyQuestionAndAnswer(void)
+{
+}
+
+void QuizLadySetCustomQuestion(void)
+{
+}
+
+void QuizLadyTakePrizeForCustomQuiz(void)
+{
+}
+
+void QuizLadyRecordCustomQuizData(void)
+{
+}
+
+void QuizLadySetWaitingForChallenger(void)
+{
+}
+
+void BufferQuizCorrectAnswer(void)
+{
+}
+
+void FieldCallback_QuizLadyEnableScriptContexts(void)
+{
+    ScriptContext_Enable();
+}
+
+void QuizLadyClearQuestionForRecordMix(const LilycoveLady *lilycoveLady)
+{
+}
+
+bool8 GivePokeblockToContestLady(struct Pokeblock *pokeblock)
+{
+    return 0;
+}
+
+void BufferContestLadyMonName(u8 *category, u8 *nickname)
+{
+    *category = 0;
+    nickname[0] = EOS;
+}
+
+void BufferContestLadyPlayerName(u8 *dest)
+{
+    dest[0] = EOS;
+}
+
+void BufferContestLadyLanguage(u8 *dest)
+{
+    *dest = GAME_LANGUAGE;
+}
+
+u8 GetContestLadyPokeblockState(void)
+{
+    return 0;
+}
+
+bool8 HasPlayerGivenContestLadyPokeblock(void)
+{
+    return 0;
+}
+
+bool8 ShouldContestLadyShowGoOnAir(void)
+{
+    return 0;
+}
+
+void Script_BufferContestLadyCategoryAndMonName(void)
+{
+}
+
+void OpenPokeblockCaseForContestLady(void)
+{
+}
+
+void SetContestLadyGivenPokeblock(void)
+{
+}
+
+void GetContestLadyMonSpecies(void)
+{
+}
+
+u8 GetContestLadyCategory(void)
+{
+    return 0;
+}
+
+#endif // FREE_LILYCOVE_LADY
+
+static const u8 *const sContestNames[] =
+{
+    [CONTEST_CATEGORY_COOL]   = gText_CoolnessContest,
+    [CONTEST_CATEGORY_BEAUTY] = gText_BeautyContest,
+    [CONTEST_CATEGORY_CUTE]   = gText_CutenessContest,
+    [CONTEST_CATEGORY_SMART]  = gText_SmartnessContest,
+    [CONTEST_CATEGORY_TOUGH]  = gText_ToughnessContest
+};
+
+void BufferContestName(u8 *dest, u8 category)
+{
+    StringCopy(dest, sContestNames[category]);
 }

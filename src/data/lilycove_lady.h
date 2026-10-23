@@ -449,15 +449,6 @@ static const u8 *const sContestLadyCategoryNames[] =
     [CONTEST_CATEGORY_TOUGH]  = gText_ContestLady_Toughness
 };
 
-static const u8 *const sContestNames[] =
-{
-    [CONTEST_CATEGORY_COOL]   = gText_CoolnessContest,
-    [CONTEST_CATEGORY_BEAUTY] = gText_BeautyContest,
-    [CONTEST_CATEGORY_CUTE]   = gText_CutenessContest,
-    [CONTEST_CATEGORY_SMART]  = gText_SmartnessContest,
-    [CONTEST_CATEGORY_TOUGH]  = gText_ToughnessContest
-};
-
 static const u16 sContestLadyMonSpecies[] =
 {
     [CONTEST_CATEGORY_COOL]   = SPECIES_ZIGZAGOON,

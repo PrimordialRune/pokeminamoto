@@ -14,6 +14,7 @@
 #include "strings.h"
 #include "task.h"
 #include "script_menu.h"
+#ifndef FREE_MAUVILLE_OLD_MAN
 
 static const u8 *const sDefaultTraderNames[NUM_TRADER_ITEMS] =
 {
@@ -213,3 +214,41 @@ void TraderMenuGetDecoration(void)
     u8 taskId = CreateTask(Task_HandleGetDecorationMenuInput, 0);
     CreateAvailableDecorationsMenu(taskId);
 }
+
+#else // FREE_MAUVILLE_OLD_MAN
+
+// No Mauville old man (FREE_MAUVILLE_OLD_MAN), so no decoration trader.
+
+void GetTraderTradedFlag(void)
+{
+}
+
+void DoesPlayerHaveNoDecorations(void)
+{
+}
+
+void IsDecorationCategoryFull(void)
+{
+}
+
+void TraderShowDecorationMenu(void)
+{
+}
+
+void DecorationItemsMenuAction_Trade(u8 taskId)
+{
+}
+
+void ExitTraderMenu(u8 taskId)
+{
+}
+
+void TraderDoDecorationTrade(void)
+{
+}
+
+void TraderMenuGetDecoration(void)
+{
+}
+
+#endif // FREE_MAUVILLE_OLD_MAN

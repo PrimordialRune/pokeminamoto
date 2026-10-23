@@ -22,6 +22,7 @@
 #include "trader.h"
 #include "m4a.h"
 #include "constants/mauville_old_man.h"
+#ifndef FREE_MAUVILLE_OLD_MAN
 
 static void InitGiddyTaleList(void);
 static void StartBardSong(bool8 useNewSongLyrics);
@@ -1480,3 +1481,101 @@ bool8 Script_StorytellerInitializeRandomStat(void)
     return StorytellerInitializeRandomStat();
 }
 
+#else // FREE_MAUVILLE_OLD_MAN
+
+// No Mauville old man (FREE_MAUVILLE_OLD_MAN): his specials do nothing and record mixing sends an empty one.
+
+void SetMauvilleOldMan(void)
+{
+}
+
+u8 GetCurrentMauvilleOldMan(void)
+{
+    return 0;
+}
+
+void Script_GetCurrentMauvilleMan(void)
+{
+}
+
+void HasBardSongBeenChanged(void)
+{
+}
+
+void SaveBardSongLyrics(void)
+{
+}
+
+void PlayBardSong(void)
+{
+}
+
+void HasHipsterTaughtWord(void)
+{
+}
+
+void SetHipsterTaughtWord(void)
+{
+}
+
+void HipsterTryTeachWord(void)
+{
+}
+
+void GiddyShouldTellAnotherTale(void)
+{
+}
+
+void GenerateGiddyLine(void)
+{
+}
+
+void ResetMauvilleOldManFlag(void)
+{
+}
+
+void SetMauvilleOldManObjEventGfx(void)
+{
+}
+
+void SanitizeMauvilleOldManForRuby(union OldMan *oldMan)
+{
+}
+
+void SanitizeReceivedEmeraldOldMan(union OldMan *oldMan, u32 version, u32 language)
+{
+}
+
+void SanitizeReceivedRubyOldMan(union OldMan *oldMan, u32 version, u32 language)
+{
+}
+
+void StorytellerStoryListMenu(void)
+{
+}
+
+void Script_StorytellerDisplayStory(void)
+{
+}
+
+u8 StorytellerGetFreeStorySlot(void)
+{
+    return 0;
+}
+
+bool8 StorytellerUpdateStat(void)
+{
+    return 0;
+}
+
+bool8 HasStorytellerAlreadyRecorded(void)
+{
+    return 0;
+}
+
+bool8 Script_StorytellerInitializeRandomStat(void)
+{
+    return 0;
+}
+
+#endif // FREE_MAUVILLE_OLD_MAN

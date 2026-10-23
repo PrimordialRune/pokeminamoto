@@ -86,13 +86,13 @@ union PlayerRecord
 
 static bool8 sReadyToReceive;
 static struct SecretBase *sSecretBasesSave;
-static TVShow *sTvShowsSave;
-static PokeNews *sPokeNewsSave;
-static OldMan *sOldManSave;
-static struct DewfordTrend *sDewfordTrendsSave;
+static const TVShow *sTvShowsSave;
+static const PokeNews *sPokeNewsSave;
+static const OldMan *sOldManSave;
+static const struct DewfordTrend *sDewfordTrendsSave;
 static struct RecordMixingDaycareMail *sRecordMixMailSave;
 static void *sBattleTowerSave;
-static LilycoveLady *sLilycoveLadySave;
+static const LilycoveLady *sLilycoveLadySave;
 #ifndef FREE_APPRENTICE
 static void *sApprenticesSave;
 #endif
@@ -176,17 +176,42 @@ void RecordMixingPlayerSpotTriggered(void)
     CreateTask_EnterCableClubSeat(Task_RecordMixing_Main);
 }
 
+#ifdef FREE_TV
+// No TV shows or news to share (FREE_TV): partners receive empty ones.
+static const TVShow sNoTVShows[TV_SHOWS_COUNT] = {0};
+static const PokeNews sNoPokeNews[POKE_NEWS_COUNT] = {0};
+#endif
+#ifdef FREE_MAUVILLE_OLD_MAN
+static const OldMan sNoOldMan = {0};
+#endif
+#ifdef FREE_LILYCOVE_LADY
+static const LilycoveLady sNoLilycoveLady = {0};
+#endif
+
 // these variables were const in R/S, but had to become changeable because of saveblocks changing RAM position
 static void SetSrcLookupPointers(void)
 {
     sSecretBasesSave = gSaveBlock1Ptr->secretBases;
+#ifdef FREE_TV
+    sTvShowsSave = sNoTVShows;
+    sPokeNewsSave = sNoPokeNews;
+#else
     sTvShowsSave = gSaveBlock1Ptr->tvShows;
     sPokeNewsSave = gSaveBlock1Ptr->pokeNews;
+#endif
+#ifdef FREE_MAUVILLE_OLD_MAN
+    sOldManSave = &sNoOldMan;
+#else
     sOldManSave = &gSaveBlock1Ptr->oldMan;
-    sDewfordTrendsSave = gSaveBlock1Ptr->dewfordTrends;
+#endif
+    sDewfordTrendsSave = DEWFORD_TRENDS;
     sRecordMixMailSave = &sRecordMixMail;
     sBattleTowerSave = &gSaveBlock2Ptr->frontier.towerPlayer;
+#ifdef FREE_LILYCOVE_LADY
+    sLilycoveLadySave = &sNoLilycoveLady;
+#else
     sLilycoveLadySave = &gSaveBlock1Ptr->lilycoveLady;
+#endif
 #ifndef FREE_APPRENTICE
     sApprenticesSave = gSaveBlock2Ptr->apprentices;
 #endif
@@ -648,6 +673,7 @@ static void ShufflePlayerIndices(u32 *data)
 
 static void ReceiveOldManData(OldMan *records, size_t recordSize, u8 multiplayerId)
 {
+#ifndef FREE_MAUVILLE_OLD_MAN
     u8 version;
     u16 language;
     OldMan *oldMan;
@@ -663,8 +689,9 @@ static void ReceiveOldManData(OldMan *records, size_t recordSize, u8 multiplayer
     else
         SanitizeReceivedEmeraldOldMan(oldMan, version, language);
 
-    memcpy(sOldManSave, (void *)records + recordSize * mixIndices[multiplayerId], sizeof(OldMan));
+    memcpy(&gSaveBlock1Ptr->oldMan, (void *)records + recordSize * mixIndices[multiplayerId], sizeof(OldMan));
     ResetMauvilleOldManFlag();
+#endif
 }
 
 static void ReceiveBattleTowerData(void *records, size_t recordSize, u8 multiplayerId)
@@ -701,6 +728,7 @@ static void ReceiveBattleTowerData(void *records, size_t recordSize, u8 multipla
 
 static void ReceiveLilycoveLadyData(LilycoveLady *records, size_t recordSize, u8 multiplayerId)
 {
+#ifndef FREE_LILYCOVE_LADY
     LilycoveLady *lilycoveLady;
     u32 mixIndices[MAX_LINK_PLAYERS];
 
@@ -720,13 +748,14 @@ static void ReceiveLilycoveLadyData(LilycoveLady *records, size_t recordSize, u8
         lilycoveLady = NULL;
     }
 
-    memcpy(sLilycoveLadySave, (void *)records + recordSize * mixIndices[multiplayerId], sizeof(LilycoveLady));
+    memcpy(&gSaveBlock1Ptr->lilycoveLady, (void *)records + recordSize * mixIndices[multiplayerId], sizeof(LilycoveLady));
     ResetLilycoveLadyForRecordMix();
     if (lilycoveLady != NULL)
     {
         QuizLadyClearQuestionForRecordMix(lilycoveLady);
         Free(lilycoveLady);
     }
+#endif
 }
 
 static u8 GetDaycareMailItemId(struct DaycareMail *mail)

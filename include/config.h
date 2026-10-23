@@ -60,6 +60,11 @@
 #define FREE_ENIGMA_BERRY               // e-Reader Enigma Berry (52 B)
 #define FREE_GCN_LINK                   // data Colosseum/XD read and write over the GameCube link (45 B)
 #define FREE_EASY_CHAT_PHRASES          // editable trainer card profile and link battle lines, now fixed (48 B)
+#define FREE_WALDA_PHRASE               // Walda's custom PC wallpaper (24 B)
+#define FREE_DEWFORD_TRENDS             // Dewford Hall trendy phrases (40 B)
+#define FREE_TV                         // TV shows, PokeNews, mass outbreaks, Gabby & Ty (1,000 B)
+#define FREE_MAUVILLE_OLD_MAN           // Mauville old man (bard, hipster, trader, storyteller, giddy) (64 B)
+#define FREE_LILYCOVE_LADY              // Lilycove favor/quiz/contest lady (64 B)
 #define FREE_APPRENTICE                 // Battle Tower Apprentice and the 4 saved ones (316 B)
 
 // Debug menus (overworld: hold R + START, battle: hold L + SELECT). Every modern
