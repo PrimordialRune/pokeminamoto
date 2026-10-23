@@ -368,6 +368,42 @@ void TryRunOnWarpIntoMapScript(void)
         RunScriptImmediately(ptr);
 }
 
+#ifdef FREE_MYSTERY_EVENT_BUFFERS
+// Mystery Event scripts have no save space, so every RAM script is "missing".
+u32 CalculateRamScriptChecksum(void)
+{
+    return 0;
+}
+
+void ClearRamScript(void)
+{
+}
+
+bool8 InitRamScript(const u8 *script, u16 scriptSize, u8 mapGroup, u8 mapNum, u8 localId)
+{
+    return FALSE;
+}
+
+const u8 *GetRamScript(u8 localId, const u8 *script)
+{
+    gRamScriptRetAddr = NULL;
+    return script;
+}
+
+bool32 ValidateSavedRamScript(void)
+{
+    return FALSE;
+}
+
+u8 *GetSavedRamScriptIfValid(void)
+{
+    return NULL;
+}
+
+void InitRamScript_NoObjectEvent(u8 *script, u16 scriptSize)
+{
+}
+#else
 u32 CalculateRamScriptChecksum(void)
 {
     return CalcCRC16WithTable((u8 *)(&gSaveBlock1Ptr->ramScript.data), sizeof(gSaveBlock1Ptr->ramScript.data));
@@ -468,3 +504,4 @@ void InitRamScript_NoObjectEvent(u8 *script, u16 scriptSize)
         scriptSize = sizeof(gSaveBlock1Ptr->ramScript.data.script);
     InitRamScript(script, scriptSize, MAP_GROUP(MAP_UNDEFINED), MAP_NUM(MAP_UNDEFINED), NO_OBJECT);
 }
+#endif // FREE_MYSTERY_EVENT_BUFFERS

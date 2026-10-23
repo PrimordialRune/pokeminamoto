@@ -380,7 +380,9 @@ struct BattleFrontier
     /*0x64C*/ struct EmeraldBattleTowerRecord towerPlayer;
     /*0x738*/ struct EmeraldBattleTowerRecord towerRecords[BATTLE_TOWER_RECORD_COUNT]; // From record mixing.
     /*0xBD4*/ struct BattleTowerInterview towerInterview;
+#ifndef FREE_BATTLE_TOWER_E_READER
     /*0xBEC*/ struct BattleTowerEReaderTrainer ereaderTrainer;
+#endif
     /*0xCA8*/ u8 challengeStatus;
     /*0xCA9*/ u8 lvlMode:2;
               u8 challengePaused:1;
@@ -535,8 +537,10 @@ struct SaveBlock2
     /*0x1EC*/ struct BerryCrush berryCrush;
     /*0x1FC*/ struct PokemonJumpRecords pokeJump;
     /*0x20C*/ struct BerryPickingResults berryPick;
+#ifndef FREE_RECORD_MIXING_HALL_RECORDS
     /*0x21C*/ struct RankingHall1P hallRecords1P[HALL_FACILITIES_COUNT][FRONTIER_LVL_MODE_COUNT][HALL_RECORDS_COUNT]; // From record mixing.
     /*0x57C*/ struct RankingHall2P hallRecords2P[FRONTIER_LVL_MODE_COUNT][HALL_RECORDS_COUNT]; // From record mixing.
+#endif
     /*0x624*/ u16 contestLinkResults[CONTEST_CATEGORIES_COUNT][CONTESTANT_COUNT];
     /*0x64C*/ struct BattleFrontier frontier;
 }; // sizeof=0xF2C
@@ -1009,7 +1013,9 @@ struct SaveBlock1
     /*0x690*/ struct ItemSlot bagPocket_TMHM[BAG_TMHM_COUNT];
     /*0x790*/ struct ItemSlot bagPocket_Berries[BAG_BERRIES_COUNT];
     /*0x848*/ struct Pokeblock pokeblocks[POKEBLOCKS_COUNT];
+#ifndef FREE_EXTRA_SEEN_FLAGS
     /*0x988*/ u8 seen1[NUM_DEX_FLAG_BYTES];
+#endif
     /*0x9BC*/ u16 berryBlenderRecords[3];
     /*0x9C2*/ u8 unused_9C2[6];
     /*0x9C8*/ u16 trainerRematchStepCounter;
@@ -1062,23 +1068,48 @@ struct SaveBlock1
     /*0x31B3*/ struct ExternalEventData externalEventData;
     /*0x31C7*/ struct ExternalEventFlags externalEventFlags;
     /*0x31DC*/ struct Roamer roamer;
+#ifndef FREE_ENIGMA_BERRY
     /*0x31F8*/ struct EnigmaBerry enigmaBerry;
+#endif
+#ifndef FREE_MYSTERY_GIFT
     /*0x322C*/ struct MysteryGiftSave mysteryGift;
-    /*0x3598*/ u8 unused_3598[0x180];
+#endif
     /*0x3718*/ u32 trainerHillTimes[NUM_TRAINER_HILL_MODES];
+#ifndef FREE_MYSTERY_EVENT_BUFFERS
     /*0x3728*/ struct RamScript ramScript;
+#endif
     /*0x3B14*/ struct RecordMixingGift recordMixingGift;
+#ifndef FREE_EXTRA_SEEN_FLAGS
     /*0x3B24*/ u8 seen2[NUM_DEX_FLAG_BYTES];
+#endif
     /*0x3B58*/ LilycoveLady lilycoveLady;
     /*0x3B98*/ struct TrainerNameRecord trainerNameRecords[20];
+#ifndef FREE_UNION_ROOM_CHAT
     /*0x3C88*/ u8 registeredTexts[UNION_ROOM_KB_ROW_COUNT][21];
-    /*0x3D5A*/ u8 unused_3D5A[10];
+#endif
     /*0x3D64*/ struct TrainerHillSave trainerHill;
     /*0x3D70*/ struct WaldaPhrase waldaPhrase;
-    // sizeof: 0x3D88
+    // sizeof: 0x3D88 in vanilla; smaller with the FREE_* options in config.h
 };
 
 extern struct SaveBlock1 *gSaveBlock1Ptr;
+
+// The e-Reader Enigma Berry. With FREE_ENIGMA_BERRY it reads an empty berry
+// from ROM, which behaves like a berry that was never received.
+#ifdef FREE_ENIGMA_BERRY
+extern const struct EnigmaBerry gEmptyEnigmaBerry;
+#define ENIGMA_BERRY gEmptyEnigmaBerry
+#else
+#define ENIGMA_BERRY gSaveBlock1Ptr->enigmaBerry
+#endif
+
+// The e-Reader Battle Tower trainer, read the same way as ENIGMA_BERRY.
+#ifdef FREE_BATTLE_TOWER_E_READER
+extern const struct BattleTowerEReaderTrainer gEmptyEReaderTrainer;
+#define EREADER_TRAINER gEmptyEReaderTrainer
+#else
+#define EREADER_TRAINER gSaveBlock2Ptr->frontier.ereaderTrainer
+#endif
 
 struct MapPosition
 {
