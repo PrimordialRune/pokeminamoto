@@ -19,6 +19,7 @@
 #include "pokedex.h"
 #include "pokemon.h"
 #include "pokemon_storage_system.h"
+#include "random.h"
 #include "script.h"
 #include "script_pokemon_util.h"
 #include "string_util.h"
@@ -104,6 +105,15 @@ static void Setup(void)
 {
     struct BoxPokemon boxMon;
     u32 i;
+
+    // The trainer ID and RNG seed come from how many cycles the intro took,
+    // which any code change shifts. Pin both so runs of different builds match.
+    gSaveBlock2Ptr->playerTrainerId[0] = 0x39;
+    gSaveBlock2Ptr->playerTrainerId[1] = 0x30;
+    gSaveBlock2Ptr->playerTrainerId[2] = 0x05;
+    gSaveBlock2Ptr->playerTrainerId[3] = 0x00;
+    SeedRng(0x5EED);
+    SeedRng2(0x5EED);
 
     ZeroPlayerPartyMons();
     for (i = 0; i < PARTY_SIZE; i++)
