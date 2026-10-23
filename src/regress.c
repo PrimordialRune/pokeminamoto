@@ -22,6 +22,7 @@
 #include "random.h"
 #include "script.h"
 #include "script_pokemon_util.h"
+#include "event_scripts.h"
 #include "string_util.h"
 #include "constants/global.h"
 #include "constants/items.h"
@@ -373,6 +374,11 @@ void Regress_OverworldTick(void)
         break;
     case REGRESS_CMD_HEAL:
         HealPlayerParty();
+        break;
+    case REGRESS_CMD_TV:
+        FlagSet(FLAG_SYS_TV_START);
+        FlagClear(FLAG_SYS_TV_WATCH);
+        ScriptContext_SetupScript(EventScript_TV);
         break;
     }
     gRegress.cmdDone++;
