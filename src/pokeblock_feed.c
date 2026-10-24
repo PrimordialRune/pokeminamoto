@@ -792,7 +792,7 @@ static void HandleInitWindows(void)
 
 static void SetPokeblockSpritePal(u8 pokeblockCaseId)
 {
-    u8 colorId = GetPokeblockData(&gSaveBlock1Ptr->pokeblocks[pokeblockCaseId], PBLOCK_COLOR);
+    u8 colorId = GetPokeblockData(SAVED_POKEBLOCK(pokeblockCaseId), PBLOCK_COLOR);
     sPokeblockSpritePal.data = sPokeblocksPals[colorId - 1];
     sPokeblockSpritePal.tag = TAG_POKEBLOCK;
 }
@@ -858,7 +858,7 @@ static void Task_WaitForAtePokeblockMessage(u8 taskId)
 static void Task_PrintAtePokeblockMessage(u8 taskId)
 {
     struct Pokemon *mon = &gPlayerParty[gPokeblockMonId];
-    struct Pokeblock *pokeblock = &gSaveBlock1Ptr->pokeblocks[gSpecialVar_ItemId];
+    const struct Pokeblock *pokeblock = SAVED_POKEBLOCK(gSpecialVar_ItemId);
 
     gPokeblockGain = PokeblockGetGain(GetNature(mon), pokeblock);
     GetMonNickname(mon, gStringVar1);

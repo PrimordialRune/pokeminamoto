@@ -68,6 +68,14 @@ s8 GetFirstFreePokeblockSlot(void);
 bool32 AddPokeblock(const struct Pokeblock *pokeblock);
 bool32 TryClearPokeblock(u8 pkblId);
 s16 GetPokeblockData(const struct Pokeblock *pokeblock, u8 field);
+
+#ifdef FREE_POKEBLOCKS
+// No saved Pokéblocks: reads get an empty one
+extern const struct Pokeblock gNoPokeblock;
+#define SAVED_POKEBLOCK(i) (&gNoPokeblock)
+#else
+#define SAVED_POKEBLOCK(i) (&gSaveBlock1Ptr->pokeblocks[i])
+#endif
 s16 PokeblockGetGain(u8 nature, const struct Pokeblock *pokeblock);
 void PokeblockCopyName(const struct Pokeblock *pokeblock, u8 *dest);
 bool8 CopyMonFavoritePokeblockName(u8 nature, u8 *dest);

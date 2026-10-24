@@ -1017,11 +1017,15 @@ struct SaveBlock1
     /*0x650*/ struct ItemSlot bagPocket_PokeBalls[BAG_POKEBALLS_COUNT];
     /*0x690*/ struct ItemSlot bagPocket_TMHM[BAG_TMHM_COUNT];
     /*0x790*/ struct ItemSlot bagPocket_Berries[BAG_BERRIES_COUNT];
+#ifndef FREE_POKEBLOCKS
     /*0x848*/ struct Pokeblock pokeblocks[POKEBLOCKS_COUNT];
+#endif
 #ifndef FREE_EXTRA_SEEN_FLAGS
     /*0x988*/ u8 seen1[NUM_DEX_FLAG_BYTES];
 #endif
+#ifndef FREE_POKEBLOCKS
     /*0x9BC*/ u16 berryBlenderRecords[3];
+#endif
     /*0x9C8*/ u16 trainerRematchStepCounter;
     /*0x9CA*/ u8 trainerRematches[MAX_REMATCH_ENTRIES];
     /*0xA2E*/ //u8 padding3[2];
@@ -1073,10 +1077,14 @@ struct SaveBlock1
 #ifndef FREE_DEWFORD_TRENDS
     /*0x2e64*/ struct DewfordTrend dewfordTrends[SAVED_TRENDS_COUNT];
 #endif
+#ifndef FREE_CONTEST_WINNERS
     /*0x2e90*/ struct ContestWinner contestWinners[NUM_CONTEST_WINNERS]; // see CONTEST_WINNER_*
+#endif
     /*0x3030*/ struct DayCare daycare;
     /*0x3150*/ struct LinkBattleRecords linkBattleRecords;
+#ifndef FREE_GIFT_RIBBONS
     /*0x31A8*/ u8 giftRibbons[GIFT_RIBBONS_COUNT];
+#endif
 #ifndef FREE_GCN_LINK
     /*0x31B3*/ struct ExternalEventData externalEventData;
     /*0x31C7*/ struct ExternalEventFlags externalEventFlags;
@@ -1088,7 +1096,9 @@ struct SaveBlock1
 #ifndef FREE_MYSTERY_GIFT
     /*0x322C*/ struct MysteryGiftSave mysteryGift;
 #endif
+#ifndef FREE_TRAINER_HILL
     /*0x3718*/ u32 trainerHillTimes[NUM_TRAINER_HILL_MODES];
+#endif
 #ifndef FREE_MYSTERY_EVENT_BUFFERS
     /*0x3728*/ struct RamScript ramScript;
 #endif
@@ -1105,7 +1115,9 @@ struct SaveBlock1
 #ifndef FREE_UNION_ROOM_CHAT
     /*0x3C88*/ u8 registeredTexts[UNION_ROOM_KB_ROW_COUNT][21];
 #endif
+#ifndef FREE_TRAINER_HILL
     /*0x3D64*/ struct TrainerHillSave trainerHill;
+#endif
 #ifndef FREE_WALDA_PHRASE
     /*0x3D70*/ struct WaldaPhrase waldaPhrase;
 #endif
@@ -1113,6 +1125,22 @@ struct SaveBlock1
 };
 
 extern struct SaveBlock1 *gSaveBlock1Ptr;
+
+#ifdef FREE_CONTEST_WINNERS
+// No saved contest winners (Contest Hall, Museum): reads get empty ones
+extern const struct ContestWinner gNoContestWinners[NUM_CONTEST_WINNERS];
+#define CONTEST_WINNERS gNoContestWinners
+#else
+#define CONTEST_WINNERS gSaveBlock1Ptr->contestWinners
+#endif
+
+#ifdef FREE_GIFT_RIBBONS
+// No saved gift (distribution) ribbon types: reads get none
+extern const u8 gNoGiftRibbons[GIFT_RIBBONS_COUNT];
+#define GIFT_RIBBONS gNoGiftRibbons
+#else
+#define GIFT_RIBBONS gSaveBlock1Ptr->giftRibbons
+#endif
 
 // The e-Reader Enigma Berry. With FREE_ENIGMA_BERRY it reads an empty berry
 // from ROM, which behaves like a berry that was never received.

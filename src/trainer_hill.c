@@ -32,6 +32,7 @@
 #include "constants/trainer_hill.h"
 #include "constants/trainer_types.h"
 #include "constants/removed_maps.h"
+#ifndef FREE_TRAINER_HILL
 
 #define HILL_MAX_TIME 215999 // 60 * 60 * 60 - 1
 
@@ -1089,3 +1090,134 @@ static u16 GetPrizeItemId(void)
 
     return prizeList[id];
 }
+
+#else // FREE_TRAINER_HILL
+
+// No Trainer Hill (FREE_TRAINER_HILL): the player is never in it.
+
+EWRAM_DATA u32 *gTrainerHillVBlankCounter = NULL; // the save code also uses it
+
+void CallTrainerHillFunction(void)
+{
+}
+
+void ResetTrainerHillResults(void)
+{
+}
+
+u8 GetTrainerHillOpponentClass(u16 trainerId)
+{
+    return 0;
+}
+
+void GetTrainerHillTrainerName(u8 *dst, u16 trainerId)
+{
+    dst[0] = EOS;
+}
+
+u8 GetTrainerHillTrainerFrontSpriteId(u16 trainerId)
+{
+    return 0;
+}
+
+void InitTrainerHillBattleStruct(void)
+{
+}
+
+void FreeTrainerHillBattleStruct(void)
+{
+}
+
+void CopyTrainerHillTrainerText(u8 which, u16 localId)
+{
+}
+
+bool8 InTrainerHillChallenge(void)
+{
+    return 0;
+}
+
+void PrintOnTrainerHillRecordsWindow(void)
+{
+}
+
+void LoadTrainerHillObjectEventTemplates(void)
+{
+}
+
+bool32 LoadTrainerHillFloorObjectEventScripts(void)
+{
+    return 0;
+}
+
+void GenerateTrainerHillFloorLayout(u16 *mapArg)
+{
+}
+
+bool32 InTrainerHill(void)
+{
+    return 0;
+}
+
+u8 GetCurrentTrainerHillMapId(void)
+{
+    return 0;
+}
+
+const struct WarpEvent* SetWarpDestinationTrainerHill4F(void)
+{
+    return 0;
+}
+
+const struct WarpEvent* SetWarpDestinationTrainerHillFinalFloor(u8 warpEventId)
+{
+    return 0;
+}
+
+u16 LocalIdToHillTrainerId(u8 localId)
+{
+    return 0;
+}
+
+bool8 GetHillTrainerFlag(u8 objectEventId)
+{
+    return 0;
+}
+
+void SetHillTrainerFlag(void)
+{
+}
+
+const u8 * GetTrainerHillTrainerScript(void)
+{
+    return 0;
+}
+
+void FillHillTrainerParty(void)
+{
+}
+
+void FillHillTrainersParties(void)
+{
+}
+
+u8 GetTrainerEncounterMusicIdInTrainerHill(u16 trainerId)
+{
+    return 0;
+}
+
+u8 GetNumFloorsInTrainerHillChallenge(void)
+{
+    return 0;
+}
+
+void TryLoadTrainerHillEReaderPalette(void)
+{
+}
+
+bool32 OnTrainerHillEReaderChallengeFloor(void)
+{
+    return 0;
+}
+
+#endif // FREE_TRAINER_HILL

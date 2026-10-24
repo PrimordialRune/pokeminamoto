@@ -2298,7 +2298,11 @@ static void EndLinkBattleInSteps(void)
 
             if (!gSaveBlock2Ptr->frontier.disableRecordBattle && i == battlerCount)
             {
+            #ifdef FREE_RECORDED_BATTLE
+                if (FALSE)
+            #else
                 if (FlagGet(FLAG_SYS_FRONTIER_PASS))
+            #endif
                 {
                     // Ask player if they want to record the battle
                     FreeAllWindowBuffers();

@@ -5558,6 +5558,7 @@ bool8 SaveContestWinner(u8 rank)
         // Save winner in the saveblock
         // Used to save any winner for the Contest Hall or the Museum
         // but excludes the temporary save used by the artist
+#ifndef FREE_CONTEST_WINNERS
         u8 id = GetContestWinnerSaveIdx(rank, TRUE);
         gSaveBlock1Ptr->contestWinners[id].personality = gContestMons[i].personality;
         gSaveBlock1Ptr->contestWinners[id].species = gContestMons[i].species;
@@ -5573,6 +5574,7 @@ bool8 SaveContestWinner(u8 rank)
             gSaveBlock1Ptr->contestWinners[id].contestCategory = gSpecialVar_ContestCategory;
         else
             gSaveBlock1Ptr->contestWinners[id].contestCategory = captionId;
+#endif
     }
     else
     {
@@ -5593,7 +5595,9 @@ bool8 SaveContestWinner(u8 rank)
 // If actually preparing to insert the winner into the saveblock, shift is TRUE
 u8 GetContestWinnerSaveIdx(u8 rank, bool8 shift)
 {
+#ifndef FREE_CONTEST_WINNERS
     s32 i;
+#endif
 
     switch (rank)
     {
@@ -5601,11 +5605,13 @@ u8 GetContestWinnerSaveIdx(u8 rank, bool8 shift)
     case CONTEST_RANK_SUPER:
     case CONTEST_RANK_HYPER:
     case CONTEST_RANK_MASTER:
+#ifndef FREE_CONTEST_WINNERS
         if (shift)
         {
             for (i = NUM_CONTEST_HALL_WINNERS - 1; i > 0; i--)
                 memcpy(&gSaveBlock1Ptr->contestWinners[i], &gSaveBlock1Ptr->contestWinners[i - 1], sizeof(struct ContestWinner));
         }
+#endif
         return CONTEST_WINNER_HALL_1 - 1;
     default:
 //  case CONTEST_SAVE_FOR_MUSEUM:
@@ -5627,6 +5633,13 @@ u8 GetContestWinnerSaveIdx(u8 rank, bool8 shift)
     }
 }
 
+#ifdef FREE_CONTEST_WINNERS
+const struct ContestWinner gNoContestWinners[NUM_CONTEST_WINNERS] = {0};
+
+void ClearContestWinnerPicsInContestHall(void)
+{
+}
+#else
 void ClearContestWinnerPicsInContestHall(void)
 {
     s32 i;
@@ -5634,6 +5647,7 @@ void ClearContestWinnerPicsInContestHall(void)
     for (i = 0; i < MUSEUM_CONTEST_WINNERS_START; i++)
         gSaveBlock1Ptr->contestWinners[i] = gDefaultContestWinners[i];
 }
+#endif
 
 static void SetContestLiveUpdateFlags(u8 contestant)
 {

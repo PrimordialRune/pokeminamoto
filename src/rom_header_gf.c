@@ -173,7 +173,9 @@ static const struct GFRomHeader sGFRomHeader = {
     .bagCountBerries = BAG_BERRIES_COUNT,
     .pcItemsCount = PC_ITEMS_COUNT,
     .pcItemsOffset = offsetof(struct SaveBlock1, pcItems),
+#ifndef FREE_GIFT_RIBBONS
     .giftRibbonsOffset = offsetof(struct SaveBlock1, giftRibbons),
+#endif
 #ifndef FREE_ENIGMA_BERRY
     .enigmaBerryOffset = offsetof(struct SaveBlock1, enigmaBerry),
     .enigmaBerrySize = sizeof(struct EnigmaBerry),

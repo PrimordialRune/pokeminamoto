@@ -65,6 +65,11 @@
 #define FREE_TV                         // TV shows, PokeNews, mass outbreaks, Gabby & Ty (1,000 B)
 #define FREE_MAUVILLE_OLD_MAN           // Mauville old man (bard, hipster, trader, storyteller, giddy) (64 B)
 #define FREE_LILYCOVE_LADY              // Lilycove favor/quiz/contest lady (64 B)
+#define FREE_RECORDED_BATTLE            // Battle Frontier battle recorder: its RAM buffers (about 4 KB EWRAM); the flash sector stays unused
+#define FREE_TRAINER_HILL               // Trainer Hill times and challenge state (28 B)
+#define FREE_POKEBLOCKS                 // Pokéblock case and Berry Blender records (326 B); the case is always empty
+#define FREE_CONTEST_WINNERS            // Contest Hall and Museum winners (416 B)
+#define FREE_GIFT_RIBBONS               // which distribution ribbons the player owns (11 B)
 #define FREE_APPRENTICE                 // Battle Tower Apprentice and the 4 saved ones (316 B)
 
 // Debug menus (overworld: hold R + START, battle: hold L + SELECT). Every modern

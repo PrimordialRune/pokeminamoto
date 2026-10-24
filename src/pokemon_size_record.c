@@ -193,6 +193,14 @@ void CompareLotadSize(void)
     gSpecialVar_Result = CompareMonSize(SPECIES_LOTAD, sizeRecord);
 }
 
+#ifdef FREE_GIFT_RIBBONS
+const u8 gNoGiftRibbons[GIFT_RIBBONS_COUNT] = {0};
+
+// Gift ribbons only came from distribution events
+void GiveGiftRibbonToParty(u8 index, u8 ribbonId)
+{
+}
+#else
 void GiveGiftRibbonToParty(u8 index, u8 ribbonId)
 {
     s32 i;
@@ -218,3 +226,4 @@ void GiveGiftRibbonToParty(u8 index, u8 ribbonId)
             FlagSet(FLAG_SYS_RIBBON_GET);
     }
 }
+#endif

@@ -95,6 +95,7 @@ enum
     PKBL_GIVE_TO_LADY
 };
 
+#ifndef FREE_POKEBLOCKS
 static void CB2_InitPokeblockMenu(void);
 static bool8 InitPokeblockMenu(void);
 static bool8 LoadPokeblockMenuGfx(void);
@@ -129,9 +130,12 @@ static void UsePokeblockOnField(void);
 static void ReturnToPokeblockCaseOnField(void);
 static void CreateTossPokeblockYesNoMenu(u8);
 static void TossPokeblock(u8);
+#endif // FREE_POKEBLOCKS
 
 EWRAM_DATA static struct PokeblockSavedData sSavedPokeblockData = {0};
+#ifndef FREE_POKEBLOCKS
 EWRAM_DATA static struct PokeblockMenuStruct *sPokeblockMenu = NULL;
+#endif // FREE_POKEBLOCKS
 
 const s8 gPokeblockFlavorCompatibilityTable[NUM_NATURES * FLAVOR_COUNT] =
 {
@@ -163,6 +167,7 @@ const s8 gPokeblockFlavorCompatibilityTable[NUM_NATURES * FLAVOR_COUNT] =
           0,      0,    0,     0,     0  // Quirky
 };
 
+#ifndef FREE_POKEBLOCKS
 static const struct BgTemplate sBgTemplatesForPokeblockMenu[] =
 {
     {
@@ -193,6 +198,7 @@ static const struct BgTemplate sBgTemplatesForPokeblockMenu[] =
         .baseTile = 0
     }
 };
+#endif // FREE_POKEBLOCKS
 
 const u8 *const gPokeblockNames[] =
 {
@@ -213,6 +219,7 @@ const u8 *const gPokeblockNames[] =
     [PBLOCK_CLR_GOLD]      = gText_GoldPokeblock
 };
 
+#ifndef FREE_POKEBLOCKS
 static const struct MenuAction sPokeblockMenuActions[] =
 {
     [PKBL_USE_ON_FIELD]  = {gMenuText_Use, {PokeblockAction_UseOnField}},
@@ -231,6 +238,7 @@ static const u8 sActionsWhenGivingToLady[] = {PKBL_GIVE_TO_LADY, PKBL_CANCEL};
 static const struct YesNoFuncTable sTossYesNoFuncTable = {TossedPokeblockMessage, CloseTossPokeblockWindow};
 
 static const u8 sContestStatsMonData[] = {MON_DATA_COOL, MON_DATA_BEAUTY, MON_DATA_CUTE, MON_DATA_SMART, MON_DATA_TOUGH};
+#endif // FREE_POKEBLOCKS
 
 static const struct OamData sOamData_PokeblockCase =
 {
@@ -260,6 +268,7 @@ static const union AnimCmd *const sSpriteAnimTable_PokeblockCase[] =
     sSpriteAnim_PokeblockCase
 };
 
+#ifndef FREE_POKEBLOCKS
 static const union AffineAnimCmd sAffineAnim_PokeblockCaseShake[] =
 {
     AFFINEANIMCMD_FRAME(0, 0, -2,  2),
@@ -273,6 +282,7 @@ static const union AffineAnimCmd *const sAffineAnims_PokeblockCaseShake[] =
 {
     sAffineAnim_PokeblockCaseShake
 };
+#endif // FREE_POKEBLOCKS
 
 const struct CompressedSpriteSheet gPokeblockCase_SpriteSheet =
 {
@@ -295,7 +305,9 @@ static const struct SpriteTemplate sSpriteTemplate_PokeblockCase =
     .callback = SpriteCallbackDummy
 };
 
+#ifndef FREE_POKEBLOCKS
 static const u8 sTextColor[3] = {TEXT_COLOR_TRANSPARENT, TEXT_COLOR_DARK_GRAY, TEXT_COLOR_LIGHT_GRAY};
+#endif // FREE_POKEBLOCKS
 
 static const struct Pokeblock sFavoritePokeblocksTable[FLAVOR_COUNT] =
 {
@@ -306,6 +318,7 @@ static const struct Pokeblock sFavoritePokeblocksTable[FLAVOR_COUNT] =
     [FLAVOR_SOUR]   = { PBLOCK_CLR_YELLOW,  0,  0,  0,  0, 20, 20}
 };
 
+#ifndef FREE_POKEBLOCKS
 static const struct WindowTemplate sWindowTemplates[] =
 {
     [WIN_TITLE] = {
@@ -513,11 +526,13 @@ static void CB2_InitPokeblockMenu(void)
             break;
     }
 }
+#endif // FREE_POKEBLOCKS
 
 #define tListTaskId data[0]
 #define tWindowId   data[1]
 #define tToSwapId   data[2]
 
+#ifndef FREE_POKEBLOCKS
 static bool8 InitPokeblockMenu(void)
 {
     u8 taskId;
@@ -860,6 +875,7 @@ static void SwapPokeblockMenuItems(u32 id1, u32 id2)
     pokeblocks[id2] = *copyPokeblock1;
     Free(copyPokeblock1);
 }
+#endif // FREE_POKEBLOCKS
 
 void ResetPokeblockScrollPositions(void)
 {
@@ -867,6 +883,7 @@ void ResetPokeblockScrollPositions(void)
     sSavedPokeblockData.scrollOffset = 0;
 }
 
+#ifndef FREE_POKEBLOCKS
 static void SetMenuItemsCountAndMaxShowed(void)
 {
     u16 i;
@@ -933,6 +950,7 @@ static void DestroyScrollArrows(void)
         sPokeblockMenu->arrowTaskId = TASK_NONE;
     }
 }
+#endif // FREE_POKEBLOCKS
 
 u8 CreatePokeblockCaseSprite(s16 x, s16 y, u8 subpriority)
 {
@@ -942,6 +960,7 @@ u8 CreatePokeblockCaseSprite(s16 x, s16 y, u8 subpriority)
 #define sState data[0]
 #define sTimer data[1]
 
+#ifndef FREE_POKEBLOCKS
 static void SpriteCB_ShakePokeblockCase(struct Sprite *sprite)
 {
     if (sprite->sState > 1)
@@ -1318,6 +1337,7 @@ void ClearPokeblocks(void)
     for (i = 0; i < POKEBLOCKS_COUNT; i++)
         ClearPokeblock(i);
 }
+#endif // FREE_POKEBLOCKS
 
 u8 GetHighestPokeblocksFlavorLevel(const struct Pokeblock *pokeblock)
 {
@@ -1343,6 +1363,7 @@ u8 GetPokeblocksFeel(const struct Pokeblock *pokeblock)
     return feel;
 }
 
+#ifndef FREE_POKEBLOCKS
 s8 GetFirstFreePokeblockSlot(void)
 {
     u8 i;
@@ -1383,6 +1404,7 @@ bool32 TryClearPokeblock(u8 pkblId)
         return TRUE;
     }
 }
+#endif // FREE_POKEBLOCKS
 
 s16 GetPokeblockData(const struct Pokeblock *pokeblock, u8 field)
 {
@@ -1454,3 +1476,43 @@ u8 GetPokeblocksFlavor(const struct Pokeblock *pokeblock)
 
     return bestFlavor;
 }
+
+#ifdef FREE_POKEBLOCKS
+// No Pokéblock case (FREE_POKEBLOCKS): it is always empty and can't hold any.
+const struct Pokeblock gNoPokeblock = {0};
+
+void OpenPokeblockCase(u8 caseId, void (*callback)(void))
+{
+    gSpecialVar_ItemId = 0; // what closing the case without choosing does
+    SetMainCallback2(callback);
+}
+
+void OpenPokeblockCaseInBattle(void)
+{
+    OpenPokeblockCase(PBLOCK_CASE_BATTLE, CB2_SetUpReshowBattleScreenAfterMenu2);
+}
+
+void OpenPokeblockCaseOnFeeder(void)
+{
+    OpenPokeblockCase(PBLOCK_CASE_FEEDER, CB2_ReturnToField);
+}
+
+void ClearPokeblocks(void)
+{
+}
+
+s8 GetFirstFreePokeblockSlot(void)
+{
+    return -1;
+}
+
+bool32 AddPokeblock(const struct Pokeblock *pokeblock)
+{
+    return FALSE;
+}
+
+bool32 TryClearPokeblock(u8 pkblId)
+{
+    return FALSE;
+}
+#endif // FREE_POKEBLOCKS

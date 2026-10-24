@@ -64,6 +64,7 @@ struct RecordedBattleSave
 
 // Save data using TryWriteSpecialSaveSector is allowed to exceed SECTOR_DATA_SIZE (up to the counter field)
 STATIC_ASSERT(sizeof(struct RecordedBattleSave) <= SECTOR_COUNTER_OFFSET, RecordedBattleSaveFreeSpace);
+#ifndef FREE_RECORDED_BATTLE
 
 EWRAM_DATA u32 gRecordedBattleRngSeed = 0;
 EWRAM_DATA u32 gBattlePalaceMoveSelectionRngValue = 0;
@@ -864,3 +865,162 @@ u16 *GetRecordedBattleEasyChatSpeech(void)
 {
     return sEasyChatSpeech;
 }
+
+#else // FREE_RECORDED_BATTLE
+
+// No battle recorder (FREE_RECORDED_BATTLE): nothing is recorded or played back.
+
+EWRAM_DATA u32 gRecordedBattleRngSeed = 0;
+EWRAM_DATA u32 gBattlePalaceMoveSelectionRngValue = 0;
+EWRAM_DATA u8 gRecordedBattleMultiplayerId = 0;
+
+static const u16 sNoSpeech[EASY_CHAT_BATTLE_WORDS_COUNT] = {0};
+
+void RecordedBattle_Init(u8 mode)
+{
+}
+
+void RecordedBattle_SetTrainerInfo(void)
+{
+    // Link battles still trade this seed and need the multiplayer id
+    gRecordedBattleRngSeed = gRngValue;
+    if (gBattleTypeFlags & BATTLE_TYPE_LINK)
+        gRecordedBattleMultiplayerId = GetMultiplayerId();
+}
+
+void RecordedBattle_SetBattlerAction(u8 battler, u8 action)
+{
+}
+
+void RecordedBattle_ClearBattlerAction(u8 battler, u8 bytesToClear)
+{
+}
+
+u8 RecordedBattle_GetBattlerAction(u8 battler)
+{
+    return 0;
+}
+
+u8 RecordedBattle_BufferNewBattlerData(u8 *dst)
+{
+    return 0;
+}
+
+void RecordedBattle_RecordAllBattlerData(u8 *src)
+{
+}
+
+bool32 CanCopyRecordedBattleSaveData(void)
+{
+    return 0;
+}
+
+bool32 MoveRecordedBattleToSaveData(void)
+{
+    return 0;
+}
+
+void PlayRecordedBattle(void (*CB2_After)(void))
+{
+    SetMainCallback2(CB2_After);
+}
+
+u8 GetRecordedBattleFrontierFacility(void)
+{
+    return 0;
+}
+
+u8 GetRecordedBattleFronterBrainSymbol(void)
+{
+    return 0;
+}
+
+void RecordedBattle_SaveParties(void)
+{
+}
+
+u8 GetActiveBattlerLinkPlayerGender(void)
+{
+    return 0;
+}
+
+void RecordedBattle_ClearFrontierPassFlag(void)
+{
+}
+
+void RecordedBattle_SetFrontierPassFlagFromHword(u16 flags)
+{
+}
+
+u8 RecordedBattle_GetFrontierPassFlag(void)
+{
+    return 0;
+}
+
+u8 GetBattleSceneInRecordedBattle(void)
+{
+    return 0;
+}
+
+u8 GetTextSpeedInRecordedBattle(void)
+{
+    return 0;
+}
+
+void RecordedBattle_CopyBattlerMoves(void)
+{
+}
+
+void RecordedBattle_CheckMovesetChanges(u8 mode)
+{
+}
+
+u32 GetAiScriptsInRecordedBattle(void)
+{
+    return 0;
+}
+
+void RecordedBattle_SetPlaybackFinished(void)
+{
+}
+
+bool8 RecordedBattle_CanStopPlayback(void)
+{
+    return 0;
+}
+
+void GetRecordedBattleRecordMixFriendName(u8 *dst)
+{
+    dst[0] = EOS;
+}
+
+u8 GetRecordedBattleRecordMixFriendClass(void)
+{
+    return 0;
+}
+
+u8 GetRecordedBattleApprenticeId(void)
+{
+    return 0;
+}
+
+u8 GetRecordedBattleRecordMixFriendLanguage(void)
+{
+    return 0;
+}
+
+u8 GetRecordedBattleApprenticeLanguage(void)
+{
+    return 0;
+}
+
+void RecordedBattle_SaveBattleOutcome(void)
+{
+}
+
+u16 * GetRecordedBattleEasyChatSpeech(void)
+{
+    return (u16 *)sNoSpeech;
+}
+
+#endif // FREE_RECORDED_BATTLE
