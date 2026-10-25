@@ -1,6 +1,8 @@
 #include "global.h"
 #include "graphics.h"
 
+#ifndef FREE_BERRY_FIX_PROGRAM
+
 // Duplicate of sBerryFixGraphics in berry_fix_program.c
 static const struct {
     const u32 *gfx;
@@ -47,3 +49,5 @@ static void UNUSED LoadBerryFixGraphics(u32 idx)
     REG_BG0CNT = BGCNT_SCREENBASE(31);
     REG_DISPCNT = DISPCNT_BG0_ON;
 }
+
+#endif // FREE_BERRY_FIX_PROGRAM

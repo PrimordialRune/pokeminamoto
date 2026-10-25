@@ -16,6 +16,7 @@
 #include "mystery_gift_view.h"
 #include "constants/rgb.h"
 #include "constants/mystery_gift.h"
+#ifndef FREE_MYSTERY_GIFT
 
 struct WonderGraphics
 {
@@ -933,3 +934,11 @@ static void UpdateNewsScroll(void)
         sWonderNewsData->scrollTotal = 0;
     }
 }
+
+#else // FREE_MYSTERY_GIFT
+
+// Mystery Gift, Wonder Cards/News and the e-Reader are gone; these stubs keep the callers linking.
+
+
+
+#endif // FREE_MYSTERY_GIFT

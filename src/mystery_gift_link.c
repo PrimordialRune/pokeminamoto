@@ -10,6 +10,7 @@
 #include "mystery_event_script.h"
 #include "mystery_gift.h"
 #include "mystery_gift_link.h"
+#ifndef FREE_MYSTERY_GIFT
 
 /*
     Handles the link connection functions used by the Mystery Gift client/server.
@@ -220,3 +221,11 @@ static bool32 MGL_Send(struct MysteryGiftLink *link)
 
     return FALSE;
 }
+
+#else // FREE_MYSTERY_GIFT
+
+// Mystery Gift, Wonder Cards/News and the e-Reader are gone; these stubs keep the callers linking.
+
+
+
+#endif // FREE_MYSTERY_GIFT

@@ -72,6 +72,8 @@
 #define FREE_GIFT_RIBBONS               // which distribution ribbons the player owns (11 B)
 #define FREE_FOUR_PLAYER_LINK           // cable link for 3-4 players (multi battles, 3-4 player record mixing): the receive queue holds 2 players (1.6 KB IWRAM)
 #define FREE_WIRELESS                   // Wireless Adapter (Union Room, wireless minigames) and saved names of wirelessly linked trainers (about 7 KB IWRAM, 240 B save); cable link stays
+#define FREE_CONTESTS                   // Pokémon Contests and their paintings: the halls are gone, so no script can start one; contest move effects stay in the move data
+#define FREE_BERRY_FIX_PROGRAM          // Ruby/Sapphire berry glitch fix sent over the cable (B+SELECT on the title screen)
 #define FREE_APPRENTICE                 // Battle Tower Apprentice and the 4 saved ones (316 B)
 
 // Debug menus (overworld: hold R + START, battle: hold L + SELECT). Every modern

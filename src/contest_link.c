@@ -7,6 +7,7 @@
 #include "random.h"
 #include "task.h"
 #include "contest_link.h"
+#ifndef FREE_CONTESTS
 
 static void Task_LinkContest_StartInitFlags(u8);
 static void Task_LinkContest_InitFlags(u8);
@@ -561,3 +562,11 @@ void Task_LinkContest_CommunicateTurnOrder(u8 taskId)
         break;
     }
 }
+
+#else // FREE_CONTESTS
+
+// Contests are gone (FREE_CONTESTS); these stubs keep the callers linking.
+
+
+
+#endif // FREE_CONTESTS

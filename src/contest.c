@@ -44,6 +44,7 @@
 #include "constants/songs.h"
 
 // This file's functions.
+#ifndef FREE_CONTESTS
 static void LoadContestPalettes(void);
 static void Task_StartContestWaitFade(u8 taskId);
 static void Task_TryStartLinkContest(u8 taskId);
@@ -188,6 +189,7 @@ static void ContestDebugPrintBitStrings(void);
 static void StripPlayerNameForLinkContest(u8 *);
 static void StripMonNameForLinkContest(u8 *, s32);
 static void SwapMoveDescAndContestTilemaps(void);
+#endif
 
 // An index into a palette where the text color for each contestant is stored.
 // Contestant 0 will use palette color 10, contestant 1 will use color 11, etc.
@@ -352,7 +354,9 @@ EWRAM_DATA u16 gSpecialVar_ContestRank = 0;
 EWRAM_DATA u8 gNumLinkContestPlayers = 0;
 EWRAM_DATA u8 gHighestRibbonRank = 0;
 EWRAM_DATA struct ContestResources *gContestResources = NULL;
+#ifndef FREE_CONTESTS
 static EWRAM_DATA u8 sContestBgCopyFlags = 0;
+#endif
 EWRAM_DATA struct ContestWinner gCurContestWinner = {0};
 EWRAM_DATA bool8 gCurContestWinnerIsForArtist = 0;
 EWRAM_DATA u8 gCurContestWinnerSaveIdx = 0;
@@ -833,6 +837,7 @@ static const struct WindowTemplate sContestWindowTemplates[] =
 };
 
 #include "data/contest_opponents.h"
+#ifndef FREE_CONTESTS
 
 static const struct CompressedSpriteSheet sSpriteSheets_ContestantsTurnBlinkEffect[CONTESTANT_COUNT] =
 {
@@ -6137,3 +6142,35 @@ void StripPlayerAndMonNamesForLinkContest(struct ContestPokemon *mon, s32 langua
     }
 }
 
+#else // FREE_CONTESTS
+
+// Contests are gone (FREE_CONTESTS); these stubs keep the callers linking.
+
+void ResetLinkContestBoolean(void)
+{
+}
+
+void LoadContestBgAfterMoveAnim(void)
+{
+}
+
+u8 GetContestEntryEligibility(struct Pokemon *pkmn)
+{
+    return 0;
+}
+
+// Battle animations use this too.
+bool8 IsSpeciesNotUnown(u16 species)
+{
+    return species != SPECIES_UNOWN;
+}
+
+void ResetContestLinkResults(void)
+{
+}
+
+void ClearContestWinnerPicsInContestHall(void)
+{
+}
+
+#endif // FREE_CONTESTS

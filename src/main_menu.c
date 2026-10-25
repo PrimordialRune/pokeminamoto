@@ -1072,18 +1072,22 @@ static void Task_HandleMainMenuAPressed(u8 taskId)
                 SetMainCallback2(CB2_InitOptionMenu);
                 DestroyTask(taskId);
                 break;
+#ifndef FREE_MYSTERY_GIFT
             case ACTION_MYSTERY_GIFT:
                 SetMainCallback2(CB2_InitMysteryGift);
-                DestroyTask(taskId);
-                break;
-            case ACTION_MYSTERY_EVENTS:
-                SetMainCallback2(CB2_InitMysteryEventMenu);
                 DestroyTask(taskId);
                 break;
             case ACTION_EREADER:
                 SetMainCallback2(CB2_InitEReader);
                 DestroyTask(taskId);
                 break;
+#endif
+#ifndef FREE_MYSTERY_EVENT_BUFFERS
+            case ACTION_MYSTERY_EVENTS:
+                SetMainCallback2(CB2_InitMysteryEventMenu);
+                DestroyTask(taskId);
+                break;
+#endif
             case ACTION_INVALID:
                 gTasks[taskId].tCurrItem = 0;
                 gTasks[taskId].func = Task_DisplayMainMenuInvalidActionError;

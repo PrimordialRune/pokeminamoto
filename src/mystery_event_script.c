@@ -15,6 +15,7 @@
 #include "util.h"
 #include "mystery_event_msg.h"
 #include "pokemon_storage_system.h"
+#ifndef FREE_MYSTERY_EVENT_BUFFERS
 
 extern ScrCmdFunc gMysteryEventScriptCmdTable[];
 extern ScrCmdFunc gMysteryEventScriptCmdTableEnd[];
@@ -100,17 +101,6 @@ void SetMysteryEventScriptStatus(u32 status)
     sMysteryEventScriptContext.mStatus = status;
 }
 
-#ifdef FREE_MYSTERY_EVENT_BUFFERS
-// No record mixing gift is saved (FREE_MYSTERY_EVENT_BUFFERS in config.h).
-static void SetRecordMixingGift(u8 unk, u8 quantity, u16 itemId)
-{
-}
-
-u16 GetRecordMixingGift(void)
-{
-    return 0;
-}
-#else
 static int CalcRecordMixingGiftChecksum(void)
 {
     unsigned int i;
@@ -180,7 +170,6 @@ u16 GetRecordMixingGift(void)
     }
 }
 
-#endif // FREE_MYSTERY_EVENT_BUFFERS
 
 bool8 MEScrCmd_end(struct ScriptContext *ctx)
 {
@@ -415,3 +404,18 @@ bool8 MEScrCmd_crc(struct ScriptContext *ctx)
     }
     return TRUE;
 }
+
+#else // FREE_MYSTERY_EVENT_BUFFERS
+
+// Mystery Events are gone; these stubs keep the callers linking.
+
+void SetMysteryEventScriptStatus(u32 status)
+{
+}
+
+u16 GetRecordMixingGift(void)
+{
+    return 0;
+}
+
+#endif // FREE_MYSTERY_EVENT_BUFFERS

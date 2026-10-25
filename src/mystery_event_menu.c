@@ -19,6 +19,7 @@
 #include "text_window.h"
 #include "decompress.h"
 #include "constants/rgb.h"
+#ifndef FREE_MYSTERY_EVENT_BUFFERS
 
 enum {
     WIN_MSG,
@@ -319,3 +320,13 @@ static void PrintMysteryMenuText(u8 windowId, const u8 *text, u8 x, u8 y, s32 sp
     FillWindowPixelBuffer(windowId, PIXEL_FILL(textColor[0]));
     AddTextPrinterParameterized4(windowId, FONT_NORMAL, x, y, letterSpacing, lineSpacing, textColor, speed, text);
 }
+
+#else // FREE_MYSTERY_EVENT_BUFFERS
+
+// Mystery Events are gone; these stubs keep the callers linking.
+
+void CB2_InitMysteryEventMenu(void)
+{
+}
+
+#endif // FREE_MYSTERY_EVENT_BUFFERS

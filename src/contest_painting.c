@@ -20,6 +20,7 @@
 #include "text.h"
 #include "window.h"
 #include "constants/rgb.h"
+#ifndef FREE_CONTESTS
 
 COMMON_DATA u16 (*gContestMonPixels)[][32] = {0};
 COMMON_DATA struct ImageProcessingContext gImageProcessingContext = {0};
@@ -598,3 +599,12 @@ static void CreateContestPaintingPicture(u8 contestWinnerId, bool8 isForArtist)
     LoadContestPaintingFrame(contestWinnerId, isForArtist);
 }
 
+#else // FREE_CONTESTS
+
+// Contests are gone (FREE_CONTESTS); these stubs keep the callers linking.
+
+void SetContestWinnerForPainting(int contestWinnerId)
+{
+}
+
+#endif // FREE_CONTESTS

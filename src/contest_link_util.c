@@ -5,6 +5,7 @@
 #include "link.h"
 #include "random.h"
 #include "task.h"
+#ifndef FREE_CONTESTS
 
 /*
     The functions in this file handle preliminary communication
@@ -342,3 +343,11 @@ static void Task_LinkContest_CommunicateAIMonsEm(u8 taskId)
         break;
     }
 }
+
+#else // FREE_CONTESTS
+
+// Contests are gone (FREE_CONTESTS); these stubs keep the callers linking.
+
+
+
+#endif // FREE_CONTESTS

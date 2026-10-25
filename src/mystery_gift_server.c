@@ -4,6 +4,7 @@
 #include "mystery_gift.h"
 #include "mystery_gift_server.h"
 #include "mystery_gift_link.h"
+#ifndef FREE_MYSTERY_GIFT
 
 enum {
     FUNC_INIT,
@@ -288,3 +289,11 @@ static u32 MysteryGiftServer_CallFunc(struct MysteryGiftServer *svr)
     AGB_ASSERT(svr->funcId < ARRAY_COUNT(sFuncTable));
     return response;
 }
+
+#else // FREE_MYSTERY_GIFT
+
+// Mystery Gift, Wonder Cards/News and the e-Reader are gone; these stubs keep the callers linking.
+
+
+
+#endif // FREE_MYSTERY_GIFT

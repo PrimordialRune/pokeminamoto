@@ -5,6 +5,7 @@
 #include "contest_ai.h"
 #include "contest_effect.h"
 #include "constants/moves.h"
+#ifndef FREE_CONTESTS
 
 #define AI_ACTION_DONE (1 << 0)
 
@@ -1783,3 +1784,11 @@ static void ContestAICmd_if_user_doesnt_have_move(void)
     else
         gAIScriptPtr += 4;
 }
+
+#else // FREE_CONTESTS
+
+// Contests are gone (FREE_CONTESTS); these stubs keep the callers linking.
+
+
+
+#endif // FREE_CONTESTS

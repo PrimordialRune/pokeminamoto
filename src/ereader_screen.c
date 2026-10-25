@@ -13,6 +13,7 @@
 #include "strings.h"
 #include "util.h"
 #include "constants/songs.h"
+#ifndef FREE_MYSTERY_GIFT
 
 // Equivalent to MysteryGiftTaskData
 struct EReaderTaskData
@@ -534,3 +535,11 @@ static void Task_EReader(u8 taskId)
         break;
     }
 }
+
+#else // FREE_MYSTERY_GIFT
+
+// Mystery Gift, Wonder Cards/News and the e-Reader are gone; these stubs keep the callers linking.
+
+
+
+#endif // FREE_MYSTERY_GIFT

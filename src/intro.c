@@ -1120,6 +1120,7 @@ static u8 SetUpCopyrightScreen(void)
             break;
         CreateTask(Task_Scene1_Load, 0);
         SetMainCallback2(MainCB2_Intro);
+#ifndef FREE_GCN_LINK
         if (gMultibootProgramStruct.gcmb_field_2 != 0)
         {
             if (gMultibootProgramStruct.gcmb_field_2 == 2)
@@ -1134,6 +1135,7 @@ static u8 SetUpCopyrightScreen(void)
             }
         }
         else
+#endif // FREE_GCN_LINK: never send Colosseum its program
         {
             GameCubeMultiBoot_Quit();
             SetSerialCallback(SerialCB);

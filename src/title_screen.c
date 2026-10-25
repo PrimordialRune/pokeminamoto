@@ -48,7 +48,9 @@ static void Task_TitleScreenPhase3(u8);
 static void CB2_GoToMainMenu(void);
 static void CB2_GoToClearSaveDataScreen(void);
 static void CB2_GoToResetRtcScreen(void);
+#ifndef FREE_BERRY_FIX_PROGRAM
 static void CB2_GoToBerryFixScreen(void);
+#endif
 static void CB2_GoToCopyrightScreen(void);
 static void UpdateLegendaryMarkingColor(u8);
 
@@ -796,12 +798,14 @@ static void Task_TitleScreenPhase3(u8 taskId)
         BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 16, RGB_BLACK);
         SetMainCallback2(CB2_GoToResetRtcScreen);
     }
+#ifndef FREE_BERRY_FIX_PROGRAM
     else if (JOY_HELD(BERRY_UPDATE_BUTTON_COMBO) == BERRY_UPDATE_BUTTON_COMBO)
     {
         FadeOutBGM(4);
         BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 16, RGB_BLACK);
         SetMainCallback2(CB2_GoToBerryFixScreen);
     }
+#endif
     else
     {
         SetGpuReg(REG_OFFSET_BG2Y_L, 0);
@@ -845,6 +849,7 @@ static void CB2_GoToResetRtcScreen(void)
         SetMainCallback2(CB2_InitResetRtcScreen);
 }
 
+#ifndef FREE_BERRY_FIX_PROGRAM
 static void CB2_GoToBerryFixScreen(void)
 {
     if (!UpdatePaletteFade())
@@ -853,6 +858,7 @@ static void CB2_GoToBerryFixScreen(void)
         SetMainCallback2(CB2_InitBerryFixProgram);
     }
 }
+#endif
 
 static void UpdateLegendaryMarkingColor(u8 frameNum)
 {

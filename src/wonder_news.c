@@ -4,6 +4,7 @@
 #include "event_data.h"
 #include "wonder_news.h"
 #include "constants/items.h"
+#ifndef FREE_MYSTERY_GIFT
 
 // Every 4th reward for sending Wonder News to a link partner is a "big" reward.
 #define MAX_SENT_REWARD 4
@@ -154,3 +155,18 @@ static u32 GetRewardType(struct WonderNewsMetadata *data)
         return NEWS_REWARD_NONE;
     }
 }
+
+#else // FREE_MYSTERY_GIFT
+
+// Mystery Gift, Wonder Cards/News and the e-Reader are gone; these stubs keep the callers linking.
+
+void WonderNews_Reset(void)
+{
+}
+
+u16 WonderNews_GetRewardInfo(void)
+{
+    return 0;
+}
+
+#endif // FREE_MYSTERY_GIFT

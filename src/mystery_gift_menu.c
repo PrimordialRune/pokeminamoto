@@ -31,6 +31,7 @@
 #include "link_rfu.h"
 #include "wonder_news.h"
 #include "constants/cable_club.h"
+#ifndef FREE_MYSTERY_GIFT
 
 enum {
     WIN_HEADER,
@@ -1624,3 +1625,44 @@ static void LoadMysteryGiftTextboxBorder(u8 bgId)
 {
     DecompressAndLoadBgGfxUsingHeap(bgId, sTextboxBorder_Gfx, 0x100, 0, 0);
 }
+
+#else // FREE_MYSTERY_GIFT
+
+// Mystery Gift, Wonder Cards/News and the e-Reader are gone; these stubs keep the callers linking.
+
+void CB2_MysteryGiftEReader(void)
+{
+}
+
+void CB2_InitMysteryGift(void)
+{
+}
+
+void CB2_InitEReader(void)
+{
+}
+
+void MG_DrawTextBorder(u8 windowId)
+{
+}
+
+void MG_AddMessageTextPrinter(const u8 *str)
+{
+}
+
+bool32 PrintMysteryGiftMenuMessage(u8 *textState, const u8 *str)
+{
+    return 0;
+}
+
+s8 DoMysteryGiftYesNo(u8 *textState, u16 *windowId, bool8 yesNoBoxPlacement, const u8 *str)
+{
+    return 0;
+}
+
+u16 GetMysteryGiftBaseBlock(void)
+{
+    return 0;
+}
+
+#endif // FREE_MYSTERY_GIFT

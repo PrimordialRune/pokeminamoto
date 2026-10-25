@@ -4,6 +4,7 @@
 #include "contest.h"
 #include "contest_effect.h"
 
+#ifndef FREE_CONTESTS
 static void ContestEffect_HighlyAppealing(void);
 static void ContestEffect_UserMoreEasilyStartled(void);
 static void ContestEffect_GreatAppealButNoMoreMoves(void);
@@ -54,8 +55,10 @@ static u8 WasAtLeastOneOpponentJammed(void);
 static void JamContestant(u8, u8);
 static s16 RoundTowardsZero(s16);
 static s16 RoundUp(s16);
+#endif
 
 #include "data/contest_moves.h"
+#ifndef FREE_CONTESTS
 
 bool8 AreMovesContestCombo(u16 lastMove, u16 nextMove)
 {
@@ -1091,3 +1094,11 @@ static s16 RoundUp(s16 score)
         score += 10 - absScore;
     return score;
 }
+
+#else // FREE_CONTESTS
+
+// Contests are gone (FREE_CONTESTS); these stubs keep the callers linking.
+
+
+
+#endif // FREE_CONTESTS

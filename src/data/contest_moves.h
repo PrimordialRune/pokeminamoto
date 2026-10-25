@@ -3195,6 +3195,7 @@ const bool8 gComboStarterLookupTable[] =
     TRUE
 };
 
+#ifndef FREE_CONTESTS
 void (*const gContestEffectFuncs[])(void) =
 {
     ContestEffect_HighlyAppealing,
@@ -3246,3 +3247,4 @@ void (*const gContestEffectFuncs[])(void) =
     ContestEffect_BetterWhenAudienceExcited,
     ContestEffect_DontExciteAudience,
 };
+#endif // FREE_CONTESTS

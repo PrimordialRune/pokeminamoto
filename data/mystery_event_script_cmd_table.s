@@ -1,3 +1,5 @@
+#include "config.h"
+#ifndef FREE_MYSTERY_EVENT_BUFFERS
 	.section script_data, "aw", %progbits
 
 	.align 2
@@ -20,3 +22,4 @@ gMysteryEventScriptCmdTable::
 	.4byte MEScrCmd_checksum            @ 0x0f
 	.4byte MEScrCmd_crc                 @ 0x10
 gMysteryEventScriptCmdTableEnd::
+#endif

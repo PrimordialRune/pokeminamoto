@@ -14,6 +14,8 @@
 #include "m4a.h"
 #include "constants/rgb.h"
 
+#ifndef FREE_BERRY_FIX_PROGRAM
+
 enum {
     WIN_TITLE,          // "Berry Program Update" header on the first screen
     WIN_MSG_BODY,
@@ -380,3 +382,5 @@ static void BerryFix_HideScene(void)
     HideBg(0);
     HideBg(1);
 }
+
+#endif // FREE_BERRY_FIX_PROGRAM

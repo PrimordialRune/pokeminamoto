@@ -7,6 +7,7 @@
 #include "mystery_gift.h"
 #include "mystery_event_script.h"
 #include "mystery_gift_client.h"
+#ifndef FREE_MYSTERY_GIFT
 
 enum {
     FUNC_INIT,
@@ -302,3 +303,11 @@ static u32 MysteryGiftClient_CallFunc(struct MysteryGiftClient *client)
     };
     return funcs[client->funcId](client);
 }
+
+#else // FREE_MYSTERY_GIFT
+
+// Mystery Gift, Wonder Cards/News and the e-Reader are gone; these stubs keep the callers linking.
+
+
+
+#endif // FREE_MYSTERY_GIFT

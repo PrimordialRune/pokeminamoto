@@ -4,6 +4,7 @@
 #include "battle_gfx_sfx_util.h"
 #include "bg.h"
 #include "contest.h"
+#ifndef FREE_CONTESTS
 #include "contest_util.h"
 #include "contest_link.h"
 #include "contest_painting.h"
@@ -2781,3 +2782,156 @@ bool8 IsWirelessContest(void)
     else
         return FALSE;
 }
+
+#else // FREE_CONTESTS
+
+// Contests are gone (FREE_CONTESTS); these stubs keep the callers linking.
+
+void TryEnterContestMon(void)
+{
+}
+
+u16 HasMonWonThisContestBefore(void)
+{
+    return 0;
+}
+
+void GiveMonContestRibbon(void)
+{
+}
+
+void GetContestMonConditionRanking(void)
+{
+}
+
+void GetContestMonCondition(void)
+{
+}
+
+void GetContestWinnerId(void)
+{
+}
+
+void BufferContestWinnerTrainerName(void)
+{
+}
+
+void BufferContestWinnerMonName(void)
+{
+}
+
+void StartContest(void)
+{
+}
+
+void ShowContestResults(void)
+{
+}
+
+void GetContestPlayerId(void)
+{
+}
+
+void ContestLinkTransfer(u8 category)
+{
+}
+
+void SetContestTrainerGfxIds(void)
+{
+}
+
+void GetNpcContestantLocalId(void)
+{
+}
+
+void BufferContestTrainerAndMonNames(void)
+{
+}
+
+void DoesContestCategoryHaveMuseumPainting(void)
+{
+}
+
+void SaveMuseumContestPainting(void)
+{
+}
+
+void ShouldReadyContestArtist(void)
+{
+}
+
+u8 CountPlayerMuseumPaintings(void)
+{
+    return 0;
+}
+
+void GetContestantNamesAtRank(void)
+{
+}
+
+void ShowContestPainting(void)
+{
+}
+
+void SetLinkContestPlayerGfx(void)
+{
+}
+
+void LoadLinkContestPlayerPalettes(void)
+{
+}
+
+bool8 GiveMonArtistRibbon(void)
+{
+    return 0;
+}
+
+bool8 IsContestDebugActive(void)
+{
+    return 0;
+}
+
+void ShowContestEntryMonPic(void)
+{
+}
+
+void HideContestEntryMonPic(void)
+{
+}
+
+void GetContestMultiplayerId(void)
+{
+}
+
+void GenerateContestRand(void)
+{
+}
+
+bool8 LinkContestWaitForConnection(void)
+{
+    return 0;
+}
+
+void LinkContestTryShowWirelessIndicator(void)
+{
+}
+
+void LinkContestTryHideWirelessIndicator(void)
+{
+}
+
+bool8 IsContestWithRSPlayer(void)
+{
+    return 0;
+}
+
+void ClearLinkContestFlags(void)
+{
+}
+
+bool8 IsWirelessContest(void)
+{
+    return 0;
+}
+
+#endif // FREE_CONTESTS
