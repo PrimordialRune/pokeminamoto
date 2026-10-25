@@ -24,6 +24,7 @@
 #include "intro.h"
 #include "main.h"
 #include "trainer_hill.h"
+#include "test_runner.h"
 #include "constants/rgb.h"
 
 static void VBlankIntr(void);
@@ -182,7 +183,11 @@ static void InitMainCallbacks(void)
     gTrainerHillVBlankCounter = NULL;
     gMain.vblankCounter2 = 0;
     gMain.callback1 = NULL;
+#ifdef TEST_BUILD
+    SetMainCallback2(CB2_TestRunner); // boot straight into the rule tests (include/test_runner.h)
+#else
     SetMainCallback2(CB2_InitCopyrightScreenAfterBootup);
+#endif
     gSaveBlock2Ptr = &gSaveblock2;
     gPokemonStoragePtr = &gPokemonStorage;
 }

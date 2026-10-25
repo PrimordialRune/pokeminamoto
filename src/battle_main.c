@@ -60,6 +60,7 @@
 #include "constants/songs.h"
 #include "constants/trainers.h"
 #include "cable_club.h"
+#include "test_runner.h"
 
 extern const struct BgTemplate gBattleBgTemplates[];
 extern const struct WindowTemplate *const gBattleWindowTemplates[];
@@ -3043,6 +3044,7 @@ void BeginBattleIntro(void)
 
 static void BattleMainCB1(void)
 {
+    TEST_BATTLE_TICK();
     gBattleMainFunc();
 
     for (gActiveBattler = 0; gActiveBattler < gBattlersCount; gActiveBattler++)

@@ -40,3 +40,21 @@ jobs:
 
       - name: Balance model still parses the sources
         run: python3 tools/balance/test_gamedata.py
+
+  # Rule tests: tools/check_data.py, then the TEST=1 ROM (src/test/) run in the headless emulator
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install toolchain
+        run: LEAN=1 bash tools/setup-cloud.sh
+
+      - name: Build the headless emulator host (tools/gba-emu)
+        run: |
+          sudo apt-get install -y libmgba-dev
+          make -s -C tools/gba-emu
+
+      - name: make check
+        run: make check -j$(nproc)

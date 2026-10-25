@@ -66,6 +66,13 @@ REGRESS ?= 0
 ifeq ($(REGRESS),1)
   RELEASE_SUFFIX := $(RELEASE_SUFFIX)_regress
 endif
+# `make TEST=1` builds the in-ROM test runner (test/, include/test_runner.h) into its own
+# _test folder; `make check` builds it and runs it in gbaemu along with tools/check_data.py.
+TEST ?= 0
+ifeq ($(TEST),1)
+  RELEASE_SUFFIX := $(RELEASE_SUFFIX)_test
+  CPPFLAGS_TEST := -DTEST_BUILD
+endif
 ROM := $(FILE_NAME)_modern$(RELEASE_SUFFIX).gba
 OBJ_DIR := $(BUILD_DIR)/modern$(RELEASE_SUFFIX)
 ELF := $(ROM:.gba=.elf)
@@ -103,6 +110,7 @@ endif
 ifeq ($(REGRESS),1)
   CPPFLAGS += -DREGRESS_HOOKS
 endif
+CPPFLAGS += $(CPPFLAGS_TEST)
 # Warnings for the modern build, after pokeemerald-expansion's set. Most are reported
 # without stopping the build because vanilla code still trips them; the ones listed
 # with -Werror= are always real bugs, so they fail it.
@@ -200,6 +208,9 @@ ifneq ($(REGRESS),1)
   # Keep the test hooks out entirely, so normal ROMs link exactly as before
   C_SRCS := $(filter-out $(C_SUBDIR)/regress.c,$(C_SRCS))
 endif
+ifneq ($(TEST),1)
+  C_SRCS := $(filter-out $(C_SUBDIR)/test/%,$(C_SRCS))
+endif
 C_OBJS := $(patsubst $(C_SUBDIR)/%.c,$(C_BUILDDIR)/%.o,$(C_SRCS))
 
 C_ASM_SRCS := $(wildcard $(C_SUBDIR)/*.s $(C_SUBDIR)/*/*.s $(C_SUBDIR)/*/*/*.s)
@@ -232,6 +243,13 @@ release: all
 
 # Other rules
 rom: $(ROM)
+
+# Rule tests: data checks, then the test ROM in gbaemu (tools/test/run_tests.py)
+.PHONY: check
+check:
+	python3 tools/check_data.py
+	$(MAKE) release TEST=1
+	python3 tools/test/run_tests.py $(FILE_NAME)_modern_release_test.gba
 
 syms: $(SYM)
 
