@@ -414,8 +414,19 @@ static void WaitForVBlank(void)
     REGRESS_FRAME_END();
     gMain.intrCheck &= ~INTR_FLAG_VBLANK;
 
-    while (!(gMain.intrCheck & INTR_FLAG_VBLANK))
-        ;
+    if (gWirelessCommType != 0)
+    {
+        // Desynchronization may occur if the wireless adapter is connected
+        // and the CPU is halted by VBlankIntrWait.
+        while (!(gMain.intrCheck & INTR_FLAG_VBLANK))
+            ;
+    }
+    else
+    {
+        // Halt the CPU until the VBlank interrupt instead of spinning, which
+        // saves battery. The BIOS watches INTR_CHECK, which VBlankIntr sets.
+        VBlankIntrWait();
+    }
 }
 
 void SetTrainerHillVBlankCounter(u32 *counter)
