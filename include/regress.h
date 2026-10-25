@@ -60,8 +60,31 @@ struct RegressState
     u16 dumpWords;
     u32 lastVblank;
     u16 dump[REGRESS_DUMP_WORDS];
-    // Appended after dump[]; run.py reads it by offset.
+    // Resource limits, appended after the dump (tools/regress reads them at
+    // offset 40 + 2 * REGRESS_DUMP_WORDS). The harness zeroes them per scene.
+    // The two "Min" fields store the value + 1, so that 0 means "never sampled".
+    u16 tileHigh;        // highest OBJ tile index + 1 ever handed out by AllocSpriteTiles
+    u16 tileFreeRunMin;  // smallest "largest free run of OBJ tiles" sampled, plus 1
+    u16 palFreeMin;      // fewest free OBJ palette slots sampled, plus 1
+    u16 spritesMax;      // most gSprites in use
+    u16 objEventsMax;    // most active object events
+    u16 spriteFails;     // CreateSprite* calls that returned MAX_SPRITES
+    u16 paletteFails;    // LoadSpritePalette/AllocSpritePalette with no free slot
+    u16 tileFails;       // AllocSpriteTiles calls that found no room
+    u16 windowFails;     // AddWindow* calls that returned WINDOW_NONE
+    u16 pad;
+    const u8 *tileBitmap;   // sSpriteTileAllocBitmap, set by ResetSpriteData
+    const u16 *palTags;     // sSpritePaletteTags
+    // Appended after the limits; run.py reads it by offset (40 + 2 * REGRESS_DUMP_WORDS + 28).
     u32 stackLowest; // lowest IWRAM address the system stack has touched (0 until measured)
+};
+
+enum
+{
+    REGRESS_FAIL_SPRITE,
+    REGRESS_FAIL_PALETTE,
+    REGRESS_FAIL_TILES,
+    REGRESS_FAIL_WINDOW,
 };
 
 extern struct RegressState gRegress;
