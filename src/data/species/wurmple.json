@@ -1,0 +1,57 @@
+{
+    "species": "WURMPLE",
+    "name": "WURMPLE",
+    "nationalDex": 265,
+    "hoennDex": 14,
+    "baseStats": {"hp": 45, "attack": 45, "defense": 35, "speed": 20, "spAttack": 20, "spDefense": 30},
+    "types": ["BUG", "BUG"],
+    "catchRate": 255,
+    "expYield": 54,
+    "evYield": {"hp": 1},
+    "genderRatio": 50,
+    "eggCycles": 15,
+    "friendship": 70,
+    "growthRate": "MEDIUM_FAST",
+    "eggGroups": ["BUG", "BUG"],
+    "abilities": ["SHIELD_DUST", "NONE"],
+    "safariZoneFleeRate": 0,
+    "bodyColor": "RED",
+    "cryId": 290,
+    "evolutions": [
+        {"method": "LEVEL_SILCOON", "param": 7, "into": "SILCOON"},
+        {"method": "LEVEL_CASCOON", "param": 7, "into": "CASCOON"}
+    ],
+    "levelUpMoves": [[1, "TACKLE"], [1, "STRING_SHOT"], [5, "POISON_STING"]],
+    "tmhm": [],
+    "tutor": [],
+    "pokedex": {
+        "category": "WORM",
+        "height": 3,
+        "weight": 36,
+        "text": [
+            "It sticks to tree branches and eats",
+            "leaves. The thread it spits from its mouth,",
+            "which becomes gooey when it touches",
+            "air, slows the movement of its foes."
+        ],
+        "pokemonScale": 711,
+        "pokemonOffset": 24,
+        "trainerScale": 256,
+        "trainerOffset": 0
+    },
+    "graphics": {
+        "frontPic": "graphics/pokemon/wurmple/anim_front.4bpp.lz",
+        "stillFrontPic": "graphics/pokemon/wurmple/front.4bpp.lz",
+        "backPic": "graphics/pokemon/wurmple/back.4bpp.lz",
+        "palette": "graphics/pokemon/wurmple/normal.gbapal.lz",
+        "shinyPalette": "graphics/pokemon/wurmple/shiny.gbapal.lz",
+        "icon": "graphics/pokemon/wurmple/icon.4bpp",
+        "iconPalette": 0,
+        "footprint": "graphics/pokemon/wurmple/footprint.1bpp",
+        "frontCoords": [32, 40, 14],
+        "backCoords": [56, 48, 11],
+        "frontAnimFrames": [[[0, 22], [1, 35], [0, 10]]],
+        "frontAnim": "V_SQUISH_AND_BOUNCE",
+        "backAnim": "V_STRETCH"
+    }
+}

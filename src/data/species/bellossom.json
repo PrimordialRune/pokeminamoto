@@ -1,0 +1,68 @@
+{
+    "species": "BELLOSSOM",
+    "name": "BELLOSSOM",
+    "nationalDex": 182,
+    "hoennDex": 91,
+    "baseStats": {"hp": 75, "attack": 80, "defense": 85, "speed": 50, "spAttack": 90, "spDefense": 100},
+    "types": ["GRASS", "GRASS"],
+    "catchRate": 45,
+    "expYield": 184,
+    "evYield": {"spDefense": 3},
+    "genderRatio": 50,
+    "eggCycles": 20,
+    "friendship": 70,
+    "growthRate": "MEDIUM_SLOW",
+    "eggGroups": ["GRASS", "GRASS"],
+    "abilities": ["CHLOROPHYLL", "NONE"],
+    "safariZoneFleeRate": 0,
+    "bodyColor": "GREEN",
+    "levelUpMoves": [
+        [1, "ABSORB"],
+        [1, "GROWL"],
+        [1, "STUN_SPORE"],
+        [1, "RAZOR_LEAF"],
+        [44, "PETAL_DANCE"],
+        [55, "SOLAR_BEAM"]
+    ],
+    "tmhm": ["CUT", "FLASH"],
+    "tutor": [
+        "SWORDS_DANCE",
+        "DOUBLE_EDGE",
+        "MIMIC",
+        "SUBSTITUTE",
+        "ROLLOUT",
+        "ENDURE",
+        "SWAGGER",
+        "SLEEP_TALK"
+    ],
+    "pokedex": {
+        "category": "FLOWER",
+        "height": 4,
+        "weight": 58,
+        "text": [
+            "Its flower petals deepen in color through",
+            "exposure to sunlight. When cloudy weather",
+            "persists, it does a dance that is thought",
+            "to be a ritual for summoning the sun."
+        ],
+        "pokemonScale": 472,
+        "pokemonOffset": 21,
+        "trainerScale": 256,
+        "trainerOffset": 0
+    },
+    "graphics": {
+        "frontPic": "graphics/pokemon/bellossom/anim_front.4bpp.lz",
+        "stillFrontPic": "graphics/pokemon/bellossom/front.4bpp.lz",
+        "backPic": "graphics/pokemon/bellossom/back.4bpp.lz",
+        "palette": "graphics/pokemon/bellossom/normal.gbapal.lz",
+        "shinyPalette": "graphics/pokemon/bellossom/shiny.gbapal.lz",
+        "icon": "graphics/pokemon/bellossom/icon.4bpp",
+        "iconPalette": 1,
+        "footprint": "graphics/pokemon/bellossom/footprint.1bpp",
+        "frontCoords": [32, 40, 14],
+        "backCoords": [48, 48, 11],
+        "frontAnimFrames": [[[0, 22], [1, 22], [0, 22], [1, 22], [0, 22], [1, 22], [0, 22]]],
+        "frontAnim": "SWING_CONCAVE",
+        "backAnim": "CONVEX_DOUBLE_ARC"
+    }
+}

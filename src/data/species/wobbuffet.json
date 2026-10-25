@@ -1,0 +1,52 @@
+{
+    "species": "WOBBUFFET",
+    "name": "WOBBUFFET",
+    "nationalDex": 202,
+    "hoennDex": 161,
+    "baseStats": {"hp": 190, "attack": 33, "defense": 58, "speed": 33, "spAttack": 33, "spDefense": 58},
+    "types": ["PSYCHIC", "PSYCHIC"],
+    "catchRate": 45,
+    "expYield": 177,
+    "evYield": {"hp": 2},
+    "genderRatio": 50,
+    "eggCycles": 20,
+    "friendship": 70,
+    "growthRate": "MEDIUM_FAST",
+    "eggGroups": ["AMORPHOUS", "AMORPHOUS"],
+    "abilities": ["SHADOW_TAG", "NONE"],
+    "safariZoneFleeRate": 4,
+    "bodyColor": "BLUE",
+    "levelUpMoves": [[1, "COUNTER"], [1, "COUNTER"], [1, "LIGHT_SCREEN"], [1, "SELF_DESTRUCT"]],
+    "tmhm": [],
+    "tutor": [],
+    "pokedex": {
+        "category": "PATIENT",
+        "height": 13,
+        "weight": 285,
+        "text": [
+            "Usually docile, a WOBBUFFET strikes back",
+            "ferociously if its black tail is attacked.",
+            "It makes its lair in caves where it waits",
+            "for nightfall."
+        ],
+        "pokemonScale": 274,
+        "pokemonOffset": 4,
+        "trainerScale": 256,
+        "trainerOffset": 0
+    },
+    "graphics": {
+        "frontPic": "graphics/pokemon/wobbuffet/anim_front.4bpp.lz",
+        "stillFrontPic": "graphics/pokemon/wobbuffet/front.4bpp.lz",
+        "backPic": "graphics/pokemon/wobbuffet/back.4bpp.lz",
+        "palette": "graphics/pokemon/wobbuffet/normal.gbapal.lz",
+        "shinyPalette": "graphics/pokemon/wobbuffet/shiny.gbapal.lz",
+        "icon": "graphics/pokemon/wobbuffet/icon.4bpp",
+        "iconPalette": 0,
+        "footprint": "graphics/pokemon/wobbuffet/footprint.1bpp",
+        "frontCoords": [56, 56, 6],
+        "backCoords": [56, 40, 12],
+        "frontAnimFrames": [[[0, 15], [1, 20], [0, 15], [1, 20], [0, 15]], [[0, 20], [2, 20], [0, 20], [2, 20]]],
+        "frontAnim": "DEEP_V_SQUISH_AND_BOUNCE",
+        "backAnim": "V_STRETCH"
+    }
+}

@@ -1,0 +1,82 @@
+{
+    "species": "GIRAFARIG",
+    "name": "GIRAFARIG",
+    "nationalDex": 203,
+    "hoennDex": 164,
+    "baseStats": {"hp": 70, "attack": 80, "defense": 65, "speed": 85, "spAttack": 90, "spDefense": 65},
+    "types": ["NORMAL", "PSYCHIC"],
+    "catchRate": 60,
+    "expYield": 149,
+    "evYield": {"spAttack": 2},
+    "heldItems": ["NONE", "PERSIM_BERRY"],
+    "genderRatio": 50,
+    "eggCycles": 20,
+    "friendship": 70,
+    "growthRate": "MEDIUM_FAST",
+    "eggGroups": ["FIELD", "FIELD"],
+    "abilities": ["INNER_FOCUS", "EARLY_BIRD"],
+    "safariZoneFleeRate": 4,
+    "bodyColor": "YELLOW",
+    "levelUpMoves": [
+        [1, "TACKLE"],
+        [1, "GROWL"],
+        [7, "TACKLE"],
+        [13, "CONFUSION"],
+        [19, "STOMP"],
+        [25, "LEER"],
+        [31, "AGILITY"],
+        [37, "TELEPORT"],
+        [43, "PSYBEAM"],
+        [49, "BITE"]
+    ],
+    "tmhm": ["STRENGTH", "FLASH", "ROCK_SMASH"],
+    "tutor": [
+        "BODY_SLAM",
+        "DOUBLE_EDGE",
+        "MIMIC",
+        "DREAM_EATER",
+        "THUNDER_WAVE",
+        "SUBSTITUTE",
+        "PSYCH_UP",
+        "ROLLOUT",
+        "ENDURE",
+        "MUD_SLAP",
+        "SWAGGER",
+        "SLEEP_TALK",
+        "SWIFT"
+    ],
+    "eggMoves": ["TAKE_DOWN", "AMNESIA", "LEER", "PSYCHIC", "FURY_SWIPES", "MEDITATE", "RECOVER", "REFLECT"],
+    "pokedex": {
+        "category": "LONG NECK",
+        "height": 15,
+        "weight": 415,
+        "text": [
+            "A GIRAFARIG is an herbivore--it eats",
+            "grass and tree shoots. While it is eating,",
+            "its tail makes chewing and swallowing",
+            "motions as if it were also eating."
+        ],
+        "pokemonScale": 281,
+        "pokemonOffset": 1,
+        "trainerScale": 256,
+        "trainerOffset": 0
+    },
+    "graphics": {
+        "frontPic": "graphics/pokemon/girafarig/anim_front.4bpp.lz",
+        "stillFrontPic": "graphics/pokemon/girafarig/front.4bpp.lz",
+        "backPic": "graphics/pokemon/girafarig/back.4bpp.lz",
+        "palette": "graphics/pokemon/girafarig/normal.gbapal.lz",
+        "shinyPalette": "graphics/pokemon/girafarig/shiny.gbapal.lz",
+        "icon": "graphics/pokemon/girafarig/icon.4bpp",
+        "iconPalette": 1,
+        "footprint": "graphics/pokemon/girafarig/footprint.1bpp",
+        "frontCoords": [64, 64, 3],
+        "backCoords": [64, 56, 5],
+        "frontAnimFrames": [
+            [[0, 15], [1, 20], [0, 15], [1, 10], [0, 15], [1, 10], [0, 15]],
+            [[0, 20], [2, 20], [0, 20], [2, 20]]
+        ],
+        "frontAnim": "V_JUMPS_BIG",
+        "backAnim": "SHRINK_GROW_VIBRATE"
+    }
+}

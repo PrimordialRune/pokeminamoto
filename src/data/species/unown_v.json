@@ -1,0 +1,15 @@
+{
+    "species": "UNOWN_V",
+    "graphics": {
+        "frontPic": "graphics/pokemon/unown/v/anim_front.4bpp.lz",
+        "stillFrontPic": "graphics/pokemon/unown/v/front.4bpp.lz",
+        "backPic": "graphics/pokemon/unown/v/back.4bpp.lz",
+        "palette": "@UNOWN",
+        "shinyPalette": "@UNOWN",
+        "icon": "graphics/pokemon/unown/v/icon.4bpp",
+        "iconPalette": 0,
+        "frontCoords": [32, 32, 18],
+        "backCoords": [40, 48, 11],
+        "frontAnimFrames": [[[0, 30], [1, 30], [0, 1]]]
+    }
+}

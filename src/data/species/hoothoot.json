@@ -1,0 +1,90 @@
+{
+    "species": "HOOTHOOT",
+    "name": "HOOTHOOT",
+    "nationalDex": 163,
+    "hoennDex": 318,
+    "baseStats": {"hp": 60, "attack": 30, "defense": 30, "speed": 50, "spAttack": 36, "spDefense": 56},
+    "types": ["NORMAL", "FLYING"],
+    "catchRate": 255,
+    "expYield": 58,
+    "evYield": {"hp": 1},
+    "genderRatio": 50,
+    "eggCycles": 15,
+    "friendship": 70,
+    "growthRate": "MEDIUM_FAST",
+    "eggGroups": ["FLYING", "FLYING"],
+    "abilities": ["INSOMNIA", "KEEN_EYE"],
+    "safariZoneFleeRate": 0,
+    "bodyColor": "BROWN",
+    "evolutions": [{"method": "LEVEL", "param": 20, "into": "NOCTOWL"}],
+    "levelUpMoves": [
+        [1, "TACKLE"],
+        [1, "GROWL"],
+        [6, "LEER"],
+        [11, "PECK"],
+        [16, "HYPNOSIS"],
+        [22, "REFLECT"],
+        [28, "TAKE_DOWN"],
+        [34, "CONFUSION"],
+        [48, "DREAM_EATER"]
+    ],
+    "tmhm": ["FLY", "FLASH"],
+    "tutor": [
+        "DOUBLE_EDGE",
+        "MIMIC",
+        "DREAM_EATER",
+        "SUBSTITUTE",
+        "ROLLOUT",
+        "ENDURE",
+        "MUD_SLAP",
+        "SWAGGER",
+        "SLEEP_TALK",
+        "SWIFT"
+    ],
+    "eggMoves": ["MIRROR_MOVE", "SUPERSONIC", "TACKLE", "WING_ATTACK", "WHIRLWIND", "SKY_ATTACK", "GROWL"],
+    "pokedex": {
+        "category": "OWL",
+        "height": 7,
+        "weight": 212,
+        "text": [
+            "It has an internal organ that senses",
+            "the earth's rotation. Using this special",
+            "organ, a HOOTHOOT begins hooting at",
+            "precisely the same time every day."
+        ],
+        "pokemonScale": 380,
+        "pokemonOffset": -2,
+        "trainerScale": 256,
+        "trainerOffset": 0
+    },
+    "graphics": {
+        "frontPic": "graphics/pokemon/hoothoot/anim_front.4bpp.lz",
+        "stillFrontPic": "graphics/pokemon/hoothoot/front.4bpp.lz",
+        "backPic": "graphics/pokemon/hoothoot/back.4bpp.lz",
+        "palette": "graphics/pokemon/hoothoot/normal.gbapal.lz",
+        "shinyPalette": "graphics/pokemon/hoothoot/shiny.gbapal.lz",
+        "icon": "graphics/pokemon/hoothoot/icon.4bpp",
+        "iconPalette": 2,
+        "footprint": "graphics/pokemon/hoothoot/footprint.1bpp",
+        "frontCoords": [40, 40, 13],
+        "backCoords": [48, 48, 8],
+        "frontAnimFrames": [
+            [
+                [1, 7],
+                [0, 7],
+                [1, 7],
+                [0, 7],
+                [1, 7],
+                [0, 7],
+                [1, 7],
+                [0, 7],
+                [1, 7],
+                [0, 7],
+                [1, 7],
+                [0, 7]
+            ]
+        ],
+        "frontAnim": "V_SLIDE_SLOW",
+        "backAnim": "CONVEX_DOUBLE_ARC"
+    }
+}

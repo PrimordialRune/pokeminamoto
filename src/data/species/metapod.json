@@ -1,0 +1,53 @@
+{
+    "species": "METAPOD",
+    "name": "METAPOD",
+    "nationalDex": 11,
+    "hoennDex": 213,
+    "baseStats": {"hp": 50, "attack": 20, "defense": 55, "speed": 30, "spAttack": 25, "spDefense": 25},
+    "types": ["BUG", "BUG"],
+    "catchRate": 120,
+    "expYield": 72,
+    "evYield": {"defense": 2},
+    "genderRatio": 50,
+    "eggCycles": 15,
+    "friendship": 70,
+    "growthRate": "MEDIUM_FAST",
+    "eggGroups": ["BUG", "BUG"],
+    "abilities": ["SHED_SKIN", "NONE"],
+    "safariZoneFleeRate": 0,
+    "bodyColor": "GREEN",
+    "evolutions": [{"method": "LEVEL", "param": 10, "into": "BUTTERFREE"}],
+    "levelUpMoves": [[1, "HARDEN"], [7, "HARDEN"]],
+    "tmhm": [],
+    "tutor": [],
+    "pokedex": {
+        "category": "COCOON",
+        "height": 7,
+        "weight": 99,
+        "text": [
+            "Its shell is as hard as an iron slab.",
+            "A METAPOD does not move very much",
+            "because it is preparing its soft innards",
+            "for evolution inside the shell."
+        ],
+        "pokemonScale": 350,
+        "pokemonOffset": 18,
+        "trainerScale": 256,
+        "trainerOffset": 0
+    },
+    "graphics": {
+        "frontPic": "graphics/pokemon/metapod/anim_front.4bpp.lz",
+        "stillFrontPic": "graphics/pokemon/metapod/front.4bpp.lz",
+        "backPic": "graphics/pokemon/metapod/back.4bpp.lz",
+        "palette": "graphics/pokemon/metapod/normal.gbapal.lz",
+        "shinyPalette": "graphics/pokemon/metapod/shiny.gbapal.lz",
+        "icon": "graphics/pokemon/metapod/icon.4bpp",
+        "iconPalette": 1,
+        "footprint": "graphics/pokemon/metapod/footprint.1bpp",
+        "frontCoords": [40, 32, 20],
+        "backCoords": [48, 40, 12],
+        "frontAnimFrames": [[[1, 45], [0, 5]]],
+        "frontAnim": "SWING_CONCAVE",
+        "backAnim": "DIP_RIGHT_SIDE"
+    }
+}

@@ -1,0 +1,93 @@
+{
+    "species": "BARBOACH",
+    "name": "BARBOACH",
+    "nationalDex": 339,
+    "hoennDex": 127,
+    "baseStats": {"hp": 50, "attack": 48, "defense": 43, "speed": 60, "spAttack": 46, "spDefense": 41},
+    "types": ["WATER", "GROUND"],
+    "catchRate": 190,
+    "expYield": 92,
+    "evYield": {"hp": 1},
+    "genderRatio": 50,
+    "eggCycles": 20,
+    "friendship": 70,
+    "growthRate": "MEDIUM_FAST",
+    "eggGroups": ["WATER_2", "WATER_2"],
+    "abilities": ["OBLIVIOUS", "NONE"],
+    "safariZoneFleeRate": 0,
+    "bodyColor": "GRAY",
+    "cryId": 318,
+    "evolutions": [{"method": "LEVEL", "param": 30, "into": "WHISCASH"}],
+    "levelUpMoves": [
+        [1, "SAND_ATTACK"],
+        [6, "SAND_ATTACK"],
+        [6, "WATER_GUN"],
+        [11, "WATER_GUN"],
+        [16, "EARTHQUAKE"],
+        [21, "AMNESIA"],
+        [26, "REST"],
+        [26, "TACKLE"],
+        [31, "EARTHQUAKE"],
+        [36, "PSYCHIC"],
+        [41, "FISSURE"]
+    ],
+    "tmhm": ["SURF", "WATERFALL", "DIVE"],
+    "tutor": [
+        "DOUBLE_EDGE",
+        "MIMIC",
+        "SUBSTITUTE",
+        "ROLLOUT",
+        "ICY_WIND",
+        "ENDURE",
+        "MUD_SLAP",
+        "SWAGGER",
+        "SLEEP_TALK"
+    ],
+    "eggMoves": ["THRASH", "WRAP", "THUNDER_SHOCK"],
+    "pokedex": {
+        "category": "WHISKERS",
+        "height": 4,
+        "weight": 19,
+        "text": [
+            "Its body is covered with a slimy film.",
+            "The film acts as a barrier to prevent germs",
+            "in muddy water from entering the",
+            "BARBOACH's body."
+        ],
+        "pokemonScale": 581,
+        "pokemonOffset": -3,
+        "trainerScale": 256,
+        "trainerOffset": 0
+    },
+    "graphics": {
+        "frontPic": "graphics/pokemon/barboach/anim_front.4bpp.lz",
+        "stillFrontPic": "graphics/pokemon/barboach/front.4bpp.lz",
+        "backPic": "graphics/pokemon/barboach/back.4bpp.lz",
+        "palette": "graphics/pokemon/barboach/normal.gbapal.lz",
+        "shinyPalette": "graphics/pokemon/barboach/shiny.gbapal.lz",
+        "icon": "graphics/pokemon/barboach/icon.4bpp",
+        "iconPalette": 0,
+        "footprint": "graphics/pokemon/barboach/footprint.1bpp",
+        "frontCoords": [32, 48, 11],
+        "backCoords": [48, 48, 10],
+        "frontAnimFrames": [
+            [
+                [0, 15],
+                [1, 15],
+                [0, 15],
+                [1, 15],
+                [0, 15],
+                [1, 15],
+                [0, 15],
+                [1, 15],
+                [0, 15],
+                [1, 15],
+                [0, 15],
+                [1, 15],
+                [0, 50]
+            ]
+        ],
+        "frontAnim": "BOUNCE_ROTATE_TO_SIDES_SLOW",
+        "backAnim": "V_STRETCH"
+    }
+}

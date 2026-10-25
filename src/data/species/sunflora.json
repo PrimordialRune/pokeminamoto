@@ -1,0 +1,71 @@
+{
+    "species": "SUNFLORA",
+    "name": "SUNFLORA",
+    "nationalDex": 192,
+    "hoennDex": 337,
+    "baseStats": {"hp": 75, "attack": 75, "defense": 55, "speed": 30, "spAttack": 105, "spDefense": 85},
+    "types": ["GRASS", "GRASS"],
+    "catchRate": 120,
+    "expYield": 146,
+    "evYield": {"spAttack": 2},
+    "genderRatio": 50,
+    "eggCycles": 20,
+    "friendship": 70,
+    "growthRate": "MEDIUM_SLOW",
+    "eggGroups": ["GRASS", "GRASS"],
+    "abilities": ["CHLOROPHYLL", "NONE"],
+    "safariZoneFleeRate": 0,
+    "bodyColor": "YELLOW",
+    "levelUpMoves": [
+        [1, "ABSORB"],
+        [1, "POUND"],
+        [6, "GROWTH"],
+        [13, "RAZOR_LEAF"],
+        [18, "LEECH_SEED"],
+        [25, "PIN_MISSILE"],
+        [30, "LIGHT_SCREEN"],
+        [37, "PETAL_DANCE"],
+        [42, "SOLAR_BEAM"]
+    ],
+    "tmhm": ["CUT", "FLASH"],
+    "tutor": [
+        "SWORDS_DANCE",
+        "DOUBLE_EDGE",
+        "MIMIC",
+        "SUBSTITUTE",
+        "ROLLOUT",
+        "ENDURE",
+        "SWAGGER",
+        "SLEEP_TALK"
+    ],
+    "pokedex": {
+        "category": "SUN",
+        "height": 8,
+        "weight": 85,
+        "text": [
+            "SUNFLORA convert solar energy into",
+            "nutrition. They are highly active in the",
+            "warm daytime but suddenly stop moving as",
+            "soon as the sun sets."
+        ],
+        "pokemonScale": 444,
+        "pokemonOffset": 15,
+        "trainerScale": 256,
+        "trainerOffset": 0
+    },
+    "graphics": {
+        "frontPic": "graphics/pokemon/sunflora/anim_front.4bpp.lz",
+        "stillFrontPic": "graphics/pokemon/sunflora/front.4bpp.lz",
+        "backPic": "graphics/pokemon/sunflora/back.4bpp.lz",
+        "palette": "graphics/pokemon/sunflora/normal.gbapal.lz",
+        "shinyPalette": "graphics/pokemon/sunflora/shiny.gbapal.lz",
+        "icon": "graphics/pokemon/sunflora/icon.4bpp",
+        "iconPalette": 1,
+        "footprint": "graphics/pokemon/sunflora/footprint.1bpp",
+        "frontCoords": [40, 48, 8],
+        "backCoords": [48, 48, 8],
+        "frontAnimFrames": [[[0, 15], [1, 15], [0, 15]]],
+        "frontAnim": "V_SQUISH_AND_BOUNCE",
+        "backAnim": "H_SLIDE"
+    }
+}

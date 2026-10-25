@@ -1,0 +1,69 @@
+{
+    "species": "CLAMPERL",
+    "name": "CLAMPERL",
+    "nationalDex": 366,
+    "hoennDex": 176,
+    "baseStats": {"hp": 35, "attack": 64, "defense": 85, "speed": 32, "spAttack": 74, "spDefense": 55},
+    "types": ["WATER", "WATER"],
+    "catchRate": 255,
+    "expYield": 142,
+    "evYield": {"defense": 1},
+    "heldItems": ["NONE", "BLUE_SHARD"],
+    "genderRatio": 50,
+    "eggCycles": 20,
+    "friendship": 70,
+    "growthRate": "ERRATIC",
+    "eggGroups": ["WATER_1", "WATER_1"],
+    "abilities": ["SHELL_ARMOR", "NONE"],
+    "safariZoneFleeRate": 0,
+    "bodyColor": "BLUE",
+    "cryId": 341,
+    "evolutions": [
+        {"method": "TRADE_ITEM", "param": "DEEP_SEA_TOOTH", "into": "HUNTAIL"},
+        {"method": "TRADE_ITEM", "param": "DEEP_SEA_SCALE", "into": "GOREBYSS"}
+    ],
+    "levelUpMoves": [[1, "CLAMP"], [1, "WATER_GUN"], [1, "WRAP"], [1, "HARDEN"]],
+    "tmhm": ["SURF", "WATERFALL", "DIVE"],
+    "tutor": [
+        "BODY_SLAM",
+        "DOUBLE_EDGE",
+        "MIMIC",
+        "SUBSTITUTE",
+        "ROLLOUT",
+        "ICY_WIND",
+        "ENDURE",
+        "SWAGGER",
+        "SLEEP_TALK"
+    ],
+    "eggMoves": ["RECOVER", "SAND_ATTACK", "BODY_SLAM", "SUPERSONIC", "BARRIER", "CONFUSE_RAY"],
+    "pokedex": {
+        "category": "BIVALVE",
+        "height": 4,
+        "weight": 525,
+        "text": [
+            "A CLAMPERL slams its shell closed on prey",
+            "to prevent escape. The pearl it creates",
+            "upon evolution is said to be infused with",
+            "a mysterious energy."
+        ],
+        "pokemonScale": 691,
+        "pokemonOffset": 22,
+        "trainerScale": 256,
+        "trainerOffset": 0
+    },
+    "graphics": {
+        "frontPic": "graphics/pokemon/clamperl/anim_front.4bpp.lz",
+        "stillFrontPic": "graphics/pokemon/clamperl/front.4bpp.lz",
+        "backPic": "graphics/pokemon/clamperl/back.4bpp.lz",
+        "palette": "graphics/pokemon/clamperl/normal.gbapal.lz",
+        "shinyPalette": "graphics/pokemon/clamperl/shiny.gbapal.lz",
+        "icon": "graphics/pokemon/clamperl/icon.4bpp",
+        "iconPalette": 0,
+        "footprint": "graphics/pokemon/clamperl/footprint.1bpp",
+        "frontCoords": [40, 40, 14],
+        "backCoords": [64, 40, 13],
+        "frontAnimFrames": [[[0, 15], [1, 15], [0, 15], [1, 15], [0, 15]]],
+        "frontAnim": "TWIST",
+        "backAnim": "DIP_RIGHT_SIDE"
+    }
+}

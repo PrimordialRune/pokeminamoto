@@ -1,0 +1,79 @@
+{
+    "species": "NINCADA",
+    "name": "NINCADA",
+    "nationalDex": 290,
+    "hoennDex": 42,
+    "baseStats": {"hp": 31, "attack": 45, "defense": 90, "speed": 40, "spAttack": 30, "spDefense": 30},
+    "types": ["BUG", "GROUND"],
+    "catchRate": 255,
+    "expYield": 65,
+    "evYield": {"defense": 1},
+    "genderRatio": 50,
+    "eggCycles": 15,
+    "friendship": 70,
+    "growthRate": "ERRATIC",
+    "eggGroups": ["BUG", "BUG"],
+    "abilities": ["COMPOUND_EYES", "NONE"],
+    "safariZoneFleeRate": 0,
+    "bodyColor": "GRAY",
+    "cryId": 301,
+    "evolutions": [
+        {"method": "LEVEL_NINJASK", "param": 20, "into": "NINJASK"},
+        {"method": "LEVEL_SHEDINJA", "param": 20, "into": "SHEDINJA"}
+    ],
+    "levelUpMoves": [
+        [1, "SCRATCH"],
+        [1, "HARDEN"],
+        [5, "LEECH_LIFE"],
+        [9, "SAND_ATTACK"],
+        [14, "FURY_SWIPES"],
+        [19, "LEER"],
+        [25, "SLASH"],
+        [31, "SAND_ATTACK"],
+        [38, "SCRATCH"],
+        [45, "DIG"]
+    ],
+    "tmhm": ["CUT", "FLASH"],
+    "tutor": [
+        "DOUBLE_EDGE",
+        "MIMIC",
+        "SUBSTITUTE",
+        "ROLLOUT",
+        "ENDURE",
+        "MUD_SLAP",
+        "SWAGGER",
+        "SLEEP_TALK",
+        "FURY_CUTTER"
+    ],
+    "eggMoves": ["HARDEN", "TACKLE", "GUST", "GUST"],
+    "pokedex": {
+        "category": "TRAINEE",
+        "height": 5,
+        "weight": 55,
+        "text": [
+            "It makes its nest at the roots of a mighty",
+            "tree. Using its whiskerlike antennae, it",
+            "probes its surroundings in the",
+            "pitch-black darkness of soil."
+        ],
+        "pokemonScale": 405,
+        "pokemonOffset": 21,
+        "trainerScale": 256,
+        "trainerOffset": 0
+    },
+    "graphics": {
+        "frontPic": "graphics/pokemon/nincada/anim_front.4bpp.lz",
+        "stillFrontPic": "graphics/pokemon/nincada/front.4bpp.lz",
+        "backPic": "graphics/pokemon/nincada/back.4bpp.lz",
+        "palette": "graphics/pokemon/nincada/normal.gbapal.lz",
+        "shinyPalette": "graphics/pokemon/nincada/shiny.gbapal.lz",
+        "icon": "graphics/pokemon/nincada/icon.4bpp",
+        "iconPalette": 1,
+        "footprint": "graphics/pokemon/nincada/footprint.1bpp",
+        "frontCoords": [56, 32, 18],
+        "backCoords": [64, 24, 20],
+        "frontAnimFrames": [[[0, 15], [1, 22], [0, 11], [1, 33], [0, 11]]],
+        "frontAnim": "V_SQUISH_AND_BOUNCE",
+        "backAnim": "V_SHAKE_H_SLIDE"
+    }
+}

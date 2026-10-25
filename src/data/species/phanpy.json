@@ -1,0 +1,80 @@
+{
+    "species": "PHANPY",
+    "name": "PHANPY",
+    "nationalDex": 231,
+    "hoennDex": 165,
+    "baseStats": {"hp": 90, "attack": 60, "defense": 60, "speed": 40, "spAttack": 40, "spDefense": 40},
+    "types": ["GROUND", "GROUND"],
+    "catchRate": 120,
+    "expYield": 124,
+    "evYield": {"hp": 1},
+    "genderRatio": 50,
+    "eggCycles": 20,
+    "friendship": 70,
+    "growthRate": "MEDIUM_FAST",
+    "eggGroups": ["FIELD", "FIELD"],
+    "abilities": ["PICKUP", "NONE"],
+    "safariZoneFleeRate": 10,
+    "bodyColor": "BLUE",
+    "evolutions": [{"method": "LEVEL", "param": 25, "into": "DONPHAN"}],
+    "levelUpMoves": [
+        [1, "LEER"],
+        [1, "TACKLE"],
+        [1, "GROWL"],
+        [9, "DEFENSE_CURL"],
+        [17, "THRASH"],
+        [25, "TAKE_DOWN"],
+        [33, "TACKLE"],
+        [41, "HARDEN"],
+        [49, "DOUBLE_EDGE"]
+    ],
+    "tmhm": ["STRENGTH", "ROCK_SMASH"],
+    "tutor": [
+        "BODY_SLAM",
+        "DOUBLE_EDGE",
+        "COUNTER",
+        "MIMIC",
+        "SUBSTITUTE",
+        "ROLLOUT",
+        "ROLLOUT",
+        "ENDURE",
+        "MUD_SLAP",
+        "SWAGGER",
+        "SLEEP_TALK",
+        "DEFENSE_CURL"
+    ],
+    "eggMoves": ["FOCUS_ENERGY", "BODY_SLAM", "ROCK_THROW", "TACKLE", "COUNTER", "FISSURE"],
+    "pokedex": {
+        "category": "LONG NOSE",
+        "height": 5,
+        "weight": 335,
+        "text": [
+            "PHANPY's big ears serve as broad fans.",
+            "When it becomes hot, it flaps the ears",
+            "busily to cool down. Even the young are",
+            "very strong."
+        ],
+        "pokemonScale": 465,
+        "pokemonOffset": 21,
+        "trainerScale": 256,
+        "trainerOffset": 0
+    },
+    "graphics": {
+        "frontPic": "graphics/pokemon/phanpy/anim_front.4bpp.lz",
+        "stillFrontPic": "graphics/pokemon/phanpy/front.4bpp.lz",
+        "backPic": "graphics/pokemon/phanpy/back.4bpp.lz",
+        "palette": "graphics/pokemon/phanpy/normal.gbapal.lz",
+        "shinyPalette": "graphics/pokemon/phanpy/shiny.gbapal.lz",
+        "icon": "graphics/pokemon/phanpy/icon.4bpp",
+        "iconPalette": 0,
+        "footprint": "graphics/pokemon/phanpy/footprint.1bpp",
+        "frontCoords": [40, 32, 16],
+        "backCoords": [48, 40, 14],
+        "frontAnimFrames": [
+            [[0, 15], [1, 20], [0, 15], [1, 10], [0, 15], [1, 10], [0, 15]],
+            [[0, 20], [2, 20], [0, 20], [2, 20]]
+        ],
+        "frontAnim": "H_JUMPS_V_STRETCH",
+        "backAnim": "JOLT_RIGHT"
+    }
+}

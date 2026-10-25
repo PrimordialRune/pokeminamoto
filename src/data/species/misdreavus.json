@@ -1,0 +1,92 @@
+{
+    "species": "MISDREAVUS",
+    "name": "MISDREAVUS",
+    "nationalDex": 200,
+    "hoennDex": 345,
+    "baseStats": {"hp": 60, "attack": 60, "defense": 60, "speed": 85, "spAttack": 85, "spDefense": 85},
+    "types": ["GHOST", "GHOST"],
+    "catchRate": 45,
+    "expYield": 147,
+    "evYield": {"spAttack": 1, "spDefense": 1},
+    "heldItems": ["NONE", "SPELL_TAG"],
+    "genderRatio": 50,
+    "eggCycles": 25,
+    "friendship": 35,
+    "growthRate": "FAST",
+    "eggGroups": ["AMORPHOUS", "AMORPHOUS"],
+    "abilities": ["LEVITATE", "NONE"],
+    "safariZoneFleeRate": 0,
+    "bodyColor": "GRAY",
+    "levelUpMoves": [
+        [1, "GROWL"],
+        [1, "PSYWAVE"],
+        [6, "DISABLE"],
+        [11, "TACKLE"],
+        [17, "CONFUSE_RAY"],
+        [23, "LEER"],
+        [30, "PSYBEAM"],
+        [37, "RECOVER"],
+        [45, "SING"],
+        [53, "DISABLE"]
+    ],
+    "tmhm": ["FLASH"],
+    "tutor": [
+        "DOUBLE_EDGE",
+        "MIMIC",
+        "DREAM_EATER",
+        "THUNDER_WAVE",
+        "SUBSTITUTE",
+        "PSYCH_UP",
+        "ROLLOUT",
+        "ENDURE",
+        "SWAGGER",
+        "SLEEP_TALK",
+        "SWIFT",
+        "DEFENSE_CURL"
+    ],
+    "eggMoves": ["SCREECH", "SELF_DESTRUCT", "MEDITATE", "DISABLE"],
+    "pokedex": {
+        "category": "SCREECH",
+        "height": 7,
+        "weight": 10,
+        "text": [
+            "A MISDREAVUS frightens people with a",
+            "creepy, sobbing cry. It apparently uses",
+            "its red spheres to absorb the fear of foes",
+            "as its nutrition."
+        ],
+        "pokemonScale": 407,
+        "pokemonOffset": -8,
+        "trainerScale": 256,
+        "trainerOffset": 0
+    },
+    "graphics": {
+        "frontPic": "graphics/pokemon/misdreavus/anim_front.4bpp.lz",
+        "stillFrontPic": "graphics/pokemon/misdreavus/front.4bpp.lz",
+        "backPic": "graphics/pokemon/misdreavus/back.4bpp.lz",
+        "palette": "graphics/pokemon/misdreavus/normal.gbapal.lz",
+        "shinyPalette": "graphics/pokemon/misdreavus/shiny.gbapal.lz",
+        "icon": "graphics/pokemon/misdreavus/icon.4bpp",
+        "iconPalette": 0,
+        "footprint": "graphics/pokemon/misdreavus/footprint.1bpp",
+        "frontCoords": [40, 40, 12],
+        "backCoords": [48, 48, 10],
+        "elevation": 8,
+        "frontAnimFrames": [
+            [
+                [1, 10],
+                [0, 10],
+                [1, 10],
+                [0, 10],
+                [1, 10],
+                [0, 10],
+                [1, 10],
+                [0, 10],
+                [1, 10],
+                [0, 10]
+            ]
+        ],
+        "frontAnim": "V_SLIDE_WOBBLE",
+        "backAnim": "H_VIBRATE"
+    }
+}
