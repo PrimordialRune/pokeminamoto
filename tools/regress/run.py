@@ -31,7 +31,10 @@ EMU = os.path.join(ROOT, "tools", "gba-emu", "gbaemu")
 KEYS = {"A": 1, "B": 2, "SELECT": 4, "START": 8, "RIGHT": 16, "LEFT": 32,
         "UP": 64, "DOWN": 128, "R": 256, "L": 512}
 
-CMD_SETUP, CMD_WILD, CMD_TRAINER, CMD_PC, CMD_DUMP, CMD_HEAL, CMD_TV, CMD_CABLE_CLUB = 1, 2, 3, 4, 5, 6, 7, 8
+CMD_SETUP, CMD_WILD, CMD_TRAINER, CMD_PC, CMD_DUMP, CMD_HEAL, CMD_TV, CMD_CABLE_CLUB, CMD_SCENE = 1, 2, 3, 4, 5, 6, 7, 8, 9
+(SCENE_EVOLUTION, SCENE_NAMING, SCENE_EGG_HATCH, SCENE_INGAME_TRADE, SCENE_HALL_OF_FAME,
+ SCENE_DOUBLE_BATTLE, SCENE_SUBSTITUTE, SCENE_BEDROOM_PC, SCENE_POKENAV, SCENE_SAVE_FAILED,
+ SCENE_SAVE_FAILED_HOF, SCENE_LOAD_HOF) = range(1, 13)
 
 # Start menu order with the Pokedex and Pokemon flags set and no PokeNav
 MENU = ["POKEDEX", "POKEMON", "BAG", "PLAYER", "SAVE", "OPTION", "EXIT"]
@@ -135,8 +138,9 @@ class Emu:
         # heapPeak .. busyLinesMax (offsets 8..35)
         self.cmd(f"write {self.rs + 8:#x} {'00' * 28}")
 
-    def command(self, c, wait=600):
+    def command(self, c, wait=600, arg=0):
         done = self.u8(self.rs + 5)
+        self.cmd(f"write {self.rs + 7:#x} {arg:02x}")
         self.cmd(f"write {self.rs + 4:#x} {c:02x}")
         for _ in range(wait // 2):
             self.run(2)

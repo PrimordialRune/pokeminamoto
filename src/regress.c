@@ -35,11 +35,23 @@
 #include "constants/flags.h"
 #include "constants/battle_setup.h"
 #include "constants/event_objects.h"
+#include "constants/trade.h"
+#include "daycare.h"
+#include "evolution_scene.h"
+#include "hall_of_fame.h"
+#include "naming_screen.h"
+#include "decompress.h"
+#include "pokenav.h"
+#include "save.h"
 
 EWRAM_DATA struct RegressState gRegress = {0};
-static EWRAM_DATA u8 sScript[16] = {0};
+static EWRAM_DATA u8 sScript[32] = {0};
 
 extern const u8 SPECIAL_ShowPokemonStorageSystemPC[];
+extern const u8 SPECIAL_EggHatch[];
+extern const u8 SPECIAL_BedroomPC[];
+extern const u8 SPECIAL_CreateInGameTradePokemon[];
+extern const u8 SPECIAL_DoInGameTradeScene[];
 
 #define SCROP_END           0x02
 #define SCROP_SPECIAL       0x25
@@ -223,6 +235,105 @@ static void OpenPC(void)
     ScriptContext_SetupScript(sScript);
 }
 
+static u8 *AddSpecial(u8 *s, const u8 *specialId)
+{
+    u16 special = (u32)specialId;
+    *s++ = SCROP_SPECIAL;
+    *s++ = special & 0xFF;
+    *s++ = special >> 8;
+    return s;
+}
+
+static void StartScene(u8 scene)
+{
+    u8 *s = sScript;
+    u32 text = (u32)sTrainerDefeatText;
+
+    switch (scene)
+    {
+    case REGRESS_SCENE_EVOLUTION:
+        gCB2_AfterEvolution = CB2_ReturnToField;
+        BeginEvolutionScene(&gPlayerParty[1], SPECIES_RAICHU, TRUE, 1);
+        break;
+    case REGRESS_SCENE_NAMING:
+        DoNamingScreen(NAMING_SCREEN_NICKNAME, gStringVar3, SPECIES_PIKACHU, MON_MALE, 0x1111, CB2_ReturnToField);
+        break;
+    case REGRESS_SCENE_EGG_HATCH:
+        CreateEgg(&gPlayerParty[5], SPECIES_PIKACHU, FALSE);
+        gSpecialVar_0x8004 = 5;
+        s = AddSpecial(s, SPECIAL_EggHatch);
+        *s++ = SCROP_WAITSTATE;
+        *s++ = SCROP_END;
+        ScriptContext_SetupScript(sScript);
+        break;
+    case REGRESS_SCENE_INGAME_TRADE:
+        gSpecialVar_0x8004 = 0;
+        gSpecialVar_0x8005 = 1;
+        s = AddSpecial(s, SPECIAL_CreateInGameTradePokemon);
+        s = AddSpecial(s, SPECIAL_DoInGameTradeScene);
+        *s++ = SCROP_WAITSTATE;
+        *s++ = SCROP_END;
+        ScriptContext_SetupScript(sScript);
+        break;
+    case REGRESS_SCENE_HALL_OF_FAME:
+        SetMainCallback2(CB2_DoHallOfFameScreenDontSaveData);
+        break;
+    case REGRESS_SCENE_DOUBLE_BATTLE:
+        *s++ = SCROP_TRAINERBATTLE;
+        *s++ = TRAINER_BATTLE_DOUBLE;
+        *s++ = TRAINER_GABBY_AND_TY_1 & 0xFF;
+        *s++ = TRAINER_GABBY_AND_TY_1 >> 8;
+        *s++ = LOCALID_NONE & 0xFF;
+        *s++ = LOCALID_NONE >> 8;
+        for (scene = 0; scene < 3; scene++) // intro, defeat, not enough mons
+        {
+            *s++ = text;
+            *s++ = text >> 8;
+            *s++ = text >> 16;
+            *s++ = text >> 24;
+        }
+        *s++ = SCROP_END;
+        ScriptContext_SetupScript(sScript);
+        break;
+    case REGRESS_SCENE_SUBSTITUTE:
+        SetMonMoveSlot(&gPlayerParty[0], MOVE_SUBSTITUTE, 0);
+        StartWild();
+        break;
+    case REGRESS_SCENE_BEDROOM_PC:
+        s = AddSpecial(s, SPECIAL_BedroomPC);
+        *s++ = SCROP_WAITSTATE;
+        *s++ = SCROP_END;
+        ScriptContext_SetupScript(sScript);
+        break;
+    case REGRESS_SCENE_POKENAV:
+        CleanupOverworldWindowsAndTilemaps();
+        SetMainCallback2(CB2_InitPokeNav);
+        break;
+    case REGRESS_SCENE_SAVE_FAILED:
+        // A damaged sector makes the screen wipe it and save again.
+        gDamagedSaveSectors = 1 << SECTOR_ID_HOF_2;
+        gGameContinueCallback = CB2_ReturnToField;
+        DoSaveFailedScreen(SAVE_NORMAL);
+        break;
+    case REGRESS_SCENE_SAVE_FAILED_HOF:
+    {
+        u32 i;
+        // The save-failed screen saves the record again from this buffer,
+        // so the pattern must reach the Hall of Fame sectors intact.
+        for (i = 0; i < 0x2000; i++) // two save sectors
+            gDecompressionBuffer[i] = i * 7 + 3;
+        gDamagedSaveSectors = 1 << SECTOR_ID_HOF_2;
+        gGameContinueCallback = CB2_ReturnToField;
+        DoSaveFailedScreen(SAVE_HALL_OF_FAME);
+        break;
+    }
+    case REGRESS_SCENE_LOAD_HOF:
+        CpuFill32(0, gDecompressionBuffer, sizeof(gDecompressionBuffer));
+        gSpecialVar_Result = LoadGameSave(SAVE_HALL_OF_FAME);
+        break;
+    }
+}
+
 // The dump is a list of u16 words that only depends on what the player owns,
 // not on how the save blocks are laid out, so it can be compared across builds.
 static u16 *DumpU32(u16 *d, u32 v)
@@ -381,6 +492,10 @@ void Regress_OverworldTick(void)
         FlagClear(FLAG_SYS_TV_WATCH);
         HideMapNamePopUpWindow(); // what pressing A on a TV does first
         ScriptContext_SetupScript(EventScript_TV);
+        break;
+    case REGRESS_CMD_SCENE:
+        Regress_Reseed();
+        StartScene(gRegress.arg);
         break;
     case REGRESS_CMD_CABLE_CLUB:
         SetWarpDestination(MAP_GROUP(MAP_OLDALE_TOWN_POKEMON_CENTER_2F), MAP_NUM(MAP_OLDALE_TOWN_POKEMON_CENTER_2F), WARP_ID_NONE, 10, 3);

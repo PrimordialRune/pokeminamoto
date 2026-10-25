@@ -18,6 +18,24 @@ enum
     REGRESS_CMD_HEAL,
     REGRESS_CMD_TV,      // run the TV script as if the player checked a TV
     REGRESS_CMD_CABLE_CLUB, // warp in front of the Cable Club attendant in Oldale's Pokémon Center 2F
+    REGRESS_CMD_SCENE,   // open the screen gRegress.arg names (REGRESS_SCENE_*)
+};
+
+// Screens the main run doesn't reach, for measuring heap use
+enum
+{
+    REGRESS_SCENE_EVOLUTION = 1, // party slot 2 (Pikachu) evolves into Raichu
+    REGRESS_SCENE_NAMING,        // nickname screen
+    REGRESS_SCENE_EGG_HATCH,     // a Pikachu egg in slot 6 hatches
+    REGRESS_SCENE_INGAME_TRADE,  // in-game trade 0, giving party slot 2
+    REGRESS_SCENE_HALL_OF_FAME,  // Hall of Fame (not saved), then the credits
+    REGRESS_SCENE_DOUBLE_BATTLE, // double battle against TRAINER_GABBY_AND_TY_1
+    REGRESS_SCENE_SUBSTITUTE,    // wild battle with Substitute as party slot 1's first move
+    REGRESS_SCENE_BEDROOM_PC,    // the player's own PC (item storage)
+    REGRESS_SCENE_POKENAV,       // the PokéNav
+    REGRESS_SCENE_SAVE_FAILED,   // save-failed screen after a normal save, back to the field
+    REGRESS_SCENE_SAVE_FAILED_HOF, // the same for a Hall of Fame save of a test pattern
+    REGRESS_SCENE_LOAD_HOF,      // read the Hall of Fame sectors back into gDecompressionBuffer
 };
 
 #define REGRESS_MAGIC 0x53524752 // "RGRS"
@@ -29,7 +47,7 @@ struct RegressState
     u8 cmd;          // written by the harness, cleared when run
     u8 cmdDone;      // counts finished commands
     u8 fieldReady;   // player can move and no script runs
-    u8 unused;
+    u8 arg;          // argument for the command, written before cmd
     // Written by the hooks; the harness zeroes them to start a new scene.
     u32 heapPeak;    // highest heap offset ever handed out
     u32 heapFails;   // Alloc calls that returned NULL
