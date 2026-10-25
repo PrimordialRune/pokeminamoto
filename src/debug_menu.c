@@ -640,16 +640,40 @@ static void Describe_Trainer(u32 value, u8 *dest)
     StringCopy(dest, gTrainers[value].trainerName);
 }
 
+static const u8 sMapGroupSizes[MAP_GROUPS_COUNT] = MAP_GROUP_SIZES;
+
+// Only maps from the generated map group tables can be a warp target: the group and
+// number must be inside those tables (the removed-map groups 0x7B-0x7E in removed_maps.h
+// are not real), and the link rooms are skipped because they need a link partner.
+static bool8 Warp_IsValidMap(u32 group, u32 num)
+{
+    u32 map;
+
+    if (group >= MAP_GROUPS_COUNT || num >= sMapGroupSizes[group])
+        return FALSE;
+    map = (group << 8) | num;
+    if (map == MAP_BATTLE_COLOSSEUM_2P || map == MAP_BATTLE_COLOSSEUM_4P
+     || map == MAP_TRADE_CENTER || map == MAP_RECORD_CORNER || map == MAP_UNION_ROOM)
+        return FALSE;
+    return TRUE;
+}
+
 static void Describe_MapGroup(u32 value, u8 *dest)
 {
-    static const u8 sGroupSizes[MAP_GROUPS_COUNT] = MAP_GROUP_SIZES;
     u8 *str = StringCopy(dest, (const u8[])_("maps: "));
-    ConvertIntToDecimalStringN(str, sGroupSizes[value], STR_CONV_MODE_LEFT_ALIGN, 3);
+    ConvertIntToDecimalStringN(str, value < MAP_GROUPS_COUNT ? sMapGroupSizes[value] : 0, STR_CONV_MODE_LEFT_ALIGN, 3);
 }
 
 static void Describe_Map(u32 value, u8 *dest)
 {
-    const struct MapHeader *header = Overworld_GetMapHeaderByGroupAndId(sDebug->scratch[0], value);
+    const struct MapHeader *header;
+
+    if (!Warp_IsValidMap(sDebug->scratch[0], value))
+    {
+        StringCopy(dest, (const u8[])_("(not available)"));
+        return;
+    }
+    header = Overworld_GetMapHeaderByGroupAndId(sDebug->scratch[0], value);
     GetMapName(dest, header->regionMapSectionId, 0);
 }
 
@@ -666,11 +690,18 @@ static void DebugAction_HealParty(void)
 
 static void Warp_AfterClose(void)
 {
-    const struct MapHeader *header = Overworld_GetMapHeaderByGroupAndId(sBattleScript[0], sBattleScript[1]);
+    const struct MapHeader *header;
     s8 group = sBattleScript[0], num = sBattleScript[1];
+    const struct WarpEvent *warp;
 
-    // Arrive on warp 0 when the map has one, else in the middle of the map
-    if (header->events->warpCount > 0)
+    if (!Warp_IsValidMap(group, num))
+        return;
+    header = Overworld_GetMapHeaderByGroupAndId(group, num);
+    warp = header->events->warps;
+
+    // Arrive on warp 0 when the map has one and it lies inside the map, else in the middle of the map
+    if (header->events->warpCount > 0 && warp[0].x >= 0 && warp[0].y >= 0
+     && warp[0].x < header->mapLayout->width && warp[0].y < header->mapLayout->height)
         SetWarpDestinationToMapWarp(group, num, 0);
     else
         SetWarpDestination(group, num, WARP_ID_NONE, header->mapLayout->width / 2, header->mapLayout->height / 2);
@@ -679,6 +710,11 @@ static void Warp_AfterClose(void)
 
 static void Warp_ConfirmMap(u32 value)
 {
+    if (!Warp_IsValidMap(sDebug->scratch[0], value))
+    {
+        DebugMessage((const u8[])_("No such map."));
+        return;
+    }
     // The menu's heap is freed before the warp, so the destination goes in the static buffer
     sBattleScript[0] = sDebug->scratch[0];
     sBattleScript[1] = value;
@@ -687,9 +723,13 @@ static void Warp_ConfirmMap(u32 value)
 
 static void Warp_ConfirmGroup(u32 value)
 {
-    static const u8 sGroupSizes[MAP_GROUPS_COUNT] = MAP_GROUP_SIZES;
+    if (value >= MAP_GROUPS_COUNT)
+    {
+        DebugMessage((const u8[])_("No such group."));
+        return;
+    }
     sDebug->scratch[0] = value;
-    DebugInput_Start((const u8[])_("Map number"), 0, 0, sGroupSizes[value] - 1, Describe_Map, Warp_ConfirmMap, FALSE);
+    DebugInput_Start((const u8[])_("Map number"), 0, 0, sMapGroupSizes[value] - 1, Describe_Map, Warp_ConfirmMap, FALSE);
 }
 
 static void DebugAction_Warp(void)
