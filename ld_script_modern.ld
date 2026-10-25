@@ -34,8 +34,6 @@ SECTIONS {
         *libnosys.a:*.o(COMMON);
     } > IWRAM
 
-    gIwramEnd = ADDR(iwram) + SIZEOF(iwram);
-
     /* BEGIN ROM DATA */
     . = 0x8000000;
 
@@ -127,6 +125,20 @@ SECTIONS {
         src/graphics.o(.rodata);
     } > ROM =0
 
+    /* ARM code that runs from IWRAM (IWRAM_CODE in include/gba/defines.h).
+       It is stored here in ROM and copied right behind the IWRAM data by
+       Init in src/crt0.s. */
+    iwram_code (ADDR(iwram) + SIZEOF(iwram)) :
+    ALIGN(4)
+    {
+        __iwram_code_start = .;
+        src/*.o(.iwram_code*);
+        . = ALIGN(4);
+        __iwram_code_end = .;
+    } > IWRAM AT> ROM
+    __iwram_code_lma = LOADADDR(iwram_code);
+    gIwramEnd = __iwram_code_end;
+
     /* DWARF debug sections.
        Symbols in the DWARF debugging sections are relative to the beginning
        of the section so we begin them at 0.  */
@@ -179,3 +191,4 @@ ASSERT(IntrMain_End - IntrMain <= 0x180, "IntrMain no longer fits IntrMain_Buffe
 /* The system stack (src/crt0.s: sp_sys = IWRAM_END - 0x1c0) grows down into
    whatever IWRAM the data leaves free. Keep at least 6 KB of it. */
 ASSERT(gIwramEnd <= 0x3008000 - 0x1c0 - 0x1800, "IWRAM data leaves less than 6 KB for the stack")
+ASSERT(__iwram_code_end - __iwram_code_start <= 0x1000, "IWRAM_CODE is over its 4 KB budget")

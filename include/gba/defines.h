@@ -13,8 +13,14 @@
 
 #if MODERN
 #define NOINLINE __attribute__((noinline))
+// ARM code that runs from IWRAM. It is stored in ROM and copied to IWRAM at
+// boot (src/crt0.s). long_call because ROM and IWRAM are too far apart for a
+// plain bl, and the call must switch from Thumb to ARM. Costs IWRAM: the total
+// has to stay at or below 4 KB, see the end of ld_script_modern.ld.
+#define IWRAM_CODE __attribute__((section(".iwram_code"), target("arm"), noinline, long_call))
 #else
 #define NOINLINE
+#define IWRAM_CODE
 #endif
 
 #define ALIGNED(n) __attribute__((aligned(n)))

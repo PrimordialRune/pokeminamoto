@@ -19,6 +19,16 @@ Init::
 	.if MODERN
 	mov r0, #255 @ RESET_ALL
 	svc #1 << 16
+	@ The reset above cleared IWRAM; copy the ARM code that lives there
+	@ (IWRAM_CODE, see ld_script_modern.ld) before anything can call it.
+	ldr r0, =__iwram_code_lma
+	ldr r1, =__iwram_code_start
+	ldr r2, =__iwram_code_end
+iwram_code_copy:
+	cmp r1, r2
+	ldrcc r3, [r0], #4
+	strcc r3, [r1], #4
+	bcc iwram_code_copy
 	.endif @ MODERN
 	ldr r1, =AgbMain + 1
 	mov lr, pc

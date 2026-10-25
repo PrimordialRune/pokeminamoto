@@ -63,10 +63,10 @@ struct SpeciesItem
     u16 item;
 };
 
-static u16 CalculateBoxMonChecksum(struct BoxPokemon *boxMon);
-static union PokemonSubstruct *GetSubstruct(struct BoxPokemon *boxMon, u32 personality, u8 substructType);
-static void EncryptBoxMon(struct BoxPokemon *boxMon);
-static void DecryptBoxMon(struct BoxPokemon *boxMon);
+IWRAM_CODE static u16 CalculateBoxMonChecksum(struct BoxPokemon *boxMon);
+IWRAM_CODE static union PokemonSubstruct *GetSubstruct(struct BoxPokemon *boxMon, u32 personality, u8 substructType);
+IWRAM_CODE static void EncryptBoxMon(struct BoxPokemon *boxMon);
+IWRAM_CODE static void DecryptBoxMon(struct BoxPokemon *boxMon);
 static void Task_PlayMapChosenOrBattleBGM(u8 taskId);
 static bool8 ShouldGetTypeBadgeBoost(u8 type, u8 battler);
 static u16 GiveMoveToBoxMon(struct BoxPokemon *boxMon, u16 move);
@@ -2788,26 +2788,18 @@ void CreateEnemyEventMon(void)
     }
 }
 
-static u16 CalculateBoxMonChecksum(struct BoxPokemon *boxMon)
+IWRAM_CODE static u16 CalculateBoxMonChecksum(struct BoxPokemon *boxMon)
 {
+    // The sum doesn't depend on which order the four substructs are stored
+    // in, so there is no need to look them up by personality.
     u16 checksum = 0;
-    union PokemonSubstruct *substruct0 = GetSubstruct(boxMon, boxMon->personality, 0);
-    union PokemonSubstruct *substruct1 = GetSubstruct(boxMon, boxMon->personality, 1);
-    union PokemonSubstruct *substruct2 = GetSubstruct(boxMon, boxMon->personality, 2);
-    union PokemonSubstruct *substruct3 = GetSubstruct(boxMon, boxMon->personality, 3);
-    s32 i;
+    s32 i, j;
 
-    for (i = 0; i < (s32)ARRAY_COUNT(substruct0->raw); i++)
-        checksum += substruct0->raw[i];
-
-    for (i = 0; i < (s32)ARRAY_COUNT(substruct1->raw); i++)
-        checksum += substruct1->raw[i];
-
-    for (i = 0; i < (s32)ARRAY_COUNT(substruct2->raw); i++)
-        checksum += substruct2->raw[i];
-
-    for (i = 0; i < (s32)ARRAY_COUNT(substruct3->raw); i++)
-        checksum += substruct3->raw[i];
+    for (i = 0; i < (s32)ARRAY_COUNT(boxMon->secure.substructs); i++)
+    {
+        for (j = 0; j < (s32)ARRAY_COUNT(boxMon->secure.substructs[i].raw); j++)
+            checksum += boxMon->secure.substructs[i].raw[j];
+    }
 
     return checksum;
 }
@@ -3546,106 +3538,58 @@ void SetMultiuseSpriteTemplateToTrainerFront(u16 trainerPicId, u8 battlerPositio
     gMultiuseSpriteTemplate.anims = gTrainerFrontAnimsPtrTable[trainerPicId];
 }
 
-static void EncryptBoxMon(struct BoxPokemon *boxMon)
+IWRAM_CODE static void EncryptBoxMon(struct BoxPokemon *boxMon)
 {
     u32 i;
+    u32 key = boxMon->personality ^ boxMon->otId;
     for (i = 0; i < ARRAY_COUNT(boxMon->secure.raw); i++)
-    {
-        boxMon->secure.raw[i] ^= boxMon->personality;
-        boxMon->secure.raw[i] ^= boxMon->otId;
-    }
+        boxMon->secure.raw[i] ^= key;
 }
 
-static void DecryptBoxMon(struct BoxPokemon *boxMon)
+IWRAM_CODE static void DecryptBoxMon(struct BoxPokemon *boxMon)
 {
     u32 i;
+    u32 key = boxMon->otId ^ boxMon->personality;
     for (i = 0; i < ARRAY_COUNT(boxMon->secure.raw); i++)
-    {
-        boxMon->secure.raw[i] ^= boxMon->otId;
-        boxMon->secure.raw[i] ^= boxMon->personality;
-    }
+        boxMon->secure.raw[i] ^= key;
 }
 
-#define SUBSTRUCT_CASE(n, v1, v2, v3, v4)                               \
-case n:                                                                 \
-    {                                                                   \
-    UNUSED union PokemonSubstruct *substructs0 = boxMon->secure.substructs;    \
-    UNUSED union PokemonSubstruct *substructs1 = boxMon->secure.substructs;    \
-    UNUSED union PokemonSubstruct *substructs2 = boxMon->secure.substructs;    \
-    UNUSED union PokemonSubstruct *substructs3 = boxMon->secure.substructs;    \
-    UNUSED union PokemonSubstruct *substructs4 = boxMon->secure.substructs;    \
-    UNUSED union PokemonSubstruct *substructs5 = boxMon->secure.substructs;    \
-    UNUSED union PokemonSubstruct *substructs6 = boxMon->secure.substructs;    \
-    UNUSED union PokemonSubstruct *substructs7 = boxMon->secure.substructs;    \
-    UNUSED union PokemonSubstruct *substructs8 = boxMon->secure.substructs;    \
-    UNUSED union PokemonSubstruct *substructs9 = boxMon->secure.substructs;    \
-    UNUSED union PokemonSubstruct *substructs10 = boxMon->secure.substructs;   \
-    UNUSED union PokemonSubstruct *substructs11 = boxMon->secure.substructs;   \
-    UNUSED union PokemonSubstruct *substructs12 = boxMon->secure.substructs;   \
-    UNUSED union PokemonSubstruct *substructs13 = boxMon->secure.substructs;   \
-    UNUSED union PokemonSubstruct *substructs14 = boxMon->secure.substructs;   \
-    UNUSED union PokemonSubstruct *substructs15 = boxMon->secure.substructs;   \
-    UNUSED union PokemonSubstruct *substructs16 = boxMon->secure.substructs;   \
-    UNUSED union PokemonSubstruct *substructs17 = boxMon->secure.substructs;   \
-    UNUSED union PokemonSubstruct *substructs18 = boxMon->secure.substructs;   \
-    UNUSED union PokemonSubstruct *substructs19 = boxMon->secure.substructs;   \
-    UNUSED union PokemonSubstruct *substructs20 = boxMon->secure.substructs;   \
-    UNUSED union PokemonSubstruct *substructs21 = boxMon->secure.substructs;   \
-    UNUSED union PokemonSubstruct *substructs22 = boxMon->secure.substructs;   \
-    UNUSED union PokemonSubstruct *substructs23 = boxMon->secure.substructs;   \
-                                                                        \
-        switch (substructType)                                          \
-        {                                                               \
-        case 0:                                                         \
-            substruct = &substructs ## n [v1];                          \
-            break;                                                      \
-        case 1:                                                         \
-            substruct = &substructs ## n [v2];                          \
-            break;                                                      \
-        case 2:                                                         \
-            substruct = &substructs ## n [v3];                          \
-            break;                                                      \
-        case 3:                                                         \
-            substruct = &substructs ## n [v4];                          \
-            break;                                                      \
-        }                                                               \
-        break;                                                          \
-    }                                                                   \
-
-
-static union PokemonSubstruct *GetSubstruct(struct BoxPokemon *boxMon, u32 personality, u8 substructType)
+// The four substructs of a box mon are stored in an order picked by
+// personality % 24. Row = that value, column = substruct type, entry = slot.
+static const u8 sSubstructOrder[24][4] =
 {
-    union PokemonSubstruct *substruct = NULL;
+    {0, 1, 2, 3}, // 0
+    {0, 1, 3, 2}, // 1
+    {0, 2, 1, 3}, // 2
+    {0, 3, 1, 2}, // 3
+    {0, 2, 3, 1}, // 4
+    {0, 3, 2, 1}, // 5
+    {1, 0, 2, 3}, // 6
+    {1, 0, 3, 2}, // 7
+    {2, 0, 1, 3}, // 8
+    {3, 0, 1, 2}, // 9
+    {2, 0, 3, 1}, // 10
+    {3, 0, 2, 1}, // 11
+    {1, 2, 0, 3}, // 12
+    {1, 3, 0, 2}, // 13
+    {2, 1, 0, 3}, // 14
+    {3, 1, 0, 2}, // 15
+    {2, 3, 0, 1}, // 16
+    {3, 2, 0, 1}, // 17
+    {1, 2, 3, 0}, // 18
+    {1, 3, 2, 0}, // 19
+    {2, 1, 3, 0}, // 20
+    {3, 1, 2, 0}, // 21
+    {2, 3, 1, 0}, // 22
+    {3, 2, 1, 0}, // 23
+};
 
-    switch (personality % 24)
-    {
-        SUBSTRUCT_CASE( 0,0,1,2,3)
-        SUBSTRUCT_CASE( 1,0,1,3,2)
-        SUBSTRUCT_CASE( 2,0,2,1,3)
-        SUBSTRUCT_CASE( 3,0,3,1,2)
-        SUBSTRUCT_CASE( 4,0,2,3,1)
-        SUBSTRUCT_CASE( 5,0,3,2,1)
-        SUBSTRUCT_CASE( 6,1,0,2,3)
-        SUBSTRUCT_CASE( 7,1,0,3,2)
-        SUBSTRUCT_CASE( 8,2,0,1,3)
-        SUBSTRUCT_CASE( 9,3,0,1,2)
-        SUBSTRUCT_CASE(10,2,0,3,1)
-        SUBSTRUCT_CASE(11,3,0,2,1)
-        SUBSTRUCT_CASE(12,1,2,0,3)
-        SUBSTRUCT_CASE(13,1,3,0,2)
-        SUBSTRUCT_CASE(14,2,1,0,3)
-        SUBSTRUCT_CASE(15,3,1,0,2)
-        SUBSTRUCT_CASE(16,2,3,0,1)
-        SUBSTRUCT_CASE(17,3,2,0,1)
-        SUBSTRUCT_CASE(18,1,2,3,0)
-        SUBSTRUCT_CASE(19,1,3,2,0)
-        SUBSTRUCT_CASE(20,2,1,3,0)
-        SUBSTRUCT_CASE(21,3,1,2,0)
-        SUBSTRUCT_CASE(22,2,3,1,0)
-        SUBSTRUCT_CASE(23,3,2,1,0)
-    }
+IWRAM_CODE static union PokemonSubstruct *GetSubstruct(struct BoxPokemon *boxMon, u32 personality, u8 substructType)
+{
+    if (substructType > 3)
+        return NULL;
 
-    return substruct;
+    return &boxMon->secure.substructs[sSubstructOrder[personality % 24][substructType]];
 }
 
 /* GameFreak called GetMonData with either 2 or 3 arguments, for type

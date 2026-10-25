@@ -46,11 +46,11 @@ struct OamDimensions
     s8 height;
 };
 
-static void UpdateOamCoords(void);
+IWRAM_CODE static void UpdateOamCoords(void);
 static void BuildSpritePriorities(void);
-static void SortSprites(void);
+IWRAM_CODE static void SortSprites(void);
 static void CopyMatricesToOamBuffer(void);
-static void AddSpritesToOamBuffer(void);
+IWRAM_CODE static void AddSpritesToOamBuffer(void);
 static u8 CreateSpriteAt(u8 index, const struct SpriteTemplate *template, s16 x, s16 y, u8 subpriority);
 static void ResetOamMatrices(void);
 static void ResetSprite(struct Sprite *sprite);
@@ -278,8 +278,8 @@ COMMON_DATA u32 gOamMatrixAllocBitmap = 0;
 COMMON_DATA u8 gReservedSpritePaletteCount = 0;
 
 EWRAM_DATA struct Sprite gSprites[MAX_SPRITES + 1] = {0};
-EWRAM_DATA static u16 sSpritePriorities[MAX_SPRITES] = {0};
-EWRAM_DATA static u8 sSpriteOrder[MAX_SPRITES] = {0};
+static u16 sSpritePriorities[MAX_SPRITES] = {0};
+static u8 sSpriteOrder[MAX_SPRITES] = {0};
 EWRAM_DATA static bool8 sShouldProcessSpriteCopyRequests = 0;
 EWRAM_DATA static u8 sSpriteCopyRequestCount = 0;
 EWRAM_DATA static struct SpriteCopyRequest sSpriteCopyRequests[MAX_SPRITES] = {0};
