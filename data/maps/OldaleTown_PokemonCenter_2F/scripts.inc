@@ -14,7 +14,3 @@ OldaleTown_PokemonCenter_2F_EventScript_Colosseum::
 OldaleTown_PokemonCenter_2F_EventScript_TradeCenter::
 	call CableClub_EventScript_TradeCenter
 	end
-
-OldaleTown_PokemonCenter_2F_EventScript_RecordCorner::
-	call CableClub_EventScript_RecordCorner
-	end

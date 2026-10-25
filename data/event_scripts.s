@@ -120,7 +120,6 @@ gStdScripts_End::
 	.include "data/scripts/shared_secret_base.inc"
 	.include "data/maps/BattleColosseum_2P/scripts.inc"
 	.include "data/maps/TradeCenter/scripts.inc"
-	.include "data/maps/RecordCorner/scripts.inc"
 	.include "data/maps/BattleColosseum_4P/scripts.inc"
 	.include "data/maps/InsideOfTruck/scripts.inc"
 	.include "data/maps/UnionRoom/scripts.inc"
@@ -202,7 +201,6 @@ EventScript_SetBrineyLocation_Route109::
 
 	.include "data/scripts/pkmn_center_nurse.inc"
 	.include "data/scripts/obtain_item.inc"
-	.include "data/scripts/record_mix.inc"
 	.include "data/scripts/pc.inc"
 
 @ scripts/notices.inc? signs.inc? See comment about text/notices.inc
@@ -366,7 +364,6 @@ Common_EventScript_PlayerHandedOverTheItem::
 
 	.include "data/scripts/movement.inc"
 	.include "data/scripts/check_furniture.inc"
-	.include "data/text/record_mix.inc"
 	.include "data/text/pc.inc"
 	.include "data/text/pkmn_center_nurse.inc"
 	.include "data/text/mart_clerk.inc"
@@ -465,11 +462,6 @@ gText_UndergoingAdjustments::
 gText_SorryTradeCenterInspections::
 	.string "I'm terribly sorry. The TRADE CENTER\n"
 	.string "is undergoing inspections.$"
-
-@ Unused
-gText_SorryRecordCornerPreparation::
-	.string "I'm terribly sorry. The RECORD CORNER\n"
-	.string "is under preparation.$"
 
 gText_PlayerHandedOverTheItem::
 	.string "{PLAYER} handed over the\n"

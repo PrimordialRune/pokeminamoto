@@ -1695,12 +1695,6 @@ static void Task_StartActivity(u8 taskId)
         WarpForCableClubActivity(MAP_GROUP(MAP_TRADE_CENTER), MAP_NUM(MAP_TRADE_CENTER), 5, 8, USING_TRADE_CENTER);
         SetMainCallback2(CB2_TransitionToCableClub);
         break;
-    case ACTIVITY_RECORD_CORNER:
-        CreateTrainerCardInBuffer(gBlockSendBuffer, TRUE);
-        CleanupOverworldWindowsAndTilemaps();
-        WarpForCableClubActivity(MAP_GROUP(MAP_RECORD_CORNER), MAP_NUM(MAP_RECORD_CORNER), 8, 9, USING_RECORD_CORNER);
-        SetMainCallback2(CB2_TransitionToCableClub);
-        break;
     case ACTIVITY_TRADE | IN_UNION_ROOM:
         CleanupOverworldWindowsAndTilemaps();
         CreateTask(Task_StartUnionRoomTrade, 0);

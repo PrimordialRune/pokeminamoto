@@ -65,7 +65,6 @@ static void Task_StopLinkup(u8 taskId);
 static void Task_LinkupFailed(u8 taskId);
 static void Task_LinkupConnectionError(u8 taskId);
 static bool8 TryLinkTimeout(u8 taskId);
-static void Task_ValidateMixingGameLanguage(u8 taskId);
 static void Task_ReestablishLink(u8 taskId);
 static void Task_ReestablishLinkAwaitConnection(u8 taskId);
 static void Task_ReestablishLinkLeader(u8 taskId);
@@ -619,92 +618,6 @@ void TryTradeLinkup(void)
     CreateLinkupTask(2, 2);
 }
 
-void TryRecordMixLinkup(void)
-{
-    gSpecialVar_Result = LINKUP_ONGOING;
-    gLinkType = LINKTYPE_RECORD_MIX_BEFORE;
-    gBattleTypeFlags = 0;
-    CreateLinkupTask(2, 4);
-}
-
-void ValidateMixingGameLanguage(void)
-{
-    u32 taskId = FindTaskIdByFunc(Task_ValidateMixingGameLanguage);
-
-    if (taskId == TASK_NONE)
-    {
-        taskId = CreateTask(Task_ValidateMixingGameLanguage, 80);
-        gTasks[taskId].tState = 0;
-    }
-}
-
-static void Task_ValidateMixingGameLanguage(u8 taskId)
-{
-    int playerCount;
-    int i;
-
-    switch (gTasks[taskId].tState)
-    {
-    case 0:
-        if (gSpecialVar_Result == LINKUP_SUCCESS)
-        {
-            bool32 mixingForeignGames = FALSE;
-            bool32 isEnglishRSLinked = FALSE;
-            bool32 isJapaneseEmeraldLinked = FALSE;
-
-            playerCount = GetLinkPlayerCount();
-            for (i = 0; i < playerCount; i++)
-            {
-                u32 version = (u8)gLinkPlayers[i].version;
-                u32 language = gLinkPlayers[i].language;
-
-                if (version == VERSION_RUBY || version == VERSION_SAPPHIRE)
-                {
-                    if (language == LANGUAGE_JAPANESE)
-                    {
-                        mixingForeignGames = TRUE;
-                        break;
-                    }
-                    else
-                    {
-                        isEnglishRSLinked = TRUE;
-                    }
-                }
-                else if (version == VERSION_EMERALD)
-                {
-                    if (language == LANGUAGE_JAPANESE)
-                    {
-                        isJapaneseEmeraldLinked = TRUE;
-                    }
-                }
-            }
-
-            if (isEnglishRSLinked && isJapaneseEmeraldLinked)
-            {
-                mixingForeignGames = TRUE;
-            }
-
-            if (mixingForeignGames)
-            {
-                gSpecialVar_Result = LINKUP_FOREIGN_GAME;
-                SetCloseLinkCallbackHandleJP();
-                gTasks[taskId].tState = 1;
-                return;
-            }
-        }
-        ScriptContext_Enable();
-        DestroyTask(taskId);
-        break;
-    case 1:
-        if (!gReceivedRemoteLinkPlayers)
-        {
-            ScriptContext_Enable();
-            DestroyTask(taskId);
-        }
-        break;
-    }
-}
-
 void TryBerryBlenderLinkup(void)
 {
     gLinkType = LINKTYPE_BERRY_BLENDER_SETUP;
@@ -750,9 +663,6 @@ u8 CreateTask_ReestablishCableClubLink(void)
         break;
     case USING_TRADE_CENTER:
         gLinkType = LINKTYPE_TRADE;
-        break;
-    case USING_RECORD_CORNER:
-        gLinkType = LINKTYPE_RECORD_MIX_AFTER;
         break;
     }
 

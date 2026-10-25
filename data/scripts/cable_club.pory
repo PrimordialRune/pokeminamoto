@@ -71,7 +71,6 @@ CableClub_OnLoad:
 	goto_if_eq VAR_CABLE_CLUB_STATE, USING_DOUBLE_BATTLE, CableClub_EventScript_OnLoadFromColosseum
 	goto_if_eq VAR_CABLE_CLUB_STATE, USING_MULTI_BATTLE, CableClub_EventScript_OnLoadFromColosseum
 	goto_if_eq VAR_CABLE_CLUB_STATE, USING_TRADE_CENTER, CableClub_EventScript_OnLoadFromTradeCenter
-	goto_if_eq VAR_CABLE_CLUB_STATE, USING_RECORD_CORNER, CableClub_EventScript_OnLoadFromRecordCorner
 	goto_if_eq VAR_CABLE_CLUB_STATE, USING_UNION_ROOM, CableClub_EventScript_OnLoadFromUnionRoom
 	goto_if_eq VAR_CABLE_CLUB_STATE, USING_BERRY_CRUSH, CableClub_EventScript_OnLoadFromBerryCrush
 	goto_if_eq VAR_CABLE_CLUB_STATE, USING_MINIGAME, CableClub_EventScript_OnLoadFromGameCorner
@@ -82,10 +81,6 @@ CableClub_EventScript_OnLoadFromColosseum::
 	end
 
 CableClub_EventScript_OnLoadFromTradeCenter::
-	call CableClub_EventScript_OpenDirectCornerBarrier
-	end
-
-CableClub_EventScript_OnLoadFromRecordCorner::
 	call CableClub_EventScript_OpenDirectCornerBarrier
 	end
 
@@ -107,7 +102,6 @@ CableClub_OnFrame:
 	map_script_2 VAR_CABLE_CLUB_STATE, USING_DOUBLE_BATTLE, CableClub_EventScript_ExitLinkRoom
 	map_script_2 VAR_CABLE_CLUB_STATE, USING_MULTI_BATTLE, CableClub_EventScript_ExitLinkRoom
 	map_script_2 VAR_CABLE_CLUB_STATE, USING_TRADE_CENTER, CableClub_EventScript_ExitTradeCenter
-	map_script_2 VAR_CABLE_CLUB_STATE, USING_RECORD_CORNER, CableClub_EventScript_ExitRecordCorner
 	map_script_2 VAR_CABLE_CLUB_STATE, USING_UNION_ROOM, CableClub_EventScript_ExitUnionRoom
 	map_script_2 VAR_CABLE_CLUB_STATE, USING_BERRY_CRUSH, CableClub_EventScript_ExitLinkRoom
 	map_script_2 VAR_CABLE_CLUB_STATE, USING_MINIGAME, CableClub_EventScript_ExitMinigameRoom
@@ -164,27 +158,6 @@ CableClub_EventScript_PlayerExitTradeCenter::
 	applymovement VAR_0x8007, Movement_AttendantFaceLeft
 	waitmovement 0
 	call CableClub_EventScript_TrainerCardDataOverwritten
-	return
-
-CableClub_EventScript_ExitRecordCorner::
-	lockall
-	call CableClub_EventScript_PlayerExitRecordCorner
-	call CableClub_EventScript_CloseDirectCornerBarrier
-	special DrawWholeMapView
-	playse SE_CLICK
-	erasebox 0, 0, 29, 19
-	releaseall
-	end
-
-CableClub_EventScript_PlayerExitRecordCorner::
-	special CloseLink
-	setvar VAR_CABLE_CLUB_STATE, 0
-	applymovement LOCALID_PLAYER, Movement_PlayerExitLinkRoom
-	waitmovement 0
-	goto_if_eq VAR_0x8007, 0, CableClub_EventScript_ExitRecordCornerRet
-	applymovement VAR_0x8007, Movement_AttendantFaceDown
-	waitmovement 0
-CableClub_EventScript_ExitRecordCornerRet::
 	return
 
 CableClub_EventScript_ExitUnionRoom::
@@ -258,22 +231,11 @@ CableClub_EventScript_UnusedWelcomeToCableClub::
 
 CableClub_EventScript_SelectCableClubRoom::
 	setvar VAR_0x8004, 0
-	goto_if_set FLAG_VISITED_MAUVILLE_CITY, CableClub_EventScript_CableClubUnlockedRecordCorner
 	multichoice 0, 0, MULTI_CABLE_CLUB_NO_RECORD_MIX, FALSE
 	switch VAR_RESULT
 	case 0, CableClub_EventScript_TradeCenter
 	case 1, CableClub_EventScript_Colosseum
 	case 2, CableClub_EventScript_AbortLink
-	case MULTI_B_PRESSED, CableClub_EventScript_AbortLink
-	end
-
-CableClub_EventScript_CableClubUnlockedRecordCorner::
-	multichoice 0, 0, MULTI_CABLE_CLUB_WITH_RECORD_MIX, FALSE
-	switch VAR_RESULT
-	case 0, CableClub_EventScript_TradeCenter
-	case 1, CableClub_EventScript_Colosseum
-	case 2, CableClub_EventScript_RecordCorner
-	case 3, CableClub_EventScript_AbortLink
 	case MULTI_B_PRESSED, CableClub_EventScript_AbortLink
 	end
 
@@ -470,53 +432,6 @@ CableClub_EventScript_NeedTwoMonsToTrade::
 	msgbox CableClub_Text_NeedTwoMonsToTrade, MSGBOX_DEFAULT
 	setvar VAR_RESULT, 0
 	return
-
-CableClub_EventScript_RecordCorner::
-	copyvar VAR_0x8007, VAR_LAST_TALKED
-	call Common_EventScript_SaveGame
-	goto_if_eq VAR_RESULT, 0, CableClub_EventScript_AbortLink
-	message gText_PleaseWaitForLink
-	waitmessage
-	special TryRecordMixLinkup
-	waitstate
-	special ValidateMixingGameLanguage
-	waitstate
-	goto_if_eq VAR_RESULT, LINKUP_FOREIGN_GAME, CableClub_EventScript_AbortLinkForeignGame
-	goto_if_eq VAR_RESULT, LINKUP_SUCCESS, CableClub_EventScript_EnterRecordCorner
-	goto_if_eq VAR_RESULT, LINKUP_SOMEONE_NOT_READY, CableClub_EventScript_AbortLinkSomeoneNotReady
-	goto_if_eq VAR_RESULT, LINKUP_DIFF_SELECTIONS, CableClub_EventScript_AbortLinkDifferentSelections
-	goto_if_eq VAR_RESULT, LINKUP_WRONG_NUM_PLAYERS, CableClub_EventScript_AbortLinkIncorrectNumberOfParticipants
-	goto_if_eq VAR_RESULT, LINKUP_FAILED, CableClub_EventScript_AbortLink
-	goto_if_eq VAR_RESULT, LINKUP_CONNECTION_ERROR, CableClub_EventScript_AbortLinkConnectionError
-	end
-
-CableClub_EventScript_EnterRecordCorner::
-	setvar VAR_0x8004, USING_RECORD_CORNER
-	copyvar VAR_CABLE_CLUB_STATE, VAR_0x8004
-	messageautoscroll CableClub_Text_PleaseEnter
-	waitmessage
-	call CableClub_EventScript_OpenDirectCornerBarrier
-	special DrawWholeMapView
-	playse SE_CLICK
-	delay 60
-	applymovement VAR_LAST_TALKED, Movement_AttendantFaceLeft
-	waitmovement 0
-	closemessage
-	applymovement LOCALID_PLAYER, Movement_PlayerApproachLinkRoomLeft
-	waitmovement 0
-	opendoor 9, 1
-	waitdooranim
-	applymovement LOCALID_PLAYER, Movement_PlayerEnterLinkRoom
-	waitmovement 0
-	hideplayer
-	closedoor 9, 1
-	waitdooranim
-	release
-	special SetCableClubWarp
-	setwarp MAP_RECORD_CORNER, 8, 9
-	special DoCableClubWarp
-	waitstate
-	end
 
 CableClub_EventScript_AbortLinkPlayerNotReady::
 	special CloseLink
@@ -736,42 +651,6 @@ EventScript_TradeCenter_Chair3::
 	waitstate
 	end
 
-EventScript_RecordCenter_Spot0::
-	setvar VAR_0x8005, 0
-	special RecordMixingPlayerSpotTriggered
-	waitstate
-	goto_if_ne VAR_TEMP_RECORD_MIX_GIFT_ITEM, ITEM_NONE, RecordCorner_EventScript_ReceivedGiftItem
-	end
-
-EventScript_RecordCenter_Spot1::
-	setvar VAR_0x8005, 1
-	special RecordMixingPlayerSpotTriggered
-	waitstate
-	goto_if_ne VAR_TEMP_RECORD_MIX_GIFT_ITEM, ITEM_NONE, RecordCorner_EventScript_ReceivedGiftItem
-	end
-
-EventScript_RecordCenter_Spot2::
-	setvar VAR_0x8005, 2
-	special RecordMixingPlayerSpotTriggered
-	waitstate
-	goto_if_ne VAR_TEMP_RECORD_MIX_GIFT_ITEM, ITEM_NONE, RecordCorner_EventScript_ReceivedGiftItem
-	end
-
-EventScript_RecordCenter_Spot3::
-	setvar VAR_0x8005, 3
-	special RecordMixingPlayerSpotTriggered
-	waitstate
-	goto_if_ne VAR_TEMP_RECORD_MIX_GIFT_ITEM, ITEM_NONE, RecordCorner_EventScript_ReceivedGiftItem
-	end
-
-RecordCorner_EventScript_ReceivedGiftItem::
-	bufferitemname STR_VAR_2, VAR_TEMP_RECORD_MIX_GIFT_ITEM
-	message RecordCorner_Text_PlayerSentOverOneX
-	waitmessage
-	waitbuttonpress
-	releaseall
-	end
-
 CableClub_EventScript_ReadTrainerCard::
 	msgbox CableClub_Text_GotToLookAtTrainerCard, MSGBOX_DEFAULT
 	fadescreen FADE_TO_BLACK
@@ -801,25 +680,6 @@ BattleColosseum_2P_EventScript_Attendant::
 TradeCenter_EventScript_Attendant::
 	special Script_FacePlayer
 	msgbox TradeCenter_Text_TakeSeatStartTrade, MSGBOX_DEFAULT
-	special Script_ClearHeldMovement
-	closemessage
-	end
-
-RecordCorner_EventScript_Attendant::
-	goto_if_ne VAR_TEMP_MIXED_RECORDS, 0, RecordCorner_EventScript_AlreadyMixed
-	special Script_FacePlayer
-	message RecordCorner_Text_TakeSeatAndWait
-	waitmessage
-	waitbuttonpress
-	special Script_ClearHeldMovement
-	closemessage
-	end
-
-RecordCorner_EventScript_AlreadyMixed::
-	special Script_FacePlayer
-	message RecordCorner_Text_ThanksForComing
-	waitmessage
-	waitbuttonpress
 	special Script_ClearHeldMovement
 	closemessage
 	end
