@@ -213,7 +213,7 @@ static void CB2_SaveFailedScreen(void)
         sScreenBuffer = NULL;
         if (sSaveFailedType == SAVE_HALL_OF_FAME)
         {
-            sScreenBuffer = Alloc(SCREEN_BUFFER_SIZE);
+            sScreenBuffer = TryAlloc(SCREEN_BUFFER_SIZE);
             // No room: save the game without the record rather than save
             // the screen's pixels as the record.
             if (sScreenBuffer == NULL)
