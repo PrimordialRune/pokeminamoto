@@ -2269,12 +2269,7 @@ static void Fill1PRecords(struct RankingHall1P *dst, s32 hallFacilityId, s32 lvl
     struct PlayerHallRecords *playerHallRecords = AllocZeroed(sizeof(struct PlayerHallRecords));
     GetPlayerHallRecords(playerHallRecords);
 
-#ifdef FREE_RECORD_MIXING_HALL_RECORDS
     memset(record1P, 0, sizeof(record1P));
-#else
-    for (i = 0; i < HALL_RECORDS_COUNT; i++)
-        record1P[i] = gSaveBlock2Ptr->hallRecords1P[hallFacilityId][lvlMode][i];
-#endif
 
     record1P[HALL_RECORDS_COUNT] = playerHallRecords->onePlayer[hallFacilityId][lvlMode];
 
@@ -2307,12 +2302,7 @@ static void Fill2PRecords(struct RankingHall2P *dst, s32 lvlMode)
     struct PlayerHallRecords *playerHallRecords = AllocZeroed(sizeof(struct PlayerHallRecords));
     GetPlayerHallRecords(playerHallRecords);
 
-#ifdef FREE_RECORD_MIXING_HALL_RECORDS
     memset(record2P, 0, sizeof(record2P));
-#else
-    for (i = 0; i < HALL_RECORDS_COUNT; i++)
-        record2P[i] = gSaveBlock2Ptr->hallRecords2P[lvlMode][i];
-#endif
 
     record2P[HALL_RECORDS_COUNT] = playerHallRecords->twoPlayers[lvlMode];
 
@@ -2382,50 +2372,6 @@ void ScrollRankingHallRecordsWindow(void)
     PrintHallRecords(gSpecialVar_0x8005, FRONTIER_LVL_OPEN);
     CopyWindowToVram(gRecordsWindowId, COPYWIN_GFX);
 }
-
-#ifdef FREE_RECORD_MIXING_HALL_RECORDS
-void ClearRankingHallRecords(void)
-{
-}
-#else
-void ClearRankingHallRecords(void)
-{
-    s32 i, j, k;
-
-    // UB: Passing 0 as a pointer instead of a pointer holding a value of 0.
-#ifdef UBFIX
-    u8 emptyId[TRAINER_ID_LENGTH] = {0};
-    #define ZERO emptyId
-#else
-    #define ZERO 0
-#endif
-
-    for (i = 0; i < HALL_FACILITIES_COUNT; i++)
-    {
-        for (j = 0; j < FRONTIER_LVL_MODE_COUNT; j++)
-        {
-            for (k = 0; k < HALL_RECORDS_COUNT; k++)
-            {
-                CopyTrainerId(gSaveBlock2Ptr->hallRecords1P[i][j][k].id, ZERO);
-                gSaveBlock2Ptr->hallRecords1P[i][j][k].name[0] = EOS;
-                gSaveBlock2Ptr->hallRecords1P[i][j][k].winStreak = 0;
-            }
-        }
-    }
-
-    for (j = 0; j < FRONTIER_LVL_MODE_COUNT; j++)
-    {
-        for (k = 0; k < HALL_RECORDS_COUNT; k++)
-        {
-            CopyTrainerId(gSaveBlock2Ptr->hallRecords2P[j][k].id1, ZERO);
-            CopyTrainerId(gSaveBlock2Ptr->hallRecords2P[j][k].id2, ZERO);
-            gSaveBlock2Ptr->hallRecords2P[j][k].name1[0] = EOS;
-            gSaveBlock2Ptr->hallRecords2P[j][k].name2[0] = EOS;
-            gSaveBlock2Ptr->hallRecords2P[j][k].winStreak = 0;
-        }
-    }
-}
-#endif // FREE_RECORD_MIXING_HALL_RECORDS
 
 void SaveGameFrontier(void)
 {
