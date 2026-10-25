@@ -25,18 +25,20 @@ static u8 HandleReplaceSector(u16, const struct SaveSectorLocation *);
 /*
  * Sector Layout:
  *
- * Sectors 0 - 13:      Save Slot 1
- * Sectors 14 - 27:     Save Slot 2
+ * Sectors 0 - 12:      Save Slot 1
+ * Sectors 13 - 25:     Save Slot 2
+ * Sectors 26 - 27:     Free (Emerald's 14th sector of each slot)
  * Sectors 28 - 29:     Hall of Fame
- * Sector 30:           Trainer Hill
- * Sector 31:           Recorded Battle
+ * Sector 30:           Free (was Trainer Hill)
+ * Sector 31:           Free (was Recorded Battle)
  *
  * There are two save slots for saving the player's game data. We alternate between
  * them each time the game is saved, so that if the current save slot is corrupt,
  * we can load the previous one. We also rotate the sectors in each save slot
  * so that the same data is not always being written to the same sector. This
  * might be done to reduce wear on the flash memory, but I'm not sure, since all
- * 14 sectors get written anyway.
+ * 13 sectors get written anyway. The rotation is also what makes a save cut
+ * off by a power loss fall back to the other slot, see below.
  *
  * See SECTOR_ID_* constants in save.h
  */
@@ -68,8 +70,7 @@ struct
     SAVEBLOCK_CHUNK(struct PokemonStorage, 4),
     SAVEBLOCK_CHUNK(struct PokemonStorage, 5),
     SAVEBLOCK_CHUNK(struct PokemonStorage, 6),
-    SAVEBLOCK_CHUNK(struct PokemonStorage, 7),
-    SAVEBLOCK_CHUNK(struct PokemonStorage, 8), // SECTOR_ID_PKMN_STORAGE_END
+    SAVEBLOCK_CHUNK(struct PokemonStorage, 7), // SECTOR_ID_PKMN_STORAGE_END
 };
 
 // These will produce an error if a save struct is larger than the space
@@ -77,6 +78,23 @@ struct
 STATIC_ASSERT(sizeof(struct SaveBlock2) <= SECTOR_DATA_SIZE, SaveBlock2FreeSpace);
 STATIC_ASSERT(sizeof(struct SaveBlock1) <= SECTOR_DATA_SIZE * (SECTOR_ID_SAVEBLOCK1_END - SECTOR_ID_SAVEBLOCK1_START + 1), SaveBlock1FreeSpace);
 STATIC_ASSERT(sizeof(struct PokemonStorage) <= SECTOR_DATA_SIZE * (SECTOR_ID_PKMN_STORAGE_END - SECTOR_ID_PKMN_STORAGE_START + 1), PokemonStorageFreeSpace);
+// Every slot sector holds data: the PC needs all of its sectors, so none is written empty.
+STATIC_ASSERT(sizeof(struct PokemonStorage) > SECTOR_DATA_SIZE * (SECTOR_ID_PKMN_STORAGE_END - SECTOR_ID_PKMN_STORAGE_START), PokemonStorageNoEmptySector);
+STATIC_ASSERT(SECTOR_ID_PKMN_STORAGE_END + 1 == NUM_SECTORS_PER_SLOT, SaveSlotLayoutComplete);
+STATIC_ASSERT(NUM_SECTORS_PER_SLOT * NUM_SAVE_SLOTS <= SECTOR_ID_FREE_1 && SECTOR_ID_FREE_2 < SECTOR_ID_HOF_1, SaveSlotsFitBeforeHallOfFame);
+
+// Why a save cut off by a power loss falls back to the other slot:
+// a save writes every sector of one slot, sector id i to physical sector
+// (i + gLastWrittenSector) % NUM_SECTORS_PER_SLOT, and gLastWrittenSector goes
+// up by one per save. Saves alternate slots, so between two writes of the same
+// slot the rotation moves by NUM_SAVE_SLOTS (2). A save cut after k sectors
+// (0 < k < NUM_SECTORS_PER_SLOT) has replaced ids 0..k-1 at the physical sectors
+// that held ids 2..k+1 of the older save, so ids k and k+1 (mod the slot size)
+// are in neither and the slot fails the "all ids present" check in
+// GetSaveValidStatus. That only holds while the rotation step is not a multiple
+// of the slot size; with a step of 0 a cut save would leave a complete set of
+// ids that mixes two saves and loads as if it were good.
+STATIC_ASSERT(NUM_SAVE_SLOTS % NUM_SECTORS_PER_SLOT != 0, TornSaveLeavesSectorIdMissing);
 
 COMMON_DATA u16 gLastWrittenSector = 0;
 COMMON_DATA u32 gLastSaveCounter = 0;
@@ -493,6 +511,8 @@ static u8 CopySaveSlotData(u16 sectorId, struct SaveSectorLocation *locations)
         ReadFlashSector(i + slotOffset, gReadWriteSector);
 
         id = gReadWriteSector->id;
+        if (id >= NUM_SECTORS_PER_SLOT) // a sector from another layout, e.g. Emerald's 14th
+            continue;
         if (id == 0)
             gLastWrittenSector = i;
 
@@ -525,7 +545,7 @@ static u8 GetSaveValidStatus(const struct SaveSectorLocation *locations)
     for (i = 0; i < NUM_SECTORS_PER_SLOT; i++)
     {
         ReadFlashSector(i, gReadWriteSector);
-        if (gReadWriteSector->signature == SECTOR_SIGNATURE)
+        if (gReadWriteSector->signature == SECTOR_SIGNATURE && gReadWriteSector->id < NUM_SECTORS_PER_SLOT)
         {
             signatureValid = TRUE;
             checksum = CalculateChecksum(gReadWriteSector->data, locations[gReadWriteSector->id].size);
@@ -557,7 +577,7 @@ static u8 GetSaveValidStatus(const struct SaveSectorLocation *locations)
     for (i = 0; i < NUM_SECTORS_PER_SLOT; i++)
     {
         ReadFlashSector(i + NUM_SECTORS_PER_SLOT, gReadWriteSector);
-        if (gReadWriteSector->signature == SECTOR_SIGNATURE)
+        if (gReadWriteSector->signature == SECTOR_SIGNATURE && gReadWriteSector->id < NUM_SECTORS_PER_SLOT)
         {
             signatureValid = TRUE;
             checksum = CalculateChecksum(gReadWriteSector->data, locations[gReadWriteSector->id].size);
@@ -714,9 +734,8 @@ u8 HandleSavingData(u8 saveType)
     switch (saveType)
     {
     case SAVE_HALL_OF_FAME_ERASE_BEFORE:
-        // Unused. Erases the special save sectors (HOF, Trainer Hill, Recorded Battle)
-        // before overwriting HOF.
-        for (i = SECTOR_ID_HOF_1; i < SECTORS_COUNT; i++)
+        // Unused. Erases the Hall of Fame sectors before overwriting them.
+        for (i = SECTOR_ID_HOF_1; i < SECTOR_ID_HOF_1 + NUM_HOF_SECTORS; i++)
             EraseFlashSector(i);
         // fallthrough
     case SAVE_HALL_OF_FAME:
@@ -748,8 +767,9 @@ u8 HandleSavingData(u8 saveType)
             WriteSectorSignatureByte_NoOffset(i, gRamSaveSectorLocations);
         break;
     case SAVE_OVERWRITE_DIFFERENT_FILE:
-        // Erase Hall of Fame
-        for (i = SECTOR_ID_HOF_1; i < SECTORS_COUNT; i++)
+        // Erase Hall of Fame. Emerald also erased the Trainer Hill and
+        // Recorded Battle sectors here; they are free sectors now and kept.
+        for (i = SECTOR_ID_HOF_1; i < SECTOR_ID_HOF_1 + NUM_HOF_SECTORS; i++)
             EraseFlashSector(i);
 
         // Overwrite save slot
@@ -928,6 +948,15 @@ u32 TryWriteSpecialSaveSector(u8 sector, u8 *src)
 
     if (sector != SECTOR_ID_TRAINER_HILL && sector != SECTOR_ID_RECORDED_BATTLE)
         return SAVE_STATUS_ERROR;
+    // The sectors of removed systems are free for other data; never write them
+#ifdef FREE_TRAINER_HILL
+    if (sector == SECTOR_ID_TRAINER_HILL)
+        return SAVE_STATUS_ERROR;
+#endif
+#ifdef FREE_RECORDED_BATTLE
+    if (sector == SECTOR_ID_RECORDED_BATTLE)
+        return SAVE_STATUS_ERROR;
+#endif
 
     savDataBuffer = &gSaveDataBuffer;
     *(u32 *)(savDataBuffer) = SPECIAL_SECTOR_SENTINEL;

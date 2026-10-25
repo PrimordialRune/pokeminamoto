@@ -20,13 +20,23 @@
 #define SECTOR_ID_SAVEBLOCK1_START    1
 #define SECTOR_ID_SAVEBLOCK1_END      4
 #define SECTOR_ID_PKMN_STORAGE_START  5
-#define SECTOR_ID_PKMN_STORAGE_END   13
-#define NUM_SECTORS_PER_SLOT         14
-// Save Slot 1: 0-13;  Save Slot 2: 14-27
+#define SECTOR_ID_PKMN_STORAGE_END   12
+#define NUM_SECTORS_PER_SLOT         13
+// Save Slot 1: 0-12;  Save Slot 2: 13-25
+// The PC is 12 boxes (28,924 B), which fits in 8 sectors, so each slot is
+// 13 sectors instead of Emerald's 14. That frees the last two slot sectors.
+#define SECTOR_ID_FREE_1             26
+#define SECTOR_ID_FREE_2             27
 #define SECTOR_ID_HOF_1              28
 #define SECTOR_ID_HOF_2              29
+// Trainer Hill (FREE_TRAINER_HILL) and the battle recorder (FREE_RECORDED_BATTLE)
+// are gone, so nothing writes these two sectors either; TryWriteSpecialSaveSector
+// refuses them while those defines are set. Nothing erases sectors 26, 27, 30
+// or 31: they are free for future Minamoto data (4 sectors, 16 KB).
 #define SECTOR_ID_TRAINER_HILL       30
 #define SECTOR_ID_RECORDED_BATTLE    31
+#define SECTOR_ID_FREE_3             SECTOR_ID_TRAINER_HILL
+#define SECTOR_ID_FREE_4             SECTOR_ID_RECORDED_BATTLE
 #define SECTORS_COUNT                32
 
 #define NUM_HOF_SECTORS 2
