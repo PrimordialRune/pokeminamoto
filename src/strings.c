@@ -187,7 +187,6 @@ const u8 gMenuText_Confirm[] = _("CONFIRM");
 const u8 gMenuText_Walk[] = _("WALK");
 const u8 gText_Cancel[] = _("CANCEL");
 const u8 gText_Cancel2[] = _("CANCEL");
-const u8 gMenuText_Show[] = _("SHOW");
 const u8 gText_EmptyString2[] = _("");
 const u8 gText_Cancel7[] = _("CANCEL"); // Unused
 const u8 gText_Item[] = _("ITEM");
@@ -260,9 +259,7 @@ const u8 *const gBagMenu_ReturnToStrings[] =
     [ITEMMENULOCATION_PARTY]               = gText_ThePokemonList,
     [ITEMMENULOCATION_SHOP]                = gText_TheShop,
     [ITEMMENULOCATION_BERRY_TREE]          = gText_TheField,
-    [ITEMMENULOCATION_BERRY_BLENDER_CRUSH] = gText_TheField,
     [ITEMMENULOCATION_ITEMPC]              = gText_ThePC,
-    [ITEMMENULOCATION_APPRENTICE]          = gText_TheField,
     [ITEMMENULOCATION_WALLY]               = gText_TheBattle,
     [ITEMMENULOCATION_PCBOX]               = gText_ThePC
 };

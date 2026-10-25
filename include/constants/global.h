@@ -56,8 +56,6 @@
 #define OBJECT_EVENT_TEMPLATES_COUNT 48 // max NPCs per map (Emerald: 64); asm/macros/map.inc rejects maps with more
 #define DECOR_MAX_SECRET_BASE 16
 #define DECOR_MAX_PLAYERS_HOUSE 12
-#define APPRENTICE_COUNT 4
-#define APPRENTICE_MAX_QUESTIONS 9
 #define MAX_REMATCH_ENTRIES 78 // REMATCH_TABLE_ENTRIES, checked in src/battle_setup.c (Emerald: 100)
 #define NUM_CONTEST_WINNERS 13
 #define UNION_ROOM_KB_ROW_COUNT 10

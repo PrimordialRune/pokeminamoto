@@ -18,7 +18,6 @@
 #include "new_game.h"
 #include "link.h"
 #include "tv.h"
-#include "apprentice.h"
 #include "pokedex.h"
 #include "data.h"
 #include "strings.h"
@@ -1501,10 +1500,8 @@ void CopyFrontierTrainerText(u8 whichText, u16 trainerId)
             CopyFrontierBrainText(FALSE);
         else if (trainerId < FRONTIER_TRAINERS_COUNT)
             FrontierSpeechToString(gFacilityTrainers[trainerId].speechBefore);
-        else if (trainerId < TRAINER_RECORD_MIXING_APPRENTICE)
-            FrontierSpeechToString(gSaveBlock2Ptr->frontier.towerRecords[trainerId - TRAINER_RECORD_MIXING_FRIEND].greeting);
         else
-            BufferApprenticeChallengeText(trainerId - TRAINER_RECORD_MIXING_APPRENTICE);
+            FrontierSpeechToString(gSaveBlock2Ptr->frontier.towerRecords[trainerId - TRAINER_RECORD_MIXING_FRIEND].greeting);
         break;
     case FRONTIER_PLAYER_LOST_TEXT:
         if (trainerId == TRAINER_FRONTIER_BRAIN)
@@ -1515,13 +1512,9 @@ void CopyFrontierTrainerText(u8 whichText, u16 trainerId)
         {
             FrontierSpeechToString(gFacilityTrainers[trainerId].speechWin);
         }
-        else if (trainerId < TRAINER_RECORD_MIXING_APPRENTICE)
-        {
-            FrontierSpeechToString(gSaveBlock2Ptr->frontier.towerRecords[trainerId - TRAINER_RECORD_MIXING_FRIEND].speechWon);
-        }
         else
         {
-            FrontierSpeechToString(SAVED_APPRENTICES[trainerId - TRAINER_RECORD_MIXING_APPRENTICE].speechWon);
+            FrontierSpeechToString(gSaveBlock2Ptr->frontier.towerRecords[trainerId - TRAINER_RECORD_MIXING_FRIEND].speechWon);
         }
         break;
     case FRONTIER_PLAYER_WON_TEXT:
@@ -1533,14 +1526,9 @@ void CopyFrontierTrainerText(u8 whichText, u16 trainerId)
         {
             FrontierSpeechToString(gFacilityTrainers[trainerId].speechLose);
         }
-        else if (trainerId < TRAINER_RECORD_MIXING_APPRENTICE)
-        {
-            FrontierSpeechToString(gSaveBlock2Ptr->frontier.towerRecords[trainerId - TRAINER_RECORD_MIXING_FRIEND].speechLost);
-        }
         else
         {
-            trainerId = SAVED_APPRENTICES[trainerId - TRAINER_RECORD_MIXING_APPRENTICE].id;
-            FrontierSpeechToString(gApprentices[trainerId].speechLost);
+            FrontierSpeechToString(gSaveBlock2Ptr->frontier.towerRecords[trainerId - TRAINER_RECORD_MIXING_FRIEND].speechLost);
         }
         break;
     }

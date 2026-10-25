@@ -268,7 +268,6 @@ gSpecials::
 	def_special CheckInteractedWithFriendsPosterDecor
 	def_special QuizLadyShowQuizQuestion
 	def_special CloseBattlePikeCurtain
-	def_special CallApprenticeFunction
 	def_special ShouldTryGetTrainerScript
 	def_special ShowMapNamePopup
 	def_special ShowMapNamePopup
