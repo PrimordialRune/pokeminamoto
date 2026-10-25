@@ -40,6 +40,8 @@ enum
     REGRESS_SCENE_LINK_FULL_SAVE,  // the LinkFullSave_* steps Task_LinkFullSave runs, without a link
     REGRESS_SCENE_SAVE_BLOCKS,     // WriteSaveBlock2, then WriteSaveBlock1Sector until it is done
     REGRESS_SCENE_SAVE_LINK,       // TrySavingData(SAVE_LINK)
+    REGRESS_SCENE_TOWN_MAP,      // the wall Town Map (FieldShowRegionMap)
+    REGRESS_SCENE_FLY_MAP,       // the Fly map
 };
 
 #define REGRESS_MAGIC 0x53524752 // "RGRS"

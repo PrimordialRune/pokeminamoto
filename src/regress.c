@@ -22,6 +22,7 @@
 #include "pokemon_storage_system.h"
 #include "random.h"
 #include "sprite.h"
+#include "region_map.h"
 #include "script.h"
 #include "sound.h"
 #include "script_pokemon_util.h"
@@ -53,6 +54,7 @@ static EWRAM_DATA u8 sScript[32] = {0};
 extern const u8 SPECIAL_ShowPokemonStorageSystemPC[];
 extern const u8 SPECIAL_EggHatch[];
 extern const u8 SPECIAL_BedroomPC[];
+extern const u8 SPECIAL_FieldShowRegionMap[];
 extern const u8 SPECIAL_CreateInGameTradePokemon[];
 extern const u8 SPECIAL_DoInGameTradeScene[];
 
@@ -510,6 +512,16 @@ static void StartScene(u8 scene)
         break;
     case REGRESS_SCENE_SAVE_LINK:
         TrySavingData(SAVE_LINK);
+        break;
+    case REGRESS_SCENE_TOWN_MAP:
+        s = AddSpecial(s, SPECIAL_FieldShowRegionMap);
+        *s++ = SCROP_WAITSTATE;
+        *s++ = SCROP_END;
+        ScriptContext_SetupScript(sScript);
+        break;
+    case REGRESS_SCENE_FLY_MAP:
+        CleanupOverworldWindowsAndTilemaps();
+        SetMainCallback2(CB2_OpenFlyMap);
         break;
     }
 }
