@@ -642,16 +642,25 @@ static void cmdSaveState(const char* path) {
 	reply("{\"ok\":true,\"path\":\"%s\",\"frame\":%u}", path, core->frameCounter(core));
 }
 
-static void cmdLoadState(const char* path) {
+/* "loadstate <file> keepsave" restores everything but the battery save. */
+static void cmdLoadState(const char* args) {
 	if (!needCore()) {
 		return;
+	}
+	char path[1024];
+	snprintf(path, sizeof(path), "%s", args);
+	int flags = SAVESTATE_SAVEDATA | SAVESTATE_RTC;
+	char* opt = strrchr(path, ' ');
+	if (opt && !strcmp(opt + 1, "keepsave")) {
+		*opt = 0;
+		flags = SAVESTATE_RTC;
 	}
 	struct VFile* vf = VFileOpen(path, O_RDONLY);
 	if (!vf) {
 		replyError("cannot open %s: %s", path, strerror(errno));
 		return;
 	}
-	bool ok = mCoreLoadStateNamed(core, vf, SAVESTATE_SAVEDATA | SAVESTATE_RTC);
+	bool ok = mCoreLoadStateNamed(core, vf, flags);
 	vf->close(vf);
 	if (!ok) {
 		replyError("load state failed (state from a different ROM build?)");
@@ -774,7 +783,7 @@ static void cmdLog(void) {
 static void cmdHelp(void) {
 	reply("{\"ok\":true,\"commands\":\"load <rom> | reset | loadsav <file> | dumpsav <file> | run [frames] | step [n] | regs | "
 	      "read <addr> <len> | write <addr> <hex> | keys <mask> | break <addr> | watch <addr> [w|r|rw|c] | "
-	      "profile <frames> <file> | delete <id> | list | screenshot <png> | savestate <file> | loadstate <file> | gdb [port] | "
+	      "profile <frames> <file> | delete <id> | list | screenshot <png> | savestate <file> | loadstate <file> [keepsave] | gdb [port] | "
 	      "gdbframes <n> | scale <1-4> | log | info | quit\"}");
 }
 

@@ -41,7 +41,7 @@ EXT = 40 + 2 * 1024 + 32  # heap error fields, after the resource limits and sta
 HEAP_FATAL = {1: "heap full", 2: "Free of a bad pointer", 3: "Free of a free block"}
 (SCENE_EVOLUTION, SCENE_NAMING, SCENE_EGG_HATCH, SCENE_INGAME_TRADE, SCENE_HALL_OF_FAME,
  SCENE_DOUBLE_BATTLE, SCENE_SUBSTITUTE, SCENE_BEDROOM_PC, SCENE_POKENAV, SCENE_SAVE_FAILED,
- SCENE_SAVE_FAILED_HOF, SCENE_LOAD_HOF) = range(1, 13)
+ SCENE_SAVE_FAILED_HOF, SCENE_LOAD_HOF, SCENE_LINK_FULL_SAVE, SCENE_SAVE_BLOCKS, SCENE_SAVE_LINK) = range(1, 16)
 
 # Start menu order with the Pokedex and Pokemon flags set and no PokeNav
 MENU = ["POKEDEX", "POKEMON", "BAG", "PLAYER", "SAVE", "OPTION", "EXIT"]
@@ -171,6 +171,13 @@ class Emu:
         if fatal:
             self.screenshot("FAIL_heap_fatal")
             raise Fail("heap error stopped the game: " + fatal)
+
+    def save_stats(self):
+        ops, sectors, cut_at, cut_half, cut_done = struct.unpack("<HHHBB", self.read(self.rs + EXT + 12, 8))
+        return dict(flashOps=ops, sectorWrites=sectors, cutAt=cut_at, cutHalf=cut_half, cutDone=cut_done)
+
+    def reset_save_stats(self, cut_at=0, cut_half=0):
+        self.cmd(f"write {self.rs + EXT + 12:#x} {struct.pack('<HHHBB', 0, 0, cut_at, cut_half, 0).hex()}")
 
     def heap_used(self):
         """Bytes in allocated heap blocks, headers included (GetHeapUsed in
@@ -517,6 +524,7 @@ def main():
     report["dumps"]["after_catch"] = decode_dump(emu)
 
     def save():
+        emu.reset_save_stats()
         menu_to(emu, "SAVE")
         snap("save_prompt")
         emu.press("A", after=60)     # yes, save
@@ -524,6 +532,10 @@ def main():
         emu.press("A", after=40)
         wait_field(emu, mash="B")
     scene(emu, report, "save", save)
+    st = emu.save_stats()
+    report["checks"]["saveSectorWrites"] = st["sectorWrites"]
+    report["checks"]["saveFlashOps"] = st["flashOps"]
+    print(f"  save wrote {st['sectorWrites']} sectors ({st['flashOps']} flash writes, commit records included)", flush=True)
     report["dumps"]["saved"] = decode_dump(emu)
 
     # --- Reset and continue ---------------------------------------------

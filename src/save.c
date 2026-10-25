@@ -11,6 +11,7 @@
 #include "trainer_hill.h"
 #include "link.h"
 #include "malloc.h"
+#include "regress.h"
 #include "constants/game_stat.h"
 
 static u16 CalculateChecksum(void *, u16);
@@ -338,6 +339,7 @@ static u8 HandleWriteSectorNBytes(u8 sectorId, u8 *data, u16 size)
 
 static u8 TryWriteSector(u8 sector, u8 *data)
 {
+    REGRESS_SAVE_FLASH_OP(sector, data, SECTOR_SIZE, TRUE);
     if (ProgramFlashSectorAndVerify(sector, data)) // is damaged?
     {
         // Failed
@@ -1119,6 +1121,7 @@ static u8 CowWriteCommitRecord(void)
     CowFillCommit(commit, &sCowPending);
     for (try = 0; try < 3; try++)
     {
+        REGRESS_SAVE_FLASH_OP(sector, (u8 *)commit, offsetof(struct SaveCommit, done), FALSE);
         if (EraseFlashSector(sector))
             continue;
         for (i = 0; i < offsetof(struct SaveCommit, done); i++)
@@ -1149,6 +1152,7 @@ static u8 CowFinishCommit(void)
     if (sCowStage != COW_COMMITTING || gDamagedSaveSectors)
         return SAVE_STATUS_ERROR;
 
+    REGRESS_SAVE_FLASH_OP(sector, NULL, 0, FALSE);
     ProgramFlashByte(sector, offsetof(struct SaveCommit, done), SAVE_COMMIT_DONE);
     ReadFlash(sector, offsetof(struct SaveCommit, done), &done, 1);
     sCowStage = COW_IDLE;

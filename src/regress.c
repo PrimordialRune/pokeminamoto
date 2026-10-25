@@ -44,6 +44,7 @@
 #include "decompress.h"
 #include "pokenav.h"
 #include "save.h"
+#include "gba/flash_internal.h"
 
 EWRAM_DATA struct RegressState gRegress = {0};
 static EWRAM_DATA u8 sScript[32] = {0};
@@ -96,6 +97,33 @@ void Regress_NoteHeapFatal(u32 kind, u32 value, u32 caller)
     gRegress.heapFatal = kind;
     gRegress.heapFatalValue = value;
     gRegress.heapFatalCaller = caller;
+}
+
+// Called by the save code before each flash write. Counts them, and cuts the
+// "power" at the one gRegress.saveCutAt names: optionally half of its bytes
+// get programmed (into the freshly erased sector), then the CPU stops for
+// good, as if the GBA was switched off. The harness then resets the emulator,
+// which keeps the flash as it is.
+void Regress_SaveFlashOp(u16 sector, const u8 *data, u32 size, bool32 wholeSector)
+{
+    u32 i;
+
+    gRegress.saveFlashOps++;
+    if (wholeSector)
+        gRegress.saveSectorWrites++;
+    if (gRegress.saveCutAt == 0 || gRegress.saveFlashOps != gRegress.saveCutAt)
+        return;
+
+    if (gRegress.saveCutHalf && data != NULL)
+    {
+        EraseFlashSector(sector);
+        for (i = 0; i < size / 2; i++)
+            ProgramFlashByte(sector, i, data[i]);
+    }
+    gRegress.saveCutDone = TRUE;
+    REG_IME = 0;
+    for (;;)
+        ;
 }
 
 void Regress_NoteDmaQueue(u32 pending)
@@ -465,6 +493,22 @@ static void StartScene(u8 scene)
     case REGRESS_SCENE_LOAD_HOF:
         CpuFill32(0, gDecompressionBuffer, sizeof(gDecompressionBuffer));
         gSpecialVar_Result = LoadGameSave(SAVE_HALL_OF_FAME);
+        break;
+    // The partial and spread-out saves link screens use, run in one go
+    case REGRESS_SCENE_LINK_FULL_SAVE:
+        LinkFullSave_Init();
+        while (!LinkFullSave_WriteSector())
+            ;
+        LinkFullSave_ReplaceLastSector();
+        LinkFullSave_SetLastSectorSignature();
+        break;
+    case REGRESS_SCENE_SAVE_BLOCKS:
+        WriteSaveBlock2();
+        while (!WriteSaveBlock1Sector())
+            ;
+        break;
+    case REGRESS_SCENE_SAVE_LINK:
+        TrySavingData(SAVE_LINK);
         break;
     }
 }

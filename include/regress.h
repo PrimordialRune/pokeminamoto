@@ -36,6 +36,9 @@ enum
     REGRESS_SCENE_SAVE_FAILED,   // save-failed screen after a normal save, back to the field
     REGRESS_SCENE_SAVE_FAILED_HOF, // the same for a Hall of Fame save of a test pattern
     REGRESS_SCENE_LOAD_HOF,      // read the Hall of Fame sectors back into gDecompressionBuffer
+    REGRESS_SCENE_LINK_FULL_SAVE,  // the LinkFullSave_* steps Task_LinkFullSave runs, without a link
+    REGRESS_SCENE_SAVE_BLOCKS,     // WriteSaveBlock2, then WriteSaveBlock1Sector until it is done
+    REGRESS_SCENE_SAVE_LINK,       // TrySavingData(SAVE_LINK)
 };
 
 #define REGRESS_MAGIC 0x53524752 // "RGRS"
@@ -81,6 +84,14 @@ struct RegressState
     u32 heapFatal;       // HEAP_FATAL_* that stopped the game, 0 if none
     u32 heapFatalValue;  // the size asked for, or the pointer freed
     u32 heapFatalCaller; // address of the call
+    // Save code (src/save.c), counted from when the harness zeroes them
+    u16 saveFlashOps;     // flash writes: whole sectors, commit records, commit bytes
+    u16 saveSectorWrites; // whole sectors erased and programmed (game data and Hall of Fame)
+    // Power-cut test (tools/regress/save_check.py): the harness sets saveCutAt
+    // to n and the n-th flash write never finishes, the CPU stops instead
+    u16 saveCutAt;        // 0: never
+    u8 saveCutHalf;       // TRUE: that write gets half of its bytes programmed first
+    u8 saveCutDone;       // set when the power was "cut"
 };
 
 enum
@@ -105,6 +116,7 @@ void Regress_NoteFail(u32 kind);
 void Regress_NoteTiles(u32 start, u32 count);
 void Regress_SpriteStatics(const u8 *tileBitmap, const u16 *palTags);
 void Regress_NoteHeapFatal(u32 kind, u32 value, u32 caller);
+void Regress_SaveFlashOp(u16 sector, const u8 *data, u32 size, bool32 wholeSector);
 
 #define REGRESS_NOTE_ALLOC(start, ptr, size) Regress_NoteAlloc(start, ptr, size)
 #define REGRESS_NOTE_DMA_QUEUE(pending) Regress_NoteDmaQueue(pending)
@@ -118,6 +130,7 @@ void Regress_NoteHeapFatal(u32 kind, u32 value, u32 caller);
 #define REGRESS_NOTE_TILES(start, count) Regress_NoteTiles(start, count)
 #define REGRESS_SPRITE_STATICS(bitmap, tags) Regress_SpriteStatics(bitmap, tags)
 #define REGRESS_NOTE_HEAP_FATAL(kind, value, caller) Regress_NoteHeapFatal(kind, value, caller)
+#define REGRESS_SAVE_FLASH_OP(sector, data, size, wholeSector) Regress_SaveFlashOp(sector, data, size, wholeSector)
 
 #else
 
@@ -132,6 +145,7 @@ void Regress_NoteHeapFatal(u32 kind, u32 value, u32 caller);
 #define REGRESS_NOTE_TILES(start, count)
 #define REGRESS_SPRITE_STATICS(bitmap, tags)
 #define REGRESS_NOTE_HEAP_FATAL(kind, value, caller)
+#define REGRESS_SAVE_FLASH_OP(sector, data, size, wholeSector)
 
 #endif // REGRESS_HOOKS
 
