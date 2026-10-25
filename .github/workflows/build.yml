@@ -6,6 +6,11 @@ on:
   pull_request:
   workflow_dispatch:
 
+# A newer push to the same branch or PR cancels the run still going
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -14,7 +19,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install toolchain
-        run: bash tools/setup-cloud.sh
+        run: LEAN=1 bash tools/setup-cloud.sh
 
       - name: Build (modern arm-none-eabi-gcc)
         run: make -j$(nproc)
@@ -35,8 +40,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # agbcc is pinned in setup-cloud.sh; the cache key follows that pin
+      - name: Read agbcc pin
+        id: agbcc
+        run: echo "commit=$(sed -n 's/^AGBCC_COMMIT=//p' tools/setup-cloud.sh)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache agbcc
+        uses: actions/cache@v4
+        with:
+          path: tools/agbcc
+          key: agbcc-${{ runner.os }}-${{ steps.agbcc.outputs.commit }}
+
       - name: Install toolchain and agbcc
-        run: CLASSIC=1 bash tools/setup-cloud.sh
+        run: LEAN=1 CLASSIC=1 bash tools/setup-cloud.sh
 
       - name: Build classic (agbcc)
         run: make classic -j$(nproc)

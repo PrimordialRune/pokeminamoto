@@ -29,7 +29,7 @@ In a cloud session or a native Linux shell, run `make`/`git` directly.
 
 ### Prerequisites
 
-Fresh Debian/Ubuntu box (cloud session, CI, new machine): run `tools/setup-cloud.sh`. It installs `build-essential git libpng-dev binutils-arm-none-eabi gcc-arm-none-eabi libnewlib-arm-none-eabi`, marks the committed poryscript binary executable and runs `npm ci` for the MCP servers when node is present. It is idempotent. It skips pret `agbcc` unless you pass `CLASSIC=1` (only `make classic` needs it; it builds into `tools/agbcc/`, not committed).
+Fresh Debian/Ubuntu box (cloud session, CI, new machine): run `tools/setup-cloud.sh`. It installs `build-essential git libpng-dev binutils-arm-none-eabi gcc-arm-none-eabi libnewlib-arm-none-eabi`, marks the committed poryscript binary executable and runs `npm ci` for the MCP servers when node is present. It is idempotent. It skips pret `agbcc` unless you pass `CLASSIC=1` (only `make classic` needs it; it builds a pinned commit into `tools/agbcc/`, not committed). `LEAN=1` installs only the build toolchain (CI uses it): no emulator, MCP deps, Porytiles or pip.
 
 On the home WSL box everything is already installed: apt `arm-none-eabi` binutils + gcc 10.3, devkitARM at `/opt/devkitpro` (the modern build picks up its gcc 12.2 and `arm-none-eabi-gdb`), and `tools/agbcc/`.
 

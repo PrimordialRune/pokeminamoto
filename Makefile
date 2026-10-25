@@ -331,7 +331,7 @@ generated: $(AUTO_GEN_TARGETS)
 %.lz:     %      ; $(GFX) $< $@
 %.rl:     %      ; $(GFX) $< $@
 
-%.inc: %.pory
+%.inc: %.pory $(PORYSCRIPT_CC) $(PORYSCRIPT_FC)
 	$(PORYSCRIPT) -i $< -o $@ -cc $(PORYSCRIPT_CC) -fc $(PORYSCRIPT_FC) -lm=false -s LANGUAGE=$(LANGUAGE)
 
 clean-generated:
@@ -406,6 +406,9 @@ $(DATA_ASM_BUILDDIR)/%.d: $(DATA_ASM_SUBDIR)/%.s
 
 ifneq ($(NODEP),1)
 -include $(addprefix $(OBJ_DIR)/,$(REGULAR_DATA_ASM_SRCS:.s=.d))
+# maps.s and map_events.s have their own rules (map_data_rules.mk) but still
+# need rebuilding when a constants header they include changes
+-include $(OBJ_DIR)/$(DATA_ASM_SUBDIR)/maps.d $(OBJ_DIR)/$(DATA_ASM_SUBDIR)/map_events.d
 endif
 
 # Ensure all .pory sources are compiled to .inc before event_scripts.o is assembled
@@ -431,12 +434,20 @@ endif
 
 # Final rules
 
-libagbsyscall:
+# A real file target, so an unchanged library doesn't relink the ELF on every make
+LIBAGBSYSCALL := libagbsyscall/libagbsyscall.a
+libagbsyscall: $(LIBAGBSYSCALL)
+$(LIBAGBSYSCALL): libagbsyscall/libagbsyscall.s libagbsyscall/Makefile
 	@$(MAKE) -C libagbsyscall TOOLCHAIN=$(TOOLCHAIN) MODERN=$(MODERN)
 
 # Elf from object files
 LDFLAGS = -Map ../../$(MAP)
-$(ELF): $(LD_SCRIPT) $(LD_SCRIPT_DEPS) $(OBJS) libagbsyscall
+# .SECONDARY above makes make ignore a deleted object when the ELF is newer than
+# its sources, so relink (rebuilding them) whenever one is missing
+MISSING_OBJS := $(filter-out $(wildcard $(OBJS)),$(OBJS))
+.PHONY: FORCE
+FORCE:
+$(ELF): $(LD_SCRIPT) $(LD_SCRIPT_DEPS) $(OBJS) $(LIBAGBSYSCALL) $(if $(MISSING_OBJS),FORCE)
 	@cd $(OBJ_DIR) && $(LD) $(LDFLAGS) -T ../../$< --print-memory-usage -o ../../$@ $(OBJS_REL) $(LIB) | cat
 	@echo "cd $(OBJ_DIR) && $(LD) $(LDFLAGS) -T ../../$< --print-memory-usage -o ../../$@ <objs> <libs> | cat"
 	$(FIX) $@ -t"$(TITLE)" -c$(GAME_CODE) -m$(MAKER_CODE) -r$(REVISION) --silent

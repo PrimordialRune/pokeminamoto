@@ -5,6 +5,7 @@
 #   tools/setup-cloud.sh            # from anywhere inside the repo
 #   SKIP_APT=1 tools/setup-cloud.sh # toolchain already installed
 #   CLASSIC=1 tools/setup-cloud.sh  # also build agbcc, for the optional `make classic`
+#   LEAN=1 tools/setup-cloud.sh     # build toolchain only (CI): no emulator, MCP deps, Porytiles, pip
 #
 # Idempotent: skips apt packages and agbcc when they are already present.
 set -euo pipefail
@@ -19,8 +20,8 @@ fi
 
 # --- 1. System packages -------------------------------------------------------
 APT_PKGS=(build-essential git libpng-dev pkg-config
-          binutils-arm-none-eabi gcc-arm-none-eabi libnewlib-arm-none-eabi
-          libmgba-dev gdb-multiarch)  # last two: headless emulator for gba-debug-mcp
+          binutils-arm-none-eabi gcc-arm-none-eabi libnewlib-arm-none-eabi)
+[ -n "${LEAN:-}" ] || APT_PKGS+=(libmgba-dev gdb-multiarch)  # headless emulator for gba-debug-mcp
 
 if [ -z "${SKIP_APT:-}" ]; then
     missing=()
@@ -38,20 +39,29 @@ if [ -z "${SKIP_APT:-}" ]; then
 fi
 
 # --- 2. agbcc (classic compiler, optional, not committed) ---------------------
+# Pinned so CI can cache tools/agbcc by this commit (.github/workflows/build.yml)
+AGBCC_COMMIT=da598c1d918402c42c0c0d7128ba14567f3175e9
 if [ -x tools/agbcc/bin/agbcc ] && [ -x tools/agbcc/bin/old_agbcc ]; then
     echo ">> tools/agbcc already installed"
 elif [ -z "${CLASSIC:-}" ]; then
     echo ">> skipping agbcc (only needed for \`make classic\`; rerun with CLASSIC=1)"
 else
-    echo ">> building pret/agbcc"
+    echo ">> building pret/agbcc $AGBCC_COMMIT"
     tmp="$(mktemp -d)"
     trap 'rm -rf "$tmp"' EXIT
-    git clone --depth 1 https://github.com/pret/agbcc "$tmp/agbcc"
+    git init -q "$tmp/agbcc"
+    git -C "$tmp/agbcc" fetch -q --depth 1 https://github.com/pret/agbcc "$AGBCC_COMMIT"
+    git -C "$tmp/agbcc" checkout -q FETCH_HEAD
     (cd "$tmp/agbcc" && ./build.sh >/dev/null && ./install.sh "$REPO_ROOT")
 fi
 
 # Committed prebuilt binaries must be executable (older commits stored them 644).
 chmod +x tools/poryscript/poryscript tools/poryscript/poryscript-pls 2>/dev/null || true
+
+if [ -n "${LEAN:-}" ]; then
+    echo ">> done (lean: build toolchain only)"
+    exit 0
+fi
 
 # --- 3. Headless emulator host (tools/gba-emu, used by gba-debug-mcp emu_*) ---
 if [ -f /usr/include/mgba/core/core.h ]; then
@@ -74,7 +84,7 @@ if command -v npm >/dev/null 2>&1; then
     done
 fi
 
-# --- 4. Porytiles (tileset compiler, not committed: the binary is ~100 MB) ------
+# --- 5. Porytiles (tileset compiler, not committed: the binary is ~100 MB) ------
 PORYTILES_VERSION=v2.0.0
 PORYTILES_SHA256=68c904c3ff707ed2d6de0372073f165e627ec3ee7855eedbb3363184cc9212a4
 if [ "$(uname -m)" = "x86_64" ] && ! [ -x tools/porytiles/bin/porytiles ]; then
