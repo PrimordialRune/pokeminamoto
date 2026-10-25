@@ -6,6 +6,7 @@
 #include "task.h"
 #include "battle_transition.h"
 #include "fieldmap.h"
+#include "palette_cycle.h"
 
 static EWRAM_DATA struct {
     const u16 *src;
@@ -602,11 +603,13 @@ void InitTilesetAnimations(void)
     ResetTilesetAnimBuffer();
     _InitPrimaryTilesetAnimation();
     _InitSecondaryTilesetAnimation();
+    PaletteCycles_Init();
 }
 
 void InitSecondaryTilesetAnimation(void)
 {
     _InitSecondaryTilesetAnimation();
+    PaletteCycles_Refresh();
 }
 
 void UpdateTilesetAnimations(void)
@@ -626,6 +629,7 @@ void UpdateTilesetAnimations(void)
         sPrimaryTilesetAnimCallback(sPrimaryTilesetAnimCounter);
     if (sSecondaryTilesetAnimCallback)
         sSecondaryTilesetAnimCallback(sSecondaryTilesetAnimCounter);
+    PaletteCycles_Update();
 }
 
 static void _InitPrimaryTilesetAnimation(void)

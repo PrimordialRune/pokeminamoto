@@ -6,6 +6,7 @@
 #include "main.h"
 #include "overworld.h"
 #include "palette.h"
+#include "palette_cycle.h"
 #include "palette_tone.h"
 #include "rtc.h"
 #include "sprite.h"
@@ -297,6 +298,7 @@ static void ChangeTimeOfDay(u8 timeOfDay)
     gTintFieldSprites = (timeOfDay != TIME_OF_DAY_DAY);
     SetSpriteTimeOfDay(timeOfDay);
     ReloadMapTilesetPalettes();
+    PaletteCycles_Refresh();
     // The palette buffers now hold the new colors; redo the weather on top.
     for (i = 0; i < NUM_PALS_TOTAL; i++)
         ApplyWeatherColorMapToPal(i);
