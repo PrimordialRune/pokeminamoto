@@ -27,9 +27,7 @@
 #include "constants/items.h"
 #include "constants/trainer_types.h"
 
-#define SPECIAL_LOCALIDS_START (min(LOCALID_CAMERA, \
-                                min(LOCALID_PLAYER, \
-                                    LOCALID_BERRY_BLENDER_PLAYER_END - MAX_RFU_PLAYERS + 1)))
+#define SPECIAL_LOCALIDS_START LOCALID_CAMERA
 
 // The object event templates on a map cannot use the special IDs listed above or they can behave unexpectedly.
 // For more details on these special IDs see their definitions in 'include/constants/event_objects.h'.
@@ -147,7 +145,6 @@ static void SetPlayerAvatarObjectEventIdAndObjectId(u8, u8);
 static void ResetObjectEventFldEffData(struct ObjectEvent *);
 static u8 LoadSpritePaletteIfTagExists(const struct SpritePalette *);
 static u8 FindObjectEventPaletteIndexByTag(u16);
-static void _PatchObjectPalette(u16, u8);
 static u8 LoadObjectEventGraphicsPalette(const struct ObjectEventGraphicsInfo *);
 static void FreeObjectEventPaletteIfUnused(u16, u8);
 static bool8 ObjectEventDoesElevationMatch(struct ObjectEvent *, u8);
@@ -2065,11 +2062,6 @@ void LoadSpecialObjectReflectionPalette(u16 tag, u8 slot)
             return;
         }
     }
-}
-
-static void _PatchObjectPalette(u16 tag, u8 slot)
-{
-    PatchObjectPalette(tag, slot);
 }
 
 static void UNUSED IncrementObjectEventCoords(struct ObjectEvent *objectEvent, s16 x, s16 y)

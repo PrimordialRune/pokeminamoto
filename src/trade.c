@@ -2326,16 +2326,6 @@ s32 GetGameProgressForLinkTrade(void)
     return TRADE_BOTH_PLAYERS_READY;
 }
 
-static bool32 IsDeoxysOrMewUntradable(u16 species, bool8 isModernFatefulEncounter)
-{
-    if (species == SPECIES_DEOXYS || species == SPECIES_MEW)
-    {
-        if (!isModernFatefulEncounter)
-            return TRUE;
-    }
-    return FALSE;
-}
-
 // Spin Trade wasnt fully implemented, but this checks if a mon would be valid to Spin Trade
 // Unlike later generations, this version of Spin Trade isnt only for Eggs
 int CanSpinTradeMon(struct Pokemon *mon, u16 monIdx)
