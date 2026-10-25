@@ -16,7 +16,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import run as R  # noqa: E402
 
 CMD_MUSIC = 10
-SONG_OFFSET = 40 + 2 * 1024 + 6   # gRegress.song
+SONG_OFFSET = 40 + 2 * 1024 + 54  # gRegress.song
 
 
 def main():

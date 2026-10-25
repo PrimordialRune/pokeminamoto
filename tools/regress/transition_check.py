@@ -25,7 +25,7 @@ import run as R  # noqa: E402
 # B_TRANSITION_GEN1_* in include/battle_transition.h, in order
 GEN1 = ["double_circle", "circle", "spiral_in", "spiral_out",
         "horizontal_stripes", "vertical_stripes", "shrink", "split"]
-REGRESS_TRANSITION_OFFSET = 40 + 2 * 1024 + 4   # gRegress.battleTransition
+REGRESS_TRANSITION_OFFSET = 40 + 2 * 1024 + 52  # gRegress.battleTransition (after the limits, stack, heap and save fields)
 
 
 def gen1_first_id():

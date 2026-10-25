@@ -17,7 +17,7 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import run as R  # noqa: E402
 
-SCENE_TOWN_MAP, SCENE_FLY_MAP = 13, 14
+SCENE_TOWN_MAP, SCENE_FLY_MAP = 16, 17
 
 
 def main():
