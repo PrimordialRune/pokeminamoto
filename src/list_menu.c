@@ -69,13 +69,6 @@ static void SpriteCallback_ScrollIndicatorArrow(struct Sprite *sprite);
 static void SpriteCallback_RedArrowCursor(struct Sprite *sprite);
 
 // EWRAM vars
-static EWRAM_DATA struct {
-    s32 currItemId;
-    u8 state;
-    u8 windowId;
-    u8 listTaskId;
-} sMysteryGiftLinkMenu = {0};
-
 EWRAM_DATA struct ScrollArrowsTemplate gTempScrollArrowTemplate = {0};
 
 // IWRAM common
@@ -294,71 +287,6 @@ static const u32 sArrowCursor_Gfx[]     = INCBIN_U32("graphics/interface/arrow_c
 static void ListMenuDummyTask(u8 taskId)
 {
 
-}
-
-s32 DoMysteryGiftListMenu(const struct WindowTemplate *windowTemplate, const struct ListMenuTemplate *listMenuTemplate, u8 drawMode, u16 tileNum, u16 palOffset)
-{
-    switch (sMysteryGiftLinkMenu.state)
-    {
-    case 0:
-    default:
-        sMysteryGiftLinkMenu.windowId = AddWindow(windowTemplate);
-        switch (drawMode)
-        {
-        case 2:
-            LoadUserWindowBorderGfx(sMysteryGiftLinkMenu.windowId, tileNum, palOffset);
-        case 1:
-            DrawTextBorderOuter(sMysteryGiftLinkMenu.windowId, tileNum, palOffset / 16);
-            break;
-        }
-        gMultiuseListMenuTemplate = *listMenuTemplate;
-        gMultiuseListMenuTemplate.windowId = sMysteryGiftLinkMenu.windowId;
-        sMysteryGiftLinkMenu.listTaskId = ListMenuInit(&gMultiuseListMenuTemplate, 0, 0);
-        CopyWindowToVram(sMysteryGiftLinkMenu.windowId, COPYWIN_MAP);
-        sMysteryGiftLinkMenu.state = 1;
-        break;
-    case 1:
-        sMysteryGiftLinkMenu.currItemId = ListMenu_ProcessInput(sMysteryGiftLinkMenu.listTaskId);
-        if (JOY_NEW(A_BUTTON))
-        {
-            sMysteryGiftLinkMenu.state = 2;
-        }
-        if (JOY_NEW(B_BUTTON))
-        {
-            sMysteryGiftLinkMenu.currItemId = LIST_CANCEL;
-            sMysteryGiftLinkMenu.state = 2;
-        }
-        if (sMysteryGiftLinkMenu.state == 2)
-        {
-            if (drawMode == 0)
-            {
-                ClearWindowTilemap(sMysteryGiftLinkMenu.windowId);
-            }
-            else
-            {
-                switch (drawMode)
-                {
-                case 0: // can never be reached, because of the if statement above
-                    ClearStdWindowAndFrame(sMysteryGiftLinkMenu.windowId, FALSE);
-                    break;
-                case 2:
-                case 1:
-                    ClearStdWindowAndFrame(sMysteryGiftLinkMenu.windowId, FALSE);
-                    break;
-                }
-            }
-
-            CopyWindowToVram(sMysteryGiftLinkMenu.windowId, COPYWIN_MAP);
-        }
-        break;
-    case 2:
-        DestroyListMenuTask(sMysteryGiftLinkMenu.listTaskId, NULL, NULL);
-        RemoveWindow(sMysteryGiftLinkMenu.windowId);
-        sMysteryGiftLinkMenu.state = 0;
-        return sMysteryGiftLinkMenu.currItemId;
-    }
-
-    return LIST_NOTHING_CHOSEN;
 }
 
 u8 ListMenuInit(struct ListMenuTemplate *listMenuTemplate, u16 scrollOffset, u16 selectedRow)
