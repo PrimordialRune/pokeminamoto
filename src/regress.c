@@ -549,7 +549,7 @@ static void Dump(void)
         for (j = 0; j < MAX_MON_MOVES; j++)
             *d++ = GetMonData(mon, MON_DATA_MOVE1 + j);
         for (j = 0; j < MAX_MON_MOVES; j++)
-            *d++ = GetMonData(mon, MON_DATA_PP1 + j);
+            *d++ = 0; // was PP (removed); kept so the dump layout stays the same
         d = DumpU32(d, GetMonData(mon, MON_DATA_EXP));
         d = DumpU32(d, GetMonData(mon, MON_DATA_PERSONALITY));
         d = DumpU32(d, GetMonData(mon, MON_DATA_OT_ID));
