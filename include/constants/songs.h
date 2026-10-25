@@ -543,6 +543,11 @@
 #define PH_NURSE_HELD               608
 #define PH_NURSE_SOLO               609
 
+// Red/Green's music on the PSG, converted from pret/pokered by tools/gb2agb/pokered2agb.py
+#define MUS_GB_PALLET               610
+#define MUS_GB_ROUTE1               611
+#define MUS_GB_OAK_LAB              612
+
 #define MUS_ROUTE118                0x7FFF  // Map is split into 2 music sections. controlled by GetCurrLocationDefaultMusic().
 
 #define MUS_NONE                    0xFFFF
