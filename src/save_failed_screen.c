@@ -212,7 +212,13 @@ static void CB2_SaveFailedScreen(void)
         // writes it again from there, so the screen goes on the heap then.
         sScreenBuffer = NULL;
         if (sSaveFailedType == SAVE_HALL_OF_FAME)
+        {
             sScreenBuffer = Alloc(SCREEN_BUFFER_SIZE);
+            // No room: save the game without the record rather than save
+            // the screen's pixels as the record.
+            if (sScreenBuffer == NULL)
+                sSaveFailedType = SAVE_NORMAL;
+        }
         if (sScreenBuffer == NULL)
             sScreenBuffer = gDecompressionBuffer;
         SetBgTilemapBuffer(0, &sScreenBuffer[SCREEN_TILEMAP]);

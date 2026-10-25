@@ -578,10 +578,12 @@ static void ProcessRecvCmds(u8 unused)
                     u16 *buffer;
                     u16 j;
 
+                    // The size comes from the other GBA; don't write past the buffer.
                     buffer = (u16 *)gDecompressionBuffer;
                     for (j = 0; j < CMD_LENGTH - 1; j++)
                     {
-                        buffer[(sBlockRecv[i].pos / 2) + j] = gRecvCmds[i][j + 1];
+                        if ((sBlockRecv[i].pos / 2) + j < sizeof(gDecompressionBuffer) / 2)
+                            buffer[(sBlockRecv[i].pos / 2) + j] = gRecvCmds[i][j + 1];
                     }
                 }
                 else
@@ -590,7 +592,8 @@ static void ProcessRecvCmds(u8 unused)
 
                     for (j = 0; j < CMD_LENGTH - 1; j++)
                     {
-                        gBlockRecvBuffer[i][(sBlockRecv[i].pos / 2) + j] = gRecvCmds[i][j + 1];
+                        if ((sBlockRecv[i].pos / 2) + j < ARRAY_COUNT(gBlockRecvBuffer[i]))
+                            gBlockRecvBuffer[i][(sBlockRecv[i].pos / 2) + j] = gRecvCmds[i][j + 1];
                     }
                 }
 
@@ -640,7 +643,8 @@ static void ProcessRecvCmds(u8 unused)
                 SetBerryBlenderLinkCallback();
                 break;
             case LINKCMD_SEND_BLOCK_REQ:
-                SendBlock(0, sBlockRequests[gRecvCmds[i][1]].address, sBlockRequests[gRecvCmds[i][1]].size);
+                if (gRecvCmds[i][1] < ARRAY_COUNT(sBlockRequests))
+                    SendBlock(0, sBlockRequests[gRecvCmds[i][1]].address, sBlockRequests[gRecvCmds[i][1]].size);
                 break;
             case LINKCMD_SEND_HELD_KEYS:
                 gLinkPartnersHeldKeys[i] = gRecvCmds[i][1];
