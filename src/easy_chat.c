@@ -436,54 +436,6 @@ struct
 
 static const struct EasyChatScreenTemplate sEasyChatScreenTemplates[] = {
     {
-        .type = EASY_CHAT_TYPE_PROFILE,
-        .numColumns = 2,
-        .numRows = 2,
-        .frameId = FRAMEID_GENERAL_2x2,
-        .fourFooterOptions = FALSE,
-        .titleText = gText_Profile,
-        .instructionsText1 = gText_CombineFourWordsOrPhrases,
-        .instructionsText2 = gText_AndMakeYourProfile,
-        .confirmText1 = gText_YourProfile,
-        .confirmText2 = gText_IsAsShownOkay,
-    },
-    {
-        .type = EASY_CHAT_TYPE_BATTLE_START,
-        .numColumns = 2,
-        .numRows = 3,
-        .frameId = FRAMEID_GENERAL_2x3,
-        .fourFooterOptions = FALSE,
-        .titleText = gText_AtTheBattlesStart,
-        .instructionsText1 = gText_CombineSixWordsOrPhrases,
-        .instructionsText2 = gText_AndMakeAMessage,
-        .confirmText1 = gText_YourFeelingAtTheBattlesStart,
-        .confirmText2 = gText_IsAsShownOkay,
-    },
-    {
-        .type = EASY_CHAT_TYPE_BATTLE_WON,
-        .numColumns = 2,
-        .numRows = 3,
-        .frameId = FRAMEID_GENERAL_2x3,
-        .fourFooterOptions = FALSE,
-        .titleText = gText_UponWinningABattle,
-        .instructionsText1 = gText_CombineSixWordsOrPhrases,
-        .instructionsText2 = gText_AndMakeAMessage,
-        .confirmText1 = gText_WhatYouSayIfYouWin,
-        .confirmText2 = gText_IsAsShownOkay,
-    },
-    {
-        .type = EASY_CHAT_TYPE_BATTLE_LOST,
-        .numColumns = 2,
-        .numRows = 3,
-        .frameId = FRAMEID_GENERAL_2x3,
-        .fourFooterOptions = FALSE,
-        .titleText = gText_UponLosingABattle,
-        .instructionsText1 = gText_CombineSixWordsOrPhrases,
-        .instructionsText2 = gText_AndMakeAMessage,
-        .confirmText1 = gText_WhatYouSayIfYouLose,
-        .confirmText2 = gText_IsAsShownOkay,
-    },
-    {
         .type = EASY_CHAT_TYPE_MAIL,
         .numColumns = 2,
         .numRows = 5,
@@ -1474,30 +1426,6 @@ void ShowEasyChatScreen(void)
     u8 displayedPersonType = EASY_CHAT_PERSON_DISPLAY_NONE;
     switch (gSpecialVar_0x8004)
     {
-#ifdef FREE_EASY_CHAT_PHRASES
-    case EASY_CHAT_TYPE_PROFILE:
-    case EASY_CHAT_TYPE_BATTLE_START:
-    case EASY_CHAT_TYPE_BATTLE_WON:
-    case EASY_CHAT_TYPE_BATTLE_LOST:
-        // The phrases are fixed: edit a scratch copy and drop it.
-        words = (u16 *)gStringVar3;
-        for (i = 0; i < EASY_CHAT_BATTLE_WORDS_COUNT; i++)
-            words[i] = EC_EMPTY_WORD;
-        break;
-#else
-    case EASY_CHAT_TYPE_PROFILE:
-        words = gSaveBlock1Ptr->easyChatProfile;
-        break;
-    case EASY_CHAT_TYPE_BATTLE_START:
-        words = gSaveBlock1Ptr->easyChatBattleStart;
-        break;
-    case EASY_CHAT_TYPE_BATTLE_WON:
-        words = gSaveBlock1Ptr->easyChatBattleWon;
-        break;
-    case EASY_CHAT_TYPE_BATTLE_LOST:
-        words = gSaveBlock1Ptr->easyChatBattleLost;
-        break;
-#endif
     case EASY_CHAT_TYPE_MAIL:
         words = gSaveBlock1Ptr->mail[gSpecialVar_0x8005].words;
         break;
@@ -3027,9 +2955,6 @@ static void SetSpecialEasyChatResult(void)
 {
     switch (sEasyChatScreen->type)
     {
-    case EASY_CHAT_TYPE_PROFILE:
-        FlagSet(FLAG_SYS_CHAT_USED);
-        break;
     case EASY_CHAT_TYPE_QUESTIONNAIRE:
 #ifdef FREE_MYSTERY_GIFT
         gSpecialVar_0x8004 = 0;
@@ -5383,40 +5308,6 @@ static u8 UNUSED *UnusedConvertEasyChatWordsToString(u8 *dest, const u16 *src, u
     return dest;
 }
 
-static u16 GetEasyChatWordStringLength(u16 easyChatWord)
-{
-    if (easyChatWord == EC_EMPTY_WORD)
-        return 0;
-
-    if (IsEasyChatWordInvalid(easyChatWord))
-    {
-        return StringLength(gText_ThreeQuestionMarks);
-    }
-    else
-    {
-        u16 index = EC_INDEX(easyChatWord);
-        u8 groupId = EC_GROUP(easyChatWord);
-        return StringLength(GetEasyChatWord(groupId, index));
-    }
-}
-
-static bool8 CanPhraseFitInXRowsYCols(const u16 *easyChatWords, u8 numRows, u8 numColumns, u16 maxLength)
-{
-    u8 i, j;
-
-    for (i = 0; i < numColumns; i++)
-    {
-        u16 totalLength = numRows - 1;
-        for (j = 0; j < numRows; j++)
-            totalLength += GetEasyChatWordStringLength(*(easyChatWords++));
-
-        if (totalLength > maxLength)
-            return TRUE;
-    }
-
-    return FALSE;
-}
-
 u16 GetRandomEasyChatWordFromGroup(u16 groupId)
 {
     u16 index = Random() % gEasyChatGroups[groupId].numWords;
@@ -5440,48 +5331,6 @@ u16 GetRandomEasyChatWordFromUnlockedGroup(u16 groupId)
         return GetRandomUnlockedEasyChatPokemon();
 
     return GetRandomEasyChatWordFromGroup(groupId);
-}
-
-void ShowEasyChatProfile(void)
-{
-    const u16 *easyChatWords;
-    int columns, rows;
-    switch (gSpecialVar_0x8004)
-    {
-    case 0:
-        easyChatWords = EASY_CHAT_PROFILE;
-        columns = 2;
-        rows = 2;
-        break;
-    case 1:
-        easyChatWords = EASY_CHAT_BATTLE_START;
-        if (CanPhraseFitInXRowsYCols(EASY_CHAT_BATTLE_START, 3, 2, 18))
-        {
-            columns = 2;
-            rows = 3;
-        }
-        else
-        {
-            columns = 3;
-            rows = 2;
-        }
-        break;
-    case 2:
-        easyChatWords = EASY_CHAT_BATTLE_WON;
-        columns = 3;
-        rows = 2;
-        break;
-    case 3:
-        easyChatWords = EASY_CHAT_BATTLE_LOST;
-        columns = 3;
-        rows = 2;
-        break;
-    default:
-        return;
-    }
-
-    ConvertEasyChatWordsToString(gStringVar4, easyChatWords, columns, rows);
-    ShowFieldAutoScrollMessage(gStringVar4);
 }
 
 // The phrase that a man in Dewford Hall suggests has a "deep link" to the current trendy phrase
@@ -5629,21 +5478,6 @@ static u16 GetRandomUnlockedEasyChatPokemon(void)
 void InitEasyChatPhrases(void)
 {
     u16 i, j;
-
-#ifndef FREE_EASY_CHAT_PHRASES
-    for (i = 0; i < ARRAY_COUNT(gDefaultEasyChatProfile); i++)
-        gSaveBlock1Ptr->easyChatProfile[i] = gDefaultEasyChatProfile[i];
-
-    for (i = 0; i < EASY_CHAT_BATTLE_WORDS_COUNT; i++)
-        gSaveBlock1Ptr->easyChatBattleStart[i] = gDefaultEasyChatBattleStart[i];
-
-    for (i = 0; i < EASY_CHAT_BATTLE_WORDS_COUNT; i++)
-        gSaveBlock1Ptr->easyChatBattleWon[i] = gDefaultEasyChatBattleWon[i];
-
-    for (i = 0; i < EASY_CHAT_BATTLE_WORDS_COUNT; i++)
-        gSaveBlock1Ptr->easyChatBattleLost[i] = gDefaultEasyChatBattleLost[i];
-
-#endif
 
     for (i = 0; i < MAIL_COUNT; i++)
     {

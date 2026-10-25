@@ -1003,12 +1003,6 @@ struct SaveBlock1
     /*0x2BA2*/ u16 outbreakDaysLeft;
     /*0x2BA4*/ struct GabbyAndTyData gabbyAndTyData;
 #endif
-#ifndef FREE_EASY_CHAT_PHRASES
-    /*0x2BB0*/ u16 easyChatProfile[EASY_CHAT_BATTLE_WORDS_COUNT];
-    /*0x2BBC*/ u16 easyChatBattleStart[EASY_CHAT_BATTLE_WORDS_COUNT];
-    /*0x2BC8*/ u16 easyChatBattleWon[EASY_CHAT_BATTLE_WORDS_COUNT];
-    /*0x2BD4*/ u16 easyChatBattleLost[EASY_CHAT_BATTLE_WORDS_COUNT];
-#endif
     /*0x2BE0*/ struct Mail mail[MAIL_COUNT];
     /*0x2E20*/ u8 unlockedTrendySayings[NUM_TRENDY_SAYING_BYTES]; // Bitfield for unlockable Easy Chat words in EC_GROUP_TRENDY_SAYING
     /*0x2E25*/ //u8 padding5[3];
@@ -1071,24 +1065,6 @@ extern const struct Apprentice gEmptyApprentices[APPRENTICE_COUNT];
 #define SAVED_APPRENTICES gEmptyApprentices
 #else
 #define SAVED_APPRENTICES gSaveBlock2Ptr->apprentices
-#endif
-
-// The trainer card profile and the link battle lines, read the same way as
-// ENIGMA_BERRY. When freed they are always the new-game defaults.
-#ifdef FREE_EASY_CHAT_PHRASES
-extern const u16 gDefaultEasyChatProfile[];
-extern const u16 gDefaultEasyChatBattleStart[];
-extern const u16 gDefaultEasyChatBattleWon[];
-extern const u16 gDefaultEasyChatBattleLost[];
-#define EASY_CHAT_PROFILE      gDefaultEasyChatProfile
-#define EASY_CHAT_BATTLE_START gDefaultEasyChatBattleStart
-#define EASY_CHAT_BATTLE_WON   gDefaultEasyChatBattleWon
-#define EASY_CHAT_BATTLE_LOST  gDefaultEasyChatBattleLost
-#else
-#define EASY_CHAT_PROFILE      gSaveBlock1Ptr->easyChatProfile
-#define EASY_CHAT_BATTLE_START gSaveBlock1Ptr->easyChatBattleStart
-#define EASY_CHAT_BATTLE_WON   gSaveBlock1Ptr->easyChatBattleWon
-#define EASY_CHAT_BATTLE_LOST  gSaveBlock1Ptr->easyChatBattleLost
 #endif
 
 // The Dewford trendy phrases, read the same way as ENIGMA_BERRY.

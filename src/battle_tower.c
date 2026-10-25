@@ -2179,9 +2179,9 @@ static void SaveBattleTowerRecord(void)
 
     for (i = 0; i < EASY_CHAT_BATTLE_WORDS_COUNT; i++)
     {
-        playerRecord->greeting[i] = EASY_CHAT_BATTLE_START[i];
-        playerRecord->speechWon[i] = EASY_CHAT_BATTLE_WON[i];
-        playerRecord->speechLost[i] = EASY_CHAT_BATTLE_LOST[i];
+        playerRecord->greeting[i] = gDefaultEasyChatBattleStart[i];
+        playerRecord->speechWon[i] = gDefaultEasyChatBattleWon[i];
+        playerRecord->speechLost[i] = gDefaultEasyChatBattleLost[i];
     }
 
     for (i = 0; i < MAX_FRONTIER_PARTY_SIZE; i++)
@@ -2853,7 +2853,7 @@ static void UNUSED FillEReaderTrainerWithPlayerData(void)
     j = 7;
     for (i = 0; i < EASY_CHAT_BATTLE_WORDS_COUNT; i++)
     {
-        ereaderTrainer->greeting[i] = EASY_CHAT_BATTLE_START[i];
+        ereaderTrainer->greeting[i] = gDefaultEasyChatBattleStart[i];
         ereaderTrainer->farewellPlayerLost[i] = j;
         ereaderTrainer->farewellPlayerWon[i] = j + 6;
         j++;

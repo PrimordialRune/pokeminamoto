@@ -3,6 +3,11 @@
 
 #include "main.h"
 
+extern const u16 gDefaultEasyChatProfile[];
+extern const u16 gDefaultEasyChatBattleStart[];
+extern const u16 gDefaultEasyChatBattleWon[];
+extern const u16 gDefaultEasyChatBattleLost[];
+
 struct EasyChatScreenTemplate
 {
     u8 type;
