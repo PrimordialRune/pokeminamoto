@@ -1142,10 +1142,6 @@ extern const u32 gBerryPic_Enigma[];
 extern const u32 gBerryPalette_Enigma[];
 
 //PokéNav
-extern const u16 gPokenavCondition_Pal[];
-extern const u32 gPokenavCondition_Gfx[];
-extern const u32 gPokenavCondition_Tilemap[];
-extern const u16 gPokenavOptions_Tilemap[];
 extern const u32 gPokenavOptions_Gfx[];
 extern const u16 gPokenavOptions_Pal[];
 extern const u16 gPokenavLeftHeader_Pal[];
@@ -1154,7 +1150,6 @@ extern const u32 gPokenavHeader_Gfx[];
 extern const u32 gPokenavHeader_Tilemap[];
 extern const u32 gPokenavLeftHeaderHoennMap_Gfx[];
 extern const u32 gPokenavLeftHeaderMainMenu_Gfx[];
-extern const u32 gPokenavLeftHeaderCondition_Gfx[];
 extern const u32 gPokenavLeftHeaderRibbons_Gfx[];
 extern const u32 gPokenavLeftHeaderMatchCall_Gfx[];
 extern const u32 gPokenavLeftHeaderParty_Gfx[];
@@ -1283,7 +1278,6 @@ extern const u32 gBattleArenaJudgmentSymbolsPalette[];
 
 extern const u32 gBattleWindowTextPalette[];
 
-extern const u32 gContest2Pal[];
 
 extern const u32 gSmokescreenImpactTiles[];
 extern const u32 gSmokescreenImpactPalette[];
@@ -1564,7 +1558,6 @@ extern const u32 gBattleAnimSpriteGfx_Shock3[];
 extern const u32 gBattleAnimSpriteGfx_WeatherBall[];
 extern const u32 gBattleAnimBgTilemap_ScaryFacePlayer[];
 extern const u32 gBattleAnimBgTilemap_ScaryFaceOpponent[];
-extern const u32 gBattleAnimBgTilemap_ScaryFaceContest[];
 extern const u32 gBattleAnimSpriteGfx_Bird[];
 extern const u32 gBattleAnimSpriteGfx_CrossImpact[];
 
@@ -1922,27 +1915,9 @@ extern const u32 gStatAnim_Evasion_Pal[];
 extern const u32 gStatAnim_SpAttack_Pal[];
 extern const u32 gStatAnim_SpDefense_Pal[];
 
-extern const u32 gContestInterfaceGfx[];
-extern const u32 gContestAudienceGfx[];
-extern const u8 gContestApplauseMeterGfx[];
-extern const u8 gContestNextTurnNumbersGfx[];
-extern const u8 gContestNextTurnRandomGfx[];
-extern const u32 gContestAudienceTilemap[];
-extern const u32 gContestInterfaceAudiencePalette[];
-extern const u32 gContestInterfaceTilemap[];
-extern const u32 gContestCurtainTilemap[];
-extern const u8 gContestSliderHeart_Gfx[];
-extern const u32 gContestNextTurnGfx[];
-extern const u16 gContestPal[];
-extern const u32 gContestFaces_Gfx[];
-extern const u32 gContestApplauseGfx[];
-extern const u32 gContestJudgeGfx[];
-extern const u32 gContestJudgeSymbolsGfx[];
-extern const u32 gContestJudgeSymbolsPal[];
 
 extern const u32 gBattleAnimBgTilemap_SurfOpponent[];
 extern const u32 gBattleAnimBgTilemap_SurfPlayer[];
-extern const u32 gBattleAnimBgTilemap_SurfContest[];
 extern const u32 gBattleAnimBgImage_Surf[];
 extern const u32 gBattleAnimBgPalette_Surf[];
 extern const u32 gBattleAnimBackgroundImageMuddyWater_Pal[];
@@ -2049,22 +2024,6 @@ extern const u32 gRouletteNumbers_Gfx[];
 extern const u32 gRouletteMultiplier_Gfx[];
 
 // Contest util
-extern const u32 gContestResults_Gfx[];
-extern const u32 gContestResults_WinnerBanner_Tilemap[];
-extern const u32 gContestResults_Interface_Tilemap[];
-extern const u32 gContestResults_Bg_Tilemap[];
-extern const u32 gContestResults_Pal[];
-extern const u16 gContestResultsTitle_Link_Tilemap[];
-extern const u16 gContestResultsTitle_Normal_Tilemap[];
-extern const u16 gContestResultsTitle_Super_Tilemap[];
-extern const u16 gContestResultsTitle_Hyper_Tilemap[];
-extern const u16 gContestResultsTitle_Master_Tilemap[];
-extern const u16 gContestResultsTitle_Cool_Tilemap[];
-extern const u16 gContestResultsTitle_Beauty_Tilemap[];
-extern const u16 gContestResultsTitle_Cute_Tilemap[];
-extern const u16 gContestResultsTitle_Smart_Tilemap[];
-extern const u16 gContestResultsTitle_Tough_Tilemap[];
-extern const u16 gContestResultsTitle_Tilemap[];
 
 // Trainer Card.
 extern const u16 gHoennTrainerCardGreen_Pal[];
@@ -2094,22 +2053,9 @@ extern const u16 gEasyChatButtonWindow_Pal[];
 
 
 // Union Room Chat
-extern const u16 gUnionRoomChat_Background_Pal[];
-extern const u32 gUnionRoomChat_Background_Gfx[];
-extern const u32 gUnionRoomChat_Background_Tilemap[];
-extern const u16 gUnionRoomChat_InputText_Pal[];
-extern const u16 gUnionRoomChat_Keyboard_Pal[];
-extern const u32 gUnionRoomChat_Keyboard_Gfx[];
-extern const u32 gUnionRoomChat_Keyboard_Tilemap[];
-extern const u32 gUnionRoomChat_RButtonLabels[];
 
-extern const u8 gPokenavConditionCancel_Gfx[];
-extern const u16 gPokenavConditionCancel_Pal[];
 
 // Berry Crush
-extern const u32 gBerryCrush_Crusher_Gfx[];
-extern const u16 gBerryCrush_Crusher_Pal[];
-extern const u32 gBerryCrush_TextWindows_Tilemap[];
 
 // PokéNav
 extern const u32 gPokenavMessageBox_Gfx[];
