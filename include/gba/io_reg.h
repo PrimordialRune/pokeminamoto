@@ -546,6 +546,23 @@
 #define BGCNT_AFF512x512        0x8000
 #define BGCNT_AFF1024x1024      0xC000
 
+// Reading and writing the fields of a BGxCNT value kept in a plain u16. Don't cast the u16 to
+// struct BgCnt for this: that struct is 4 bytes under -mabi=apcs-gnu, so the cast reaches past the variable.
+// BGCNT_FIELD_x is "shift, width"; BGCNT_SET truncates the value to the field width, like a bit-field store does.
+#define BGCNT_FIELD_PRIORITY            0, 2
+#define BGCNT_FIELD_CHAR_BASE_BLOCK     2, 2
+#define BGCNT_FIELD_MOSAIC              6, 1
+#define BGCNT_FIELD_PALETTES            7, 1
+#define BGCNT_FIELD_SCREEN_BASE_BLOCK   8, 5
+#define BGCNT_FIELD_AREA_OVERFLOW_MODE  13, 1
+#define BGCNT_FIELD_SCREEN_SIZE         14, 2
+
+#define BGCNT_GET(cnt, field) _BGCNT_GET(cnt, field)
+#define BGCNT_SET(cnt, field, value) _BGCNT_SET(cnt, field, value)
+#define _BGCNT_GET(cnt, shift, width) (((cnt) >> (shift)) & ((1 << (width)) - 1))
+#define _BGCNT_SET(cnt, shift, width, value) \
+    ((cnt) = ((cnt) & ~(((1 << (width)) - 1) << (shift))) | (((value) & ((1 << (width)) - 1)) << (shift)))
+
 // WININ/OUT
 #define WININ_WIN0_BG0      (1 << 0)
 #define WININ_WIN0_BG1      (1 << 1)
