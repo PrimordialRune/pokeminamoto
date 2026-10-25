@@ -17,9 +17,11 @@
 #include "event_data.h"
 #include "event_object_lock.h"
 #include "event_object_movement.h"
+#include "field_blend.h"
 #include "field_scanline.h"
 #include "field_player_avatar.h"
 #include "field_screen_effect.h"
+#include "gpu_regs.h"
 #include "item.h"
 #include "list_menu.h"
 #include "load_save.h"
@@ -144,6 +146,8 @@ enum
     TOGGLE_HEAT_HAZE,
     TOGGLE_WATER,
     TOGGLE_GRADIENT,
+    TOGGLE_GHOSTS,
+    TOGGLE_LANTERN,
 };
 
 static void Task_DebugMenu(u8 taskId);
@@ -186,6 +190,8 @@ static void DebugAction_TimeOfDay(void);
 static void DebugAction_ToggleHeatHaze(void);
 static void DebugAction_ToggleWater(void);
 static void DebugAction_ToggleGradient(void);
+static void DebugAction_ToggleGhosts(void);
+static void DebugAction_ToggleLantern(void);
 
 static const struct DebugMenuEntry sMenu_Main[] =
 {
@@ -259,6 +265,8 @@ static const struct DebugMenuEntry sMenu_FieldFx[] =
     {(const u8[])_("Heat haze"),     DebugAction_ToggleHeatHaze, 0, TOGGLE_HEAT_HAZE},
     {(const u8[])_("Water"),         DebugAction_ToggleWater, 0, TOGGLE_WATER},
     {(const u8[])_("Gradient"),      DebugAction_ToggleGradient, 0, TOGGLE_GRADIENT},
+    {(const u8[])_("Ghosts"),        DebugAction_ToggleGhosts, 0, TOGGLE_GHOSTS},
+    {(const u8[])_("Lantern"),       DebugAction_ToggleLantern, 0, TOGGLE_LANTERN},
 };
 
 static const struct
@@ -343,6 +351,11 @@ static bool8 GetToggleState(u8 toggle)
         return FieldScanline_GetEffect() == FIELD_SCANLINE_WATER;
     case TOGGLE_GRADIENT:
         return FieldScanline_GetEffect() == FIELD_SCANLINE_GRADIENT;
+    case TOGGLE_GHOSTS:
+        // A map load resets WININ, and the sprites with it
+        return (GetGpuReg(REG_OFFSET_WININ) & WININ_WIN0_CLR) != 0;
+    case TOGGLE_LANTERN:
+        return FieldLight_IsActive();
     }
     return FALSE;
 }
@@ -1116,7 +1129,7 @@ static void DebugAction_Script4(void)
 }
 
 // ---------------------------------------------------------------------------
-// Field effects (day/night, scanline effects)
+// Field effects (day/night, scanline effects, ghosts and lights)
 // ---------------------------------------------------------------------------
 
 static void DebugAction_TimeOfDay(void)
@@ -1192,6 +1205,42 @@ static void DebugAction_ToggleGradient(void)
         FieldScanline_Stop();
         if (!FieldScanline_StartGradient(&gradient))
             DebugMessage((const u8[])_("DMA0 is in use\n(Flash?)."));
+    }
+    DebugMenu_Refresh();
+}
+
+static void DebugAction_ToggleGhosts(void)
+{
+    bool8 ghostly = !GetToggleState(TOGGLE_GHOSTS);
+    u32 i;
+
+    for (i = 0; i < OBJECT_EVENTS_COUNT; i++)
+    {
+        if (gObjectEvents[i].active && !gObjectEvents[i].isPlayer)
+            FieldBlend_SetObjectEventGhostly(i, ghostly);
+    }
+    FieldBlend_SetGhostAlpha(8, 8);
+    FieldBlend_EnableGhosts(ghostly);
+    DebugMenu_Refresh();
+}
+
+static void DebugAction_ToggleLantern(void)
+{
+    if (FieldLight_IsActive())
+    {
+        FieldLight_End();
+    }
+    else if (FieldLight_Begin(11))
+    {
+        struct ObjectEvent *player = &gObjectEvents[gPlayerAvatar.objectEventId];
+
+        FieldLight_AddOnPlayer(FIELD_LIGHT_CIRCLE);
+        // A lamp's cone, three tiles to the left
+        FieldLight_AddAtMapCoords(FIELD_LIGHT_CONE, player->currentCoords.x - 3, player->currentCoords.y);
+    }
+    else
+    {
+        DebugMessage((const u8[])_("Not here (Flash)."));
     }
     DebugMenu_Refresh();
 }
