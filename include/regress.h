@@ -77,6 +77,10 @@ struct RegressState
     const u16 *palTags;     // sSpritePaletteTags
     // Appended after the limits; run.py reads it by offset (40 + 2 * REGRESS_DUMP_WORDS + 28).
     u32 stackLowest; // lowest IWRAM address the system stack has touched (0 until measured)
+    // Heap errors, after stackLowest (run.py: offset 40 + 2 * REGRESS_DUMP_WORDS + 32). Only ever append.
+    u32 heapFatal;       // HEAP_FATAL_* that stopped the game, 0 if none
+    u32 heapFatalValue;  // the size asked for, or the pointer freed
+    u32 heapFatalCaller; // address of the call
 };
 
 enum
@@ -100,6 +104,7 @@ void Regress_StackInit(void);
 void Regress_NoteFail(u32 kind);
 void Regress_NoteTiles(u32 start, u32 count);
 void Regress_SpriteStatics(const u8 *tileBitmap, const u16 *palTags);
+void Regress_NoteHeapFatal(u32 kind, u32 value, u32 caller);
 
 #define REGRESS_NOTE_ALLOC(start, ptr, size) Regress_NoteAlloc(start, ptr, size)
 #define REGRESS_NOTE_DMA_QUEUE(pending) Regress_NoteDmaQueue(pending)
@@ -112,6 +117,7 @@ void Regress_SpriteStatics(const u8 *tileBitmap, const u16 *palTags);
 #define REGRESS_NOTE_FAIL(kind, value) (Regress_NoteFail(kind), (value))
 #define REGRESS_NOTE_TILES(start, count) Regress_NoteTiles(start, count)
 #define REGRESS_SPRITE_STATICS(bitmap, tags) Regress_SpriteStatics(bitmap, tags)
+#define REGRESS_NOTE_HEAP_FATAL(kind, value, caller) Regress_NoteHeapFatal(kind, value, caller)
 
 #else
 
@@ -125,6 +131,7 @@ void Regress_SpriteStatics(const u8 *tileBitmap, const u16 *palTags);
 #define REGRESS_NOTE_FAIL(kind, value) (value)
 #define REGRESS_NOTE_TILES(start, count)
 #define REGRESS_SPRITE_STATICS(bitmap, tags)
+#define REGRESS_NOTE_HEAP_FATAL(kind, value, caller)
 
 #endif // REGRESS_HOOKS
 

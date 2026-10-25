@@ -4,7 +4,8 @@ screen, egg hatch, in-game trade, Hall of Fame + credits, double battle,
 Substitute plus the party menu and summary inside a battle, the Pokédex area
 map and the bedroom PC, plus power-on through the intro. Each scene starts from the same savestate (new game + regress
 setup) and reports its heap peak, alloc failures and DMA queue peak, with
-screenshots. Usage: scene_check.py ROM ELF OUTDIR [--video]
+screenshots, plus the bytes it leaves on the heap once back in the overworld
+(leak, must be 0) and any heap error that stopped the game. Usage: scene_check.py ROM ELF OUTDIR [--video]
 (ROM from make release REGRESS=1 DINFO=1). Also reports each scene's OBJ tile, palette,
 sprite and object event use, and exits 1 if any sprite, palette, tile or window allocation failed."""
 import sys, os, json, shutil, subprocess
@@ -32,6 +33,9 @@ failures += R.limit_failures("boot_intro", boot_limits)
 emu.command(R.CMD_SETUP); R.wait_field(emu)
 base_state = os.path.join(out, "base.ss")
 emu.cmd(f"savestate {base_state}")
+heap_baseline = {}                # what each scene must leave on the heap (leak check), by pop-up state
+used, popup = emu.heap_used()
+heap_baseline[popup] = used
 emu.record = video
 
 report = {"boot_intro": dict(heapPeak=boot["heapPeak"], heapFails=boot["heapFails"], dmaPeak=boot["dmaPeak"],
@@ -222,12 +226,19 @@ for name, fn in SCENES:
     emu.run(2)
     emu.reset_stats()
     ok = fn()
+    fatal = emu.heap_fatal()
     st = emu.regress()
     snap(f"{name}_end")
+    leak = None
+    if ok and not fatal and emu.field_ready():
+        used, popup = emu.heap_used()
+        leak = used - heap_baseline.setdefault(popup, used)
     report[name] = dict(heapPeak=st["heapPeak"], heapFails=st["heapFails"], dmaPeak=st["dmaPeak"],
-                        dmaFull=st["dmaFull"], backToField=bool(ok), limits=emu.limits())
+                        dmaFull=st["dmaFull"], backToField=bool(ok), heapFatal=fatal, heapLeak=leak,
+                        limits=emu.limits())
     failures += R.limit_failures(name, report[name]["limits"])
-    print(f"{name:22s} heap {st['heapPeak']:6d} fails {st['heapFails']} dma {st['dmaPeak']} full {st['dmaFull']} field {ok}", flush=True)
+    print(f"{name:22s} heap {st['heapPeak']:6d} fails {st['heapFails']} dma {st['dmaPeak']} full {st['dmaFull']} field {ok}"
+          f" leak {leak}" + (f" HEAP ERROR {fatal}" if fatal else ""), flush=True)
     print(f"{'':22s} {R.limits_text(report[name]['limits'])}", flush=True)
 
 with open(os.path.join(out, "scenes.json"), "w") as f:
@@ -244,4 +255,6 @@ with open(os.path.join(out, "scenes.json"), "w") as f:
     json.dump(report, f, indent=1)
 for f in failures:
     print("RESOURCE FAILURE:", f)
-sys.exit(1 if failures else 0)
+bad = [n for n, r in report.items() if isinstance(r, dict) and (r.get("heapFatal") or r.get("heapLeak"))]
+print("heap errors or leaks:", ", ".join(bad) if bad else "none")
+sys.exit(1 if bad or failures else 0)

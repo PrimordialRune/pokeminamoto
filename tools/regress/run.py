@@ -11,7 +11,10 @@ Pokedex, party + summary, bag, trainer card, PC, wild battle, trainer battle,
 in-game save, reset, continue) and writes into --out:
 
     report.json   per-scene heap peak, DMA queue peak, lag frames, CPU busy
-                  lines, plus the game-state dumps and checks
+                  lines, heap in use back in the overworld (leak check: it
+                  must equal the amount after setup), plus the game-state
+                  dumps and checks. A heap error that stops the game (debug
+                  and regress builds, src/malloc.c) fails the run.
     shots/*.png   one screenshot per checkpoint
     run.mp4       video of the whole route after setup (needs ffmpeg)
 
@@ -31,7 +34,11 @@ EMU = os.path.join(ROOT, "tools", "gba-emu", "gbaemu")
 KEYS = {"A": 1, "B": 2, "SELECT": 4, "START": 8, "RIGHT": 16, "LEFT": 32,
         "UP": 64, "DOWN": 128, "R": 256, "L": 512}
 
-CMD_SETUP, CMD_WILD, CMD_TRAINER, CMD_PC, CMD_DUMP, CMD_HEAL, CMD_TV, CMD_CABLE_CLUB, CMD_SCENE = 1, 2, 3, 4, 5, 6, 7, 8, 9
+CMD_SETUP, CMD_WILD, CMD_TRAINER, CMD_PC, CMD_DUMP, CMD_HEAL, CMD_TV, CMD_CABLE_CLUB, CMD_SCENE = range(1, 10)
+
+# Fields appended to struct RegressState after dump[REGRESS_DUMP_WORDS]
+EXT = 40 + 2 * 1024 + 32  # heap error fields, after the resource limits and stackLowest
+HEAP_FATAL = {1: "heap full", 2: "Free of a bad pointer", 3: "Free of a free block"}
 (SCENE_EVOLUTION, SCENE_NAMING, SCENE_EGG_HATCH, SCENE_INGAME_TRADE, SCENE_HALL_OF_FAME,
  SCENE_DOUBLE_BATTLE, SCENE_SUBSTITUTE, SCENE_BEDROOM_PC, SCENE_POKENAV, SCENE_SAVE_FAILED,
  SCENE_SAVE_FAILED_HOF, SCENE_LOAD_HOF) = range(1, 13)
@@ -152,6 +159,36 @@ class Emu:
                     palFreeMin=pal_min - 1 if pal_min else None,
                     spritesMax=sprites, objEventsMax=objs,
                     spriteFails=sprite_f, paletteFails=pal_f, tileFails=tile_f, windowFails=win_f)
+    def heap_fatal(self):
+        """None, or a description of the heap error that stopped the game."""
+        kind, value, caller = struct.unpack("<III", self.read(self.rs + EXT, 12))
+        if not kind:
+            return None
+        return f"{HEAP_FATAL.get(kind, kind)}: {'size' if kind == 1 else 'pointer'} {value:#x}, called from {caller:#x}"
+
+    def check_fatal(self):
+        fatal = self.heap_fatal()
+        if fatal:
+            self.screenshot("FAIL_heap_fatal")
+            raise Fail("heap error stopped the game: " + fatal)
+
+    def heap_used(self):
+        """Bytes in allocated heap blocks, headers included (GetHeapUsed in
+        src/malloc.c), read from memory so no frame runs, and whether the map
+        name pop-up (which holds a window buffer while it is up) was up."""
+        heap = self.sym["gHeap"]
+        pos, used = heap, 0
+        for _ in range(4096):
+            flag, magic, size, _prev, nxt = struct.unpack("<HHIII", self.read(pos, 16))
+            if magic != 0xA3A3:
+                raise Fail(f"heap block at {pos:#x} has a bad header")
+            if flag:
+                used += 16 + size
+            pos = nxt
+            if pos == heap:
+                break
+        popup = self.u8(self.sym["sMapNamePopupWindowId"]) != 0xFF   # WINDOW_NONE
+        return used, popup
 
     def player_choosing_action(self):
         # The player controller's HandleInputChooseAction is the static one
@@ -191,10 +228,13 @@ def wait_field(emu, limit=1800, mash=None):
             emu.run(10)
             if emu.field_ready():
                 return
+        if i % 10 == 0:
+            emu.check_fatal()
         if mash:
             emu.press(mash, hold=4, after=6)
         else:
             emu.run(10)
+    emu.check_fatal()
     emu.screenshot("FAIL_field_not_ready")
     raise Fail(f"field never became ready (callback2 {emu.callback2():#x})")
 
@@ -248,6 +288,7 @@ def scene(emu, report, name, fn):
     emu.reset_stats()
     before = emu.regress()
     fn()
+    emu.check_fatal()
     st = emu.regress()
     frames = max(st["frames"], 1)
     entry = {
@@ -258,6 +299,15 @@ def scene(emu, report, name, fn):
         "limits": emu.limits(),
     }
     entry["shot"] = os.path.relpath(emu.screenshot(f"{len(report['scenes']):02d}_{name}"), emu.out)
+    # Leak check: back in the overworld, the heap holds what it held after setup
+    # (one baseline with the map name pop-up up and one without)
+    if emu.field_ready():
+        entry["heapUsed"], popup = emu.heap_used()
+        base = report["checks"].setdefault("heapBaseline", {}).setdefault(
+            "popUp" if popup else "noPopUp", entry["heapUsed"])
+        if entry["heapUsed"] != base:
+            report["checks"].setdefault("heapLeaks", {})[name] = entry["heapUsed"] - base
+            print(f"  LEAK: {name} leaves {entry['heapUsed'] - base:+d} bytes on the heap", flush=True)
     report["scenes"][name] = entry
     print(f"  {name:14s} heap {entry['heapPeak']:6d} fails {entry['heapFails']} dma {entry['dmaPeak']:3d} "
           f"full {entry['dmaFull']} lag {entry['lagFrames']:3d} busy {entry['busyAvg']}/{entry['busyMax']}", flush=True)
@@ -493,6 +543,7 @@ def main():
 
     saved, reloaded = report["dumps"]["saved"], report["dumps"]["reloaded"]
     report["checks"]["saveRoundTrip"] = saved == reloaded
+    report["checks"]["noHeapLeaks"] = not report["checks"].get("heapLeaks")
     report["checks"]["partyHealedAfterBattles"] = None
     # Stack depth: Regress.stackLowest sits after dump[] and the resource limits (offset 40 + 2 * 1024 + 28).
     # The system stack top is IWRAM_END - 0x1c0 (src/crt0.s).
@@ -516,7 +567,9 @@ def main():
     print("stack depth (bytes):", report["checks"]["stackDepthBytes"])
     for f in failures:
         print("RESOURCE FAILURE:", f)
-    return 0 if report["checks"]["saveRoundTrip"] and not failures else 1
+    print("heap back to its baseline after every scene:", report["checks"]["noHeapLeaks"],
+          report["checks"].get("heapLeaks", ""))
+    return 0 if report["checks"]["saveRoundTrip"] and report["checks"]["noHeapLeaks"] and not failures else 1
 
 
 if __name__ == "__main__":

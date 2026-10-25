@@ -284,6 +284,7 @@ static void __attribute__((noreturn)) HeapFatal(u32 kind, u32 value, u32 caller)
     REG_DMA2CNT_H = 0;
     REG_DMA3CNT_H = 0;
     REG_SOUNDCNT_X = 0;
+    REGRESS_NOTE_HEAP_FATAL(kind, value, caller);
 
     REG_DISPCNT = DISPCNT_MODE_3 | DISPCNT_BG2_ON;
     REG_BLDCNT = 0;

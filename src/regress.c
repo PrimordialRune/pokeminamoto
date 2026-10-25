@@ -90,6 +90,14 @@ void Regress_NoteAlloc(void *heapStart, void *ptr, u32 size)
         gRegress.heapPeak = end;
 }
 
+// Called by HeapFatal (src/malloc.c) just before the game stops
+void Regress_NoteHeapFatal(u32 kind, u32 value, u32 caller)
+{
+    gRegress.heapFatal = kind;
+    gRegress.heapFatalValue = value;
+    gRegress.heapFatalCaller = caller;
+}
+
 void Regress_NoteDmaQueue(u32 pending)
 {
     if (pending > gRegress.dmaPeak)
