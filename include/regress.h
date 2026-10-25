@@ -92,6 +92,7 @@ struct RegressState
     u16 saveCutAt;        // 0: never
     u8 saveCutHalf;       // TRUE: that write gets half of its bytes programmed first
     u8 saveCutDone;       // set when the power was "cut"
+    u8 battleTransition; // nonzero: wild and trainer battles use B_TRANSITION_* (value - 1)
 };
 
 enum
