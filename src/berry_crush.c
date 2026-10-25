@@ -984,6 +984,7 @@ static u32 QuitBerryCrush(MainCallback exitCallback)
     return 0;
 }
 
+#ifndef FREE_WIRELESS
 #define ERROR_EXIT(exitCallback)                    \
     {                                               \
         SetMainCallback2(exitCallback);             \
@@ -991,6 +992,12 @@ static u32 QuitBerryCrush(MainCallback exitCallback)
         gRfu.errorParam1 = 0;                       \
         gRfu.errorState = RFU_ERROR_STATE_OCCURRED; \
     }
+#else
+#define ERROR_EXIT(exitCallback)                    \
+    {                                               \
+        SetMainCallback2(exitCallback);             \
+    }
+#endif
 
 void StartBerryCrush(MainCallback exitCallback)
 {

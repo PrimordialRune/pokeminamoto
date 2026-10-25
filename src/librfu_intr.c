@@ -1,5 +1,6 @@
 #include "global.h"
 #include "librfu.h"
+#ifndef FREE_WIRELESS
 
 static void sio32intr_clock_master(void);
 static void sio32intr_clock_slave(void);
@@ -416,3 +417,5 @@ static void Callback_Dummy_ID(void (*callbackId)(void))
 {
     asm("bx r0");
 }
+
+#endif // FREE_WIRELESS

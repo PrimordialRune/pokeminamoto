@@ -1,6 +1,7 @@
 #include "global.h"
 #include "librfu.h"
 #include "link_rfu.h"
+#ifndef FREE_WIRELESS
 
 #define RN_ACCEPT           0x01
 #define RN_NAME_TIMER_CLEAR 0x02
@@ -1398,3 +1399,14 @@ void rfu_LMAN_forceChangeSP(void)
         }
     }
 }
+
+#else // FREE_WIRELESS
+
+// Wireless Adapter is gone: the entry points other files still name do nothing.
+
+u32 rfu_LMAN_REQBN_softReset_and_checkID(void)
+{
+    return 0;
+}
+
+#endif // FREE_WIRELESS

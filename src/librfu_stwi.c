@@ -1,4 +1,5 @@
 #include "librfu.h"
+#ifndef FREE_WIRELESS
 
 static void STWI_intr_timer(void);
 static u16 STWI_init(u8 request);
@@ -648,3 +649,5 @@ static s32 STWI_reset_ClockCounter(void)
     REG_SIOCNT = (SIO_INTR_ENABLE | SIO_32BIT_MODE | SIO_115200_BPS) + 0x7F;
     return 0;
 }
+
+#endif // FREE_WIRELESS

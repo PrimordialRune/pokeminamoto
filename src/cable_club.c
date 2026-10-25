@@ -279,6 +279,11 @@ static void Task_LinkupAwaitConfirmation(u8 taskId)
 
     if (linkPlayerCount < tMinPlayers)
         return;
+#ifdef FREE_FOUR_PLAYER_LINK
+    // The receive queue only holds LINK_QUEUE_PLAYERS players.
+    if (linkPlayerCount > LINK_QUEUE_PLAYERS)
+        return;
+#endif
 
     SaveLinkPlayers(linkPlayerCount);
     ClearLinkPlayerCountWindow(tWindowId);

@@ -1111,7 +1111,9 @@ struct SaveBlock1
 #ifndef FREE_LILYCOVE_LADY
     /*0x3B58*/ LilycoveLady lilycoveLady;
 #endif
+#ifndef FREE_WIRELESS
     /*0x3B98*/ struct TrainerNameRecord trainerNameRecords[20];
+#endif
 #ifndef FREE_UNION_ROOM_CHAT
     /*0x3C88*/ u8 registeredTexts[UNION_ROOM_KB_ROW_COUNT][21];
 #endif

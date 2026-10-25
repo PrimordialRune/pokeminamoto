@@ -4249,7 +4249,11 @@ static s32 GetChatLeaderActionRequestMessage(u8 *dst, u32 gender, u16 *activityD
         StringCopy(uroom->activityRequestStrbufs[1], gSpeciesNames[sUnionRoomTrade.playerSpecies]);
         for (i = 0; i < RFU_CHILD_MAX; i++)
         {
+#ifndef FREE_WIRELESS
             if (gRfuLinkStatus->partner[i].serialNo == RFU_SERIAL_GAME)
+#else
+            if (FALSE)
+#endif
             {
                 ConvertIntToDecimalStringN(uroom->activityRequestStrbufs[2], activityData[2], STR_CONV_MODE_LEFT_ALIGN, 3);
                 StringCopy(uroom->activityRequestStrbufs[3], gSpeciesNames[activityData[1]]);

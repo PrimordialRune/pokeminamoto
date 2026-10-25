@@ -150,7 +150,9 @@ static void LinkCB_StandbyForAll(void);
 static void TrySetLinkErrorBuffer(void);
 static void CB2_PrintErrorMessage(void);
 static bool8 IsSioMultiMaster(void);
+#ifndef FREE_WIRELESS
 static void SetWirelessCommType0_Internal(void);
+#endif
 static void DisableSerial(void);
 static void EnableSerial(void);
 static void CheckMasterOrSlave(void);
@@ -236,6 +238,7 @@ static const u8 sUnusedData[] = {0x00, 0xFF, 0xFE, 0xFF, 0x00};
 
 bool8 IsWirelessAdapterConnected(void)
 {
+#ifndef FREE_WIRELESS
     SetWirelessCommType1();
     InitRFUAPI();
     if (rfu_LMAN_REQBN_softReset_and_checkID() == RFU_ID)
@@ -245,6 +248,7 @@ bool8 IsWirelessAdapterConnected(void)
         return TRUE;
     }
     SetWirelessCommType0_Internal();
+#endif
     CloseLink();
     RestoreSerialTimer3IntrHandlers();
     return FALSE;
@@ -1810,15 +1814,19 @@ bool8 HandleLinkConnection(void)
 
 void SetWirelessCommType1(void)
 {
+#ifndef FREE_WIRELESS
     if (gReceivedRemoteLinkPlayers == 0)
         gWirelessCommType = 1;
+#endif
 }
 
+#ifndef FREE_WIRELESS
 static void SetWirelessCommType0_Internal(void)
 {
     if (gReceivedRemoteLinkPlayers == 0)
         gWirelessCommType = 0;
 }
+#endif
 
 void SetWirelessCommType0(void)
 {
@@ -2067,7 +2075,7 @@ static void DequeueRecvCmds(u16 (*recvCmds)[CMD_LENGTH])
     }
     else
     {
-        for (i = 0; i < gLink.playerCount; i++)
+        for (i = 0; i < gLink.playerCount && i < LINK_QUEUE_PLAYERS; i++)
         {
             for (j = 0; j < CMD_LENGTH; j++)
             {
@@ -2261,6 +2269,9 @@ static void DoRecv(void)
             {
                 gLink.checksum += recv[i];
                 sRecvNonzeroCheck |= recv[i];
+#ifdef FREE_FOUR_PLAYER_LINK
+                if (i < LINK_QUEUE_PLAYERS)
+#endif
                 gLink.recvQueue.data[i][gLink.recvCmdIndex][index] = recv[i];
             }
         }
@@ -2358,7 +2369,7 @@ void ResetRecvBuffer(void)
 
     gLink.recvQueue.count = 0;
     gLink.recvQueue.pos = 0;
-    for (i = 0; i < MAX_LINK_PLAYERS; i++)
+    for (i = 0; i < LINK_QUEUE_PLAYERS; i++)
     {
         for (j = 0; j < CMD_LENGTH; j++)
         {

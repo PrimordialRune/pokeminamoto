@@ -70,6 +70,8 @@
 #define FREE_POKEBLOCKS                 // Pokéblock case and Berry Blender records (326 B); the case is always empty
 #define FREE_CONTEST_WINNERS            // Contest Hall and Museum winners (416 B)
 #define FREE_GIFT_RIBBONS               // which distribution ribbons the player owns (11 B)
+#define FREE_FOUR_PLAYER_LINK           // cable link for 3-4 players (multi battles, 3-4 player record mixing): the receive queue holds 2 players (1.6 KB IWRAM)
+#define FREE_WIRELESS                   // Wireless Adapter (Union Room, wireless minigames) and saved names of wirelessly linked trainers (about 7 KB IWRAM, 240 B save); cable link stays
 #define FREE_APPRENTICE                 // Battle Tower Apprentice and the 4 saved ones (316 B)
 
 // Debug menus (overworld: hold R + START, battle: hold L + SELECT). Every modern

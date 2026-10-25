@@ -1,4 +1,5 @@
 #include "librfu.h"
+#ifndef FREE_WIRELESS
 
 static void Sio32IDIntr(void);
 static void Sio32IDInit(void);
@@ -169,3 +170,5 @@ static void Sio32IDIntr(void)
             REG_SIOCNT |= SIO_ENABLE;
     }
 }
+
+#endif // FREE_WIRELESS

@@ -322,12 +322,14 @@ static void CB2_SaveAndEndWirelessTrade(void);
 
 static bool8 SendLinkData(const void *linkData, u32 size)
 {
+#ifndef FREE_WIRELESS
     if (gPlayerCurrActivity == ACTIVITY_29)
     {
         rfu_NI_setSendData(lman.acceptSlot_flag, 84, linkData, size);
         return TRUE;
     }
     else
+#endif
     {
         return SendBlock(0, linkData, size);
     }
@@ -340,6 +342,7 @@ static void RequestLinkData(u8 type)
 
 static bool32 IsLinkTradeTaskFinished(void)
 {
+#ifndef FREE_WIRELESS
     if (gPlayerCurrActivity == ACTIVITY_29)
     {
         if (gRfuSlotStatusNI[Rfu_GetIndexOfNewestChild(lman.acceptSlot_flag)]->send.state == 0)
@@ -348,6 +351,7 @@ static bool32 IsLinkTradeTaskFinished(void)
             return FALSE;
     }
     else
+#endif
     {
         return IsLinkTaskFinished();
     }
@@ -360,17 +364,21 @@ static u32 _GetBlockReceivedStatus(void)
 
 static void TradeResetReceivedFlags(void)
 {
+#ifndef FREE_WIRELESS
     if (IsWirelessTrade())
         rfu_clearSlot(12, lman.acceptSlot_flag);
     else
+#endif
         ResetBlockReceivedFlags();
 }
 
 static void TradeResetReceivedFlag(u32 who)
 {
+#ifndef FREE_WIRELESS
     if (IsWirelessTrade())
         rfu_clearSlot(12, lman.acceptSlot_flag);
     else
+#endif
         ResetBlockReceivedFlag(who);
 }
 

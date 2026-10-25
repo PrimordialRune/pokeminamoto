@@ -2202,7 +2202,11 @@ static int GetPlayersAtJumpPeak(void)
 
 static bool32 AreLinkQueuesEmpty(void)
 {
+#ifndef FREE_WIRELESS
     return !gRfu.recvQueue.count && !gRfu.sendQueue.count;
+#else
+    return TRUE;
+#endif
 }
 
 static int GetNumPlayersForBonus(u8 *atJumpPeak)

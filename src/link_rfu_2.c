@@ -17,6 +17,7 @@
 #include "text.h"
 #include "save.h"
 #include "mystery_gift_menu.h"
+#ifndef FREE_WIRELESS
 
 enum {
     RFUSTATE_INIT,
@@ -3009,3 +3010,313 @@ static void Task_Idle(u8 taskId)
 {
 
 }
+
+#else // FREE_WIRELESS
+
+// Wireless Adapter is gone: the entry points other files still name do nothing.
+
+EWRAM_DATA struct RfuGameData gHostRfuGameData = {};
+
+void ResetLinkRfuGFLayer(void)
+{
+}
+
+void InitRFU(void)
+{
+}
+
+void InitRFUAPI(void)
+{
+}
+
+s32 Rfu_GetIndexOfNewestChild(u8 bits)
+{
+    return 0;
+}
+
+void LinkRfu_CreateConnectionAsParent(void)
+{
+}
+
+void LinkRfu_StopManagerBeforeEnteringChat(void)
+{
+}
+
+void LinkRfu_Shutdown(void)
+{
+}
+
+bool8 LmanAcceptSlotFlagIsNotZero(void)
+{
+    return 0;
+}
+
+void LinkRfu_StopManagerAndFinalizeSlots(void)
+{
+}
+
+bool32 WaitRfuState(bool32 force)
+{
+    return 0;
+}
+
+void StopUnionRoomLinkManager(void)
+{
+}
+
+bool32 IsRfuRecvQueueEmpty(void)
+{
+    return 0;
+}
+
+void Rfu_SetBlockReceivedFlag(u8 linkPlayerId)
+{
+}
+
+void Rfu_ResetBlockReceivedFlag(u8 linkPlayerId)
+{
+}
+
+struct RfuGameData * GetHostRfuGameData(void)
+{
+    return &gHostRfuGameData;
+}
+
+bool32 IsSendingKeysToRfu(void)
+{
+    return 0;
+}
+
+void StartSendingKeysToRfu(void)
+{
+}
+
+void ClearLinkRfuCallback(void)
+{
+}
+
+void Rfu_SetBerryBlenderLinkCallback(void)
+{
+}
+
+u8 Rfu_GetBlockReceivedStatus(void)
+{
+    return 0;
+}
+
+void Rfu_SendPacket(void *data)
+{
+}
+
+bool32 Rfu_InitBlockSend(const u8 *src, size_t size)
+{
+    return 0;
+}
+
+bool8 Rfu_SendBlockRequest(u8 type)
+{
+    return 0;
+}
+
+void LinkRfu_FatalError(void)
+{
+}
+
+void Rfu_SetCloseLinkCallback(void)
+{
+}
+
+void Rfu_SetLinkStandbyCallback(void)
+{
+}
+
+u8 Rfu_SetLinkRecovery(bool32 enable)
+{
+    return 0;
+}
+
+void Rfu_StopPartnerSearch(void)
+{
+}
+
+u8 Rfu_GetMultiplayerId(void)
+{
+    return 0;
+}
+
+u8 Rfu_GetLinkPlayerCount(void)
+{
+    return 0;
+}
+
+bool8 IsLinkRfuTaskFinished(void)
+{
+    return 0;
+}
+
+bool32 RfuTryDisconnectLeavingChildren(void)
+{
+    return 0;
+}
+
+bool32 HasTrainerLeftPartnersList(u16 trainerId, const u8 *name)
+{
+    return 0;
+}
+
+void SendRfuStatusToPartner(u8 status, u16 trainerId, const u8 *name)
+{
+}
+
+void SendLeaveGroupNotice(void)
+{
+}
+
+u32 WaitSendRfuStatusToPartner(u16 trainerId, const u8 *name)
+{
+    return 0;
+}
+
+bool32 RfuMain1(void)
+{
+    return 0;
+}
+
+bool32 RfuMain2(void)
+{
+    return 0;
+}
+
+void ResetHostRfuGameData(void)
+{
+}
+
+void SetHostRfuGameData(u8 activity, u32 partnerInfo, bool32 startedActivity)
+{
+}
+
+void SetHostRfuWonderFlags(bool32 hasNews, bool32 hasCard)
+{
+}
+
+void SetTradeBoardRegisteredMonInfo(u32 type, u32 species, u32 level)
+{
+}
+
+u8 GetLinkPlayerInfoFlags(s32 playerId)
+{
+    return 0;
+}
+
+void GetOtherPlayersInfoFlags(void)
+{
+}
+
+void UpdateGameData_GroupLockedIn(bool8 startedActivity)
+{
+}
+
+void UpdateGameData_SetActivity(u8 activity, u32 partnerInfo, bool32 startedActivity)
+{
+}
+
+void SetUnionRoomChatPlayerData(u32 numPlayers)
+{
+}
+
+void RfuSetErrorParams(u32 errorInfo)
+{
+}
+
+void RfuSetIgnoreError(bool32 enable)
+{
+}
+
+void RfuSetNormalDisconnectMode(void)
+{
+}
+
+void RfuSetStatus(u8 status, u16 errorInfo)
+{
+}
+
+u8 RfuGetStatus(void)
+{
+    return 0;
+}
+
+bool32 RfuHasErrored(void)
+{
+    return 0;
+}
+
+bool32 Rfu_IsPlayerExchangeActive(void)
+{
+    return 0;
+}
+
+bool8 Rfu_IsMaster(void)
+{
+    return 0;
+}
+
+void RfuVSync(void)
+{
+}
+
+void ClearRecvCommands(void)
+{
+}
+
+bool32 IsUnionRoomListenTaskActive(void)
+{
+    return 0;
+}
+
+void CreateTask_RfuIdle(void)
+{
+}
+
+void DestroyTask_RfuIdle(void)
+{
+}
+
+void InitializeRfuLinkManager_LinkLeader(u32 groupMax)
+{
+}
+
+void InitializeRfuLinkManager_JoinGroup(void)
+{
+}
+
+void InitializeRfuLinkManager_EnterUnionRoom(void)
+{
+}
+
+void RequestDisconnectSlotByTrainerNameAndId(const u8 *name, u16 id)
+{
+}
+
+void Rfu_DisconnectPlayerById(u32 playerIdx)
+{
+}
+
+void CreateTask_RfuReconnectWithParent(const u8 *name, u16 trainerId)
+{
+}
+
+void TryConnectToUnionRoomParent(const u8 *name, struct RfuGameData *parent, u8 activity)
+{
+}
+
+bool32 IsRfuCommunicatingWithAllChildren(void)
+{
+    return 0;
+}
+
+u32 GetRfuRecvQueueLength(void)
+{
+    return 0;
+}
+
+#endif // FREE_WIRELESS

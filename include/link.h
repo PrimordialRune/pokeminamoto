@@ -5,6 +5,11 @@
 #define MAX_RFU_PLAYERS 5
 #define CMD_LENGTH 8
 #define QUEUE_CAPACITY 50
+#ifdef FREE_FOUR_PLAYER_LINK
+#define LINK_QUEUE_PLAYERS 2 // the cable link refuses to start with more
+#else
+#define LINK_QUEUE_PLAYERS MAX_LINK_PLAYERS
+#endif
 #define OVERWORLD_RECV_QUEUE_MAX 3
 #define BLOCK_BUFFER_SIZE 0x100
 
@@ -199,7 +204,7 @@ struct SendQueue
 
 struct RecvQueue
 {
-    u16 data[MAX_LINK_PLAYERS][CMD_LENGTH][QUEUE_CAPACITY];
+    u16 data[LINK_QUEUE_PLAYERS][CMD_LENGTH][QUEUE_CAPACITY];
     u8 pos;
     u8 count;
 };

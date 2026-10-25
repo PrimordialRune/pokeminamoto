@@ -6,6 +6,7 @@
 #include "random.h"
 #include "text.h"
 #include "event_data.h"
+#ifndef FREE_WIRELESS
 
 enum {
     WIRELESS_STATUS_ANIM_3_BARS,
@@ -983,3 +984,54 @@ void WipeTrainerNameRecords(void)
         CpuFill16(0, gSaveBlock1Ptr->trainerNameRecords[i].trainerName, PLAYER_NAME_LENGTH + 1);
     }
 }
+
+#else // FREE_WIRELESS
+
+// Wireless Adapter is gone: the entry points other files still name do nothing.
+
+EWRAM_DATA u8 gWirelessStatusIndicatorSpriteId = 0;
+
+bool8 Rfu_GetCompatiblePlayerData(struct RfuGameData *gameData, u8 *username, u8 idx)
+{
+    return 0;
+}
+
+bool8 Rfu_GetWonderDistributorPlayerData(struct RfuGameData *gameData, u8 *username, u8 idx)
+{
+    return 0;
+}
+
+void CopyHostRfuGameDataAndUsername(struct RfuGameData *gameData, u8 *username)
+{
+}
+
+void CreateWirelessStatusIndicatorSprite(u8 x, u8 y)
+{
+}
+
+void DestroyWirelessStatusIndicatorSprite(void)
+{
+}
+
+void LoadWirelessStatusIndicatorSpriteGfx(void)
+{
+}
+
+void UpdateWirelessStatusIndicatorSprite(void)
+{
+}
+
+void SaveLinkTrainerNames(void)
+{
+}
+
+bool32 PlayerHasMetTrainerBefore(u16 id, u8 *name)
+{
+    return FALSE;
+}
+
+void WipeTrainerNameRecords(void)
+{
+}
+
+#endif // FREE_WIRELESS

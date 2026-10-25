@@ -2827,9 +2827,11 @@ bool32 IsSendingKeysOverCable(void)
 
 static u32 GetLinkSendQueueLength(void)
 {
+#ifndef FREE_WIRELESS
     if (gWirelessCommType != 0)
         return gRfu.sendQueue.count;
     else
+#endif
         return gLink.sendQueue.count;
 }
 

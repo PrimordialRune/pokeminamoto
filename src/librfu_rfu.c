@@ -1,5 +1,6 @@
 #include <limits.h>
 #include "librfu.h"
+#ifndef FREE_WIRELESS
 
 // If expanding the length of the player name and wireless link functionality is
 // desired, ensure that the name string is limited in size when it's copied from the
@@ -2321,3 +2322,28 @@ void rfu_REQ_noise(void)
     STWI_set_Callback_M(rfu_STC_REQ_callback);
     STWI_send_TestModeREQ(1, 0);
 }
+
+#else // FREE_WIRELESS
+
+// Wireless Adapter is gone: the entry points other files still name do nothing.
+
+u16 rfu_waitREQComplete(void)
+{
+    return 0;
+}
+
+void rfu_REQ_stopMode(void)
+{
+}
+
+u16 rfu_clearSlot(u8 connTypeFlag, u8 slotStatusIndex)
+{
+    return 0;
+}
+
+u16 rfu_NI_setSendData(u8 bmSendSlot, u8 subFrameSize, const void *src, u32 size)
+{
+    return 0;
+}
+
+#endif // FREE_WIRELESS
