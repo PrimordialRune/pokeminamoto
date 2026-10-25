@@ -20,7 +20,6 @@
 #include "sprite.h"
 #include "task.h"
 #include "trainer_see.h"
-#include "trainer_hill.h"
 #include "util.h"
 #include "debug_menu.h"
 #include "constants/event_object_movement.h"
@@ -1341,10 +1340,7 @@ u8 Unref_TryInitLocalObjectEvent(u8 localId)
     {
         if (CurrentBattlePyramidLocation() != PYRAMID_LOCATION_NONE)
             objectEventCount = GetNumBattlePyramidObjectEvents();
-        else if (InTrainerHill())
-            objectEventCount = HILL_TRAINERS_PER_FLOOR;
-        else
-            objectEventCount = gMapHeader.events->objectEventCount;
+        else objectEventCount = gMapHeader.events->objectEventCount;
 
         for (i = 0; i < objectEventCount; i++)
         {
@@ -1657,10 +1653,7 @@ void TrySpawnObjectEvents(s16 cameraX, s16 cameraY)
 
         if (CurrentBattlePyramidLocation() != PYRAMID_LOCATION_NONE)
             objectCount = GetNumBattlePyramidObjectEvents();
-        else if (InTrainerHill())
-            objectCount = HILL_TRAINERS_PER_FLOOR;
-        else
-            objectCount = gMapHeader.events->objectEventCount;
+        else objectCount = gMapHeader.events->objectEventCount;
 
         for (i = 0; i < objectCount; i++)
         {

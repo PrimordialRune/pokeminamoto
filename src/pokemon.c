@@ -33,7 +33,6 @@
 #include "strings.h"
 #include "task.h"
 #include "text.h"
-#include "trainer_hill.h"
 #include "util.h"
 #include "constants/abilities.h"
 #include "constants/battle_frontier.h"
@@ -5815,10 +5814,7 @@ u8 GetTrainerEncounterMusicId(u16 trainerOpponentId)
 {
     if (CurrentBattlePyramidLocation() != PYRAMID_LOCATION_NONE)
         return GetTrainerEncounterMusicIdInBattlePyramid(trainerOpponentId);
-    else if (InTrainerHillChallenge())
-        return GetTrainerEncounterMusicIdInTrainerHill(trainerOpponentId);
-    else
-        return TRAINER_ENCOUNTER_MUSIC(trainerOpponentId);
+    else return TRAINER_ENCOUNTER_MUSIC(trainerOpponentId);
 }
 
 u16 ModifyStatByNature(u8 nature, u16 stat, u8 statIndex)
@@ -6369,10 +6365,7 @@ u16 GetBattleBGM(void)
 
         if (gBattleTypeFlags & BATTLE_TYPE_FRONTIER)
             trainerClass = GetFrontierOpponentClass(gTrainerBattleOpponent_A);
-        else if (gBattleTypeFlags & BATTLE_TYPE_TRAINER_HILL)
-            trainerClass = TRAINER_CLASS_EXPERT;
-        else
-            trainerClass = gTrainers[gTrainerBattleOpponent_A].trainerClass;
+        else trainerClass = gTrainers[gTrainerBattleOpponent_A].trainerClass;
 
         switch (trainerClass)
         {

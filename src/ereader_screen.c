@@ -1,7 +1,6 @@
 #include "global.h"
 #include "malloc.h"
 #include "decompress.h"
-#include "ereader_helpers.h"
 #include "link.h"
 #include "main.h"
 #include "mystery_gift_menu.h"

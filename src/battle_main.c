@@ -592,7 +592,7 @@ static u8 GetNumMonSpriteBuffers(void)
     if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE)
         return MAX_BATTLERS_COUNT;
     if ((gBattleTypeFlags & BATTLE_TYPE_TRAINER)
-     && !(gBattleTypeFlags & (BATTLE_TYPE_LINK | BATTLE_TYPE_RECORDED | BATTLE_TYPE_FRONTIER | BATTLE_TYPE_TRAINER_HILL))
+     && !(gBattleTypeFlags & (BATTLE_TYPE_LINK | BATTLE_TYPE_RECORDED | BATTLE_TYPE_FRONTIER))
      && gTrainerBattleOpponent_A != TRAINER_SECRET_BASE
      && gTrainers[gTrainerBattleOpponent_A].doubleBattle)
         return MAX_BATTLERS_COUNT;
@@ -1831,8 +1831,7 @@ static u8 CreateNPCTrainerParty(struct Pokemon *party, u16 trainerNum, bool8 fir
     if (trainerNum == TRAINER_SECRET_BASE)
         return 0;
 
-    if (gBattleTypeFlags & BATTLE_TYPE_TRAINER && !(gBattleTypeFlags & (BATTLE_TYPE_FRONTIER
-                                                                        | BATTLE_TYPE_TRAINER_HILL)))
+    if (gBattleTypeFlags & BATTLE_TYPE_TRAINER && !(gBattleTypeFlags & (BATTLE_TYPE_FRONTIER)))
     {
         if (firstTrainer == TRUE)
             ZeroEnemyPartyMons();
@@ -3307,8 +3306,7 @@ static void BattleIntroDrawTrainersOrMonsSprites(void)
             if (GetBattlerSide(gActiveBattler) == B_SIDE_OPPONENT
              && !(gBattleTypeFlags & (BATTLE_TYPE_FRONTIER
                                       | BATTLE_TYPE_LINK
-                                      | BATTLE_TYPE_RECORDED_LINK
-                                      | BATTLE_TYPE_TRAINER_HILL)))
+                                      | BATTLE_TYPE_RECORDED_LINK)))
             {
                 HandleSetPokedexFlag(SpeciesToNationalPokedexNum(gBattleMons[gActiveBattler].species), FLAG_SET_SEEN, gBattleMons[gActiveBattler].personality);
             }
@@ -3319,8 +3317,7 @@ static void BattleIntroDrawTrainersOrMonsSprites(void)
             {
                 if (!(gBattleTypeFlags & (BATTLE_TYPE_FRONTIER
                                       | BATTLE_TYPE_LINK
-                                      | BATTLE_TYPE_RECORDED_LINK
-                                      | BATTLE_TYPE_TRAINER_HILL)))
+                                      | BATTLE_TYPE_RECORDED_LINK)))
                 {
                     HandleSetPokedexFlag(SpeciesToNationalPokedexNum(gBattleMons[gActiveBattler].species), FLAG_SET_SEEN, gBattleMons[gActiveBattler].personality);
                 }
@@ -3555,8 +3552,7 @@ static void BattleIntroRecordMonsToDex(void)
             if (GetBattlerSide(gActiveBattler) == B_SIDE_OPPONENT
              && !(gBattleTypeFlags & (BATTLE_TYPE_FRONTIER
                                       | BATTLE_TYPE_LINK
-                                      | BATTLE_TYPE_RECORDED_LINK
-                                      | BATTLE_TYPE_TRAINER_HILL)))
+                                      | BATTLE_TYPE_RECORDED_LINK)))
             {
                 HandleSetPokedexFlag(SpeciesToNationalPokedexNum(gBattleMons[gActiveBattler].species), FLAG_SET_SEEN, gBattleMons[gActiveBattler].personality);
             }
@@ -4181,7 +4177,7 @@ static void HandleTurnActionSelectionState(void)
                 }
 
                 if (gBattleTypeFlags & BATTLE_TYPE_TRAINER
-                    && gBattleTypeFlags & (BATTLE_TYPE_FRONTIER | BATTLE_TYPE_TRAINER_HILL)
+                    && gBattleTypeFlags & (BATTLE_TYPE_FRONTIER)
                     && gBattleBufferB[gActiveBattler][1] == B_ACTION_RUN)
                 {
                     gSelectionBattleScripts[gActiveBattler] = BattleScript_AskIfWantsToForfeitMatch;
@@ -4799,7 +4795,7 @@ static void HandleEndTurn_BattleWon(void)
         gBattleOutcome &= ~B_OUTCOME_LINK_BATTLE_RAN;
     }
     else if (gBattleTypeFlags & BATTLE_TYPE_TRAINER
-            && gBattleTypeFlags & (BATTLE_TYPE_FRONTIER | BATTLE_TYPE_TRAINER_HILL))
+            && gBattleTypeFlags & (BATTLE_TYPE_FRONTIER))
     {
         BattleStopLowHpSound();
         gBattlescriptCurrInstr = BattleScript_FrontierTrainerBattleWon;
@@ -4890,13 +4886,7 @@ static void HandleEndTurn_RanFromBattle(void)
         gBattleOutcome = B_OUTCOME_FORFEITED;
         gSaveBlock2Ptr->frontier.disableRecordBattle = TRUE;
     }
-    else if (gBattleTypeFlags & BATTLE_TYPE_TRAINER_HILL)
-    {
-        gBattlescriptCurrInstr = BattleScript_PrintPlayerForfeited;
-        gBattleOutcome = B_OUTCOME_FORFEITED;
-    }
-    else
-    {
+    else {
         switch (gProtectStructs[gBattlerAttacker].fleeType)
         {
         default:

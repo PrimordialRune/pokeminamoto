@@ -49,7 +49,6 @@
 #include "constants/sound.h"
 #include "constants/species.h"
 #include "constants/trade.h"
-#include "constants/trainer_hill.h"
 #include "constants/trainers.h"
 #include "constants/tv.h"
 #include "constants/union_room.h"
@@ -569,7 +568,6 @@ Common_EventScript_LegendaryFlewAway::
 	.include "data/text/battle_tent.inc"
 	.include "data/text/event_ticket_2.inc"
 	.include "data/text/move_tutors.inc"
-	.include "data/scripts/trainer_hill.inc"
 	.include "data/scripts/test_signpost.inc"
 	.include "data/scripts/removed_maps.inc"
 #ifndef RELEASE

@@ -17,7 +17,6 @@
 #include "easy_chat.h"
 #include "event_data.h"
 #include "money.h"
-#include "trainer_hill.h"
 #include "tv.h"
 #include "coins.h"
 #include "text.h"
@@ -203,7 +202,6 @@ void NewGameInitData(void)
     InitMatchCallCounters();
     ClearMysteryGift();
     WipeTrainerNameRecords();
-    ResetTrainerHillResults();
     ResetContestLinkResults();
 }
 

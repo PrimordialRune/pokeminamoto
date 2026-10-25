@@ -23,7 +23,6 @@
 #include "text.h"
 #include "intro.h"
 #include "main.h"
-#include "trainer_hill.h"
 #include "constants/rgb.h"
 
 static void VBlankIntr(void);
@@ -178,7 +177,6 @@ static void UpdateLinkAndCallCallbacks(void)
 static void InitMainCallbacks(void)
 {
     gMain.vblankCounter1 = 0;
-    gTrainerHillVBlankCounter = NULL;
     gMain.vblankCounter2 = 0;
     gMain.callback1 = NULL;
     SetMainCallback2(CB2_InitCopyrightScreenAfterBootup);
@@ -347,9 +345,6 @@ static void VBlankIntr(void)
 
     gMain.vblankCounter1++;
 
-    if (gTrainerHillVBlankCounter && *gTrainerHillVBlankCounter < 0xFFFFFFFF)
-        (*gTrainerHillVBlankCounter)++;
-
     if (gMain.vblankCallback)
         gMain.vblankCallback();
 
@@ -415,16 +410,6 @@ static void WaitForVBlank(void)
 
     while (!(gMain.intrCheck & INTR_FLAG_VBLANK))
         ;
-}
-
-void SetTrainerHillVBlankCounter(u32 *counter)
-{
-    gTrainerHillVBlankCounter = counter;
-}
-
-void ClearTrainerHillVBlankCounter(void)
-{
-    gTrainerHillVBlankCounter = NULL;
 }
 
 void DoSoftReset(void)

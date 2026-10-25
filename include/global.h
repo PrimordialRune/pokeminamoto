@@ -15,7 +15,6 @@
 #include "constants/maps.h"
 #include "constants/pokemon.h"
 #include "constants/easy_chat.h"
-#include "constants/trainer_hill.h"
 
 // Prevent cross-jump optimization.
 #define BLOCK_CROSS_JUMP asm("");
@@ -832,21 +831,6 @@ struct TrainerNameRecord
     u8 ALIGNED(2) trainerName[PLAYER_NAME_LENGTH + 1];
 };
 
-struct TrainerHillSave
-{
-    /*0x3D64*/ u32 timer;
-    /*0x3D68*/ u32 bestTime;
-    /*0x3D6C*/ u8 unk_3D6C;
-    /*0x3D6D*/ u8 unused;
-    /*0x3D6E*/ u16 receivedPrize:1;
-               u16 checkedFinalTime:1;
-               u16 spokeToOwner:1;
-               u16 hasLost:1;
-               u16 maybeECardScanDuringChallenge:1;
-               u16 field_3D6E_0f:1;
-               u16 mode:2; // HILL_MODE_*
-               //u16 padding:8;
-};
 
 struct WonderNewsMetadata
 {
@@ -989,9 +973,6 @@ struct SaveBlock1
 #ifndef FREE_MYSTERY_GIFT
     /*0x322C*/ struct MysteryGiftSave mysteryGift;
 #endif
-#ifndef FREE_TRAINER_HILL
-    /*0x3718*/ u32 trainerHillTimes[NUM_TRAINER_HILL_MODES];
-#endif
 #ifndef FREE_MYSTERY_EVENT_BUFFERS
     /*0x3728*/ struct RamScript ramScript;
 #endif
@@ -1006,9 +987,6 @@ struct SaveBlock1
 #endif
 #ifndef FREE_UNION_ROOM_CHAT
     /*0x3C88*/ u8 registeredTexts[UNION_ROOM_KB_ROW_COUNT][21];
-#endif
-#ifndef FREE_TRAINER_HILL
-    /*0x3D64*/ struct TrainerHillSave trainerHill;
 #endif
     // sizeof: 0x3D88 in vanilla; smaller with the FREE_* options in config.h
 };

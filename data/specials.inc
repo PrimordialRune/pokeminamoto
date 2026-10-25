@@ -498,15 +498,12 @@ gSpecials::
 	def_special ShouldDistributeEonTicket
 	def_special LinkRetireStatusWithBattleTowerPartner
 	def_special BattleTowerReconnectLink
-	def_special CallTrainerHillFunction
 	def_special Script_DoRayquazaScene @ Listed twice
 	def_special LoopWingFlapSE
 	def_special DestroyMewEmergingGrassSprite
 	def_special ShowBerryCrushRankings
-	def_special PlayerNotAtTrainerHillEntrance
 	def_special GetBattlePyramidHint
 	def_special LoadLinkContestPlayerPalettes
-	def_special ShowTrainerHillRecords
 	def_special PlayerFaceTrainerAfterBattle
 	def_special IsLastMonThatKnowsSurf
 	def_special CountPartyAliveNonEggMons

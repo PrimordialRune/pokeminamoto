@@ -32,7 +32,6 @@
 #include "constants/event_objects.h"
 #include "constants/songs.h"
 #include "constants/rgb.h"
-#include "trainer_hill.h"
 #include "fldeff.h"
 
 static void Task_ExitNonAnimDoor(u8);
@@ -288,8 +287,7 @@ void FieldCB_WarpExitFadeFromWhite(void)
 
 void FieldCB_WarpExitFadeFromBlack(void)
 {
-    if (!OnTrainerHillEReaderChallengeFloor()) // always false
-        Overworld_PlaySpecialMapMusic();
+    Overworld_PlaySpecialMapMusic();
     FadeInFromBlack();
     SetUpWarpExitTask();
     LockPlayerFieldControls();
