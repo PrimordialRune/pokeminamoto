@@ -11,8 +11,6 @@
 #define MULTI_BRINEY_ON_DEWFORD            0
 #define MULTI_PC                           1 // Exit only, populated by CreatePCMultichoice
 #define MULTI_ENTERINFO                    2
-#define MULTI_CONTEST_INFO                 3
-#define MULTI_CONTEST_TYPE                 4
 #define MULTI_BASE_PC_NO_REGISTRY          5
 #define MULTI_BASE_PC_WITH_REGISTRY        6
 #define MULTI_REGISTER_MENU                7
@@ -90,7 +88,6 @@
 #define MULTI_WIRELESS_ALL_SERVICES        79
 #define MULTI_WIRELESS_MINIGAME            80
 #define MULTI_LINK_LEADER                  81
-#define MULTI_CONTEST_RANK                 82
 #define MULTI_FRONTIER_ITEM_CHOOSE         83
 #define MULTI_LINK_CONTEST_INFO            84
 #define MULTI_LINK_CONTEST_MODE            85

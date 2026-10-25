@@ -5,11 +5,7 @@
 #define USING_SINGLE_BATTLE  1
 #define USING_DOUBLE_BATTLE  2
 #define USING_TRADE_CENTER   3
-#define USING_RECORD_CORNER  4
 #define USING_MULTI_BATTLE   5
-#define USING_UNION_ROOM     6
-#define USING_BERRY_CRUSH    7
-#define USING_MINIGAME       8
 #define USING_BATTLE_TOWER   9
 
 // Return states for the group of specials that use CreateLinkupTask
@@ -22,10 +18,8 @@
 #define LINKUP_FAILED               5
 #define LINKUP_CONNECTION_ERROR     6
 #define LINKUP_PLAYER_NOT_READY     7
-#define LINKUP_RETRY_ROLE_ASSIGN    8
 #define LINKUP_PARTNER_NOT_READY    9
 #define LINKUP_FAILED_BATTLE_TOWER  11
-#define LINKUP_FOREIGN_GAME         12
 
 #define CABLE_SEAT_WAITING 0
 #define CABLE_SEAT_SUCCESS 1
