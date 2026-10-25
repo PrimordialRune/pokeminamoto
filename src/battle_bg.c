@@ -225,7 +225,7 @@ static const struct WindowTemplate sStandardBattleWindowTemplates[] =
         .paletteNum = 0,
         .baseBlock = 0x035c,
     },
-    [B_WIN_PP] = { // unused: the "TP" label is in the art
+    [B_WIN_TP_LABEL] = { // unused: the "TP" label is in the art
         .bg = 0,
         .tilemapLeft = 0,
         .tilemapTop = 53,
@@ -243,7 +243,7 @@ static const struct WindowTemplate sStandardBattleWindowTemplates[] =
         .paletteNum = 5,
         .baseBlock = 0x029a,
     },
-    [B_WIN_PP_REMAINING] = { // TP cost of the selected move
+    [B_WIN_TP_COST] = { // TP cost of the selected move
         .bg = 0,
         .tilemapLeft = 18,
         .tilemapTop = 57,
@@ -446,7 +446,7 @@ static const struct WindowTemplate sBattleArenaWindowTemplates[] =
         .paletteNum = 0,
         .baseBlock = 0x035c,
     },
-    [B_WIN_PP] = { // unused: the "TP" label is in the art
+    [B_WIN_TP_LABEL] = { // unused: the "TP" label is in the art
         .bg = 0,
         .tilemapLeft = 0,
         .tilemapTop = 53,
@@ -464,7 +464,7 @@ static const struct WindowTemplate sBattleArenaWindowTemplates[] =
         .paletteNum = 5,
         .baseBlock = 0x029a,
     },
-    [B_WIN_PP_REMAINING] = { // TP cost of the selected move
+    [B_WIN_TP_COST] = { // TP cost of the selected move
         .bg = 0,
         .tilemapLeft = 18,
         .tilemapTop = 57,

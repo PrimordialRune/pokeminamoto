@@ -1852,19 +1852,6 @@ static const u8 sMonAnimationDelayTable[NUM_SPECIES - 1] =
     [SPECIES_RAYQUAZA - 1]   = 60,
 };
 
-#define PP_UP_SHIFTS(val)           val,        (val) << 2,        (val) << 4,        (val) << 6
-#define PP_UP_SHIFTS_INV(val) (u8)~(val), (u8)~((val) << 2), (u8)~((val) << 4), (u8)~((val) << 6)
-
-// PP Up bonuses are stored for a Pokémon as a single byte.
-// There are 2 bits (a value 0-3) for each move slot that
-// represent how many PP Ups have been applied.
-// The following arrays take a move slot id and return:
-// gPPUpGetMask - A mask to get the number of PP Ups applied to that move slot
-// gPPUpClearMask - A mask to clear the number of PP Ups applied to that move slot
-// gPPUpAddValues - A value to add to the PP Bonuses byte to apply 1 PP Up to that move slot
-const u8 gPPUpGetMask[MAX_MON_MOVES]   = {PP_UP_SHIFTS(3)};
-const u8 gPPUpClearMask[MAX_MON_MOVES] = {PP_UP_SHIFTS_INV(3)};
-const u8 gPPUpAddValues[MAX_MON_MOVES] = {PP_UP_SHIFTS(1)};
 
 const u8 gStatStageRatios[MAX_STAT_STAGE + 1][2] =
 {
@@ -2424,7 +2411,6 @@ void CreateBattleTowerMon(struct Pokemon *mon, const struct BattleTowerPokemon *
     for (i = 0; i < MAX_MON_MOVES; i++)
         SetMonMoveSlot(mon, src->moves[i], i);
 
-    SetMonData(mon, MON_DATA_PP_BONUSES, &src->ppBonuses);
     SetMonData(mon, MON_DATA_HELD_ITEM, &src->heldItem);
     SetMonData(mon, MON_DATA_FRIENDSHIP, &src->friendship);
 
@@ -2462,7 +2448,6 @@ void CreateBattleTowerMon(struct Pokemon *mon, const struct BattleTowerPokemon *
     SetMonData(mon, MON_DATA_SPATK_IV, &value);
     value = src->spDefenseIV;
     SetMonData(mon, MON_DATA_SPDEF_IV, &value);
-    MonRestorePP(mon);
     CalculateMonStats(mon);
 }
 
@@ -2486,7 +2471,6 @@ void CreateBattleTowerMon_HandleLevel(struct Pokemon *mon, struct BattleTowerPok
     for (i = 0; i < MAX_MON_MOVES; i++)
         SetMonMoveSlot(mon, src->moves[i], i);
 
-    SetMonData(mon, MON_DATA_PP_BONUSES, &src->ppBonuses);
     SetMonData(mon, MON_DATA_HELD_ITEM, &src->heldItem);
     SetMonData(mon, MON_DATA_FRIENDSHIP, &src->friendship);
 
@@ -2524,7 +2508,6 @@ void CreateBattleTowerMon_HandleLevel(struct Pokemon *mon, struct BattleTowerPok
     SetMonData(mon, MON_DATA_SPATK_IV, &value);
     value = src->spDefenseIV;
     SetMonData(mon, MON_DATA_SPDEF_IV, &value);
-    MonRestorePP(mon);
     CalculateMonStats(mon);
 }
 
@@ -2611,7 +2594,6 @@ void ConvertPokemonToBattleTowerPokemon(struct Pokemon *mon, struct BattleTowerP
         dest->moves[i] = GetMonData(mon, MON_DATA_MOVE1 + i, NULL);
 
     dest->level = GetMonData(mon, MON_DATA_LEVEL, NULL);
-    dest->ppBonuses = GetMonData(mon, MON_DATA_PP_BONUSES, NULL);
     dest->otId = GetMonData(mon, MON_DATA_OT_ID, NULL);
     dest->hpEV = GetMonData(mon, MON_DATA_HP_EV, NULL);
     dest->attackEV = GetMonData(mon, MON_DATA_ATK_EV, NULL);
@@ -2938,7 +2920,6 @@ static u16 GiveMoveToBoxMon(struct BoxPokemon *boxMon, u16 move)
         if (existingMove == MOVE_NONE)
         {
             SetBoxMonData(boxMon, MON_DATA_MOVE1 + i, &move);
-            SetBoxMonData(boxMon, MON_DATA_PP1 + i, &gBattleMoves[move].pp);
             return move;
         }
         if (existingMove == move)
@@ -2956,7 +2937,6 @@ u16 GiveMoveToBattleMon(struct BattlePokemon *mon, u16 move)
         if (mon->moves[i] == MOVE_NONE)
         {
             mon->moves[i] = move;
-            mon->pp[i] = gBattleMoves[move].pp;
             return move;
         }
     }
@@ -2967,13 +2947,11 @@ u16 GiveMoveToBattleMon(struct BattlePokemon *mon, u16 move)
 void SetMonMoveSlot(struct Pokemon *mon, u16 move, u8 slot)
 {
     SetMonData(mon, MON_DATA_MOVE1 + slot, &move);
-    SetMonData(mon, MON_DATA_PP1 + slot, &gBattleMoves[move].pp);
 }
 
 void SetBattleMonMoveSlot(struct BattlePokemon *mon, u16 move, u8 slot)
 {
     mon->moves[slot] = move;
-    mon->pp[slot] = gBattleMoves[move].pp;
 }
 
 void GiveMonInitialMoveset(struct Pokemon *mon)
@@ -3040,54 +3018,28 @@ void DeleteFirstMoveAndGiveMoveToMon(struct Pokemon *mon, u16 move)
 {
     s32 i;
     u16 moves[MAX_MON_MOVES];
-    u8 pp[MAX_MON_MOVES];
-    u8 ppBonuses;
 
     for (i = 0; i < MAX_MON_MOVES - 1; i++)
-    {
         moves[i] = GetMonData(mon, MON_DATA_MOVE2 + i, NULL);
-        pp[i] = GetMonData(mon, MON_DATA_PP2 + i, NULL);
-    }
 
-    ppBonuses = GetMonData(mon, MON_DATA_PP_BONUSES, NULL);
-    ppBonuses >>= 2;
     moves[MAX_MON_MOVES - 1] = move;
-    pp[MAX_MON_MOVES - 1] = gBattleMoves[move].pp;
 
     for (i = 0; i < MAX_MON_MOVES; i++)
-    {
         SetMonData(mon, MON_DATA_MOVE1 + i, &moves[i]);
-        SetMonData(mon, MON_DATA_PP1 + i, &pp[i]);
-    }
-
-    SetMonData(mon, MON_DATA_PP_BONUSES, &ppBonuses);
 }
 
 void DeleteFirstMoveAndGiveMoveToBoxMon(struct BoxPokemon *boxMon, u16 move)
 {
     s32 i;
     u16 moves[MAX_MON_MOVES];
-    u8 pp[MAX_MON_MOVES];
-    u8 ppBonuses;
 
     for (i = 0; i < MAX_MON_MOVES - 1; i++)
-    {
         moves[i] = GetBoxMonData(boxMon, MON_DATA_MOVE2 + i, NULL);
-        pp[i] = GetBoxMonData(boxMon, MON_DATA_PP2 + i, NULL);
-    }
 
-    ppBonuses = GetBoxMonData(boxMon, MON_DATA_PP_BONUSES, NULL);
-    ppBonuses >>= 2;
     moves[MAX_MON_MOVES - 1] = move;
-    pp[MAX_MON_MOVES - 1] = gBattleMoves[move].pp;
 
     for (i = 0; i < MAX_MON_MOVES; i++)
-    {
         SetBoxMonData(boxMon, MON_DATA_MOVE1 + i, &moves[i]);
-        SetBoxMonData(boxMon, MON_DATA_PP1 + i, &pp[i]);
-    }
-
-    SetBoxMonData(boxMon, MON_DATA_PP_BONUSES, &ppBonuses);
 }
 
 #define APPLY_STAT_MOD(var, mon, stat, statIndex)                                   \
@@ -3786,9 +3738,6 @@ u32 GetBoxMonData3(struct BoxPokemon *boxMon, s32 field, u8 *data)
     case MON_DATA_EXP:
         retVal = substruct0->experience;
         break;
-    case MON_DATA_PP_BONUSES:
-        retVal = substruct0->ppBonuses;
-        break;
     case MON_DATA_FRIENDSHIP:
         retVal = substruct0->friendship;
         break;
@@ -3797,12 +3746,6 @@ u32 GetBoxMonData3(struct BoxPokemon *boxMon, s32 field, u8 *data)
     case MON_DATA_MOVE3:
     case MON_DATA_MOVE4:
         retVal = substruct1->moves[field - MON_DATA_MOVE1];
-        break;
-    case MON_DATA_PP1:
-    case MON_DATA_PP2:
-    case MON_DATA_PP3:
-    case MON_DATA_PP4:
-        retVal = substruct1->pp[field - MON_DATA_PP1];
         break;
     case MON_DATA_HP_EV:
         retVal = substruct2->hpEV;
@@ -4175,9 +4118,6 @@ void SetBoxMonData(struct BoxPokemon *boxMon, s32 field, const void *dataArg)
     case MON_DATA_EXP:
         SET32(substruct0->experience);
         break;
-    case MON_DATA_PP_BONUSES:
-        SET8(substruct0->ppBonuses);
-        break;
     case MON_DATA_FRIENDSHIP:
         SET8(substruct0->friendship);
         break;
@@ -4186,12 +4126,6 @@ void SetBoxMonData(struct BoxPokemon *boxMon, s32 field, const void *dataArg)
     case MON_DATA_MOVE3:
     case MON_DATA_MOVE4:
         SET16(substruct1->moves[field - MON_DATA_MOVE1]);
-        break;
-    case MON_DATA_PP1:
-    case MON_DATA_PP2:
-    case MON_DATA_PP3:
-    case MON_DATA_PP4:
-        SET8(substruct1->pp[(field - MON_DATA_PP1) & (MAX_MON_MOVES - 1)]); // the mask only tells the compiler the index is in range
         break;
     case MON_DATA_HP_EV:
         SET8(substruct2->hpEV);
@@ -4402,7 +4336,6 @@ static u8 CopyMonToPC(struct Pokemon *mon)
             struct BoxPokemon *checkingMon = GetBoxedMonPtr(boxNo, boxPos);
             if (GetBoxMonData(checkingMon, MON_DATA_SPECIES, NULL) == SPECIES_NONE)
             {
-                MonRestorePP(mon);
                 CopyMon(checkingMon, &mon->box, sizeof(mon->box));
                 gSpecialVar_MonBoxId = boxNo;
                 gSpecialVar_MonBoxPos = boxPos;
@@ -4529,10 +4462,7 @@ void CreateSecretBaseEnemyParty(struct SecretBase *secretBaseRecord)
                 SetMonData(&gEnemyParty[i], MON_DATA_HP_EV + j, &gBattleResources->secretBase->party.EVs[i]);
 
             for (j = 0; j < MAX_MON_MOVES; j++)
-            {
                 SetMonData(&gEnemyParty[i], MON_DATA_MOVE1 + j, &gBattleResources->secretBase->party.moves[i * MAX_MON_MOVES + j]);
-                SetMonData(&gEnemyParty[i], MON_DATA_PP1 + j, &gBattleMoves[gBattleResources->secretBase->party.moves[i * MAX_MON_MOVES + j]].pp);
-            }
         }
     }
 }
@@ -4590,24 +4520,6 @@ void GetSpeciesName(u8 *name, u16 species)
     name[i] = EOS;
 }
 
-u8 CalculatePPWithBonus(u16 move, u8 ppBonuses, u8 moveIndex)
-{
-    u8 basePP = gBattleMoves[move].pp;
-    return basePP + ((basePP * 20 * ((gPPUpGetMask[moveIndex] & ppBonuses) >> (2 * moveIndex))) / 100);
-}
-
-void RemoveMonPPBonus(struct Pokemon *mon, u8 moveIndex)
-{
-    u8 ppBonuses = GetMonData(mon, MON_DATA_PP_BONUSES, NULL);
-    ppBonuses &= gPPUpClearMask[moveIndex];
-    SetMonData(mon, MON_DATA_PP_BONUSES, &ppBonuses);
-}
-
-void RemoveBattleMonPPBonus(struct BattlePokemon *mon, u8 moveIndex)
-{
-    mon->ppBonuses &= gPPUpClearMask[moveIndex];
-}
-
 void CopyPlayerPartyMonToBattleData(u8 battler, u8 partyIndex)
 {
     u16 *hpSwitchout;
@@ -4618,12 +4530,8 @@ void CopyPlayerPartyMonToBattleData(u8 battler, u8 partyIndex)
     gBattleMons[battler].item = GetMonData(&gPlayerParty[partyIndex], MON_DATA_HELD_ITEM, NULL);
 
     for (i = 0; i < MAX_MON_MOVES; i++)
-    {
         gBattleMons[battler].moves[i] = GetMonData(&gPlayerParty[partyIndex], MON_DATA_MOVE1 + i, NULL);
-        gBattleMons[battler].pp[i] = GetMonData(&gPlayerParty[partyIndex], MON_DATA_PP1 + i, NULL);
-    }
 
-    gBattleMons[battler].ppBonuses = GetMonData(&gPlayerParty[partyIndex], MON_DATA_PP_BONUSES, NULL);
     gBattleMons[battler].friendship = GetMonData(&gPlayerParty[partyIndex], MON_DATA_FRIENDSHIP, NULL);
     gBattleMons[battler].experience = GetMonData(&gPlayerParty[partyIndex], MON_DATA_EXP, NULL);
     gBattleMons[battler].hpIV = GetMonData(&gPlayerParty[partyIndex], MON_DATA_HP_IV, NULL);
@@ -4893,27 +4801,10 @@ bool8 PokemonUseItemEffects(struct Pokemon *mon, u16 item, u8 partyIndex, u8 mov
             }
             break;
 
-        // Handle ITEM4 effects (Change HP/Atk EVs, HP heal, PP heal, PP up, Revive, and evolution stones)
+        // Handle ITEM4 effects (Change HP/Atk EVs, HP heal, TP heal, Revive, and evolution stones)
         case 4:
             effectFlags = itemEffect[i];
 
-            // PP Up
-            if (effectFlags & ITEM4_PP_UP)
-            {
-                effectFlags &= ~ITEM4_PP_UP;
-                dataUnsigned = (GetMonData(mon, MON_DATA_PP_BONUSES, NULL) & gPPUpGetMask[moveIndex]) >> (moveIndex * 2);
-                temp1 = CalculatePPWithBonus(GetMonData(mon, MON_DATA_MOVE1 + moveIndex, NULL), GetMonData(mon, MON_DATA_PP_BONUSES, NULL), moveIndex);
-                if (dataUnsigned <= 2 && temp1 > 4)
-                {
-                    dataUnsigned = GetMonData(mon, MON_DATA_PP_BONUSES, NULL) + gPPUpAddValues[moveIndex];
-                    SetMonData(mon, MON_DATA_PP_BONUSES, &dataUnsigned);
-
-                    dataUnsigned = CalculatePPWithBonus(GetMonData(mon, MON_DATA_MOVE1 + moveIndex, NULL), dataUnsigned, moveIndex) - temp1;
-                    dataUnsigned = GetMonData(mon, MON_DATA_PP1 + moveIndex, NULL) + dataUnsigned;
-                    SetMonData(mon, MON_DATA_PP1 + moveIndex, &dataUnsigned);
-                    retVal = FALSE;
-                }
-            }
             temp1 = 0;
 
             // Loop through and try each of the remaining ITEM4 effects
@@ -5059,63 +4950,27 @@ bool8 PokemonUseItemEffects(struct Pokemon *mon, u16 item, u8 partyIndex, u8 mov
                         effectFlags &= ~(ITEM4_REVIVE >> 2);
                         break;
 
-                    case 3: // ITEM4_HEAL_PP
-                        if (!(effectFlags & (ITEM4_HEAL_PP_ONE >> 3)))
+                    case 3: // ITEM4_HEAL_TP
+                        // TP only exists in battle. It is kept per party slot, so the
+                        // mon doesn't have to be on the field.
+                        if (gMain.inBattle)
                         {
-                            // Heal PP for all moves
-                            for (temp2 = 0; (signed)(temp2) < (signed)(MAX_MON_MOVES); temp2++)
+                            u8 *tp = &gBattleStruct->tp[GetBattlerSide(gActiveBattler)][partyIndex];
+
+                            if (*tp < TP_MAX)
                             {
-                                u16 move;
-                                dataUnsigned = GetMonData(mon, MON_DATA_PP1 + temp2, NULL);
-                                move = GetMonData(mon, MON_DATA_MOVE1 + temp2, NULL);
-                                if (dataUnsigned != CalculatePPWithBonus(move, GetMonData(mon, MON_DATA_PP_BONUSES, NULL), temp2))
-                                {
-                                    dataUnsigned += itemEffect[itemEffectParam];
-                                    move = GetMonData(mon, MON_DATA_MOVE1 + temp2, NULL); // Redundant
-                                    if (dataUnsigned > CalculatePPWithBonus(move, GetMonData(mon, MON_DATA_PP_BONUSES, NULL), temp2))
-                                    {
-                                        move = GetMonData(mon, MON_DATA_MOVE1 + temp2, NULL); // Redundant
-                                        dataUnsigned = CalculatePPWithBonus(move, GetMonData(mon, MON_DATA_PP_BONUSES, NULL), temp2);
-                                    }
-                                    SetMonData(mon, MON_DATA_PP1 + temp2, &dataUnsigned);
-
-                                    // Heal battler PP too (if applicable)
-                                    if (gMain.inBattle && battler != MAX_BATTLERS_COUNT && MOVE_IS_PERMANENT(battler, temp2))
-                                        gBattleMons[battler].pp[temp2] = dataUnsigned;
-
-                                    retVal = FALSE;
-                                }
-                            }
-                            itemEffectParam++;
-                        }
-                        else
-                        {
-                            // Heal PP for one move
-                            u16 move;
-                            dataUnsigned = GetMonData(mon, MON_DATA_PP1 + moveIndex, NULL);
-                            move = GetMonData(mon, MON_DATA_MOVE1 + moveIndex, NULL);
-                            if (dataUnsigned != CalculatePPWithBonus(move, GetMonData(mon, MON_DATA_PP_BONUSES, NULL), moveIndex))
-                            {
-                                dataUnsigned += itemEffect[itemEffectParam++];
-                                move = GetMonData(mon, MON_DATA_MOVE1 + moveIndex, NULL); // Redundant
-                                if (dataUnsigned > CalculatePPWithBonus(move, GetMonData(mon, MON_DATA_PP_BONUSES, NULL), moveIndex))
-                                {
-                                    move = GetMonData(mon, MON_DATA_MOVE1 + moveIndex, NULL); // Redundant
-                                    dataUnsigned = CalculatePPWithBonus(move, GetMonData(mon, MON_DATA_PP_BONUSES, NULL), moveIndex);
-                                }
-                                SetMonData(mon, MON_DATA_PP1 + moveIndex, &dataUnsigned);
-
-                                // Heal battler PP too (if applicable)
-                                if (gMain.inBattle && battler != MAX_BATTLERS_COUNT && MOVE_IS_PERMANENT(battler, moveIndex))
-                                    gBattleMons[battler].pp[moveIndex] = dataUnsigned;
-
+                                dataUnsigned = *tp + itemEffect[itemEffectParam];
+                                if (dataUnsigned > TP_MAX)
+                                    dataUnsigned = TP_MAX;
+                                *tp = dataUnsigned;
                                 retVal = FALSE;
                             }
                         }
+                        itemEffectParam++;
                         break;
 
-                    // cases 4-6 are ITEM4_HEAL_PP_ONE, ITEM4_PP_UP, and ITEM4_REVIVE, which
-                    // are already handled above by other cases or before the loop
+                    // case 6 is ITEM4_REVIVE, already handled with ITEM4_HEAL_HP;
+                    // bits 4 and 5 (old PP items) are unused
 
                     case 7: // ITEM4_EVO_STONE
                         {
@@ -5135,7 +4990,7 @@ bool8 PokemonUseItemEffects(struct Pokemon *mon, u16 item, u8 partyIndex, u8 mov
             }
             break;
 
-        // Handle ITEM5 effects (Change Def/SpDef/SpAtk/Speed EVs, PP Max, and friendship changes)
+        // Handle ITEM5 effects (Change Def/SpDef/SpAtk/Speed EVs and friendship changes)
         case 5:
             effectFlags = itemEffect[i];
             temp1 = 0;
@@ -5195,25 +5050,7 @@ bool8 PokemonUseItemEffects(struct Pokemon *mon, u16 item, u8 partyIndex, u8 mov
                         itemEffectParam++;
                         break;
 
-                    case 4: // ITEM5_PP_MAX
-                        dataUnsigned = (GetMonData(mon, MON_DATA_PP_BONUSES, NULL) & gPPUpGetMask[moveIndex]) >> (moveIndex * 2);
-                        temp2 = CalculatePPWithBonus(GetMonData(mon, MON_DATA_MOVE1 + moveIndex, NULL), GetMonData(mon, MON_DATA_PP_BONUSES, NULL), moveIndex);
-
-                        // Check if 3 PP Ups have been applied already, and that the move has a total PP of at least 5 (excludes Sketch)
-                        if (dataUnsigned < 3 && temp2 >= 5)
-                        {
-                            dataUnsigned = GetMonData(mon, MON_DATA_PP_BONUSES, NULL);
-                            dataUnsigned &= gPPUpClearMask[moveIndex];
-                            dataUnsigned += gPPUpAddValues[moveIndex] * 3; // Apply 3 PP Ups (max)
-
-                            SetMonData(mon, MON_DATA_PP_BONUSES, &dataUnsigned);
-                            dataUnsigned = CalculatePPWithBonus(GetMonData(mon, MON_DATA_MOVE1 + moveIndex, NULL), dataUnsigned, moveIndex) - temp2;
-                            dataUnsigned = GetMonData(mon, MON_DATA_PP1 + moveIndex, NULL) + dataUnsigned;
-                            SetMonData(mon, MON_DATA_PP1 + moveIndex, &dataUnsigned);
-                            retVal = FALSE;
-                        }
-                        break;
-
+                    // case 4 was ITEM5_PP_MAX (PP is gone)
                     case 5: // ITEM5_FRIENDSHIP_LOW
                         // Changes to friendship are given differently depending on
                         // how much friendship the Pokémon already has.
@@ -5300,8 +5137,6 @@ u8 GetItemEffectParamOffset(u16 itemId, u8 effectByte, u8 effectBit)
             break;
         case 4:
             effectFlags = itemEffect[4];
-            if (effectFlags & ITEM4_PP_UP)
-                effectFlags &= ~(ITEM4_PP_UP);
             j = 0;
             while (effectFlags)
             {
@@ -5323,7 +5158,7 @@ u8 GetItemEffectParamOffset(u16 itemId, u8 effectByte, u8 effectBit)
                             return offset;
                         offset++;
                         break;
-                    case 3: // ITEM4_HEAL_PP
+                    case 3: // ITEM4_HEAL_TP
                         if (i == effectByte && (effectFlags & effectBit))
                             return offset;
                         offset++;
@@ -5353,7 +5188,7 @@ u8 GetItemEffectParamOffset(u16 itemId, u8 effectByte, u8 effectBit)
                     case 1: // ITEM5_EV_SPEED
                     case 2: // ITEM5_EV_SPDEF
                     case 3: // ITEM5_EV_SPATK
-                    case 4: // ITEM5_PP_MAX
+                    case 4: // unused (was ITEM5_PP_MAX)
                     case 5: // ITEM5_FRIENDSHIP_LOW
                     case 6: // ITEM5_FRIENDSHIP_MID
                         if (i == effectByte && (effectFlags & effectBit))
@@ -6567,27 +6402,6 @@ bool8 IsOtherTrainer(u32 otId, u8 *otName)
     }
 
     return TRUE;
-}
-
-void MonRestorePP(struct Pokemon *mon)
-{
-    BoxMonRestorePP(&mon->box);
-}
-
-void BoxMonRestorePP(struct BoxPokemon *boxMon)
-{
-    int i;
-
-    for (i = 0; i < MAX_MON_MOVES; i++)
-    {
-        if (GetBoxMonData(boxMon, MON_DATA_MOVE1 + i, 0))
-        {
-            u16 move = GetBoxMonData(boxMon, MON_DATA_MOVE1 + i, 0);
-            u16 bonus = GetBoxMonData(boxMon, MON_DATA_PP_BONUSES, 0);
-            u8 pp = CalculatePPWithBonus(move, bonus, i);
-            SetBoxMonData(boxMon, MON_DATA_PP1 + i, &pp);
-        }
-    }
 }
 
 void SetMonPreventsSwitchingString(void)

@@ -2535,13 +2535,16 @@ static void RemoveMoneyWindow(void)
     RemoveMoneyLabelObject();
 }
 
+static const u8 sText_TP[] = _("TP");
+
 static void PrepareTMHMMoveWindow(void)
 {
     FillWindowPixelBuffer(WIN_TMHM_INFO_ICONS, PIXEL_FILL(0));
     BlitMenuInfoIcon(WIN_TMHM_INFO_ICONS, MENU_INFO_ICON_TYPE, 0, 0);
     BlitMenuInfoIcon(WIN_TMHM_INFO_ICONS, MENU_INFO_ICON_POWER, 0, 12);
     BlitMenuInfoIcon(WIN_TMHM_INFO_ICONS, MENU_INFO_ICON_ACCURACY, 0, 24);
-    BlitMenuInfoIcon(WIN_TMHM_INFO_ICONS, MENU_INFO_ICON_PP, 0, 36);
+    // TP replaced PP; there is no TP icon yet, so the label is text
+    BagMenu_Print(WIN_TMHM_INFO_ICONS, FONT_SMALL, sText_TP, 6, 36, 0, 0, TEXT_SKIP_DRAW, COLORID_TMHM_INFO);
     CopyWindowToVram(WIN_TMHM_INFO_ICONS, COPYWIN_GFX);
 }
 
@@ -2587,8 +2590,8 @@ static void PrintTMHMMoveData(u16 itemId)
         }
         BagMenu_Print(WIN_TMHM_INFO, FONT_NORMAL, text, 7, 24, 0, 0, TEXT_SKIP_DRAW, COLORID_TMHM_INFO);
 
-        // Print TMHM pp
-        ConvertIntToDecimalStringN(gStringVar1, gBattleMoves[move].pp, STR_CONV_MODE_RIGHT_ALIGN, 3);
+        // Print TMHM TP cost
+        ConvertIntToDecimalStringN(gStringVar1, gBattleMoves[move].tpCost, STR_CONV_MODE_RIGHT_ALIGN, 3);
         BagMenu_Print(WIN_TMHM_INFO, FONT_NORMAL, gStringVar1, 7, 36, 0, 0, TEXT_SKIP_DRAW, COLORID_TMHM_INFO);
 
         CopyWindowToVram(WIN_TMHM_INFO, COPYWIN_GFX);

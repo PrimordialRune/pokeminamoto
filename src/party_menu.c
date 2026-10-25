@@ -392,9 +392,6 @@ static void CB2_ReturnToBagMenu(void);
 static void Task_DisplayHPRestoredMessage(u8);
 static u16 ItemEffectToMonEv(struct Pokemon *, u8);
 static void ItemEffectToStatString(u8, u8 *);
-static void ReturnToUseOnWhichMon(u8);
-static void SetSelectedMoveForPPItem(u8);
-static void TryUsePPItem(u8);
 static void Task_LearnedMove(u8);
 static void Task_ReplaceMoveYesNo(u8);
 static void Task_DoLearnedMoveFanfareAfterText(u8);
@@ -4362,12 +4359,8 @@ static void GetMedicineItemEffectMessage(u16 item)
         StringCopy(gStringVar2, gText_SpDef3);
         StringExpandPlaceholders(gStringVar4, gText_PkmnBaseVar2StatIncreased);
         break;
-    case ITEM_EFFECT_PP_UP:
-    case ITEM_EFFECT_PP_MAX:
-        StringExpandPlaceholders(gStringVar4, gText_MovesPPIncreased);
-        break;
-    case ITEM_EFFECT_HEAL_PP:
-        StringExpandPlaceholders(gStringVar4, gText_PPWasRestored);
+    case ITEM_EFFECT_HEAL_TP:
+        StringExpandPlaceholders(gStringVar4, gText_TPWasRestored);
         break;
     default:
         StringExpandPlaceholders(gStringVar4, gText_WontHaveEffect);
@@ -4573,92 +4566,15 @@ static void ItemEffectToStatString(u8 effectType, u8 *dest)
     }
 }
 
-static void ShowMoveSelectWindow(u8 slot)
+// Ethers and Elixirs restore TP to the chosen mon. TP only exists in battle,
+// so the bag only offers them there.
+void ItemUseCB_TPRecovery(u8 taskId, TaskFunc task)
 {
-    u8 i;
-    u8 moveCount = 0;
-    u8 fontId = FONT_NORMAL;
-    u8 windowId = DisplaySelectionWindow(SELECTWINDOW_MOVES);
-    u16 move;
-
-    for (i = 0; i < MAX_MON_MOVES; i++)
-    {
-        move = GetMonData(&gPlayerParty[slot], MON_DATA_MOVE1 + i);
-        AddTextPrinterParameterized(windowId, fontId, gMoveNames[move], 8, (i * 16) + 1, TEXT_SKIP_DRAW, NULL);
-        if (move != MOVE_NONE)
-            moveCount++;
-    }
-    InitMenuInUpperLeftCornerNormal(windowId, moveCount, 0);
-    ScheduleBgCopyTilemapToVram(2);
-}
-
-static void Task_HandleWhichMoveInput(u8 taskId)
-{
-    s8 input = Menu_ProcessInput();
-
-    if (input != MENU_NOTHING_CHOSEN)
-    {
-        if (input == MENU_B_PRESSED)
-        {
-            PlaySE(SE_SELECT);
-            ReturnToUseOnWhichMon(taskId);
-        }
-        else
-        {
-            PartyMenuRemoveWindow(&sPartyMenuInternal->windowId[1]);
-            SetSelectedMoveForPPItem(taskId);
-        }
-    }
-}
-
-void ItemUseCB_PPRecovery(u8 taskId, TaskFunc task)
-{
-    const u8 *effect;
-    u16 item = gSpecialVar_ItemId;
-
-    if (item == ITEM_ENIGMA_BERRY)
-        effect = ENIGMA_BERRY.itemEffect;
-    else
-        effect = gItemEffectTable[item - ITEM_POTION];
-
-    if (!(effect[4] & ITEM4_HEAL_PP_ONE))
-    {
-        gPartyMenu.data1 = 0;
-        TryUsePPItem(taskId);
-    }
-    else
-    {
-        PlaySE(SE_SELECT);
-        DisplayPartyMenuStdMessage(PARTY_MSG_RESTORE_WHICH_MOVE);
-        ShowMoveSelectWindow(gPartyMenu.slotId);
-        gTasks[taskId].func = Task_HandleWhichMoveInput;
-    }
-}
-
-static void SetSelectedMoveForPPItem(u8 taskId)
-{
-    PartyMenuRemoveWindow(&sPartyMenuInternal->windowId[0]);
-    gPartyMenu.data1 = Menu_GetCursorPos();
-    TryUsePPItem(taskId);
-}
-
-static void ReturnToUseOnWhichMon(u8 taskId)
-{
-    gTasks[taskId].func = Task_HandleChooseMonInput;
-    sPartyMenuInternal->exitCallback = NULL;
-    PartyMenuRemoveWindow(&sPartyMenuInternal->windowId[0]);
-    DisplayPartyMenuStdMessage(PARTY_MSG_USE_ON_WHICH_MON);
-}
-
-static void TryUsePPItem(u8 taskId)
-{
-    u16 move = MOVE_NONE;
-    s16 *moveSlot = &gPartyMenu.data1;
     u16 item = gSpecialVar_ItemId;
     struct PartyMenu *ptr = &gPartyMenu;
     struct Pokemon *mon;
 
-    if (ExecuteTableBasedItemEffect_(ptr->slotId, item, *moveSlot))
+    if (ExecuteTableBasedItemEffect_(ptr->slotId, item, 0))
     {
         gPartyMenuUseExitCallback = FALSE;
         PlaySE(SE_SELECT);
@@ -4672,21 +4588,12 @@ static void TryUsePPItem(u8 taskId)
         mon = &gPlayerParty[ptr->slotId];
         PlaySE(SE_USE_ITEM);
         RemoveBagItem(item, 1);
-        move = GetMonData(mon, MON_DATA_MOVE1 + *moveSlot);
-        StringCopy(gStringVar1, gMoveNames[move]);
+        GetMonNickname(mon, gStringVar1);
         GetMedicineItemEffectMessage(item);
         DisplayPartyMenuMessage(gStringVar4, TRUE);
         ScheduleBgCopyTilemapToVram(2);
         gTasks[taskId].func = Task_ClosePartyMenuAfterText;
     }
-}
-
-void ItemUseCB_PPUp(u8 taskId, TaskFunc task)
-{
-    PlaySE(SE_SELECT);
-    DisplayPartyMenuStdMessage(PARTY_MSG_BOOST_PP_WHICH_MOVE);
-    ShowMoveSelectWindow(gPartyMenu.slotId);
-    gTasks[taskId].func = Task_HandleWhichMoveInput;
 }
 
 u16 ItemIdToBattleMoveId(u16 item)
@@ -4891,7 +4798,6 @@ static void Task_PartyMenuReplaceMove(u8 taskId)
     if (IsPartyMenuTextPrinterActive() != TRUE)
     {
         mon = &gPlayerParty[gPartyMenu.slotId];
-        RemoveMonPPBonus(mon, GetMoveSlotToReplace());
         move = gPartyMenu.data1;
         SetMonMoveSlot(mon, move, GetMoveSlotToReplace());
         Task_LearnedMove(taskId);
@@ -5309,12 +5215,8 @@ u8 GetItemEffectType(u16 item)
         return ITEM_EFFECT_DEF_EV;
     else if (itemEffect[4] & ITEM4_EVO_STONE)
         return ITEM_EFFECT_EVO_STONE;
-    else if (itemEffect[4] & ITEM4_PP_UP)
-        return ITEM_EFFECT_PP_UP;
-    else if (itemEffect[5] & ITEM5_PP_MAX)
-        return ITEM_EFFECT_PP_MAX;
-    else if (itemEffect[4] & (ITEM4_HEAL_PP | ITEM4_HEAL_PP_ONE))
-        return ITEM_EFFECT_HEAL_PP;
+    else if (itemEffect[4] & ITEM4_HEAL_TP)
+        return ITEM_EFFECT_HEAL_TP;
     else
         return ITEM_EFFECT_NONE;
 }
@@ -6376,7 +6278,6 @@ void MoveDeleterForgetMove(void)
     u16 i;
 
     SetMonMoveSlot(&gPlayerParty[gSpecialVar_0x8004], MOVE_NONE, gSpecialVar_0x8005);
-    RemoveMonPPBonus(&gPlayerParty[gSpecialVar_0x8004], gSpecialVar_0x8005);
     for (i = gSpecialVar_0x8005; i < MAX_MON_MOVES - 1; i++)
         ShiftMoveSlot(&gPlayerParty[gSpecialVar_0x8004], i, i + 1);
 }
@@ -6385,21 +6286,8 @@ static void ShiftMoveSlot(struct Pokemon *mon, u8 slotTo, u8 slotFrom)
 {
     u16 move1 = GetMonData(mon, MON_DATA_MOVE1 + slotTo);
     u16 move0 = GetMonData(mon, MON_DATA_MOVE1 + slotFrom);
-    u8 pp1 = GetMonData(mon, MON_DATA_PP1 + slotTo);
-    u8 pp0 = GetMonData(mon, MON_DATA_PP1 + slotFrom);
-    u8 ppBonuses = GetMonData(mon, MON_DATA_PP_BONUSES);
-    u8 ppBonusMask1 = gPPUpGetMask[slotTo];
-    u8 ppBonusMove1 = (ppBonuses & ppBonusMask1) >> (slotTo * 2);
-    u8 ppBonusMask2 = gPPUpGetMask[slotFrom];
-    u8 ppBonusMove2 = (ppBonuses & ppBonusMask2) >> (slotFrom * 2);
-    ppBonuses &= ~ppBonusMask1;
-    ppBonuses &= ~ppBonusMask2;
-    ppBonuses |= (ppBonusMove1 << (slotFrom * 2)) + (ppBonusMove2 << (slotTo * 2));
     SetMonData(mon, MON_DATA_MOVE1 + slotTo, &move0);
     SetMonData(mon, MON_DATA_MOVE1 + slotFrom, &move1);
-    SetMonData(mon, MON_DATA_PP1 + slotTo, &pp0);
-    SetMonData(mon, MON_DATA_PP1 + slotFrom, &pp1);
-    SetMonData(mon, MON_DATA_PP_BONUSES, &ppBonuses);
 }
 
 void IsSelectedMonEgg(void)

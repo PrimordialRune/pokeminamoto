@@ -388,7 +388,6 @@ static void AddHatchedMonToParty(u8 id)
     metLocation = GetCurrentRegionMapSectionId();
     SetMonData(mon, MON_DATA_MET_LOCATION, &metLocation);
 
-    MonRestorePP(mon);
     CalculateMonStats(mon);
 }
 

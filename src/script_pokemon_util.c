@@ -29,8 +29,7 @@ static void CB2_ReturnFromChooseBattleFrontierParty(void);
 
 void HealPlayerParty(void)
 {
-    u8 i, j;
-    u8 ppBonuses;
+    u8 i;
     u8 arg[4];
 
     // restore HP.
@@ -40,14 +39,6 @@ void HealPlayerParty(void)
         arg[0] = maxHP;
         arg[1] = maxHP >> 8;
         SetMonData(&gPlayerParty[i], MON_DATA_HP, arg);
-        ppBonuses = GetMonData(&gPlayerParty[i], MON_DATA_PP_BONUSES);
-
-        // restore PP.
-        for(j = 0; j < MAX_MON_MOVES; j++)
-        {
-            arg[0] = CalculatePPWithBonus(GetMonData(&gPlayerParty[i], MON_DATA_MOVE1 + j), ppBonuses, j);
-            SetMonData(&gPlayerParty[i], MON_DATA_PP1 + j, arg);
-        }
 
         // since status is u32, the four 0 assignments here are probably for safety to prevent undefined data from reaching SetMonData.
         arg[0] = 0;

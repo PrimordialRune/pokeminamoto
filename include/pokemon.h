@@ -22,11 +22,6 @@ enum {
     MON_DATA_MOVE2,
     MON_DATA_MOVE3,
     MON_DATA_MOVE4,
-    MON_DATA_PP1,
-    MON_DATA_PP2,
-    MON_DATA_PP3,
-    MON_DATA_PP4,
-    MON_DATA_PP_BONUSES,
     MON_DATA_COOL,
     MON_DATA_BEAUTY,
     MON_DATA_CUTE,
@@ -101,7 +96,7 @@ struct PokemonSubstruct0
     u16 species;
     u16 heldItem;
     u32 experience;
-    u8 ppBonuses;
+    u8 freedPpBonuses; // PP Up bonuses until PP was removed; free for per-mon data
     u8 friendship;
     u16 filler;
 };
@@ -109,7 +104,7 @@ struct PokemonSubstruct0
 struct PokemonSubstruct1
 {
     u16 moves[MAX_MON_MOVES];
-    u8 pp[MAX_MON_MOVES];
+    u8 freedPp[MAX_MON_MOVES]; // PP until it was removed; free for per-mon data
 };
 
 struct PokemonSubstruct2
@@ -278,20 +273,19 @@ struct BattlePokemon
     /*0x20*/ u8 ability;
     /*0x21*/ u8 types[2];
     /*0x23*/ u8 unknown;
-    /*0x24*/ u8 pp[MAX_MON_MOVES];
-    /*0x28*/ u16 hp;
-    /*0x2A*/ u8 level;
-    /*0x2B*/ u8 friendship;
-    /*0x2C*/ u16 maxHP;
-    /*0x2E*/ u16 item;
-    /*0x30*/ u8 nickname[POKEMON_NAME_LENGTH + 1];
-    /*0x3B*/ u8 ppBonuses;
-    /*0x3C*/ u8 otName[PLAYER_NAME_LENGTH + 1];
-    /*0x44*/ u32 experience;
-    /*0x48*/ u32 personality;
-    /*0x4C*/ u32 status1;
-    /*0x50*/ u32 status2;
-    /*0x54*/ u32 otId;
+    /*0x24*/ u16 hp;
+    /*0x26*/ u8 level;
+    /*0x27*/ u8 friendship;
+    /*0x28*/ u16 maxHP;
+    /*0x2A*/ u16 item;
+    /*0x2C*/ u8 nickname[POKEMON_NAME_LENGTH + 1];
+    /*0x37*/ u8 otName[PLAYER_NAME_LENGTH + 1];
+    /*0x3F*/ // 1 byte padding
+    /*0x40*/ u32 experience;
+    /*0x44*/ u32 personality;
+    /*0x48*/ u32 status1;
+    /*0x4C*/ u32 status2;
+    /*0x50*/ u32 otId;
 };
 
 struct SpeciesInfo
@@ -330,7 +324,6 @@ struct BattleMove
     u8 power;
     u8 type;
     u8 accuracy;
-    u8 pp;
     u8 tpCost; // Technical Points spent in battle each time the move is used (replaces PP in battle)
     u8 secondaryEffectChance;
     u8 target;
@@ -384,9 +377,6 @@ extern const struct SpeciesInfo gSpeciesInfo[];
 extern const u8 *const gItemEffectTable[];
 extern const u32 gExperienceTables[][MAX_LEVEL + 1];
 extern const u16 *const gLevelUpLearnsets[];
-extern const u8 gPPUpGetMask[];
-extern const u8 gPPUpClearMask[];
-extern const u8 gPPUpAddValues[];
 extern const u8 gStatStageRatios[MAX_STAT_STAGE + 1][2];
 extern const u16 gUnionRoomFacilityClasses[];
 extern const struct SpriteTemplate gBattlerSpriteTemplates[];
@@ -465,9 +455,6 @@ u8 GetSecretBaseTrainerClass(void);
 bool8 IsPlayerPartyAndPokemonStorageFull(void);
 bool8 IsPokemonStorageFull(void);
 void GetSpeciesName(u8 *name, u16 species);
-u8 CalculatePPWithBonus(u16 move, u8 ppBonuses, u8 moveIndex);
-void RemoveMonPPBonus(struct Pokemon *mon, u8 moveIndex);
-void RemoveBattleMonPPBonus(struct BattlePokemon *mon, u8 moveIndex);
 void CopyPlayerPartyMonToBattleData(u8 battler, u8 partyIndex);
 bool8 ExecuteTableBasedItemEffect(struct Pokemon *mon, u16 item, u8 partyIndex, u8 moveIndex);
 bool8 PokemonUseItemEffects(struct Pokemon *mon, u16 item, u8 partyIndex, u8 moveIndex, bool8 usedByAI);
@@ -522,8 +509,6 @@ s8 GetMonFlavorRelation(struct Pokemon *mon, u8 flavor);
 s8 GetFlavorRelationByPersonality(u32 personality, u8 flavor);
 bool8 IsTradedMon(struct Pokemon *mon);
 bool8 IsOtherTrainer(u32 otId, u8 *otName);
-void MonRestorePP(struct Pokemon *mon);
-void BoxMonRestorePP(struct BoxPokemon *boxMon);
 void SetMonPreventsSwitchingString(void);
 void SetWildMonHeldItem(void);
 bool8 IsMonShiny(struct Pokemon *mon);

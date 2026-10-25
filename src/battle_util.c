@@ -101,7 +101,7 @@ void HandleAction_UseMove(void)
     {
         gProtectStructs[gBattlerAttacker].noValidMoves = FALSE;
         gCurrentMove = gChosenMove = MOVE_STRUGGLE;
-        gHitMarker |= HITMARKER_NO_PPDEDUCT;
+        gHitMarker |= HITMARKER_NO_TPDEDUCT;
         *(gBattleStruct->moveTarget + gBattlerAttacker) = GetMoveTarget(MOVE_STRUGGLE, NO_TARGET_OVERRIDE);
     }
     else if (gBattleMons[gBattlerAttacker].status2 & STATUS2_MULTIPLETURNS || gBattleMons[gBattlerAttacker].status2 & STATUS2_RECHARGE)
@@ -649,7 +649,7 @@ void HandleAction_NothingIsFainted(void)
     gCurrentTurnActionNumber++;
     gCurrentActionFuncId = gActionsByTurnOrder[gCurrentTurnActionNumber];
     gHitMarker &= ~(HITMARKER_DESTINYBOND | HITMARKER_IGNORE_SUBSTITUTE | HITMARKER_ATTACKSTRING_PRINTED
-                    | HITMARKER_NO_PPDEDUCT | HITMARKER_STATUS_ABILITY_EFFECT | HITMARKER_IGNORE_ON_AIR
+                    | HITMARKER_NO_TPDEDUCT | HITMARKER_STATUS_ABILITY_EFFECT | HITMARKER_IGNORE_ON_AIR
                     | HITMARKER_IGNORE_UNDERGROUND | HITMARKER_IGNORE_UNDERWATER | HITMARKER_PASSIVE_HP_UPDATE
                     | HITMARKER_OBEYS | HITMARKER_WAKE_UP_CLEAR | HITMARKER_SYNCHRONIZE_EFFECT
                     | HITMARKER_CHARGING | HITMARKER_NEVER_SET);
@@ -662,7 +662,7 @@ void HandleAction_ActionFinished(void)
     gCurrentActionFuncId = gActionsByTurnOrder[gCurrentTurnActionNumber];
     SpecialStatusesClear();
     gHitMarker &= ~(HITMARKER_DESTINYBOND | HITMARKER_IGNORE_SUBSTITUTE | HITMARKER_ATTACKSTRING_PRINTED
-                    | HITMARKER_NO_PPDEDUCT | HITMARKER_STATUS_ABILITY_EFFECT | HITMARKER_IGNORE_ON_AIR
+                    | HITMARKER_NO_TPDEDUCT | HITMARKER_STATUS_ABILITY_EFFECT | HITMARKER_IGNORE_ON_AIR
                     | HITMARKER_IGNORE_UNDERGROUND | HITMARKER_IGNORE_UNDERWATER | HITMARKER_PASSIVE_HP_UPDATE
                     | HITMARKER_OBEYS | HITMARKER_WAKE_UP_CLEAR | HITMARKER_SYNCHRONIZE_EFFECT
                     | HITMARKER_CHARGING | HITMARKER_NEVER_SET);
@@ -737,94 +737,56 @@ u8 GetBattlerForBattleScript(u8 caseId)
     return ret;
 }
 
-void PressurePPLose(u8 target, u8 attacker, u16 move)
+// Pressure in TP terms: the attacker pays the move's TP cost once more for
+// each Pressure foe (PP is gone). SpendBattlerTP clamps at 0.
+static void PressureSpendTP(u8 attacker, u16 move, s32 pressureCount)
 {
-    int moveIndex;
+    s32 tpToSpend;
+    s32 i;
 
-    if (gBattleMons[target].ability != ABILITY_PRESSURE)
-        return;
-
-    for (moveIndex = 0; moveIndex < MAX_MON_MOVES; moveIndex++)
+    for (i = 0; i < MAX_MON_MOVES; i++)
     {
-        if (gBattleMons[attacker].moves[moveIndex] == move)
+        if (gBattleMons[attacker].moves[i] == move)
             break;
     }
-
-    if (moveIndex == MAX_MON_MOVES)
+    if (i == MAX_MON_MOVES || pressureCount == 0)
         return;
 
-    if (gBattleMons[attacker].pp[moveIndex] != 0)
-        gBattleMons[attacker].pp[moveIndex]--;
-
-    if (MOVE_IS_PERMANENT(attacker, moveIndex))
-    {
-        gActiveBattler = attacker;
-        BtlController_EmitSetMonData(B_COMM_TO_CONTROLLER, REQUEST_PPMOVE1_BATTLE + moveIndex, 0, 1, &gBattleMons[gActiveBattler].pp[moveIndex]);
-        MarkBattlerForControllerExec(gActiveBattler);
-    }
+    tpToSpend = GetMoveTPCost(move) * pressureCount;
+    if (tpToSpend > TP_MAX)
+        tpToSpend = TP_MAX;
+    SpendBattlerTP(attacker, tpToSpend);
 }
 
-void PressurePPLoseOnUsingImprison(u8 attacker)
+void PressureTPLose(u8 target, u8 attacker, u16 move)
 {
-    int i, j;
-    int imprisonPos = MAX_MON_MOVES;
+    if (gBattleMons[target].ability == ABILITY_PRESSURE)
+        PressureSpendTP(attacker, move, 1);
+}
+
+void PressureTPLoseOnUsingImprison(u8 attacker)
+{
+    s32 i, count = 0;
     u8 atkSide = GetBattlerSide(attacker);
 
     for (i = 0; i < gBattlersCount; i++)
     {
         if (atkSide != GetBattlerSide(i) && gBattleMons[i].ability == ABILITY_PRESSURE)
-        {
-            for (j = 0; j < MAX_MON_MOVES; j++)
-            {
-                if (gBattleMons[attacker].moves[j] == MOVE_IMPRISON)
-                    break;
-            }
-            if (j != MAX_MON_MOVES)
-            {
-                imprisonPos = j;
-                if (gBattleMons[attacker].pp[j] != 0)
-                    gBattleMons[attacker].pp[j]--;
-            }
-        }
+            count++;
     }
-
-    if (imprisonPos != MAX_MON_MOVES && MOVE_IS_PERMANENT(attacker, imprisonPos))
-    {
-        gActiveBattler = attacker;
-        BtlController_EmitSetMonData(B_COMM_TO_CONTROLLER, REQUEST_PPMOVE1_BATTLE + imprisonPos, 0, 1, &gBattleMons[gActiveBattler].pp[imprisonPos]);
-        MarkBattlerForControllerExec(gActiveBattler);
-    }
+    PressureSpendTP(attacker, MOVE_IMPRISON, count);
 }
 
-void PressurePPLoseOnUsingPerishSong(u8 attacker)
+void PressureTPLoseOnUsingPerishSong(u8 attacker)
 {
-    int i, j;
-    int perishSongPos = MAX_MON_MOVES;
+    s32 i, count = 0;
 
     for (i = 0; i < gBattlersCount; i++)
     {
         if (gBattleMons[i].ability == ABILITY_PRESSURE && i != attacker)
-        {
-            for (j = 0; j < MAX_MON_MOVES; j++)
-            {
-                if (gBattleMons[attacker].moves[j] == MOVE_PERISH_SONG)
-                    break;
-            }
-            if (j != MAX_MON_MOVES)
-            {
-                perishSongPos = j;
-                if (gBattleMons[attacker].pp[j] != 0)
-                    gBattleMons[attacker].pp[j]--;
-            }
-        }
+            count++;
     }
-
-    if (perishSongPos != MAX_MON_MOVES && MOVE_IS_PERMANENT(attacker, perishSongPos))
-    {
-        gActiveBattler = attacker;
-        BtlController_EmitSetMonData(B_COMM_TO_CONTROLLER, REQUEST_PPMOVE1_BATTLE + perishSongPos, 0, 1, &gBattleMons[gActiveBattler].pp[perishSongPos]);
-        MarkBattlerForControllerExec(gActiveBattler);
-    }
+    PressureSpendTP(attacker, MOVE_PERISH_SONG, count);
 }
 
 // See comments for MarkBattlerForControllerExec.
@@ -1071,7 +1033,7 @@ u8 TrySetCantSelectMoveBattleScript(void)
         }
         else
         {
-            gSelectionBattleScripts[gActiveBattler] = BattleScript_SelectingMoveWithNoPP;
+            gSelectionBattleScripts[gActiveBattler] = BattleScript_SelectingMoveWithNoTP;
             limitations++;
         }
     }
@@ -1098,7 +1060,7 @@ u8 CheckMoveLimitations(u8 battler, u8 unusableMoves, u8 check)
         if (gBattleMons[battler].moves[i] == MOVE_NONE && check & MOVE_LIMITATION_ZEROMOVE)
             unusableMoves |= gBitTable[i];
         // Not enough TP (replaces the PP check)
-        if (!CanBattlerAffordMoveSlot(battler, i) && check & MOVE_LIMITATION_PP)
+        if (!CanBattlerAffordMoveSlot(battler, i) && check & MOVE_LIMITATION_TP)
             unusableMoves |= gBitTable[i];
         // Disable
         if (gBattleMons[battler].moves[i] == gDisableStructs[battler].disabledMove && check & MOVE_LIMITATION_DISABLED)
@@ -1726,7 +1688,7 @@ u8 DoBattlerEndTurnEffects(void)
                         gDisableStructs[gActiveBattler].encoreTimer = 0;
                     }
                     else if (--gDisableStructs[gActiveBattler].encoreTimer == 0
-                     || gBattleMons[gActiveBattler].pp[gDisableStructs[gActiveBattler].encoredMovePos] == 0)
+                     || !CanBattlerAffordMoveSlot(gActiveBattler, gDisableStructs[gActiveBattler].encoredMovePos))
                     {
                         gDisableStructs[gActiveBattler].encoredMove = MOVE_NONE;
                         gDisableStructs[gActiveBattler].encoreTimer = 0;
@@ -2673,7 +2635,7 @@ u8 AbilityBattleEffects(u8 caseID, u8 battler, u8 ability, u8 special, u16 moveA
                 if (sSoundMovesTable[i] != SOUND_MOVES_END)
                 {
                     if (gBattleMons[gBattlerAttacker].status2 & STATUS2_MULTIPLETURNS)
-                        gHitMarker |= HITMARKER_NO_PPDEDUCT;
+                        gHitMarker |= HITMARKER_NO_TPDEDUCT;
                     gBattlescriptCurrInstr = BattleScript_SoundproofProtected;
                     effect = 1;
                 }
@@ -3225,7 +3187,6 @@ enum
     ITEM_NO_EFFECT,
     ITEM_STATUS_CHANGE,
     ITEM_EFFECT_OTHER,
-    ITEM_PP_CHANGE,
     ITEM_HP_CHANGE,
     ITEM_STATS_CHANGE,
 };
@@ -3264,7 +3225,6 @@ u8 ItemBattleEffects(u8 caseID, u8 battler, bool8 moveTurn)
 {
     int i = 0;
     u8 effect = ITEM_NO_EFFECT;
-    u8 changedPP = 0;
     u8 battlerHoldEffect, atkHoldEffect, UNUSED defHoldEffect;
     u8 battlerHoldEffectParam, atkHoldEffectParam, UNUSED defHoldEffectParam;
     u16 atkItem, defItem;
@@ -3350,42 +3310,8 @@ u8 ItemBattleEffects(u8 caseID, u8 battler, bool8 moveTurn)
                     effect = ITEM_HP_CHANGE;
                 }
                 break;
-            case HOLD_EFFECT_RESTORE_PP:
-                if (!moveTurn)
-                {
-                    struct Pokemon *mon;
-                    u8 ppBonuses;
-                    u16 move;
-
-                    if (GetBattlerSide(battler) == B_SIDE_PLAYER)
-                        mon = &gPlayerParty[gBattlerPartyIndexes[battler]];
-                    else
-                        mon = &gEnemyParty[gBattlerPartyIndexes[battler]];
-                    for (i = 0; i < MAX_MON_MOVES; i++)
-                    {
-                        move = GetMonData(mon, MON_DATA_MOVE1 + i);
-                        changedPP = GetMonData(mon, MON_DATA_PP1 + i);
-                        ppBonuses = GetMonData(mon, MON_DATA_PP_BONUSES);
-                        if (move && changedPP == 0)
-                            break;
-                    }
-                    if (i != MAX_MON_MOVES)
-                    {
-                        u8 maxPP = CalculatePPWithBonus(move, ppBonuses, i);
-                        if (changedPP + battlerHoldEffectParam > maxPP)
-                            changedPP = maxPP;
-                        else
-                            changedPP = changedPP + battlerHoldEffectParam;
-
-                        PREPARE_MOVE_BUFFER(gBattleTextBuff1, move);
-
-                        BattleScriptExecute(BattleScript_BerryPPHealEnd2);
-                        BtlController_EmitSetMonData(B_COMM_TO_CONTROLLER, i + REQUEST_PPMOVE1_BATTLE, 0, 1, &changedPP);
-                        MarkBattlerForControllerExec(gActiveBattler);
-                        effect = ITEM_PP_CHANGE;
-                    }
-                }
-                break;
+            // HOLD_EFFECT_RESTORE_PP (Leppa Berry) did nothing useful once PP was gone.
+            // TODO(TP): give it a TP restore if the design wants held TP items.
             case HOLD_EFFECT_RESTORE_STATS:
                 for (i = 0; i < NUM_BATTLE_STATS; i++)
                 {
@@ -3617,10 +3543,6 @@ u8 ItemBattleEffects(u8 caseID, u8 battler, bool8 moveTurn)
                 case ITEM_STATUS_CHANGE:
                     BtlController_EmitSetMonData(B_COMM_TO_CONTROLLER, REQUEST_STATUS_BATTLE, 0, 4, &gBattleMons[battler].status1);
                     MarkBattlerForControllerExec(gActiveBattler);
-                    break;
-                case ITEM_PP_CHANGE:
-                    if (MOVE_IS_PERMANENT(battler, i))
-                        gBattleMons[battler].pp[i] = changedPP;
                     break;
                 }
             }

@@ -163,23 +163,24 @@ static const u8 sRevivalHerbDesc[] = _(
     "fainted POKéMON.");
 
 static const u8 sEtherDesc[] = _(
-    "Restores the PP\n"
-    "of a selected move\n"
-    "by 10.");
+    "Restores 25 TP\n"
+    "to one POKéMON\n"
+    "in battle.");
 
 static const u8 sMaxEtherDesc[] = _(
-    "Fully restores the\n"
-    "PP of a selected\n"
-    "move.");
+    "Restores 50 TP\n"
+    "to one POKéMON\n"
+    "in battle.");
 
 static const u8 sElixirDesc[] = _(
-    "Restores the PP\n"
-    "of all moves by 10.");
+    "Restores 75 TP\n"
+    "to one POKéMON\n"
+    "in battle.");
 
 static const u8 sMaxElixirDesc[] = _(
     "Fully restores the\n"
-    "PP of a POKéMON's\n"
-    "moves.");
+    "TP of one POKéMON\n"
+    "in battle.");
 
 static const u8 sLavaCookieDesc[] = _(
     "A local specialty\n"
@@ -282,9 +283,8 @@ static const u8 sRareCandyDesc[] = _(
     "one.");
 
 static const u8 sPPUpDesc[] = _(
-    "Raises the maximum\n"
-    "PP of a selected\n"
-    "move.");
+    "An old tonic. It\n"
+    "has no use now.");
 
 static const u8 sZincDesc[] = _(
     "Raises the base\n"
@@ -292,9 +292,8 @@ static const u8 sZincDesc[] = _(
     "POKéMON.");
 
 static const u8 sPPMaxDesc[] = _(
-    "Raises the PP of a\n"
-    "move to its maximum\n"
-    "points.");
+    "An old tonic. It\n"
+    "has no use now.");
 
 // Battle items
 static const u8 sGuardSpecDesc[] = _(
@@ -523,9 +522,9 @@ static const u8 sAspearBerryDesc[] = _(
     "in battle.");
 
 static const u8 sLeppaBerryDesc[] = _(
-    "A hold item that\n"
-    "restores 10 PP in\n"
-    "battle.");
+    "Restores 10 TP\n"
+    "to one POKéMON\n"
+    "in battle.");
 
 static const u8 sOranBerryDesc[] = _(
     "A hold item that\n"

@@ -191,7 +191,7 @@ enum BattlerId
 #define HITMARKER_IGNORE_SUBSTITUTE     (1 << 8)
 #define HITMARKER_NO_ATTACKSTRING       (1 << 9)
 #define HITMARKER_ATTACKSTRING_PRINTED  (1 << 10)
-#define HITMARKER_NO_PPDEDUCT           (1 << 11)
+#define HITMARKER_NO_TPDEDUCT           (1 << 11)
 #define HITMARKER_SWAP_ATTACKER_TARGET  (1 << 12)
 #define HITMARKER_STATUS_ABILITY_EFFECT (1 << 13)
 #define HITMARKER_SYNCHRONIZE_EFFECT    (1 << 14)
@@ -203,7 +203,7 @@ enum BattlerId
 #define HITMARKER_PASSIVE_HP_UPDATE     (1 << 20)
 #define HITMARKER_DISOBEDIENT_MOVE      (1 << 21)
 #define HITMARKER_PLAYER_FAINTED        (1 << 22)
-#define HITMARKER_ALLOW_NO_PP           (1 << 23)
+#define HITMARKER_ALLOW_NO_TP           (1 << 23)
 #define HITMARKER_GRUDGE                (1 << 24)
 #define HITMARKER_OBEYS                 (1 << 25)
 #define HITMARKER_NEVER_SET             (1 << 26) // Cleared as part of a large group. Never set or checked
@@ -355,9 +355,9 @@ enum BattlerId
 #define B_WIN_MOVE_NAME_2         4 // Top right
 #define B_WIN_MOVE_NAME_3         5 // Bottom left
 #define B_WIN_MOVE_NAME_4         6 // Bottom right
-#define B_WIN_PP                  7 // "TP" label
+#define B_WIN_TP_LABEL                  7 // "TP" label
 #define B_WIN_TP_LEFT             8 // the mon's current TP
-#define B_WIN_PP_REMAINING        9 // TP cost of the selected move
+#define B_WIN_TP_COST        9 // TP cost of the selected move
 #define B_WIN_MOVE_TYPE          10
 #define B_WIN_SWITCH_PROMPT      11 // "Switch which?"
 #define B_WIN_YESNO              12

@@ -579,7 +579,7 @@ static void BattleAI_DoAIProcessing(void)
                 break;
             case AIState_SettingUp:
                 gAIScriptPtr = gBattleAI_ScriptsTable[AI_THINKING_STRUCT->aiLogicId]; // set AI ptr to logic ID.
-                if (gBattleMons[sBattler_AI].pp[AI_THINKING_STRUCT->movesetIndex] == 0)
+                if (!CanBattlerAffordMoveSlot(sBattler_AI, AI_THINKING_STRUCT->movesetIndex))
                 {
                     AI_THINKING_STRUCT->moveConsidered = 0;
                 }

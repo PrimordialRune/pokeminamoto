@@ -932,15 +932,15 @@ static void Cmd_attackcanceler(void)
         return;
     if (AbilityBattleEffects(ABILITYEFFECT_MOVES_BLOCK, gBattlerTarget, 0, 0, 0))
         return;
-    if (!CanBattlerAffordMoveSlot(gBattlerAttacker, gCurrMovePos) && gCurrentMove != MOVE_STRUGGLE && !(gHitMarker & (HITMARKER_ALLOW_NO_PP | HITMARKER_NO_ATTACKSTRING))
+    if (!CanBattlerAffordMoveSlot(gBattlerAttacker, gCurrMovePos) && gCurrentMove != MOVE_STRUGGLE && !(gHitMarker & (HITMARKER_ALLOW_NO_TP | HITMARKER_NO_ATTACKSTRING))
      && !(gBattleMons[gBattlerAttacker].status2 & STATUS2_MULTIPLETURNS))
     {
-        gBattlescriptCurrInstr = BattleScript_NoPPForMove;
+        gBattlescriptCurrInstr = BattleScript_NoTPForMove;
         gMoveResultFlags |= MOVE_RESULT_MISSED;
         return;
     }
 
-    gHitMarker &= ~HITMARKER_ALLOW_NO_PP;
+    gHitMarker &= ~HITMARKER_ALLOW_NO_TP;
 
     if (!(gHitMarker & HITMARKER_OBEYS) && !(gBattleMons[gBattlerAttacker].status2 & STATUS2_MULTIPLETURNS))
     {
@@ -962,7 +962,7 @@ static void Cmd_attackcanceler(void)
 
     if (gProtectStructs[gBattlerTarget].bounceMove && gBattleMoves[gCurrentMove].flags & FLAG_MAGIC_COAT_AFFECTED)
     {
-        PressurePPLose(gBattlerAttacker, gBattlerTarget, MOVE_MAGIC_COAT);
+        PressureTPLose(gBattlerAttacker, gBattlerTarget, MOVE_MAGIC_COAT);
         gProtectStructs[gBattlerTarget].bounceMove = FALSE;
         BattleScriptPushCursor();
         gBattlescriptCurrInstr = BattleScript_MagicCoatBounce;
@@ -973,7 +973,7 @@ static void Cmd_attackcanceler(void)
     {
         if ((gProtectStructs[gBattlerByTurnOrder[i]].stealMove) && gBattleMoves[gCurrentMove].flags & FLAG_SNATCH_AFFECTED)
         {
-            PressurePPLose(gBattlerAttacker, gBattlerByTurnOrder[i], MOVE_SNATCH);
+            PressureTPLose(gBattlerAttacker, gBattlerByTurnOrder[i], MOVE_SNATCH);
             gProtectStructs[gBattlerByTurnOrder[i]].stealMove = FALSE;
             gBattleScripting.battler = gBattlerByTurnOrder[i];
             BattleScriptPushCursor();
@@ -1230,7 +1230,7 @@ static void Cmd_ppreduce(void)
 
     // TP replaces PP: the move in the chosen slot costs its tpCost, once more for each Pressure foe.
     // PP is no longer spent in battle.
-    if (!(gHitMarker & (HITMARKER_NO_PPDEDUCT | HITMARKER_NO_ATTACKSTRING)) && gCurrentMove != MOVE_STRUGGLE)
+    if (!(gHitMarker & (HITMARKER_NO_TPDEDUCT | HITMARKER_NO_ATTACKSTRING)) && gCurrentMove != MOVE_STRUGGLE)
     {
         s32 tpToSpend = GetMoveTPCost(gBattleMons[gBattlerAttacker].moves[gCurrMovePos]) * ppToDeduct;
 
@@ -1240,7 +1240,7 @@ static void Cmd_ppreduce(void)
         SpendBattlerTP(gBattlerAttacker, tpToSpend);
     }
 
-    gHitMarker &= ~HITMARKER_NO_PPDEDUCT;
+    gHitMarker &= ~HITMARKER_NO_TPDEDUCT;
     gBattlescriptCurrInstr++;
 }
 
@@ -3018,23 +3018,8 @@ static void Cmd_tryfaintmon(void)
                 gBattleMoveDamage = gBattleMons[battler].hp;
                 gBattlescriptCurrInstr = BattleScript_DestinyBondTakesLife;
             }
-            if ((gStatuses3[gBattlerTarget] & STATUS3_GRUDGE)
-             && !(gHitMarker & HITMARKER_GRUDGE)
-             && GetBattlerSide(gBattlerAttacker) != GetBattlerSide(gBattlerTarget)
-             && gBattleMons[gBattlerAttacker].hp != 0
-             && gCurrentMove != MOVE_STRUGGLE)
-            {
-                u8 moveIndex = *(gBattleStruct->chosenMovePositions + gBattlerAttacker);
-
-                gBattleMons[gBattlerAttacker].pp[moveIndex] = 0;
-                BattleScriptPush(gBattlescriptCurrInstr);
-                gBattlescriptCurrInstr = BattleScript_GrudgeTakesPp;
-                gActiveBattler = gBattlerAttacker;
-                BtlController_EmitSetMonData(B_COMM_TO_CONTROLLER, moveIndex + REQUEST_PPMOVE1_BATTLE, 0, sizeof(gBattleMons[gActiveBattler].pp[moveIndex]), &gBattleMons[gActiveBattler].pp[moveIndex]);
-                MarkBattlerForControllerExec(gActiveBattler);
-
-                PREPARE_MOVE_BUFFER(gBattleTextBuff1, gBattleMons[gBattlerAttacker].moves[moveIndex])
-            }
+            // Grudge emptied the PP of the move that fainted its user. PP is gone and the
+            // design docs give Grudge no TP effect, so the status no longer does anything.
         }
         else
         {
@@ -5470,19 +5455,16 @@ static void Cmd_yesnoboxlearnmove(void)
 
                     PREPARE_MOVE_BUFFER(gBattleTextBuff2, move)
 
-                    RemoveMonPPBonus(&gPlayerParty[gBattleStruct->expGetterMonId], movePosition);
                     SetMonMoveSlot(&gPlayerParty[gBattleStruct->expGetterMonId], gMoveToLearn, movePosition);
 
                     if (gBattlerPartyIndexes[0] == gBattleStruct->expGetterMonId && MOVE_IS_PERMANENT(0, movePosition))
                     {
-                        RemoveBattleMonPPBonus(&gBattleMons[0], movePosition);
                         SetBattleMonMoveSlot(&gBattleMons[0], gMoveToLearn, movePosition);
                     }
                     if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE
                         && gBattlerPartyIndexes[2] == gBattleStruct->expGetterMonId
                         && MOVE_IS_PERMANENT(2, movePosition))
                     {
-                        RemoveBattleMonPPBonus(&gBattleMons[2], movePosition);
                         SetBattleMonMoveSlot(&gBattleMons[2], gMoveToLearn, movePosition);
                     }
                 }
@@ -5658,7 +5640,6 @@ static void Cmd_updatebattlermoves(void)
             for (i = 0; i < MAX_MON_MOVES; i++)
             {
                 gBattleMons[gActiveBattler].moves[i] = bufferPoke->moves[i];
-                gBattleMons[gActiveBattler].pp[i] = bufferPoke->pp[i];
             }
             gBattlescriptCurrInstr += 2;
          }
@@ -7781,16 +7762,10 @@ static void Cmd_transformdataexecution(void)
         battleMonAttacker = (u8 *)(&gBattleMons[gBattlerAttacker]);
         battleMonTarget = (u8 *)(&gBattleMons[gBattlerTarget]);
 
-        for (i = 0; i < offsetof(struct BattlePokemon, pp); i++)
+        // Copies species through types (everything before hp). Transformed moves
+        // cost TP like any other move, so there is no PP to set.
+        for (i = 0; i < offsetof(struct BattlePokemon, hp); i++)
             battleMonAttacker[i] = battleMonTarget[i];
-
-        for (i = 0; i < MAX_MON_MOVES; i++)
-        {
-            if (gBattleMoves[gBattleMons[gBattlerAttacker].moves[i]].pp < 5)
-                gBattleMons[gBattlerAttacker].pp[i] = gBattleMoves[gBattleMons[gBattlerAttacker].moves[i]].pp;
-            else
-                gBattleMons[gBattlerAttacker].pp[i] = 5;
-        }
 
         gActiveBattler = gBattlerAttacker;
         BtlController_EmitResetActionMoveSelection(B_COMM_TO_CONTROLLER, RESET_MOVE_SELECTION);
@@ -7859,10 +7834,6 @@ static void Cmd_mimicattackcopy(void)
         if (i == MAX_MON_MOVES)
         {
             gBattleMons[gBattlerAttacker].moves[gCurrMovePos] = gLastMoves[gBattlerTarget];
-            if (gBattleMoves[gLastMoves[gBattlerTarget]].pp < 5)
-                gBattleMons[gBattlerAttacker].pp[gCurrMovePos] = gBattleMoves[gLastMoves[gBattlerTarget]].pp;
-            else
-                gBattleMons[gBattlerAttacker].pp[gCurrMovePos] = 5;
 
             PREPARE_MOVE_BUFFER(gBattleTextBuff1, gLastMoves[gBattlerTarget])
 
@@ -7993,7 +7964,7 @@ static void Cmd_disablelastusedattack(void)
             break;
     }
     if (gDisableStructs[gBattlerTarget].disabledMove == MOVE_NONE
-        && i != MAX_MON_MOVES && gBattleMons[gBattlerTarget].pp[i] != 0)
+        && i != MAX_MON_MOVES)
     {
         PREPARE_MOVE_BUFFER(gBattleTextBuff1, gBattleMons[gBattlerTarget].moves[i])
 
@@ -8026,7 +7997,7 @@ static void Cmd_trysetencore(void)
     }
 
     if (gDisableStructs[gBattlerTarget].encoredMove == MOVE_NONE
-        && i != MAX_MON_MOVES && gBattleMons[gBattlerTarget].pp[i] != 0)
+        && i != MAX_MON_MOVES && CanBattlerAffordMoveSlot(gBattlerTarget, i))
     {
         gDisableStructs[gBattlerTarget].encoredMove = gBattleMons[gBattlerTarget].moves[i];
         gDisableStructs[gBattlerTarget].encoredMovePos = i;
@@ -8160,20 +8131,10 @@ static void Cmd_copymovepermanently(void)
         }
         else // sketch worked
         {
-            struct MovePpInfo movePpData;
-
             gBattleMons[gBattlerAttacker].moves[gCurrMovePos] = gLastPrintedMoves[gBattlerTarget];
-            gBattleMons[gBattlerAttacker].pp[gCurrMovePos] = gBattleMoves[gLastPrintedMoves[gBattlerTarget]].pp;
             gActiveBattler = gBattlerAttacker;
 
-            for (i = 0; i < MAX_MON_MOVES; i++)
-            {
-                movePpData.moves[i] = gBattleMons[gBattlerAttacker].moves[i];
-                movePpData.pp[i] = gBattleMons[gBattlerAttacker].pp[i];
-            }
-            movePpData.ppBonuses = gBattleMons[gBattlerAttacker].ppBonuses;
-
-            BtlController_EmitSetMonData(B_COMM_TO_CONTROLLER, REQUEST_MOVES_PP_BATTLE, 0, sizeof(movePpData), &movePpData);
+            BtlController_EmitSetMonData(B_COMM_TO_CONTROLLER, REQUEST_MOVES_BATTLE, 0, sizeof(gBattleMons[gActiveBattler].moves), gBattleMons[gActiveBattler].moves);
             MarkBattlerForControllerExec(gActiveBattler);
 
             PREPARE_MOVE_BUFFER(gBattleTextBuff1, gLastPrintedMoves[gBattlerTarget])
@@ -8248,7 +8209,7 @@ static void Cmd_trychoosesleeptalkmove(void)
         }
     }
 
-    unusableMovesBits = CheckMoveLimitations(gBattlerAttacker, unusableMovesBits, ~MOVE_LIMITATION_PP);
+    unusableMovesBits = CheckMoveLimitations(gBattlerAttacker, unusableMovesBits, ~MOVE_LIMITATION_TP);
     if (unusableMovesBits == ALL_MOVES_MASK) // all 4 moves cannot be chosen
     {
         gBattlescriptCurrInstr += 5;
@@ -8309,56 +8270,11 @@ static void Cmd_remaininghptopower(void)
     gBattlescriptCurrInstr++;
 }
 
+// Spite cut the PP of the target's last move. PP is gone and the design docs
+// give Spite no TP effect, so the move always fails.
 static void Cmd_tryspiteppreduce(void)
 {
-    if (gLastMoves[gBattlerTarget] != MOVE_NONE
-     && gLastMoves[gBattlerTarget] != MOVE_UNAVAILABLE)
-    {
-        s32 i;
-
-        for (i = 0; i < MAX_MON_MOVES; i++)
-        {
-            if (gLastMoves[gBattlerTarget] == gBattleMons[gBattlerTarget].moves[i])
-                break;
-        }
-
-        if (i != MAX_MON_MOVES && gBattleMons[gBattlerTarget].pp[i] > 1)
-        {
-            s32 ppToDeduct = (Random() & 3) + 2;
-            if (gBattleMons[gBattlerTarget].pp[i] < ppToDeduct)
-                ppToDeduct = gBattleMons[gBattlerTarget].pp[i];
-
-            PREPARE_MOVE_BUFFER(gBattleTextBuff1, gLastMoves[gBattlerTarget])
-
-            ConvertIntToDecimalStringN(gBattleTextBuff2, ppToDeduct, STR_CONV_MODE_LEFT_ALIGN, 1);
-
-            PREPARE_BYTE_NUMBER_BUFFER(gBattleTextBuff2, 1, ppToDeduct)
-
-            gBattleMons[gBattlerTarget].pp[i] -= ppToDeduct;
-            gActiveBattler = gBattlerTarget;
-
-            // if (MOVE_IS_PERMANENT(gActiveBattler, i)), but backwards
-            if (!(gDisableStructs[gActiveBattler].mimickedMoves & gBitTable[i])
-                && !(gBattleMons[gActiveBattler].status2 & STATUS2_TRANSFORMED))
-            {
-                BtlController_EmitSetMonData(B_COMM_TO_CONTROLLER, REQUEST_PPMOVE1_BATTLE + i, 0, sizeof(gBattleMons[gActiveBattler].pp[i]), &gBattleMons[gActiveBattler].pp[i]);
-                MarkBattlerForControllerExec(gActiveBattler);
-            }
-
-            gBattlescriptCurrInstr += 5;
-
-            if (gBattleMons[gBattlerTarget].pp[i] == 0)
-                CancelMultiTurnMoves(gBattlerTarget);
-        }
-        else
-        {
-            gBattlescriptCurrInstr = T1_READ_PTR(gBattlescriptCurrInstr + 1);
-        }
-    }
-    else
-    {
-        gBattlescriptCurrInstr = T1_READ_PTR(gBattlescriptCurrInstr + 1);
-    }
+    gBattlescriptCurrInstr = T1_READ_PTR(gBattlescriptCurrInstr + 1);
 }
 
 static void Cmd_healpartystatus(void)
@@ -8519,7 +8435,7 @@ static void Cmd_trysetperishsong(void)
         }
     }
 
-    PressurePPLoseOnUsingPerishSong(gBattlerAttacker);
+    PressureTPLoseOnUsingPerishSong(gBattlerAttacker);
 
     if (notAffectedCount == gBattlersCount)
         gBattlescriptCurrInstr = T1_READ_PTR(gBattlescriptCurrInstr + 1);
@@ -9414,7 +9330,7 @@ static void Cmd_tryimprison(void)
         u8 battler, sideAttacker;
 
         sideAttacker = GetBattlerSide(gBattlerAttacker);
-        PressurePPLoseOnUsingImprison(gBattlerAttacker);
+        PressureTPLoseOnUsingImprison(gBattlerAttacker);
         for (battler = 0; battler < gBattlersCount; battler++)
         {
             if (sideAttacker != GetBattlerSide(battler))

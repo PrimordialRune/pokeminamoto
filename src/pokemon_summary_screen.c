@@ -103,7 +103,7 @@ enum {
 
 // Dynamic fields for the Battle Moves and Contest Moves pages.
 #define PSS_DATA_WINDOW_MOVE_NAMES 0
-#define PSS_DATA_WINDOW_MOVE_PP 1
+#define PSS_DATA_WINDOW_MOVE_TP 1
 #define PSS_DATA_WINDOW_MOVE_DESCRIPTION 2
 
 #define MOVE_SELECTOR_SPRITES_COUNT 10
@@ -149,7 +149,6 @@ static EWRAM_DATA struct PokemonSummaryScreenData
         u32 pid; // 0xC
         u32 exp; // 0x10
         u16 moves[MAX_MON_MOVES]; // 0x14
-        u8 pp[MAX_MON_MOVES]; // 0x1C
         u16 currentHP; // 0x20
         u16 maxHP; // 0x22
         u16 atk; // 0x24
@@ -161,7 +160,6 @@ static EWRAM_DATA struct PokemonSummaryScreenData
         u16 friendship; // 0x30
         u8 OTGender; // 0x32
         u8 nature; // 0x33
-        u8 ppBonuses; // 0x34
         u8 sanity; // 0x35
         u8 OTName[17]; // 0x36
         u32 OTID; // 0x48
@@ -278,14 +276,14 @@ static void PrintRightColumnStats(void);
 static void PrintExpPointsNextLevel(void);
 static void PrintBattleMoves(void);
 static void Task_PrintBattleMoves(u8);
-static void PrintMoveNameAndPP(u8);
+static void PrintMoveNameAndTP(u8);
 static void PrintContestMoves(void);
 static void Task_PrintContestMoves(u8);
 static void PrintContestMoveDescription(u8);
 static void PrintMoveDetails(u16);
 static void PrintNewMoveDetailsOrCancelText(void);
 static void AddAndFillMoveNamesWindow(void);
-static void SwapMovesNamesPP(u8, u8);
+static void SwapMovesNamesTP(u8, u8);
 static void PrintHMMovesCantBeForgotten(void);
 static void ResetSpriteIds(void);
 static void SetSpriteInvisibility(u8, bool8);
@@ -686,7 +684,7 @@ static const struct WindowTemplate sPageMovesTemplate[] = // This is used for bo
         .paletteNum = 6,
         .baseBlock = 449,
     },
-    [PSS_DATA_WINDOW_MOVE_PP] = {
+    [PSS_DATA_WINDOW_MOVE_TP] = {
         .bg = 0,
         .tilemapLeft = 24,
         .tilemapTop = 4,
@@ -747,7 +745,8 @@ static const u8 sMemoNatureTextColor[] = _("{COLOR LIGHT_RED}{SHADOW GREEN}");
 static const u8 sMemoMiscTextColor[] = _("{COLOR WHITE}{SHADOW DARK_GRAY}"); // This is also affected by palettes, apparently
 static const u8 sStatsLeftColumnLayout[] = _("{DYNAMIC 0}/{DYNAMIC 1}\n{DYNAMIC 2}\n{DYNAMIC 3}");
 static const u8 sStatsRightColumnLayout[] = _("{DYNAMIC 0}\n{DYNAMIC 1}\n{DYNAMIC 2}");
-static const u8 sMovesPPLayout[] = _("{PP}{DYNAMIC 0}/{DYNAMIC 1}");
+// A move's TP cost (TP replaced PP, so there is nothing left to count down)
+static const u8 sMovesTPLayout[] = _("TP{DYNAMIC 0}");
 
 #define TAG_MOVE_SELECTOR 30000
 #define TAG_MON_STATUS 30001
@@ -1424,9 +1423,7 @@ static bool8 ExtractMonDataToSummaryStruct(struct Pokemon *mon)
         for (i = 0; i < MAX_MON_MOVES; i++)
         {
             sum->moves[i] = GetMonData(mon, MON_DATA_MOVE1+i);
-            sum->pp[i] = GetMonData(mon, MON_DATA_PP1+i);
         }
-        sum->ppBonuses = GetMonData(mon, MON_DATA_PP_BONUSES);
         break;
     case 2:
         if (sMonSummaryScreen->monList.mons == gPlayerParty || sMonSummaryScreen->mode == SUMMARY_MODE_BOX || sMonSummaryScreen->handleDeoxys == TRUE)
@@ -2099,7 +2096,7 @@ static void ExitMovePositionSwitchMode(u8 taskId, bool8 swapMoves)
             SwapBoxMonMoves(&boxMon[sMonSummaryScreen->curMonIndex], sMonSummaryScreen->firstMoveIndex, sMonSummaryScreen->secondMoveIndex);
         }
         CopyMonToSummaryStruct(&sMonSummaryScreen->currentMon);
-        SwapMovesNamesPP(sMonSummaryScreen->firstMoveIndex, sMonSummaryScreen->secondMoveIndex);
+        SwapMovesNamesTP(sMonSummaryScreen->firstMoveIndex, sMonSummaryScreen->secondMoveIndex);
         SwapMovesTypeSprites(sMonSummaryScreen->firstMoveIndex, sMonSummaryScreen->secondMoveIndex);
         sMonSummaryScreen->firstMoveIndex = sMonSummaryScreen->secondMoveIndex;
     }
@@ -2118,33 +2115,13 @@ static void SwapMonMoves(struct Pokemon *mon, u8 moveIndex1, u8 moveIndex2)
 
     u16 move1 = summary->moves[moveIndex1];
     u16 move2 = summary->moves[moveIndex2];
-    u8 move1pp = summary->pp[moveIndex1];
-    u8 move2pp = summary->pp[moveIndex2];
-    u8 ppBonuses = summary->ppBonuses;
-
-    // Calculate PP bonuses
-    u8 ppUpMask1 = gPPUpGetMask[moveIndex1];
-    u8 ppBonusMove1 = (ppBonuses & ppUpMask1) >> (moveIndex1 * 2);
-    u8 ppUpMask2 = gPPUpGetMask[moveIndex2];
-    u8 ppBonusMove2 = (ppBonuses & ppUpMask2) >> (moveIndex2 * 2);
-    ppBonuses &= ~ppUpMask1;
-    ppBonuses &= ~ppUpMask2;
-    ppBonuses |= (ppBonusMove1 << (moveIndex2 * 2)) + (ppBonusMove2 << (moveIndex1 * 2));
 
     // Swap the moves
     SetMonData(mon, MON_DATA_MOVE1 + moveIndex1, &move2);
     SetMonData(mon, MON_DATA_MOVE1 + moveIndex2, &move1);
-    SetMonData(mon, MON_DATA_PP1 + moveIndex1, &move2pp);
-    SetMonData(mon, MON_DATA_PP1 + moveIndex2, &move1pp);
-    SetMonData(mon, MON_DATA_PP_BONUSES, &ppBonuses);
 
     summary->moves[moveIndex1] = move2;
     summary->moves[moveIndex2] = move1;
-
-    summary->pp[moveIndex1] = move2pp;
-    summary->pp[moveIndex2] = move1pp;
-
-    summary->ppBonuses = ppBonuses;
 }
 
 static void SwapBoxMonMoves(struct BoxPokemon *mon, u8 moveIndex1, u8 moveIndex2)
@@ -2153,33 +2130,13 @@ static void SwapBoxMonMoves(struct BoxPokemon *mon, u8 moveIndex1, u8 moveIndex2
 
     u16 move1 = summary->moves[moveIndex1];
     u16 move2 = summary->moves[moveIndex2];
-    u8 move1pp = summary->pp[moveIndex1];
-    u8 move2pp = summary->pp[moveIndex2];
-    u8 ppBonuses = summary->ppBonuses;
-
-    // Calculate PP bonuses
-    u8 ppUpMask1 = gPPUpGetMask[moveIndex1];
-    u8 ppBonusMove1 = (ppBonuses & ppUpMask1) >> (moveIndex1 * 2);
-    u8 ppUpMask2 = gPPUpGetMask[moveIndex2];
-    u8 ppBonusMove2 = (ppBonuses & ppUpMask2) >> (moveIndex2 * 2);
-    ppBonuses &= ~ppUpMask1;
-    ppBonuses &= ~ppUpMask2;
-    ppBonuses |= (ppBonusMove1 << (moveIndex2 * 2)) + (ppBonusMove2 << (moveIndex1 * 2));
 
     // Swap the moves
     SetBoxMonData(mon, MON_DATA_MOVE1 + moveIndex1, &move2);
     SetBoxMonData(mon, MON_DATA_MOVE1 + moveIndex2, &move1);
-    SetBoxMonData(mon, MON_DATA_PP1 + moveIndex1, &move2pp);
-    SetBoxMonData(mon, MON_DATA_PP1 + moveIndex2, &move1pp);
-    SetBoxMonData(mon, MON_DATA_PP_BONUSES, &ppBonuses);
 
     summary->moves[moveIndex1] = move2;
     summary->moves[moveIndex2] = move1;
-
-    summary->pp[moveIndex1] = move2pp;
-    summary->pp[moveIndex2] = move1pp;
-
-    summary->ppBonuses = ppBonuses;
 }
 
 static void Task_SetHandleReplaceMoveInput(u8 taskId)
@@ -3459,10 +3416,10 @@ static void PrintExpPointsNextLevel(void)
 
 static void PrintBattleMoves(void)
 {
-    PrintMoveNameAndPP(0);
-    PrintMoveNameAndPP(1);
-    PrintMoveNameAndPP(2);
-    PrintMoveNameAndPP(3);
+    PrintMoveNameAndTP(0);
+    PrintMoveNameAndTP(1);
+    PrintMoveNameAndTP(2);
+    PrintMoveNameAndTP(3);
 
     if (sMonSummaryScreen->mode == SUMMARY_MODE_SELECT_MOVE)
     {
@@ -3486,16 +3443,16 @@ static void Task_PrintBattleMoves(u8 taskId)
     switch (data[0])
     {
     case 1:
-        PrintMoveNameAndPP(0);
+        PrintMoveNameAndTP(0);
         break;
     case 2:
-        PrintMoveNameAndPP(1);
+        PrintMoveNameAndTP(1);
         break;
     case 3:
-        PrintMoveNameAndPP(2);
+        PrintMoveNameAndTP(2);
         break;
     case 4:
-        PrintMoveNameAndPP(3);
+        PrintMoveNameAndTP(3);
         break;
     case 5:
         if (sMonSummaryScreen->mode == SUMMARY_MODE_SELECT_MOVE)
@@ -3524,39 +3481,35 @@ static void Task_PrintBattleMoves(u8 taskId)
     data[0]++;
 }
 
-static void PrintMoveNameAndPP(u8 moveIndex)
+static void PrintMoveNameAndTP(u8 moveIndex)
 {
-    u8 pp;
-    int ppState, x;
+    int tpState, x;
     const u8 *text;
     struct PokeSummary *summary = &sMonSummaryScreen->summary;
     u8 moveNameWindowId = AddWindowFromTemplateList(sPageMovesTemplate, PSS_DATA_WINDOW_MOVE_NAMES);
-    u8 ppValueWindowId = AddWindowFromTemplateList(sPageMovesTemplate, PSS_DATA_WINDOW_MOVE_PP);
+    u8 tpValueWindowId = AddWindowFromTemplateList(sPageMovesTemplate, PSS_DATA_WINDOW_MOVE_TP);
     u16 move = summary->moves[moveIndex];
 
     if (move != 0)
     {
-        pp = CalculatePPWithBonus(move, summary->ppBonuses, moveIndex);
         PrintTextOnWindow(moveNameWindowId, gMoveNames[move], 0, moveIndex * 16 + 1, 0, 1);
-        ConvertIntToDecimalStringN(gStringVar1, summary->pp[moveIndex], STR_CONV_MODE_RIGHT_ALIGN, 2);
-        ConvertIntToDecimalStringN(gStringVar2, pp, STR_CONV_MODE_RIGHT_ALIGN, 2);
+        ConvertIntToDecimalStringN(gStringVar1, GetMoveTPCost(move), STR_CONV_MODE_RIGHT_ALIGN, 3);
         DynamicPlaceholderTextUtil_Reset();
         DynamicPlaceholderTextUtil_SetPlaceholderPtr(0, gStringVar1);
-        DynamicPlaceholderTextUtil_SetPlaceholderPtr(1, gStringVar2);
-        DynamicPlaceholderTextUtil_ExpandPlaceholders(gStringVar4, sMovesPPLayout);
+        DynamicPlaceholderTextUtil_ExpandPlaceholders(gStringVar4, sMovesTPLayout);
         text = gStringVar4;
-        ppState = GetCurrentPpToMaxPpState(summary->pp[moveIndex], pp) + 9;
+        tpState = 12;
         x = GetStringRightAlignXOffset(FONT_NORMAL, text, 44);
     }
     else
     {
         PrintTextOnWindow(moveNameWindowId, gText_OneDash, 0, moveIndex * 16 + 1, 0, 1);
         text = gText_TwoDashes;
-        ppState = 12;
+        tpState = 12;
         x = GetStringCenterAlignXOffset(FONT_NORMAL, text, 44);
     }
 
-    PrintTextOnWindow(ppValueWindowId, text, x, moveIndex * 16 + 1, 0, ppState);
+    PrintTextOnWindow(tpValueWindowId, text, x, moveIndex * 16 + 1, 0, tpState);
 }
 
 static void PrintMovePowerAndAccuracy(u16 moveIndex)
@@ -3594,10 +3547,10 @@ static void PrintMovePowerAndAccuracy(u16 moveIndex)
 
 static void PrintContestMoves(void)
 {
-    PrintMoveNameAndPP(0);
-    PrintMoveNameAndPP(1);
-    PrintMoveNameAndPP(2);
-    PrintMoveNameAndPP(3);
+    PrintMoveNameAndTP(0);
+    PrintMoveNameAndTP(1);
+    PrintMoveNameAndTP(2);
+    PrintMoveNameAndTP(3);
 
     if (sMonSummaryScreen->mode == SUMMARY_MODE_SELECT_MOVE)
     {
@@ -3613,16 +3566,16 @@ static void Task_PrintContestMoves(u8 taskId)
     switch (data[0])
     {
     case 1:
-        PrintMoveNameAndPP(0);
+        PrintMoveNameAndTP(0);
         break;
     case 2:
-        PrintMoveNameAndPP(1);
+        PrintMoveNameAndTP(1);
         break;
     case 3:
-        PrintMoveNameAndPP(2);
+        PrintMoveNameAndTP(2);
         break;
     case 4:
-        PrintMoveNameAndPP(3);
+        PrintMoveNameAndTP(3);
         break;
     case 5:
         if (sMonSummaryScreen->mode == SUMMARY_MODE_SELECT_MOVE)
@@ -3686,7 +3639,7 @@ static void PrintMoveDetails(u16 move)
 static void PrintNewMoveDetailsOrCancelText(void)
 {
     u8 windowId1 = AddWindowFromTemplateList(sPageMovesTemplate, PSS_DATA_WINDOW_MOVE_NAMES);
-    u8 windowId2 = AddWindowFromTemplateList(sPageMovesTemplate, PSS_DATA_WINDOW_MOVE_PP);
+    u8 windowId2 = AddWindowFromTemplateList(sPageMovesTemplate, PSS_DATA_WINDOW_MOVE_TP);
 
     if (sMonSummaryScreen->newMove == MOVE_NONE)
     {
@@ -3701,11 +3654,10 @@ static void PrintNewMoveDetailsOrCancelText(void)
         else
             PrintTextOnWindow(windowId1, gMoveNames[move], 0, 65, 0, 5);
 
-        ConvertIntToDecimalStringN(gStringVar1, gBattleMoves[move].pp, STR_CONV_MODE_RIGHT_ALIGN, 2);
+        ConvertIntToDecimalStringN(gStringVar1, GetMoveTPCost(move), STR_CONV_MODE_RIGHT_ALIGN, 3);
         DynamicPlaceholderTextUtil_Reset();
         DynamicPlaceholderTextUtil_SetPlaceholderPtr(0, gStringVar1);
-        DynamicPlaceholderTextUtil_SetPlaceholderPtr(1, gStringVar1);
-        DynamicPlaceholderTextUtil_ExpandPlaceholders(gStringVar4, sMovesPPLayout);
+        DynamicPlaceholderTextUtil_ExpandPlaceholders(gStringVar4, sMovesTPLayout);
         PrintTextOnWindow(windowId2, gStringVar4, GetStringRightAlignXOffset(FONT_NORMAL, gStringVar4, 44), 65, 0, 12);
     }
 }
@@ -3717,10 +3669,10 @@ static void AddAndFillMoveNamesWindow(void)
     CopyWindowToVram(windowId, COPYWIN_GFX);
 }
 
-static void SwapMovesNamesPP(u8 moveIndex1, u8 moveIndex2)
+static void SwapMovesNamesTP(u8 moveIndex1, u8 moveIndex2)
 {
     u8 windowId1 = AddWindowFromTemplateList(sPageMovesTemplate, PSS_DATA_WINDOW_MOVE_NAMES);
-    u8 windowId2 = AddWindowFromTemplateList(sPageMovesTemplate, PSS_DATA_WINDOW_MOVE_PP);
+    u8 windowId2 = AddWindowFromTemplateList(sPageMovesTemplate, PSS_DATA_WINDOW_MOVE_TP);
 
     FillWindowPixelRect(windowId1, PIXEL_FILL(0), 0, moveIndex1 * 16, 72, 16);
     FillWindowPixelRect(windowId1, PIXEL_FILL(0), 0, moveIndex2 * 16, 72, 16);
@@ -3728,8 +3680,8 @@ static void SwapMovesNamesPP(u8 moveIndex1, u8 moveIndex2)
     FillWindowPixelRect(windowId2, PIXEL_FILL(0), 0, moveIndex1 * 16, 48, 16);
     FillWindowPixelRect(windowId2, PIXEL_FILL(0), 0, moveIndex2 * 16, 48, 16);
 
-    PrintMoveNameAndPP(moveIndex1);
-    PrintMoveNameAndPP(moveIndex2);
+    PrintMoveNameAndTP(moveIndex1);
+    PrintMoveNameAndTP(moveIndex2);
 }
 
 static void PrintHMMovesCantBeForgotten(void)

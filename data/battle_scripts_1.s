@@ -787,7 +787,7 @@ BattleScript_TwoTurnMovesSecondTurn::
 	setmoveeffect MOVE_EFFECT_CHARGING
 	setbyte sB_ANIM_TURN, 1
 	clearstatusfromeffect BS_ATTACKER
-	orword gHitMarker, HITMARKER_NO_PPDEDUCT
+	orword gHitMarker, HITMARKER_NO_TPDEDUCT
 	jumpifnotmove MOVE_SKY_ATTACK, BattleScript_HitFromAccCheck
 	setmoveeffect MOVE_EFFECT_FLINCH
 	goto BattleScript_HitFromAccCheck
@@ -1320,7 +1320,7 @@ BattleScript_SleepTalkIsAsleep::
 	statusanimation BS_ATTACKER
 	attackstring
 	ppreduce
-	orword gHitMarker, HITMARKER_NO_PPDEDUCT
+	orword gHitMarker, HITMARKER_NO_TPDEDUCT
 	trychoosesleeptalkmove BattleScript_SleepTalkUsingMove
 	pause B_WAIT_TIME_LONG
 	goto BattleScript_ButItFailed
@@ -1999,7 +1999,7 @@ BattleScript_SecondTurnSemiInvulnerable::
 	setmoveeffect MOVE_EFFECT_CHARGING
 	setbyte sB_ANIM_TURN, 1
 	clearstatusfromeffect BS_ATTACKER
-	orword gHitMarker, HITMARKER_NO_PPDEDUCT
+	orword gHitMarker, HITMARKER_NO_TPDEDUCT
 	jumpifnotmove MOVE_BOUNCE, BattleScript_SemiInvulnerableTryHit
 	setmoveeffect MOVE_EFFECT_PARALYSIS
 BattleScript_SemiInvulnerableTryHit::
@@ -3549,11 +3549,11 @@ BattleScript_NoMovesLeft::
 	printselectionstring STRINGID_PKMNHASNOMOVESLEFT
 	endselectionscript
 
-BattleScript_SelectingMoveWithNoPP::
+BattleScript_SelectingMoveWithNoTP::
 	printselectionstring STRINGID_NOPPLEFT
 	endselectionscript
 
-BattleScript_NoPPForMove::
+BattleScript_NoTPForMove::
 	attackstring
 	pause B_WAIT_TIME_SHORT
 	printstring STRINGID_BUTNOPPLEFT
@@ -3670,7 +3670,7 @@ BattleScript_MagicCoatBounce::
 	pause B_WAIT_TIME_SHORT
 	printstring STRINGID_PKMNMOVEBOUNCED
 	waitmessage B_WAIT_TIME_LONG
-	orword gHitMarker, HITMARKER_ATTACKSTRING_PRINTED | HITMARKER_NO_PPDEDUCT | HITMARKER_ALLOW_NO_PP
+	orword gHitMarker, HITMARKER_ATTACKSTRING_PRINTED | HITMARKER_NO_TPDEDUCT | HITMARKER_ALLOW_NO_TP
 	setmagiccoattarget BS_ATTACKER
 	return
 
@@ -3681,7 +3681,7 @@ BattleScript_SnatchedMove::
 	playanimation BS_TARGET, B_ANIM_SNATCH_MOVE
 	printstring STRINGID_PKMNSNATCHEDMOVE
 	waitmessage B_WAIT_TIME_LONG
-	orword gHitMarker, HITMARKER_ATTACKSTRING_PRINTED | HITMARKER_NO_PPDEDUCT | HITMARKER_ALLOW_NO_PP
+	orword gHitMarker, HITMARKER_ATTACKSTRING_PRINTED | HITMARKER_NO_TPDEDUCT | HITMARKER_ALLOW_NO_TP
 	swapattackerwithtarget
 	return
 

@@ -1285,9 +1285,7 @@ const u8 gText_BattleMenuRun[] = _("RUN");
 const u8 gText_SafariMenuBall[] = _("BALL");
 const u8 gText_SafariMenuBlock[] = _("{POKEBLOCK}");
 const u8 gText_SafariMenuNear[] = _("NEAR");
-const u8 gText_MoveInterfacePP[] = _("TP ");
 const u8 gText_MoveInterfaceType[] = _("TYPE/");
-const u8 gText_MoveInterfacePpType[] = _("{PALETTE 5}{COLOR_HIGHLIGHT_SHADOW DYNAMIC_COLOR4 DYNAMIC_COLOR5 DYNAMIC_COLOR6}PP\nTYPE/");
 const u8 gText_MoveInterfaceDynamicColors[] = _("{PALETTE 5}{COLOR_HIGHLIGHT_SHADOW DYNAMIC_COLOR4 DYNAMIC_COLOR5 DYNAMIC_COLOR6}");
 const u8 gText_WhichMoveToForget4[] = _("{PALETTE 5}{COLOR_HIGHLIGHT_SHADOW DYNAMIC_COLOR4 DYNAMIC_COLOR5 DYNAMIC_COLOR6}Which move should\nbe forgotten?");
 const u8 gText_BattleYesNoChoice[] = _("{PALETTE 5}{COLOR_HIGHLIGHT_SHADOW DYNAMIC_COLOR4 DYNAMIC_COLOR5 DYNAMIC_COLOR6}Yes\nNo");
@@ -1558,7 +1556,7 @@ static const struct BattleWindowText sTextOnWindowsInfo_Normal[] =
         .bgColor = B_UI_PAL_SLATE,
         .shadowColor = B_UI_PAL_NAVY,
     },
-    [B_WIN_PP] = {
+    [B_WIN_TP_LABEL] = {
         .fillValue = PIXEL_FILL(B_UI_PAL_NAVY),
         .fontId = FONT_NARROW,
         .x = 0,
@@ -1578,7 +1576,7 @@ static const struct BattleWindowText sTextOnWindowsInfo_Normal[] =
         .bgColor = B_UI_PAL_NAVY,
         .shadowColor = B_UI_PAL_NAVY,
     },
-    [B_WIN_PP_REMAINING] = {
+    [B_WIN_TP_COST] = {
         .fillValue = PIXEL_FILL(B_UI_PAL_NAVY),
         .fontId = FONT_NARROW,
         .x = 1,
@@ -1798,7 +1796,7 @@ static const struct BattleWindowText sTextOnWindowsInfo_Arena[] =
         .bgColor = 14,
         .shadowColor = 15,
     },
-    [B_WIN_PP] = {
+    [B_WIN_TP_LABEL] = {
         .fillValue = PIXEL_FILL(0xE),
         .fontId = FONT_NARROW,
         .x = 0,
@@ -1818,7 +1816,7 @@ static const struct BattleWindowText sTextOnWindowsInfo_Arena[] =
         .bgColor = 14,
         .shadowColor = 15,
     },
-    [B_WIN_PP_REMAINING] = {
+    [B_WIN_TP_COST] = {
         .fillValue = PIXEL_FILL(0xE),
         .fontId = FONT_NORMAL,
         .x = 2,
@@ -3049,7 +3047,7 @@ static const u16 sTPCostColors[][2] =
     [3] = {RGB(20, 24, 13), RGB(4, 3, 7)},  // fine: LCD green
 };
 
-void SetPpNumbersPaletteInMoveSelection(void)
+void SetTpCostPaletteInMoveSelection(void)
 {
     struct ChooseMoveStruct *chooseMoveStruct = (struct ChooseMoveStruct *)(&gBattleBufferA[gActiveBattler][4]);
     u8 var = GetTPCostToCurrentTPState(chooseMoveStruct->tpCost[gMoveSelectionCursor[gActiveBattler]],
@@ -3071,37 +3069,4 @@ u8 GetTPCostToCurrentTPState(u8 tpCost, u8 currentTp)
     if (tpCost * 2 > currentTp)
         return 1;
     return 3;
-}
-
-u8 GetCurrentPpToMaxPpState(u8 currentPp, u8 maxPp)
-{
-    if (maxPp == currentPp)
-    {
-        return 3;
-    }
-    else if (maxPp <= 2)
-    {
-        if (currentPp > 1)
-            return 3;
-        else
-            return 2 - currentPp;
-    }
-    else if (maxPp <= 7)
-    {
-        if (currentPp > 2)
-            return 3;
-        else
-            return 2 - currentPp;
-    }
-    else
-    {
-        if (currentPp == 0)
-            return 2;
-        if (currentPp <= maxPp / 4)
-            return 1;
-        if (currentPp > maxPp / 2)
-            return 3;
-    }
-
-    return 0;
 }

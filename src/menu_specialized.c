@@ -767,7 +767,7 @@ static void MoveRelearnerLoadBattleMoveDescription(u32 chosenMove)
     x = GetStringCenterAlignXOffset(FONT_NORMAL, str, 128);
     AddTextPrinterParameterized(RELEARNERWIN_DESC_BATTLE, FONT_NORMAL, str, x, 1, TEXT_SKIP_DRAW, NULL);
 
-    str = gText_MoveRelearnerPP;
+    str = gText_MoveRelearnerTP;
     AddTextPrinterParameterized(RELEARNERWIN_DESC_BATTLE, FONT_NORMAL, str, 4, 41, TEXT_SKIP_DRAW, NULL);
 
     str = gText_MoveRelearnerPower;
@@ -787,8 +787,8 @@ static void MoveRelearnerLoadBattleMoveDescription(u32 chosenMove)
     str = gTypeNames[move->type];
     AddTextPrinterParameterized(RELEARNERWIN_DESC_BATTLE, FONT_NORMAL, str, 4, 25, TEXT_SKIP_DRAW, NULL);
 
-    x = 4 + GetStringWidth(FONT_NORMAL, gText_MoveRelearnerPP, 0);
-    ConvertIntToDecimalStringN(buffer, move->pp, STR_CONV_MODE_LEFT_ALIGN, 2);
+    x = 4 + GetStringWidth(FONT_NORMAL, gText_MoveRelearnerTP, 0);
+    ConvertIntToDecimalStringN(buffer, move->tpCost, STR_CONV_MODE_LEFT_ALIGN, 3);
     AddTextPrinterParameterized(RELEARNERWIN_DESC_BATTLE, FONT_NORMAL, buffer, x, 41, TEXT_SKIP_DRAW, NULL);
 
     if (move->power < 2)
