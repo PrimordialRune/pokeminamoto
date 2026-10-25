@@ -1033,9 +1033,6 @@ struct SaveBlock1
 #endif
     /*0x3030*/ struct DayCare daycare;
     /*0x3150*/ struct LinkBattleRecords linkBattleRecords;
-#ifndef FREE_GIFT_RIBBONS
-    /*0x31A8*/ u8 giftRibbons[GIFT_RIBBONS_COUNT];
-#endif
     /*0x31DC*/ struct Roamer roamer;
 #ifndef FREE_MYSTERY_GIFT
     /*0x322C*/ struct MysteryGiftSave mysteryGift;
@@ -1078,14 +1075,6 @@ extern const struct ContestWinner gNoContestWinners[NUM_CONTEST_WINNERS];
 #define CONTEST_WINNERS gNoContestWinners
 #else
 #define CONTEST_WINNERS gSaveBlock1Ptr->contestWinners
-#endif
-
-#ifdef FREE_GIFT_RIBBONS
-// No saved gift (distribution) ribbon types: reads get none
-extern const u8 gNoGiftRibbons[GIFT_RIBBONS_COUNT];
-#define GIFT_RIBBONS gNoGiftRibbons
-#else
-#define GIFT_RIBBONS gSaveBlock1Ptr->giftRibbons
 #endif
 
 // The Apprentices saved from the Battle Tower lobby and record mixing, read

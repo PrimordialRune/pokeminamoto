@@ -201,7 +201,6 @@ static EWRAM_DATA struct {
     u8 partnerCursorPosition;
     u16 linkData[20];
     u8 timer;
-    u8 giftRibbons[GIFT_RIBBONS_COUNT];
     u8 filler_B4[0x81C];
     struct {
         bool8 active;
@@ -286,7 +285,6 @@ static void DrawBottomRowText(const u8 *, u8 *, u8);
 static void ComputePartyTradeableFlags(u8);
 static void ComputePartyHPBarLevels(u8);
 static void SetTradePartyHPBarSprites(void);
-static void SaveTradeGiftRibbons(void);
 static u32 CanTradeSelectedMon(struct Pokemon *, int, int);
 static void SpriteCB_LinkMonGlow(struct Sprite *);
 static void SpriteCB_LinkMonShadow(struct Sprite *);
@@ -558,7 +556,6 @@ static void CB2_CreateTradeMenu(void)
     case 6:
         if (BufferTradeParties())
         {
-            SaveTradeGiftRibbons();
             gMain.state++;
         }
         break;
@@ -1148,23 +1145,6 @@ static bool8 BufferTradeParties(void)
         }
         break;
     case 17:
-        Trade_Memcpy(gBlockSendBuffer, GIFT_RIBBONS, sizeof(sTradeMenu->giftRibbons));
-        sTradeMenu->bufferPartyState++;
-        break;
-    case 19:
-        if (id == 0)
-            RequestLinkData(BLOCK_REQ_SIZE_40);
-        sTradeMenu->bufferPartyState++;
-        break;
-    case 20:
-        if (_GetBlockReceivedStatus() == 3)
-        {
-            Trade_Memcpy(sTradeMenu->giftRibbons, gBlockRecvBuffer[id ^ 1], sizeof(sTradeMenu->giftRibbons));
-            TradeResetReceivedFlags();
-            sTradeMenu->bufferPartyState++;
-        }
-        break;
-    case 21:
         for (i = 0, mon = gEnemyParty; i < PARTY_SIZE; mon++, i++)
         {
             u8 name[POKEMON_NAME_LENGTH + 1];
@@ -1187,7 +1167,6 @@ static bool8 BufferTradeParties(void)
     case 6:
     case 10:
     case 14:
-    case 18:
         sTradeMenu->timer++;
         if (sTradeMenu->timer > 10)
         {
@@ -2378,22 +2357,6 @@ static void SetTradePartyHPBarSprites(void)
         for (j = 0; j < sTradeMenu->partyCounts[i]; j++)
             SetPartyHPBarSprite(&gSprites[sTradeMenu->partySpriteIds[i][j]], 4 - sTradeMenu->hpBarLevels[i][j]);
     }
-}
-
-static void SaveTradeGiftRibbons(void)
-{
-#ifndef FREE_GIFT_RIBBONS // nowhere to keep them
-    int i;
-
-    for (i = 0; i < (int)ARRAY_COUNT(sTradeMenu->giftRibbons); i++)
-    {
-        if (gSaveBlock1Ptr->giftRibbons[i] == 0 && sTradeMenu->giftRibbons[i] != 0)
-        {
-            if (sTradeMenu->giftRibbons[i] < MAX_GIFT_RIBBON)
-                gSaveBlock1Ptr->giftRibbons[i] = sTradeMenu->giftRibbons[i];
-        }
-    }
-#endif
 }
 
 static u32 CanTradeSelectedMon(struct Pokemon *playerParty, int partyCount, int monIdx)
