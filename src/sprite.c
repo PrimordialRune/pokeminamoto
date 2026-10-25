@@ -3,6 +3,7 @@
 #include "main.h"
 #include "palette.h"
 #include "regress.h"
+#include "fieldmap.h"
 
 #define MAX_SPRITE_COPY_REQUESTS 64
 
@@ -1584,6 +1585,7 @@ void AllocSpriteTileRange(u16 tag, u16 start, u16 count)
 void FreeAllSpritePalettes(void)
 {
     u8 i;
+    gTintFieldSprites = FALSE;
     gReservedSpritePaletteCount = 0;
     for (i = 0; i < 16; i++)
         sSpritePaletteTags[i] = TAG_NONE;
@@ -1621,6 +1623,8 @@ void LoadSpritePalettes(const struct SpritePalette *palettes)
 void DoLoadSpritePalette(const u16 *src, u16 paletteOffset)
 {
     LoadPalette(src, OBJ_PLTT_OFFSET + paletteOffset, PLTT_SIZE_4BPP);
+    if (gTintFieldSprites)
+        ApplyTimeOfDayTint(OBJ_PLTT_OFFSET + paletteOffset, 16);
 }
 
 u8 AllocSpritePalette(u16 tag)

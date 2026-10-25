@@ -1,6 +1,7 @@
 #include "global.h"
 #include "battle_pyramid.h"
 #include "bg.h"
+#include "event_data.h"
 #include "fieldmap.h"
 #include "fldeff.h"
 #include "fldeff_misc.h"
@@ -10,11 +11,14 @@
 #include "overworld.h"
 #include "palette.h"
 #include "pokenav.h"
+#include "rtc.h"
 #include "script.h"
 #include "secret_base.h"
+#include "sprite.h"
 #include "trainer_hill.h"
 #include "tv.h"
 #include "constants/rgb.h"
+#include "constants/vars.h"
 #include "constants/metatile_behaviors.h"
 
 struct ConnectionFlags
@@ -28,6 +32,8 @@ struct ConnectionFlags
 EWRAM_DATA static u16 ALIGNED(4) sBackupMapData[MAX_MAP_DATA_SIZE] = {0};
 EWRAM_DATA struct MapHeader gMapHeader = {0};
 EWRAM_DATA struct Camera gCamera = {0};
+EWRAM_DATA static u8 sTimeOfDay = 0;
+EWRAM_DATA bool8 gTintFieldSprites = FALSE;
 EWRAM_DATA static struct ConnectionFlags sMapConnectionFlags = {0};
 EWRAM_DATA static u32 UNUSED sFiller = 0; // without this, the next file won't align properly
 
@@ -859,10 +865,90 @@ static void CopyTilesetToVramUsingHeap(struct Tileset const *tileset, u16 numTil
     }
 }
 
-// Below two are dummied functions from FRLG, used to tint the overworld palettes for the Quest Log
+// Day and night, after Gold/Silver/Crystal: morning warms the light colors,
+// night shifts everything to a dark violet and lit windows glow yellow. The
+// time of day is read when a map's palettes load and the colors are tinted in
+// place, so it costs no palette slots and no buffers. Without a cartridge clock
+// (many flash carts), an in-game clock driven by play time stands in for it.
+#define MORN_HOUR_BEGIN 4
+#define DAY_HOUR_BEGIN  10
+#define NITE_HOUR_BEGIN 18
+#define PLAYTIME_MINUTES_PER_HOUR 5   // no-RTC fallback: a full day every 2 hours of play
+#define WINDOW_GLASS RGB(14, 24, 27)  // Masara's window glass, #74C1DC
+#define WINDOW_LIT   RGB(30, 30, 11)  // GSC's lit window yellow
+
+u8 GetTimeOfDay(void)
+{
+    s32 hour;
+    u16 override = VarGet(VAR_TIME_OF_DAY_OVERRIDE);
+
+    if (override != 0 && override <= TIME_OF_DAY_NITE + 1)
+        return override - 1;
+    if (RtcGetErrorStatus() & RTC_ERR_FLAG_MASK)
+    {
+        hour = (gSaveBlock2Ptr->playTimeHours * 60 + gSaveBlock2Ptr->playTimeMinutes) / PLAYTIME_MINUTES_PER_HOUR;
+        hour = (hour + DAY_HOUR_BEGIN) % 24;
+    }
+    else
+    {
+        RtcCalcLocalTime();
+        hour = gLocalTime.hours;
+    }
+    if (hour >= MORN_HOUR_BEGIN && hour < DAY_HOUR_BEGIN)
+        return TIME_OF_DAY_MORN;
+    if (hour >= DAY_HOUR_BEGIN && hour < NITE_HOUR_BEGIN)
+        return TIME_OF_DAY_DAY;
+    return TIME_OF_DAY_NITE;
+}
+
+static u16 TintColor(u16 color)
+{
+    s32 r = GET_R(color), g = GET_G(color), b = GET_B(color);
+
+    switch (sTimeOfDay)
+    {
+    case TIME_OF_DAY_MORN:
+        // Only the light end warms up, like GSC's yellower morning paper.
+        if (b > 20)
+            b -= (b - 20) / 2;
+        if (r > 20 && r < 31)
+            r++;
+        break;
+    case TIME_OF_DAY_NITE:
+        if (color == WINDOW_GLASS)
+            return WINDOW_LIT;
+        // Fitted to GSC's day -> nite palettes: red and green roughly halve,
+        // blue stays high, so the scene goes violet rather than black.
+        r = r * 5 / 8 - 1;
+        g = g * 9 / 16 - 1;
+        b = b * 7 / 8;
+        if (r < 0)
+            r = 0;
+        if (g < 0)
+            g = 0;
+        break;
+    }
+    return RGB(r, g, b);
+}
+
+// Tints palette entries [offset, offset + count) in both palette buffers.
+void ApplyTimeOfDayTint(u16 offset, u16 count)
+{
+    u16 i;
+
+    if (sTimeOfDay == TIME_OF_DAY_DAY)
+        return;
+    for (i = offset; i < offset + count; i++)
+    {
+        gPlttBufferUnfaded[i] = TintColor(gPlttBufferUnfaded[i]);
+        gPlttBufferFaded[i] = gPlttBufferUnfaded[i];
+    }
+}
+
+// FRLG used this hook to tint the overworld for the Quest Log; it now applies the time of day.
 static void ApplyGlobalTintToPaletteEntries(u16 offset, u16 size)
 {
-
+    ApplyTimeOfDayTint(offset, size);
 }
 
 static void UNUSED ApplyGlobalTintToPaletteSlot(u8 slot, u8 count)
@@ -933,6 +1019,21 @@ void LoadMapTilesetPalettes(struct MapLayout const *mapLayout)
 {
     if (mapLayout)
     {
+        // Indoors always looks like day. Sprites loaded from here until the next
+        // FreeAllSpritePalettes (battle, menus) get the same tint.
+        sTimeOfDay = IsMapTypeOutdoors(gMapHeader.mapType) ? GetTimeOfDay() : TIME_OF_DAY_DAY;
+        if (!gTintFieldSprites && sTimeOfDay != TIME_OF_DAY_DAY)
+        {
+            // The player and some objects are already loaded at this point.
+            u8 i;
+            for (i = 0; i < 16; i++)
+            {
+                // Tagged palettes plus the player's fixed, untagged slots.
+                if (GetSpritePaletteTagByPaletteNum(i) != TAG_NONE || i < gReservedSpritePaletteCount)
+                    ApplyTimeOfDayTint(OBJ_PLTT_ID(i), 16);
+            }
+        }
+        gTintFieldSprites = (sTimeOfDay != TIME_OF_DAY_DAY);
         LoadPrimaryTilesetPalette(mapLayout);
         LoadSecondaryTilesetPalette(mapLayout);
     }

@@ -1,0 +1,21 @@
+# Written by palopt.py. Each hint is one palette of the optimal layout.
+tileset:
+  palettes:
+    packing:
+      hints_enabled: true
+      hints:
+        - name: "pal06"
+          colors:
+            - [ 16, 99, 66 ]
+            - [ 32, 80, 48 ]
+            - [ 48, 17, 8 ]
+            - [ 48, 56, 48 ]
+            - [ 52, 140, 81 ]
+            - [ 86, 41, 27 ]
+            - [ 88, 80, 128 ]
+            - [ 109, 193, 85 ]
+            - [ 116, 193, 220 ]
+            - [ 136, 152, 176 ]
+            - [ 166, 58, 26 ]
+            - [ 183, 182, 176 ]
+            - [ 231, 230, 219 ]

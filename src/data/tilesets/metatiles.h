@@ -207,3 +207,9 @@ const u16 gMetatileAttributes_MysteryEventsHouse[] = INCBIN_U16("data/tilesets/s
 
 const u16 gMetatiles_UnionRoom[] = INCBIN_U16("data/tilesets/secondary/union_room/metatiles.bin");
 const u16 gMetatileAttributes_UnionRoom[] = INCBIN_U16("data/tilesets/secondary/union_room/metatile_attributes.bin");
+
+const u16 gMetatiles_PorytilesManaged_Kanto[] = INCBIN_U16("data/tilesets/primary/kanto/porytiles_bin/metatiles.bin");
+const u16 gMetatileAttributes_PorytilesManaged_Kanto[] = INCBIN_U16("data/tilesets/primary/kanto/porytiles_bin/metatile_attributes.bin");
+
+const u16 gMetatiles_PorytilesManaged_MasaraTown[] = INCBIN_U16("data/tilesets/secondary/masara_town/porytiles_bin/metatiles.bin");
+const u16 gMetatileAttributes_PorytilesManaged_MasaraTown[] = INCBIN_U16("data/tilesets/secondary/masara_town/porytiles_bin/metatile_attributes.bin");

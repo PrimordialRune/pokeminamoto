@@ -12,6 +12,7 @@
 #include "field_effect_helpers.h"
 #include "field_player_avatar.h"
 #include "fieldmap.h"
+#include "field_weather.h"
 #include "mauville_old_man.h"
 #include "metatile_behavior.h"
 #include "overworld.h"
@@ -154,6 +155,8 @@ static void ResetObjectEventFldEffData(struct ObjectEvent *);
 static u8 LoadSpritePaletteIfTagExists(const struct SpritePalette *);
 static u8 FindObjectEventPaletteIndexByTag(u16);
 static void _PatchObjectPalette(u16, u8);
+static u8 LoadObjectEventGraphicsPalette(const struct ObjectEventGraphicsInfo *);
+static void FreeObjectEventPaletteIfUnused(u16, u8);
 static bool8 ObjectEventDoesElevationMatch(struct ObjectEvent *, u8);
 static void SpriteCB_CameraObject(struct Sprite *);
 static void CameraObject_Init(struct Sprite *);
@@ -1403,6 +1406,7 @@ static void RemoveObjectEventInternal(struct ObjectEvent *objectEvent)
     image.size = GetObjectEventGraphicsInfo(objectEvent->graphicsId)->size;
     gSprites[objectEvent->spriteId].images = &image;
     DestroySprite(&gSprites[objectEvent->spriteId]);
+    FreeObjectEventPaletteIfUnused(GetObjectEventGraphicsInfo(objectEvent->graphicsId)->paletteTag, objectEvent->spriteId);
 }
 
 void RemoveAllObjectEventsExceptPlayer(void)
@@ -1431,20 +1435,7 @@ static u8 TrySetupObjectEventSprite(const struct ObjectEventTemplate *objectEven
 
     objectEvent = &gObjectEvents[objectEventId];
     graphicsInfo = GetObjectEventGraphicsInfo(objectEvent->graphicsId);
-    paletteSlot = graphicsInfo->paletteSlot;
-    if (paletteSlot == PALSLOT_PLAYER)
-    {
-        LoadPlayerObjectReflectionPalette(graphicsInfo->paletteTag, paletteSlot);
-    }
-    else if (paletteSlot == PALSLOT_NPC_SPECIAL)
-    {
-        LoadSpecialObjectReflectionPalette(graphicsInfo->paletteTag, paletteSlot);
-    }
-    else if (paletteSlot >= 16)
-    {
-        paletteSlot -= 16;
-        _PatchObjectPalette(graphicsInfo->paletteTag, paletteSlot);
-    }
+    paletteSlot = LoadObjectEventGraphicsPalette(graphicsInfo);
 
     if (objectEvent->movementType == MOVEMENT_TYPE_INVISIBLE)
         objectEvent->invisible = TRUE;
@@ -1619,18 +1610,11 @@ u8 CreateVirtualObject(u8 graphicsId, u8 virtualObjId, s16 x, s16 y, u8 elevatio
         sprite->centerToCornerVecX = -(graphicsInfo->width >> 1);
         sprite->centerToCornerVecY = -(graphicsInfo->height >> 1);
         sprite->y += sprite->centerToCornerVecY;
-        sprite->oam.paletteNum = graphicsInfo->paletteSlot;
-        if (sprite->oam.paletteNum >= 16)
-            sprite->oam.paletteNum -= 16;
+        sprite->oam.paletteNum = LoadObjectEventGraphicsPalette(graphicsInfo);
 
         sprite->coordOffsetEnabled = TRUE;
         sprite->sVirtualObjId = virtualObjId;
         sprite->sVirtualObjElev = elevation;
-        if (graphicsInfo->paletteSlot == PALSLOT_NPC_SPECIAL)
-            LoadSpecialObjectReflectionPalette(graphicsInfo->paletteTag, graphicsInfo->paletteSlot);
-        else if (graphicsInfo->paletteSlot >= 16)
-            _PatchObjectPalette(graphicsInfo->paletteTag, graphicsInfo->paletteSlot | 0xf0);
-
         if (subspriteTables != NULL)
         {
             SetSubspriteTables(sprite, subspriteTables);
@@ -1751,20 +1735,7 @@ static void SpawnObjectEventOnReturnToField(u8 objectEventId, s16 x, s16 y)
     spriteTemplate.images = &spriteFrameImage;
 
     *(u16 *)&spriteTemplate.paletteTag = TAG_NONE;
-    paletteSlot = graphicsInfo->paletteSlot;
-    if (paletteSlot == PALSLOT_PLAYER)
-    {
-        LoadPlayerObjectReflectionPalette(graphicsInfo->paletteTag, graphicsInfo->paletteSlot);
-    }
-    else if (paletteSlot == PALSLOT_NPC_SPECIAL)
-    {
-        LoadSpecialObjectReflectionPalette(graphicsInfo->paletteTag, graphicsInfo->paletteSlot);
-    }
-    else if (paletteSlot >= 16)
-    {
-        paletteSlot -= 16;
-        _PatchObjectPalette(graphicsInfo->paletteTag, paletteSlot);
-    }
+    paletteSlot = LoadObjectEventGraphicsPalette(graphicsInfo);
     *(u16 *)&spriteTemplate.paletteTag = TAG_NONE;
 
     i = CreateSprite(&spriteTemplate, 0, 0, 0);
@@ -1826,19 +1797,20 @@ void ObjectEventSetGraphicsId(struct ObjectEvent *objectEvent, u8 graphicsId)
 
     graphicsInfo = GetObjectEventGraphicsInfo(graphicsId);
     sprite = &gSprites[objectEvent->spriteId];
-    paletteSlot = graphicsInfo->paletteSlot;
-    if (paletteSlot == PALSLOT_PLAYER)
+    if (graphicsInfo->paletteSlot == PALSLOT_PLAYER)
     {
-        PatchObjectPalette(graphicsInfo->paletteTag, graphicsInfo->paletteSlot);
+        PatchObjectPalette(graphicsInfo->paletteTag, PALSLOT_PLAYER);
+        paletteSlot = PALSLOT_PLAYER;
     }
-    else if (paletteSlot == PALSLOT_NPC_SPECIAL)
+    else
     {
-        LoadSpecialObjectReflectionPalette(graphicsInfo->paletteTag, graphicsInfo->paletteSlot);
-    }
-    else if (paletteSlot >= 16)
-    {
-        paletteSlot -= 16;
-        _PatchObjectPalette(graphicsInfo->paletteTag, paletteSlot);
+        u16 oldTag = GetObjectEventGraphicsInfo(objectEvent->graphicsId)->paletteTag;
+        paletteSlot = LoadObjectEventGraphicsPalette(graphicsInfo);
+        if (oldTag != graphicsInfo->paletteTag)
+        {
+            sprite->oam.paletteNum = paletteSlot;
+            FreeObjectEventPaletteIfUnused(oldTag, MAX_SPRITES);
+        }
     }
     sprite->oam.shape = graphicsInfo->oam->shape;
     sprite->oam.size = graphicsInfo->oam->size;
@@ -2009,7 +1981,66 @@ void SetObjectEventSpritePosByLocalIdAndMap(u8 localId, u8 mapNum, u8 mapGroup, 
 void FreeAndReserveObjectSpritePalettes(void)
 {
     FreeAllSpritePalettes();
-    gReservedSpritePaletteCount = OBJ_PALSLOT_COUNT;
+    gReservedSpritePaletteCount = PALSLOT_PLAYER_REFLECTION + 1;
+}
+
+// Dynamic overworld palettes: an object event other than the player takes the
+// sprite palette already loaded for its tag, or the first free one, so every
+// NPC keeps its own colors as long as 14 palettes are enough for the screen.
+static u8 LoadDynamicObjectEventPalette(u16 paletteTag)
+{
+    u8 i = FindObjectEventPaletteIndexByTag(paletteTag);
+    u8 paletteNum;
+
+    if (i == 0xFF)
+        return PALSLOT_PLAYER;
+    paletteNum = IndexOfSpritePaletteTag(paletteTag);
+    if (paletteNum != 0xFF)
+        return paletteNum;
+    paletteNum = LoadSpritePalette(&sObjectEventSpritePalettes[i]);
+    if (paletteNum == 0xFF)
+        return PALSLOT_PLAYER; // all slots taken: borrow the player's colors
+    UpdateSpritePaletteWithWeather(paletteNum);
+    return paletteNum;
+}
+
+static u8 LoadObjectEventGraphicsPalette(const struct ObjectEventGraphicsInfo *graphicsInfo)
+{
+    if (graphicsInfo->paletteSlot == PALSLOT_PLAYER)
+    {
+        LoadPlayerObjectReflectionPalette(graphicsInfo->paletteTag, PALSLOT_PLAYER);
+        return PALSLOT_PLAYER;
+    }
+    return LoadDynamicObjectEventPalette(graphicsInfo->paletteTag);
+}
+
+// Field effects that drew with one of Emerald's fixed NPC palettes ask for it here.
+u8 LoadObjectPaletteForLegacySlot(u8 slot)
+{
+    if (slot <= PALSLOT_PLAYER_REFLECTION)
+        return slot;
+    return LoadDynamicObjectEventPalette(sObjectPaletteTagSets[0][slot]);
+}
+
+// Frees a dynamic palette once no sprite but skipSpriteId uses it.
+static void FreeObjectEventPaletteIfUnused(u16 paletteTag, u8 skipSpriteId)
+{
+    u8 i, paletteNum = IndexOfSpritePaletteTag(paletteTag);
+
+    if (paletteNum == 0xFF || paletteNum < gReservedSpritePaletteCount)
+        return;
+    for (i = 0; i < MAX_SPRITES; i++)
+    {
+        if (i != skipSpriteId && gSprites[i].inUse && gSprites[i].oam.paletteNum == paletteNum)
+            return;
+    }
+    FreeSpritePaletteByTag(paletteTag);
+}
+
+u8 GetReflectionPaletteNum(u8 paletteNum)
+{
+    // NPC reflections share their object's palette; only the player's is tinted.
+    return paletteNum == PALSLOT_PLAYER ? PALSLOT_PLAYER_REFLECTION : paletteNum;
 }
 
 static void LoadObjectEventPalette(u16 paletteTag)
@@ -2047,6 +2078,8 @@ void PatchObjectPalette(u16 paletteTag, u8 paletteSlot)
     u8 paletteIndex = FindObjectEventPaletteIndexByTag(paletteTag);
 
     LoadPalette(sObjectEventSpritePalettes[paletteIndex].data, OBJ_PLTT_ID(paletteSlot), PLTT_SIZE_4BPP);
+    if (gTintFieldSprites)
+        ApplyTimeOfDayTint(OBJ_PLTT_ID(paletteSlot), 16);
 }
 
 void PatchObjectPaletteRange(const u16 *paletteTags, u8 minSlot, u8 maxSlot)
@@ -2535,15 +2568,10 @@ void InitObjectEventPalettes(u8 reflectionType)
     FreeAndReserveObjectSpritePalettes();
     sCurrentSpecialObjectPaletteTag = OBJ_EVENT_PAL_TAG_NONE;
     sCurrentReflectionType = reflectionType;
-    if (reflectionType == 1)
-    {
-        PatchObjectPaletteRange(sObjectPaletteTagSets[sCurrentReflectionType], PALSLOT_PLAYER, PALSLOT_NPC_4 + 1);
-        gReservedSpritePaletteCount = 8;
-    }
-    else
-    {
-        PatchObjectPaletteRange(sObjectPaletteTagSets[sCurrentReflectionType], PALSLOT_PLAYER, PALSLOT_NPC_4_REFLECTION + 1);
-    }
+    // Only the player and their reflection keep fixed slots; every other object
+    // event loads its palette on demand (dynamic overworld palettes).
+    PatchObjectPaletteRange(sObjectPaletteTagSets[sCurrentReflectionType], PALSLOT_PLAYER, PALSLOT_PLAYER_REFLECTION + 1);
+    gReservedSpritePaletteCount = PALSLOT_PLAYER_REFLECTION + 1;
 }
 
 u16 GetObjectPaletteTag(u8 palSlot)
@@ -8648,7 +8676,7 @@ void SetVirtualObjectGraphics(u8 virtualObjId, u8 graphicsId)
 
         sprite->oam = *graphicsInfo->oam;
         sprite->oam.tileNum = tileNum;
-        sprite->oam.paletteNum = graphicsInfo->paletteSlot;
+        sprite->oam.paletteNum = LoadObjectEventGraphicsPalette(graphicsInfo);
         sprite->images = graphicsInfo->images;
 
         if (graphicsInfo->subspriteTables == NULL)
