@@ -23,9 +23,7 @@
 #define asm_unified(x) asm(".syntax unified\n" x "\n.syntax divided")
 #define NAKED __attribute__((naked))
 
-#if MODERN
 #define asm __asm__
-#endif
 
 /// IDE support
 #if defined(__APPLE__) || defined(__CYGWIN__) || defined(__INTELLISENSE__)
@@ -77,9 +75,7 @@
 #define min(a, b) ((a) < (b) ? (a) : (b))
 #define max(a, b) ((a) >= (b) ? (a) : (b))
 
-#if MODERN
 #define abs(x) (((x) < 0) ? -(x) : (x))
-#endif
 
 // Used in cases where division by 0 can occur in the retail version.
 // Avoids invalid opcodes on some emulators, and the otherwise UB.

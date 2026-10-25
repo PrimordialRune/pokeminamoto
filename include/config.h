@@ -55,16 +55,14 @@
 
 // Debug menus (overworld: hold R + START, battle: hold L + SELECT). Every modern
 // build has them except `make release`, which defines RELEASE. See include/debug_menu.h.
-#if MODERN && !defined(RELEASE)
+#if !defined(RELEASE)
 #define DEBUG_MENUS
 #endif
 
 // Various undefined behavior bugs may or may not prevent compilation with
 // newer compilers. So always fix them when using a modern compiler.
-#if MODERN || defined(BUGFIX)
 #ifndef UBFIX
 #define UBFIX
-#endif
 #endif
 
 #endif // GUARD_CONFIG_H

@@ -16,7 +16,6 @@ Init::
 	ldr r1, =INTR_VECTOR
 	adr r0, IntrMain
 	str r0, [r1]
-	.if MODERN
 	mov r0, #255 @ RESET_ALL
 	svc #1 << 16
 	@ The reset above cleared IWRAM; copy the ARM code that lives there
@@ -29,7 +28,6 @@ iwram_code_copy:
 	ldrcc r3, [r0], #4
 	strcc r3, [r1], #4
 	bcc iwram_code_copy
-	.endif @ MODERN
 	ldr r1, =AgbMain + 1
 	mov lr, pc
 	bx r1

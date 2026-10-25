@@ -11,7 +11,6 @@ BUILD_DIR := build
 
 # The only build is arm-none-eabi-gcc (pokeemerald_modern.gba); `make modern` is an
 # alias for `make`.
-MODERN      := 1
 # Release builds leave out the debug menus (see DEBUG_MENUS in include/config.h).
 # They build in their own folder and get a _release suffix, so switching between
 # release and normal builds never mixes objects.
@@ -96,14 +95,14 @@ MID_BUILDDIR = $(OBJ_DIR)/$(MID_SUBDIR)
 SHELL := bash -o pipefail
 
 # Set flags for tools
-ASFLAGS := -mcpu=arm7tdmi --defsym MODERN=$(MODERN)
+ASFLAGS := -mcpu=arm7tdmi
 
 INCLUDE_DIRS := include
 INCLUDE_CPP_ARGS := $(INCLUDE_DIRS:%=-iquote %)
 INCLUDE_SCANINC_ARGS := $(INCLUDE_DIRS:%=-I %)
 
 O_LEVEL ?= 2
-CPPFLAGS := $(INCLUDE_CPP_ARGS) -Wno-trigraphs -DMODERN=$(MODERN)
+CPPFLAGS := $(INCLUDE_CPP_ARGS) -Wno-trigraphs
 ifeq ($(RELEASE),1)
   CPPFLAGS += -DRELEASE
 endif
