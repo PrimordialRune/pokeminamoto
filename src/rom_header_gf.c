@@ -169,10 +169,6 @@ static const struct GFRomHeader sGFRomHeader = {
 #ifndef FREE_GIFT_RIBBONS
     .giftRibbonsOffset = offsetof(struct SaveBlock1, giftRibbons),
 #endif
-#ifndef FREE_ENIGMA_BERRY
-    .enigmaBerryOffset = offsetof(struct SaveBlock1, enigmaBerry),
-    .enigmaBerrySize = sizeof(struct EnigmaBerry),
-#endif
     .moveDescriptions = NULL,
     .unk20 = 0x00000000, // 0xFFFFFFFF in FRLG
 };

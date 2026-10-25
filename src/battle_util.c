@@ -411,10 +411,7 @@ bool8 TryRunFromBattle(u8 battler)
     u8 pyramidMultiplier;
     u8 speedVar;
 
-    if (gBattleMons[battler].item == ITEM_ENIGMA_BERRY)
-        holdEffect = gEnigmaBerries[battler].holdEffect;
-    else
-        holdEffect = GetItemHoldEffect(gBattleMons[battler].item);
+    holdEffect = GetItemHoldEffect(gBattleMons[battler].item);
 
     gPotentialItemEffectBattler = battler;
 
@@ -1041,10 +1038,7 @@ u8 TrySetCantSelectMoveBattleScript(void)
         }
     }
 
-    if (gBattleMons[gActiveBattler].item == ITEM_ENIGMA_BERRY)
-        holdEffect = gEnigmaBerries[gActiveBattler].holdEffect;
-    else
-        holdEffect = GetItemHoldEffect(gBattleMons[gActiveBattler].item);
+    holdEffect = GetItemHoldEffect(gBattleMons[gActiveBattler].item);
 
     gPotentialItemEffectBattler = gActiveBattler;
 
@@ -1085,10 +1079,7 @@ u8 CheckMoveLimitations(u8 battler, u8 unusableMoves, u8 check)
     u16 *choicedMove = &gBattleStruct->choicedMove[battler];
     s32 i;
 
-    if (gBattleMons[battler].item == ITEM_ENIGMA_BERRY)
-        holdEffect = gEnigmaBerries[battler].holdEffect;
-    else
-        holdEffect = GetItemHoldEffect(gBattleMons[battler].item);
+    holdEffect = GetItemHoldEffect(gBattleMons[battler].item);
 
     gPotentialItemEffectBattler = battler;
 
@@ -3270,41 +3261,17 @@ u8 ItemBattleEffects(u8 caseID, u8 battler, bool8 moveTurn)
     u16 atkItem, defItem;
 
     gLastUsedItem = gBattleMons[battler].item;
-    if (gLastUsedItem == ITEM_ENIGMA_BERRY)
-    {
-        battlerHoldEffect = gEnigmaBerries[battler].holdEffect;
-        battlerHoldEffectParam = gEnigmaBerries[battler].holdEffectParam;
-    }
-    else
-    {
-        battlerHoldEffect = GetItemHoldEffect(gLastUsedItem);
-        battlerHoldEffectParam = GetItemHoldEffectParam(gLastUsedItem);
-    }
+    battlerHoldEffect = GetItemHoldEffect(gLastUsedItem);
+    battlerHoldEffectParam = GetItemHoldEffectParam(gLastUsedItem);
 
     atkItem = gBattleMons[gBattlerAttacker].item;
-    if (atkItem == ITEM_ENIGMA_BERRY)
-    {
-        atkHoldEffect = gEnigmaBerries[gBattlerAttacker].holdEffect;
-        atkHoldEffectParam = gEnigmaBerries[gBattlerAttacker].holdEffectParam;
-    }
-    else
-    {
-        atkHoldEffect = GetItemHoldEffect(atkItem);
-        atkHoldEffectParam = GetItemHoldEffectParam(atkItem);
-    }
+    atkHoldEffect = GetItemHoldEffect(atkItem);
+    atkHoldEffectParam = GetItemHoldEffectParam(atkItem);
 
     // def variables are unused
     defItem = gBattleMons[gBattlerTarget].item;
-    if (defItem == ITEM_ENIGMA_BERRY)
-    {
-        defHoldEffect = gEnigmaBerries[gBattlerTarget].holdEffect;
-        defHoldEffectParam = gEnigmaBerries[gBattlerTarget].holdEffectParam;
-    }
-    else
-    {
-        defHoldEffect = GetItemHoldEffect(defItem);
-        defHoldEffectParam = GetItemHoldEffectParam(defItem);
-    }
+    defHoldEffect = GetItemHoldEffect(defItem);
+    defHoldEffectParam = GetItemHoldEffectParam(defItem);
 
     switch (caseID)
     {
@@ -3632,16 +3599,8 @@ u8 ItemBattleEffects(u8 caseID, u8 battler, bool8 moveTurn)
         for (battler = 0; battler < gBattlersCount; battler++)
         {
             gLastUsedItem = gBattleMons[battler].item;
-            if (gBattleMons[battler].item == ITEM_ENIGMA_BERRY)
-            {
-                battlerHoldEffect = gEnigmaBerries[battler].holdEffect;
-                battlerHoldEffectParam = gEnigmaBerries[battler].holdEffectParam;
-            }
-            else
-            {
-                battlerHoldEffect = GetItemHoldEffect(gLastUsedItem);
-                battlerHoldEffectParam = GetItemHoldEffectParam(gLastUsedItem);
-            }
+            battlerHoldEffect = GetItemHoldEffect(gLastUsedItem);
+            battlerHoldEffectParam = GetItemHoldEffectParam(gLastUsedItem);
             switch (battlerHoldEffect)
             {
             case HOLD_EFFECT_CURE_PAR:

@@ -845,10 +845,7 @@ static bool8 ShouldUseItem(void)
         if (gItemEffectTable[item - ITEM_POTION] == NULL)
             continue;
 
-        if (item == ITEM_ENIGMA_BERRY)
-            itemEffects = ENIGMA_BERRY.itemEffect;
-        else
-            itemEffects = gItemEffectTable[item - ITEM_POTION];
+        itemEffects = gItemEffectTable[item - ITEM_POTION];
 
         *(gBattleStruct->AI_itemType + gActiveBattler / 2) = GetAI_ItemType(item, itemEffects);
 

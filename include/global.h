@@ -1037,9 +1037,6 @@ struct SaveBlock1
     /*0x31A8*/ u8 giftRibbons[GIFT_RIBBONS_COUNT];
 #endif
     /*0x31DC*/ struct Roamer roamer;
-#ifndef FREE_ENIGMA_BERRY
-    /*0x31F8*/ struct EnigmaBerry enigmaBerry;
-#endif
 #ifndef FREE_MYSTERY_GIFT
     /*0x322C*/ struct MysteryGiftSave mysteryGift;
 #endif
@@ -1089,15 +1086,6 @@ extern const u8 gNoGiftRibbons[GIFT_RIBBONS_COUNT];
 #define GIFT_RIBBONS gNoGiftRibbons
 #else
 #define GIFT_RIBBONS gSaveBlock1Ptr->giftRibbons
-#endif
-
-// The e-Reader Enigma Berry. With FREE_ENIGMA_BERRY it reads an empty berry
-// from ROM, which behaves like a berry that was never received.
-#ifdef FREE_ENIGMA_BERRY
-extern const struct EnigmaBerry gEmptyEnigmaBerry;
-#define ENIGMA_BERRY gEmptyEnigmaBerry
-#else
-#define ENIGMA_BERRY gSaveBlock1Ptr->enigmaBerry
 #endif
 
 // The Apprentices saved from the Battle Tower lobby and record mixing, read

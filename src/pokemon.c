@@ -2602,8 +2602,6 @@ void ConvertPokemonToBattleTowerPokemon(struct Pokemon *mon, struct BattleTowerP
     dest->species = GetMonData(mon, MON_DATA_SPECIES, NULL);
     heldItem = GetMonData(mon, MON_DATA_HELD_ITEM, NULL);
 
-    if (heldItem == ITEM_ENIGMA_BERRY)
-        heldItem = ITEM_NONE;
 
     dest->heldItem = heldItem;
 
@@ -3133,28 +3131,12 @@ s32 CalculateBaseDamage(struct BattlePokemon *attacker, struct BattlePokemon *de
     spDefense = defender->spDefense;
 
     // Get attacker hold item info
-    if (attacker->item == ITEM_ENIGMA_BERRY)
-    {
-        attackerHoldEffect = gEnigmaBerries[battlerIdAtk].holdEffect;
-        attackerHoldEffectParam = gEnigmaBerries[battlerIdAtk].holdEffectParam;
-    }
-    else
-    {
-        attackerHoldEffect = GetItemHoldEffect(attacker->item);
-        attackerHoldEffectParam = GetItemHoldEffectParam(attacker->item);
-    }
+    attackerHoldEffect = GetItemHoldEffect(attacker->item);
+    attackerHoldEffectParam = GetItemHoldEffectParam(attacker->item);
 
     // Get defender hold item info
-    if (defender->item == ITEM_ENIGMA_BERRY)
-    {
-        defenderHoldEffect = gEnigmaBerries[battlerIdDef].holdEffect;
-        defenderHoldEffectParam = gEnigmaBerries[battlerIdDef].holdEffectParam;
-    }
-    else
-    {
-        defenderHoldEffect = GetItemHoldEffect(defender->item);
-        defenderHoldEffectParam = GetItemHoldEffectParam(defender->item);
-    }
+    defenderHoldEffect = GetItemHoldEffect(defender->item);
+    defenderHoldEffectParam = GetItemHoldEffectParam(defender->item);
 
     if (attacker->ability == ABILITY_HUGE_POWER || attacker->ability == ABILITY_PURE_POWER)
         attack *= 2;
@@ -4775,17 +4757,7 @@ bool8 PokemonUseItemEffects(struct Pokemon *mon, u16 item, u8 partyIndex, u8 mov
 
     // Get item hold effect
     heldItem = GetMonData(mon, MON_DATA_HELD_ITEM, NULL);
-    if (heldItem == ITEM_ENIGMA_BERRY)
-    {
-        if (gMain.inBattle)
-            holdEffect = gEnigmaBerries[gBattlerInMenuId].holdEffect;
-        else
-            holdEffect = ENIGMA_BERRY.holdEffect;
-    }
-    else
-    {
-        holdEffect = GetItemHoldEffect(heldItem);
-    }
+    holdEffect = GetItemHoldEffect(heldItem);
 
     // Get battler id (if relevant)
     gPotentialItemEffectBattler = gBattlerInMenuId;
@@ -4816,17 +4788,7 @@ bool8 PokemonUseItemEffects(struct Pokemon *mon, u16 item, u8 partyIndex, u8 mov
         return TRUE;
 
     // Get item effect
-    if (item == ITEM_ENIGMA_BERRY)
-    {
-        if (gMain.inBattle)
-            itemEffect = gEnigmaBerries[gActiveBattler].itemEffect;
-        else
-            itemEffect = ENIGMA_BERRY.itemEffect;
-    }
-    else
-    {
-        itemEffect = gItemEffectTable[item - ITEM_POTION];
-    }
+    itemEffect = gItemEffectTable[item - ITEM_POTION];
 
     // Do item effect
     for (i = 0; i < ITEM_EFFECT_ARG_START; i++)
@@ -5336,13 +5298,8 @@ u8 GetItemEffectParamOffset(u16 itemId, u8 effectByte, u8 effectBit)
 
     temp = gItemEffectTable[itemId - ITEM_POTION];
 
-    if (!temp && itemId != ITEM_ENIGMA_BERRY)
+    if (!temp)
         return 0;
-
-    if (itemId == ITEM_ENIGMA_BERRY)
-    {
-        temp = gEnigmaBerries[gActiveBattler].itemEffect;
-    }
 
     itemEffect = temp;
 
@@ -5450,17 +5407,7 @@ u8 *UseStatIncreaseItem(u16 itemId)
     int i;
     const u8 *itemEffect;
 
-    if (itemId == ITEM_ENIGMA_BERRY)
-    {
-        if (gMain.inBattle)
-            itemEffect = gEnigmaBerries[gBattlerInMenuId].itemEffect;
-        else
-            itemEffect = ENIGMA_BERRY.itemEffect;
-    }
-    else
-    {
-        itemEffect = gItemEffectTable[itemId - ITEM_POTION];
-    }
+    itemEffect = gItemEffectTable[itemId - ITEM_POTION];
 
     gPotentialItemEffectBattler = gBattlerInMenuId;
 
@@ -5515,10 +5462,7 @@ u16 GetEvolutionTargetSpecies(struct Pokemon *mon, u8 mode, u16 evolutionItem)
     u16 upperPersonality = personality >> 16;
     u8 holdEffect;
 
-    if (heldItem == ITEM_ENIGMA_BERRY)
-        holdEffect = ENIGMA_BERRY.holdEffect;
-    else
-        holdEffect = GetItemHoldEffect(heldItem);
+    holdEffect = GetItemHoldEffect(heldItem);
 
     // Prevent evolution with Everstone, unless we're just viewing the party menu with an evolution item
     if (holdEffect == HOLD_EFFECT_PREVENT_EVOLVE && mode != EVO_MODE_ITEM_CHECK)
@@ -5925,17 +5869,7 @@ void AdjustFriendship(struct Pokemon *mon, u8 event)
     species = GetMonData(mon, MON_DATA_SPECIES_OR_EGG, 0);
     heldItem = GetMonData(mon, MON_DATA_HELD_ITEM, 0);
 
-    if (heldItem == ITEM_ENIGMA_BERRY)
-    {
-        if (gMain.inBattle)
-            holdEffect = gEnigmaBerries[0].holdEffect;
-        else
-            holdEffect = ENIGMA_BERRY.holdEffect;
-    }
-    else
-    {
-        holdEffect = GetItemHoldEffect(heldItem);
-    }
+    holdEffect = GetItemHoldEffect(heldItem);
 
     if (species && species != SPECIES_EGG)
     {
@@ -6035,17 +5969,7 @@ void MonGainEVs(struct Pokemon *mon, u16 defeatedSpecies)
         }
 
         heldItem = GetMonData(mon, MON_DATA_HELD_ITEM, 0);
-        if (heldItem == ITEM_ENIGMA_BERRY)
-        {
-            if (gMain.inBattle)
-                holdEffect = gEnigmaBerries[0].holdEffect;
-            else
-                holdEffect = ENIGMA_BERRY.holdEffect;
-        }
-        else
-        {
-            holdEffect = GetItemHoldEffect(heldItem);
-        }
+        holdEffect = GetItemHoldEffect(heldItem);
 
         if (holdEffect == HOLD_EFFECT_MACHO_BRACE)
             evIncrease *= 2;
