@@ -3015,8 +3015,6 @@ static void AnimItemSteal_Step1(struct Sprite *sprite)
 
 static void AnimPresent(struct Sprite *sprite)
 {
-    CMD_ARGS(initialX, initialY, unk2, unk3, unk4);
-
     s16 targetX;
     s16 targetY;
     InitSpritePosToAnimAttacker(sprite, FALSE);
@@ -3104,8 +3102,6 @@ static void AnimPresentHealParticle(struct Sprite *sprite)
 
 static void AnimItemSteal(struct Sprite *sprite)
 {
-    CMD_ARGS(initialX, initialY);
-
     s16 attackerX;
     s16 attackerY;
     InitSpritePosToAnimTarget(sprite, FALSE);

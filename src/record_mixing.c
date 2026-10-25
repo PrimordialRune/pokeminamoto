@@ -814,9 +814,6 @@ static void ReceiveDaycareMailData(struct RecordMixingDaycareMail *records, size
     struct RecordMixingDaycareMail *mixMail;
     u8 playerSlot1, playerSlot2;
     void *ptr;
-    u8 unusedArr1[MAX_LINK_PLAYERS];
-    u8 unusedArr2[MAX_LINK_PLAYERS];
-    struct RecordMixingDaycareMail *unusedMixMail[MAX_LINK_PLAYERS];
     bool8 canHoldItem[MAX_LINK_PLAYERS][DAYCARE_MON_COUNT];
     u8 idxs[MAX_LINK_PLAYERS][2];
     u8 numDaycareCanHold;
@@ -831,8 +828,6 @@ static void ReceiveDaycareMailData(struct RecordMixingDaycareMail *records, size
     linkPlayerCount = GetLinkPlayerCount();
     for (i = 0; i < MAX_LINK_PLAYERS; i++)
     {
-        unusedArr1[i] = 0xFF;
-        unusedArr2[i] = 0;
         canHoldItem[i][0] = FALSE;
         canHoldItem[i][1] = FALSE;
     }
@@ -967,13 +962,6 @@ static void ReceiveDaycareMailData(struct RecordMixingDaycareMail *records, size
 
             j++;
         }
-    }
-
-    // Copy the player's record mix mail 4 times to an array that's never read.
-    for (i = 0; i < MAX_LINK_PLAYERS; i++)
-    {
-        mixMail = &records[multiplayerId * recordSize];
-        unusedMixMail[i] = mixMail;
     }
 
     // Choose a random table id to determine who will

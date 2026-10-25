@@ -1532,21 +1532,22 @@ bool8 ScrCmd_multichoicegrid(struct ScriptContext *ctx)
 
 bool8 ScrCmd_erasebox(struct ScriptContext *ctx)
 {
-    u8 left = ScriptReadByte(ctx);
-    u8 top = ScriptReadByte(ctx);
-    u8 right = ScriptReadByte(ctx);
-    u8 bottom = ScriptReadByte(ctx);
-
     // Menu_EraseWindowRect(left, top, right, bottom);
+    // The four coordinates still have to be consumed from the script
+    (void)ScriptReadByte(ctx); // left
+    (void)ScriptReadByte(ctx); // top
+    (void)ScriptReadByte(ctx); // right
+    (void)ScriptReadByte(ctx); // bottom
+
     return FALSE;
 }
 
 bool8 ScrCmd_drawboxtext(struct ScriptContext *ctx)
 {
-    u8 left = ScriptReadByte(ctx);
-    u8 top = ScriptReadByte(ctx);
-    u8 multichoiceId = ScriptReadByte(ctx);
-    bool8 ignoreBPress = ScriptReadByte(ctx);
+    (void)ScriptReadByte(ctx); // left
+    (void)ScriptReadByte(ctx); // top
+    (void)ScriptReadByte(ctx); // multichoiceId
+    (void)ScriptReadByte(ctx); // ignoreBPress
 
     /*if (Multichoice(left, top, multichoiceId, ignoreBPress) == TRUE)
     {
@@ -1895,8 +1896,8 @@ bool8 ScrCmd_hidemoneybox(struct ScriptContext *ctx)
 
 bool8 ScrCmd_updatemoneybox(struct ScriptContext *ctx)
 {
-    u8 x = ScriptReadByte(ctx);
-    u8 y = ScriptReadByte(ctx);
+    (void)ScriptReadByte(ctx); // x
+    (void)ScriptReadByte(ctx); // y
     u8 ignore = ScriptReadByte(ctx);
 
     if (!ignore)
@@ -1915,8 +1916,8 @@ bool8 ScrCmd_showcoinsbox(struct ScriptContext *ctx)
 
 bool8 ScrCmd_hidecoinsbox(struct ScriptContext *ctx)
 {
-    u8 x = ScriptReadByte(ctx);
-    u8 y = ScriptReadByte(ctx);
+    (void)ScriptReadByte(ctx); // x
+    (void)ScriptReadByte(ctx); // y
 
     HideCoinsWindow();
     return FALSE;
@@ -1924,8 +1925,8 @@ bool8 ScrCmd_hidecoinsbox(struct ScriptContext *ctx)
 
 bool8 ScrCmd_updatecoinsbox(struct ScriptContext *ctx)
 {
-    u8 x = ScriptReadByte(ctx);
-    u8 y = ScriptReadByte(ctx);
+    (void)ScriptReadByte(ctx); // x
+    (void)ScriptReadByte(ctx); // y
 
     PrintCoinsString(GetCoins());
     return FALSE;
@@ -2222,12 +2223,11 @@ bool8 ScrCmd_setdoorclosed(struct ScriptContext *ctx)
 // Below two are functions for elevators in RS, do nothing in Emerald
 bool8 ScrCmd_addelevmenuitem(struct ScriptContext *ctx)
 {
-    u8 v3 = ScriptReadByte(ctx);
-    u16 v5 = VarGet(ScriptReadHalfword(ctx));
-    u16 v7 = VarGet(ScriptReadHalfword(ctx));
-    u16 v9 = VarGet(ScriptReadHalfword(ctx));
-
     //ScriptAddElevatorMenuItem(v3, v5, v7, v9);
+    (void)ScriptReadByte(ctx); // v3
+    (void)ScriptReadHalfword(ctx); // v5
+    (void)ScriptReadHalfword(ctx); // v7
+    (void)ScriptReadHalfword(ctx); // v9
     return FALSE;
 }
 

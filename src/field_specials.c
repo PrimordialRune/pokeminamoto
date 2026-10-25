@@ -2198,6 +2198,9 @@ void ShowFrontierManiacMessage(void)
         break;
     }
 
+    if (facility >= ARRAY_COUNT(sFrontierManiacStreakThresholds))
+        return;
+
     for (i = 0; i < FRONTIER_MANIAC_MESSAGE_COUNT - 1 && sFrontierManiacStreakThresholds[facility][i] < winStreak; i++);
 
     ShowFieldMessage(sFrontierManiacMessages[facility][i]);

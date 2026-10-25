@@ -271,9 +271,8 @@ void BlendPalette(u16 palOffset, u16 numEntries, u8 coeff, u16 blendColor)
         s8 r = data1->r;
         s8 g = data1->g;
         s8 b = data1->b;
-        struct PlttData *data2 = (struct PlttData *)&blendColor;
-        gPlttBufferFaded[index] = RGB(r + (((data2->r - r) * coeff) >> 4),
-                                      g + (((data2->g - g) * coeff) >> 4),
-                                      b + (((data2->b - b) * coeff) >> 4));
+        gPlttBufferFaded[index] = RGB(r + (((GET_R(blendColor) - r) * coeff) >> 4),
+                                      g + (((GET_G(blendColor) - g) * coeff) >> 4),
+                                      b + (((GET_B(blendColor) - b) * coeff) >> 4));
     }
 }
