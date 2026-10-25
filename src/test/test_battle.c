@@ -52,7 +52,10 @@ static EWRAM_DATA struct TurnLog sSnap = {0};     // taken at frame 399
 static EWRAM_DATA u8 sSnapTurn = 0;
 static EWRAM_DATA u32 sExpBefore = 0;
 static EWRAM_DATA u16 sHpAfterRepeat[3] = {0};    // final player HP of the two seed-repeat runs
+static EWRAM_DATA u32 sRngAtFirstTick[3] = {0};   // gRngValue when the battle structs first exist, per repeat run
 static EWRAM_DATA u8 sRepeatRun = 0;
+static EWRAM_DATA u32 sRngAtStart = 0;
+EWRAM_DATA bool8 gTestFreezeRngStir = FALSE;
 
 static void MakeMon(struct Pokemon *mon, u16 species, u8 level, const u16 *moves)
 {
@@ -225,23 +228,30 @@ static void Setup_Repeat(void)
 static void Check_Repeat(void)
 {
     sHpAfterRepeat[sRepeatRun] = GetMonData(&gPlayerParty[0], MON_DATA_HP);
+    sRngAtFirstTick[sRepeatRun] = sRngAtStart;
     sRepeatRun++;
     if (sRepeatRun >= 2)
+    {
+        // Same seed, same parties, same inputs: the engine must reach the same RNG state and the same end,
+        // whatever battle ran before (the earlier scenarios in the table differ from these)
+        CHECK_EQ(sRngAtFirstTick[sRepeatRun - 1], sRngAtFirstTick[0]);
         CHECK_EQ(sHpAfterRepeat[sRepeatRun - 1], sHpAfterRepeat[0]);
+    }
     CHECK_TRUE(gBattleOutcome == B_OUTCOME_WON || gBattleOutcome == B_OUTCOME_LOST);
 }
 
 // --- table -------------------------------------------------------------------
 
+// The repeat runs come after the other scenarios on purpose: they must not depend on what ran before.
 static const struct Scenario sScenarios[] =
 {
-    {"battle_seeded_run_a",         Setup_Repeat,   NULL,         Pick_Slot0,                   Check_Repeat},
-    {"battle_seeded_run_b_same_hp", Setup_Repeat,   NULL,         Pick_Slot0,                   Check_Repeat},
-    {"battle_seeded_run_c_same_hp", Setup_Repeat,   NULL,         Pick_Slot0,                   Check_Repeat},
     {"battle_tp_spend_and_regen",   Setup_TpSeries, Tweak_Tp50,   Pick_GrowlTwiceThenFlamethrower, Check_TpSeries},
     {"battle_struggle_at_zero_tp",  Setup_Struggle, Tweak_ZeroTp, Pick_Slot0,                   Check_Struggle},
     {"battle_unaffordable_blocked", Setup_StruggleTanky, Tweak_EmberTp, Pick_BlockedThenAffordable,  Check_Blocked, 2},
     {"battle_exp_gain",             Setup_Exp,      NULL,         Pick_Slot0,                   Check_Exp},
+    {"battle_seeded_run_a",         Setup_Repeat,   NULL,         Pick_Slot0,                   Check_Repeat},
+    {"battle_seeded_run_b_same_hp", Setup_Repeat,   NULL,         Pick_Slot0,                   Check_Repeat},
+    {"battle_seeded_run_c_same_hp", Setup_Repeat,   NULL,         Pick_Slot0,                   Check_Repeat},
 };
 
 u32 TestBattle_Count(void)
@@ -270,6 +280,7 @@ void TestBattle_Start(u32 index)
     gBattleTypeFlags = 0;
     gBattleOutcome = 0;
     gBattleResults.battleTurnCounter = 0;
+    gTestFreezeRngStir = TRUE;
     sScenario->setup();
     SetMainCallback2(CB2_InitBattle);
 }
@@ -293,6 +304,7 @@ void TestBattle_Tick(void)
         if (!sTweaked)
         {
             sTweaked = TRUE;
+            sRngAtStart = gRngValue;
             if (sScenario->tweak != NULL)
                 sScenario->tweak();
         }

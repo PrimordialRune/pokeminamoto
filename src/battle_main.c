@@ -2099,7 +2099,7 @@ static void UNUSED HBlankCB_Battle(void)
 void VBlankCB_Battle(void)
 {
     // Change gRngSeed every vblank unless the battle could be recorded.
-    if (!(gBattleTypeFlags & (BATTLE_TYPE_LINK | BATTLE_TYPE_FRONTIER | BATTLE_TYPE_RECORDED)))
+    if (TEST_RNG_STIR_ALLOWED() && !(gBattleTypeFlags & (BATTLE_TYPE_LINK | BATTLE_TYPE_FRONTIER | BATTLE_TYPE_RECORDED)))
         Random();
 
     SetGpuReg(REG_OFFSET_BG0HOFS, gBattle_BG0_X);

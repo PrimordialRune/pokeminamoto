@@ -74,11 +74,19 @@ void TestBattle_Tick(void);
 
 #define TEST_BATTLE_TICK() TestBattle_Tick()
 
+// The game stirs the RNG once or twice per vblank outside link and Frontier battles (vanilla
+// behaviour), so a scripted wild battle's RNG stream depends on how many vblanks fell before and
+// after VBlankCB_Battle was installed, which varies with the code run before it. The tests switch
+// the stirring off to be repeatable.
+extern bool8 gTestFreezeRngStir;
+#define TEST_RNG_STIR_ALLOWED() (!gTestFreezeRngStir)
+
 void CB2_TestRunner(void);
 
 #else
 
 #define TEST_BATTLE_TICK()
+#define TEST_RNG_STIR_ALLOWED() TRUE
 
 #endif // TEST_BUILD
 
