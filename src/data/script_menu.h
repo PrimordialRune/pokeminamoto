@@ -13,24 +13,6 @@ static const struct MenuAction MultichoiceList_EnterInfo[] =
     {gText_Exit},
 };
 
-static const struct MenuAction MultichoiceList_ContestInfo[] =
-{
-    {gText_WhatsAContest},
-    {gText_TypesOfContests},
-    {gText_Ranks},
-    {gText_Cancel2},
-};
-
-static const struct MenuAction MultichoiceList_ContestType[] =
-{
-    {gText_CoolnessContest},
-    {gText_BeautyContest},
-    {gText_CutenessContest},
-    {gText_SmartnessContest},
-    {gText_ToughnessContest},
-    {gText_Exit},
-};
-
 static const struct MenuAction MultichoiceList_BasePCWithRegistry[] =
 {
     {gText_Decoration2},
@@ -518,15 +500,6 @@ static const struct MenuAction MultichoiceList_LinkLeader[] =
     {gText_Exit},
 };
 
-static const struct MenuAction MultichoiceList_ContestRank[] =
-{
-    {gText_NormalRank},
-    {gText_SuperRank},
-    {gText_HyperRank},
-    {gText_MasterRank},
-    {gText_Exit},
-};
-
 static const struct MenuAction MultichoiceList_FrontierItemChoose[] =
 {
     {gText_BattleBag},
@@ -787,8 +760,6 @@ static const struct MultichoiceListStruct sMultichoiceLists[] =
     [MULTI_BRINEY_ON_DEWFORD]          = MULTICHOICE(MultichoiceList_BrineyOnDewford),
     [MULTI_PC]                         = MULTICHOICE(MultichoiceList_Exit),
     [MULTI_ENTERINFO]                  = MULTICHOICE(MultichoiceList_EnterInfo),
-    [MULTI_CONTEST_INFO]               = MULTICHOICE(MultichoiceList_ContestInfo),
-    [MULTI_CONTEST_TYPE]               = MULTICHOICE(MultichoiceList_ContestType),
     [MULTI_BASE_PC_NO_REGISTRY]        = MULTICHOICE(MultichoiceList_BasePCNoRegistry),
     [MULTI_BASE_PC_WITH_REGISTRY]      = MULTICHOICE(MultichoiceList_BasePCWithRegistry),
     [MULTI_REGISTER_MENU]              = MULTICHOICE(MultichoiceList_RegisterMenu),
@@ -866,7 +837,6 @@ static const struct MultichoiceListStruct sMultichoiceLists[] =
     [MULTI_WIRELESS_ALL_SERVICES]      = MULTICHOICE(MultichoiceList_LinkServicesAll),
     [MULTI_WIRELESS_MINIGAME]          = MULTICHOICE(MultichoiceList_WirelessMinigame),
     [MULTI_LINK_LEADER]                = MULTICHOICE(MultichoiceList_LinkLeader),
-    [MULTI_CONTEST_RANK]               = MULTICHOICE(MultichoiceList_ContestRank),
     [MULTI_FRONTIER_ITEM_CHOOSE]       = MULTICHOICE(MultichoiceList_FrontierItemChoose),
     [MULTI_LINK_CONTEST_INFO]          = MULTICHOICE(MultichoiceList_LinkContestInfo),
     [MULTI_LINK_CONTEST_MODE]          = MULTICHOICE(MultichoiceList_LinkContestMode),

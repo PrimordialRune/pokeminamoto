@@ -4,9 +4,6 @@
 #include "berry.h"
 #include "clock.h"
 #include "coins.h"
-#include "contest.h"
-#include "contest_util.h"
-#include "contest_painting.h"
 #include "data.h"
 #include "decoration.h"
 #include "decoration_inventory.h"
@@ -1577,19 +1574,6 @@ bool8 ScrCmd_hidemonpic(struct ScriptContext *ctx)
     return TRUE;
 }
 
-bool8 ScrCmd_showcontestpainting(struct ScriptContext *ctx)
-{
-    u8 contestWinnerId = ScriptReadByte(ctx);
-
-    // Artist's painting is temporary and already has its data loaded
-    if (contestWinnerId != CONTEST_WINNER_ARTIST)
-        SetContestWinnerForPainting(contestWinnerId);
-
-    ShowContestPainting();
-    ScriptContext_Stop();
-    return TRUE;
-}
-
 bool8 ScrCmd_braillemessage(struct ScriptContext *ctx)
 {
     u8 *ptr = (u8 *)ScriptReadWord(ctx);
@@ -2046,35 +2030,6 @@ bool8 ScrCmd_setberrytree(struct ScriptContext *ctx)
     else
         PlantBerryTree(treeId, berry, growthStage, FALSE);
     return FALSE;
-}
-
-bool8 ScrCmd_choosecontestmon(struct ScriptContext *ctx)
-{
-    ChooseContestMon();
-    ScriptContext_Stop();
-    return TRUE;
-}
-
-
-bool8 ScrCmd_startcontest(struct ScriptContext *ctx)
-{
-    StartContest();
-    ScriptContext_Stop();
-    return TRUE;
-}
-
-bool8 ScrCmd_showcontestresults(struct ScriptContext *ctx)
-{
-    ShowContestResults();
-    ScriptContext_Stop();
-    return TRUE;
-}
-
-bool8 ScrCmd_contestlinktransfer(struct ScriptContext *ctx)
-{
-    ContestLinkTransfer(gSpecialVar_ContestCategory);
-    ScriptContext_Stop();
-    return TRUE;
 }
 
 bool8 ScrCmd_dofieldeffect(struct ScriptContext *ctx)

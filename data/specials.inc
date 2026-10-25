@@ -71,23 +71,6 @@ gSpecials::
 	def_special IsLeadMonNicknamedOrNotEnglish
 	def_special CheckForPlayersHouseNews
 	def_special GetMomOrDadStringForTVMessage
-	def_special GetContestWinnerId
-	def_special GetContestPlayerId
-	def_special GetNpcContestantLocalId
-	def_special BufferContestWinnerTrainerName
-	def_special BufferContestWinnerMonName
-	def_special BufferContestTrainerAndMonNames
-	def_special GetContestMonConditionRanking
-	def_special SetContestTrainerGfxIds
-	def_special TryEnterContestMon
-	def_special GetContestantNamesAtRank
-	def_special SetLinkContestPlayerGfx
-	def_special GetContestMonCondition
-	def_special HasMonWonThisContestBefore
-	def_special GiveMonContestRibbon
-	def_special IsContestDebugActive
-	def_special GiveMonArtistRibbon
-	def_special TryContestGModeLinkup
 	def_special SaveGame
 	def_special DoWateringBerryTreeAnim
 	def_special ShowEasyChatScreen
@@ -101,11 +84,6 @@ gSpecials::
 	def_special CalculatePlayerPartyCount
 	def_special CountPartyNonEggMons
 	def_special CountPartyAliveNonEggMons_IgnoreVar0x8004Slot
-	def_special ShouldReadyContestArtist
-	def_special SaveMuseumContestPainting
-	def_special DoesContestCategoryHaveMuseumPainting
-	def_special CountPlayerMuseumPaintings
-	def_special ShowContestPainting  @ Unused, redundant with showcontestpainting command
 	def_special MauvilleGymSetDefaultBarriers
 	def_special MauvilleGymPressSwitch
 	def_special ShowFieldMessageStringVar4
@@ -216,11 +194,6 @@ gSpecials::
 	def_special ScriptMenu_CreatePCMultichoice
 	def_special AccessHallOfFamePC
 	def_special Special_ShowDiploma
-	def_special CheckLeadMonCool
-	def_special CheckLeadMonBeauty
-	def_special CheckLeadMonCute
-	def_special CheckLeadMonSmart
-	def_special CheckLeadMonTough
 	def_special LookThroughPorthole
 	def_special DoSoftReset
 	def_special GameClear
@@ -248,7 +221,6 @@ gSpecials::
 	def_special InitRoamer
 	def_special TryUpdateRusturfTunnelState
 	def_special IsGrassTypeInParty
-	def_special DoContestHallWarp
 	def_special LoadWallyZigzagoon
 	def_special IsStarterInParty
 	def_special CopyCurSecretBaseOwnerName_StrVar1
@@ -268,12 +240,9 @@ gSpecials::
 	def_special StartDroughtWeatherBlend
 	def_special DoDiveWarp
 	def_special DoFallWarp
-	def_special ShowContestEntryMonPic
-	def_special HideContestEntryMonPic
 	def_special BattleSetup_StartLatiBattle
 	def_special SetRoute119Weather
 	def_special SetRoute123Weather
-	def_special GetContestMultiplayerId
 	def_special ScriptGetPartyMonSpecies
 	def_special IsSelectedMonEgg
 	def_special TryInitBattleTowerAwardManObjectEvent
@@ -283,7 +252,6 @@ gSpecials::
 	def_special GetDaysUntilPacifidlogTMAvailable
 	def_special HasAllHoennMons
 	def_special MonOTNameNotPlayer
-	def_special GenerateContestRand
 	def_special SetChampionSaveWarp
 	def_special ShowGlassWorkshopMenu
 	def_special InitSecretBaseVars
@@ -329,17 +297,10 @@ gSpecials::
 	def_special OffsetCameraForBattle
 	def_special GetDeptStoreDefaultFloorChoice
 	def_special BufferVarsForIVRater
-	def_special LinkContestWaitForConnection
 	def_special GetWirelessCommType
-	def_special LinkContestTryShowWirelessIndicator
-	def_special LinkContestTryHideWirelessIndicator
-	def_special IsWirelessContest
 	def_special ShowRankingHallRecordsWindow
 	def_special ScrollRankingHallRecordsWindow
 	def_special ShowFrontierManiacMessage
-	def_special IsContestWithRSPlayer
-	def_special ClearLinkContestFlags
-	def_special TryContestEModeLinkup
 	def_special ShowScrollableMultichoice
 	def_special ScrollableMultichoice_TryReturnToList
 	def_special BufferBattleTowerElevatorFloors
@@ -405,7 +366,6 @@ gSpecials::
 	def_special DestroyMewEmergingGrassSprite
 	def_special ShowBerryCrushRankings
 	def_special GetBattlePyramidHint
-	def_special LoadLinkContestPlayerPalettes
 	def_special PlayerFaceTrainerAfterBattle
 	def_special IsLastMonThatKnowsSurf
 	def_special CountPartyAliveNonEggMons

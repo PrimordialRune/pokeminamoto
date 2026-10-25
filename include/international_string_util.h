@@ -17,7 +17,6 @@ void CopyMonCategoryText(int dexNum, u8 *dest);
 u8 *GetStringClearToWidth(u8 *dest, int fontId, const u8 *str, int totalStringWidth);
 void PadNameString(u8 *dest, u8 padChar);
 void ConvertInternationalPlayerNameStripChar(u8 *str, u8 removeChar);
-void ConvertInternationalContestantName(u8 *str);
 int GetNicknameLanguage(u8 *str);
 void FillWindowTilesByRow(int windowId, int columnStart, int rowStart, int numFillTiles, int numRows);
 

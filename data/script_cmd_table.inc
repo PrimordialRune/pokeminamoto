@@ -134,7 +134,7 @@ gScriptCmdTable::
 	script_cmd_table_entry SCR_OP_DRAWBOXTEXT                   ScrCmd_drawboxtext                    @ 0x74
 	script_cmd_table_entry SCR_OP_SHOWMONPIC                    ScrCmd_showmonpic                     @ 0x75
 	script_cmd_table_entry SCR_OP_HIDEMONPIC                    ScrCmd_hidemonpic                     @ 0x76
-	script_cmd_table_entry SCR_OP_SHOWCONTESTPAINTING           ScrCmd_showcontestpainting            @ 0x77
+	script_cmd_table_entry SCR_OP_SHOWCONTESTPAINTING           ScrCmd_nop            @ 0x77
 	script_cmd_table_entry SCR_OP_BRAILLEMESSAGE                ScrCmd_braillemessage                 @ 0x78
 	script_cmd_table_entry SCR_OP_GIVEMON                       ScrCmd_givemon                        @ 0x79
 	script_cmd_table_entry SCR_OP_GIVEEGG                       ScrCmd_giveegg                        @ 0x7a
@@ -154,10 +154,10 @@ gScriptCmdTable::
 	script_cmd_table_entry SCR_OP_POKEMARTDECORATION2           ScrCmd_pokemartdecoration2            @ 0x88
 	script_cmd_table_entry SCR_OP_PLAYSLOTMACHINE               ScrCmd_playslotmachine                @ 0x89
 	script_cmd_table_entry SCR_OP_SETBERRYTREE                  ScrCmd_setberrytree                   @ 0x8a
-	script_cmd_table_entry SCR_OP_CHOOSECONTESTMON              ScrCmd_choosecontestmon               @ 0x8b
-	script_cmd_table_entry SCR_OP_STARTCONTEST                  ScrCmd_startcontest                   @ 0x8c
-	script_cmd_table_entry SCR_OP_SHOWCONTESTRESULTS            ScrCmd_showcontestresults             @ 0x8d
-	script_cmd_table_entry SCR_OP_CONTESTLINKTRANSFER           ScrCmd_contestlinktransfer            @ 0x8e
+	script_cmd_table_entry SCR_OP_CHOOSECONTESTMON              ScrCmd_nop               @ 0x8b
+	script_cmd_table_entry SCR_OP_STARTCONTEST                  ScrCmd_nop                   @ 0x8c
+	script_cmd_table_entry SCR_OP_SHOWCONTESTRESULTS            ScrCmd_nop             @ 0x8d
+	script_cmd_table_entry SCR_OP_CONTESTLINKTRANSFER           ScrCmd_nop            @ 0x8e
 	script_cmd_table_entry SCR_OP_RANDOM                        ScrCmd_random                         @ 0x8f
 	script_cmd_table_entry SCR_OP_ADDMONEY                      ScrCmd_addmoney                       @ 0x90
 	script_cmd_table_entry SCR_OP_REMOVEMONEY                   ScrCmd_removemoney                    @ 0x91

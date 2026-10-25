@@ -1324,11 +1324,6 @@ extern const u8 gText_BattleSwapSingleResults[];
 extern const u8 gText_BattleSwapDoubleResults[];
 extern const u8 gText_FloorsCleared[];
 extern const u8 gText_BattleQuestResults[];
-extern const u8 gText_LinkContestResults[];
-extern const u8 gText_4th[];
-extern const u8 gText_3rd[];
-extern const u8 gText_2nd[];
-extern const u8 gText_1st[];
 extern const u8 gText_SpaceAndSpace[];
 extern const u8 gText_CommaSpace[];
 extern const u8 gText_NewLine[];
@@ -2503,7 +2498,6 @@ extern const u8 gText_CommunicationStandby[];
 extern const u8 gText_AnnouncingResults[];
 extern const u8 gText_PreliminaryResults[];
 extern const u8 gText_Round2Results[];
-extern const u8 gText_ContestantsMonWon[];
 
 // Trainer Card
 extern const u8 gText_LinkCableBattles[];
@@ -2523,7 +2517,6 @@ extern const u8 gText_WinsLosses[];
 extern const u8 gText_PokemonTrades[];
 extern const u8 gText_BerryCrush[];
 extern const u8 gText_UnionTradesAndBattles[];
-extern const u8 gText_WonContestsWFriends[];
 extern const u8 gText_WinsStraight[];
 extern const u8 gText_NumBP[];
 extern const u8 gText_BattleTower[];

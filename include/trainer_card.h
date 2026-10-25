@@ -25,7 +25,7 @@ struct TrainerCard
     /*0x01*/ u8 stars;
     /*0x02*/ bool8 hasPokedex;
     /*0x03*/ bool8 caughtAllHoenn;
-    /*0x04*/ bool8 hasAllPaintings;
+    /*0x04*/ bool8 unused04; // was hasAllPaintings
     /*0x06*/ u16 hofDebutHours;
     /*0x08*/ u16 hofDebutMinutes;
     /*0x0A*/ u16 hofDebutSeconds;
@@ -37,7 +37,7 @@ struct TrainerCard
     /*0x16*/ u16 linkBattleLosses;
     /*0x18*/ u16 battleTowerWins;
     /*0x1A*/ u16 battleTowerStraightWins;
-    /*0x1C*/ u16 contestsWithFriends;
+    /*0x1C*/ u16 unused1C; // was contestsWithFriends
     /*0x1E*/ u16 unused1E; // was pokeblocksWithFriends
     /*0x20*/ u16 pokemonTrades;
     /*0x24*/ u32 money;

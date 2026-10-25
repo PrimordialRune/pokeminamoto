@@ -36,7 +36,6 @@
 
 static void Task_ExitNonAnimDoor(u8);
 static void Task_ExitNonDoor(u8);
-static void Task_DoContestHallWarp(u8);
 static void FillPalBufferWhite(void);
 static void Task_ExitDoor(u8);
 static bool32 WaitForWeatherFadeIn(void);
@@ -723,42 +722,6 @@ static void Task_DoDoorWarp(u8 taskId)
         task->func = Task_WarpAndLoadMap;
         break;
     }
-}
-
-static void Task_DoContestHallWarp(u8 taskId)
-{
-    struct Task *task = &gTasks[taskId];
-
-    switch (task->tState)
-    {
-    case 0:
-        FreezeObjectEvents();
-        LockPlayerFieldControls();
-        task->tState++;
-        break;
-    case 1:
-        if (!PaletteFadeActive() && BGMusicStopped())
-        {
-            task->tState++;
-        }
-        break;
-    case 2:
-        WarpIntoMap();
-        SetMainCallback2(CB2_ReturnToFieldContestHall);
-        DestroyTask(taskId);
-        break;
-    }
-}
-
-void DoContestHallWarp(void)
-{
-    LockPlayerFieldControls();
-    TryFadeOutOldMapMusic();
-    WarpFadeOutScreen();
-    PlayRainStoppingSoundEffect();
-    PlaySE(SE_EXIT);
-    gFieldCallback = FieldCB_WarpExitFadeFromBlack;
-    CreateTask(Task_DoContestHallWarp, 10);
 }
 
 static void SetFlashScanlineEffectWindowBoundary(u16 *dest, u32 y, s32 left, s32 right)

@@ -1501,23 +1501,6 @@ static void CB2_LoadMap2(void)
     SetMainCallback2(CB2_Overworld);
 }
 
-void CB2_ReturnToFieldContestHall(void)
-{
-    if (!gMain.state)
-    {
-        FieldClearVBlankHBlankCallbacks();
-        ScriptContext_Init();
-        UnlockPlayerFieldControls();
-        SetMainCallback1(NULL);
-    }
-    if (LoadMapInStepsLocal(&gMain.state, TRUE))
-    {
-        SetFieldVBlankCallback();
-        SetMainCallback1(CB1_Overworld);
-        SetMainCallback2(CB2_Overworld);
-    }
-}
-
 void CB2_ReturnToFieldCableClub(void)
 {
     FieldClearVBlankHBlankCallbacks();

@@ -28,7 +28,6 @@
 #include "save.h"
 #include "link_rfu.h"
 #include "main.h"
-#include "contest.h"
 #include "item_menu.h"
 #include "pokemon_storage_system.h"
 #include "pokemon_jump.h"
@@ -48,15 +47,7 @@ static void WarpToTruck(void);
 static void ResetMiniGamesRecords(void);
 
 EWRAM_DATA bool8 gDifferentSaveFile = FALSE;
-EWRAM_DATA bool8 gEnableContestDebugging = FALSE;
 
-#ifndef FREE_CONTEST_WINNERS
-static const struct ContestWinner sContestWinnerPicDummy =
-{
-    .monName = _(""),
-    .trainerName = _("")
-};
-#endif
 
 void SetTrainerId(u32 trainerId, u8 *dst)
 {
@@ -100,19 +91,6 @@ static void ClearPokedexFlags(void)
     gUnusedPokedexU8 = 0;
     memset(&gSaveBlock2Ptr->pokedex.owned, 0, sizeof(gSaveBlock2Ptr->pokedex.owned));
     memset(&gSaveBlock2Ptr->pokedex.seen, 0, sizeof(gSaveBlock2Ptr->pokedex.seen));
-}
-
-void ClearAllContestWinnerPics(void)
-{
-#ifndef FREE_CONTEST_WINNERS
-    s32 i;
-
-    ClearContestWinnerPicsInContestHall();
-
-    // Clear Museum paintings
-    for (i = MUSEUM_CONTEST_WINNERS_START; i < NUM_CONTEST_WINNERS; i++)
-        gSaveBlock1Ptr->contestWinners[i] = sContestWinnerPicDummy;
-#endif
 }
 
 static void ClearFrontierRecord(void)
@@ -166,9 +144,7 @@ void NewGameInitData(void)
     ClearBerryTrees();
     SetMoney(&gSaveBlock1Ptr->money, 3000);
     SetCoins(0);
-    ResetLinkContestBoolean();
     ResetGameStats();
-    ClearAllContestWinnerPics();
     ClearPlayerLinkBattleRecords();
     InitSeedotSizeRecord();
     InitLotadSizeRecord();
@@ -192,7 +168,6 @@ void NewGameInitData(void)
     InitMatchCallCounters();
     ClearMysteryGift();
     WipeTrainerNameRecords();
-    ResetContestLinkResults();
 }
 
 static void ResetMiniGamesRecords(void)

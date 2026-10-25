@@ -480,6 +480,7 @@ u16 GetEvolutionTargetSpecies(struct Pokemon *mon, u8 mode, u16 evolutionItem);
 u16 HoennPokedexNumToSpecies(u16 hoennNum);
 u16 NationalPokedexNumToSpecies(u16 nationalNum);
 u16 NationalToHoennOrder(u16 nationalNum);
+bool8 IsSpeciesNotUnown(u16 species);
 u16 SpeciesToNationalPokedexNum(u16 species);
 u16 SpeciesToHoennPokedexNum(u16 species);
 u16 HoennToNationalOrder(u16 hoennNum);

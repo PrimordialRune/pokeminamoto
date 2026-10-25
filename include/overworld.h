@@ -134,7 +134,6 @@ void SetUnusedCallback(void *func);
 void CB2_NewGame(void);
 void CB2_WhiteOut(void);
 void CB2_LoadMap(void);
-void CB2_ReturnToFieldContestHall(void);
 void CB2_ReturnToFieldCableClub(void);
 void CB2_ReturnToField(void);
 void CB2_ReturnToFieldFromMultiplayer(void);

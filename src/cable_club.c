@@ -140,8 +140,6 @@ static u32 ExchangeDataAndGetLinkupStatus(u8 minPlayers, u8 maxPlayers)
     case EXCHANGE_WRONG_NUM_PLAYERS:
         ConvertIntToDecimalStringN(gStringVar1, GetLinkPlayerCount_2(), STR_CONV_MODE_LEFT_ALIGN, 1);
         return LINKUP_WRONG_NUM_PLAYERS;
-    case EXCHANGE_STAT_7:
-        return LINKUP_FAILED_CONTEST_GMODE;
     case EXCHANGE_TIMED_OUT:
     default:
         return LINKUP_ONGOING;
@@ -616,20 +614,6 @@ void TryTradeLinkup(void)
     gLinkType = LINKTYPE_TRADE_SETUP;
     gBattleTypeFlags = 0;
     CreateLinkupTask(2, 2);
-}
-
-void TryContestGModeLinkup(void)
-{
-    gLinkType = LINKTYPE_CONTEST_GMODE;
-    gBattleTypeFlags = 0;
-    CreateLinkupTask(4, 4);
-}
-
-void TryContestEModeLinkup(void)
-{
-    gLinkType = LINKTYPE_CONTEST_EMODE;
-    gBattleTypeFlags = 0;
-    CreateLinkupTask(2, 4);
 }
 
 u8 CreateTask_ReestablishCableClubLink(void)

@@ -877,28 +877,18 @@ void AnimTask_RotateMonSpriteToSide(u8 taskId)
     gTasks[taskId].data[4] = gBattleAnimArgs[1];
     gTasks[taskId].data[5] = spriteId;
     gTasks[taskId].data[6] = gBattleAnimArgs[3];
-    if (IsContest())
+    if (gBattleAnimArgs[2] == ANIM_ATTACKER)
     {
-        gTasks[taskId].data[7] = 1;
+        gTasks[taskId].data[7] = GetBattlerSide(gBattleAnimAttacker) == B_SIDE_PLAYER;
     }
     else
     {
-        if (gBattleAnimArgs[2] == ANIM_ATTACKER)
-        {
-            gTasks[taskId].data[7] = GetBattlerSide(gBattleAnimAttacker) == B_SIDE_PLAYER;
-        }
-        else
-        {
-            gTasks[taskId].data[7] = GetBattlerSide(gBattleAnimTarget) == B_SIDE_PLAYER;
-        }
+        gTasks[taskId].data[7] = GetBattlerSide(gBattleAnimTarget) == B_SIDE_PLAYER;
     }
     if (gTasks[taskId].data[7])
     {
-        if (!IsContest())
-        {
-            gTasks[taskId].data[3] *= -1;
-            gTasks[taskId].data[4] *= -1;
-        }
+        gTasks[taskId].data[3] *= -1;
+        gTasks[taskId].data[4] *= -1;
     }
     gTasks[taskId].func = AnimTask_RotateMonSpriteToSide_Step;
 }

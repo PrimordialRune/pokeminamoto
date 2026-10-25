@@ -79,8 +79,8 @@ gSpecialVars::
 	.4byte gSpecialVar_Result
 	.4byte gSpecialVar_ItemId
 	.4byte gSpecialVar_LastTalked
-	.4byte gSpecialVar_ContestRank
-	.4byte gSpecialVar_ContestCategory
+	.4byte gSpecialVar_Unused_0x8010
+	.4byte gSpecialVar_Unused_0x8011
 	.4byte gSpecialVar_MonBoxId
 	.4byte gSpecialVar_MonBoxPos
 	.4byte gSpecialVar_Unused_0x8014
@@ -531,8 +531,6 @@ Common_EventScript_LegendaryFlewAway::
 	.include "data/scripts/cable_club.inc"
 	.include "data/text/cable_club.inc"
 	.include "data/text/contest_strings.inc"
-	.include "data/text/contest_link.inc"
-	.include "data/text/contest_painting.inc"
 	.include "data/text/trick_house_mechadolls.inc"
 	.include "data/scripts/tv.inc"
 	.include "data/scripts/field_move_scripts.inc"

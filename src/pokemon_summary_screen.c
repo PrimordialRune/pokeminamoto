@@ -7,7 +7,6 @@
 #include "battle_tent.h"
 #include "battle_factory.h"
 #include "bg.h"
-#include "contest.h"
 #include "contest_effect.h"
 #include "data.h"
 #include "daycare.h"
@@ -121,6 +120,7 @@ enum
 };
 
 #define TILE_EMPTY_APPEAL_HEART  0x1039
+#define MAX_CONTEST_MOVE_HEARTS 8
 #define TILE_FILLED_APPEAL_HEART 0x103A
 #define TILE_FILLED_JAM_HEART    0x103C
 #define TILE_EMPTY_JAM_HEART     0x103D

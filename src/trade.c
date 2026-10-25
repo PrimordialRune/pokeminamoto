@@ -153,13 +153,11 @@ struct InGameTrade {
     u8 ivs[NUM_STATS];
     u8 abilityNum;
     u32 otId;
-    u8 conditions[CONTEST_CATEGORIES_COUNT];
     u32 personality;
     u16 heldItem;
     u8 mailNum;
     u8 otName[TRAINER_NAME_LENGTH + 1];
     u8 otGender;
-    u8 sheen;
     u16 requestedSpecies;
 };
 
@@ -4541,12 +4539,6 @@ static void CreateInGameTradePokemonInternal(u8 whichPlayerMon, u8 whichInGameTr
     SetMonData(pokemon, MON_DATA_OT_NAME, inGameTrade->otName);
     SetMonData(pokemon, MON_DATA_OT_GENDER, &inGameTrade->otGender);
     SetMonData(pokemon, MON_DATA_ABILITY_NUM, &inGameTrade->abilityNum);
-    SetMonData(pokemon, MON_DATA_BEAUTY, &inGameTrade->conditions[1]);
-    SetMonData(pokemon, MON_DATA_CUTE, &inGameTrade->conditions[2]);
-    SetMonData(pokemon, MON_DATA_COOL, &inGameTrade->conditions[0]);
-    SetMonData(pokemon, MON_DATA_SMART, &inGameTrade->conditions[3]);
-    SetMonData(pokemon, MON_DATA_TOUGH, &inGameTrade->conditions[4]);
-    SetMonData(pokemon, MON_DATA_SHEEN, &inGameTrade->sheen);
     SetMonData(pokemon, MON_DATA_MET_LOCATION, &metLocation);
 
     mailNum = 0;

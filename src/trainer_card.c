@@ -24,7 +24,6 @@
 #include "graphics.h"
 #include "pokemon_icon.h"
 #include "trainer_pokemon_sprites.h"
-#include "contest_util.h"
 #include "constants/songs.h"
 #include "constants/game_stat.h"
 #include "constants/battle_frontier.h"
@@ -67,7 +66,6 @@ struct TrainerCardData
     u8 textNumTrades[140];
     u8 textBerryCrushPts[140];
     u8 textUnionRoomStats[70];
-    u8 textNumLinkContests[70];
     u8 textBattleFacilityStat[70];
     u16 monIconPal[16 * PARTY_SIZE];
     s8 flipBlendY;
@@ -137,7 +135,6 @@ static void PrintLinkBattleResultsOnCard(void);
 static void PrintTradesStringOnCard(void);
 static void PrintBerryCrushStringOnCard(void);
 static void PrintUnionStringOnCard(void);
-static void PrintContestStringOnCard(void);
 static void PrintPokemonIconsOnCard(void);
 static void PrintBattleFacilityStringOnCard(void);
 static void PrintStickersOnCard(void);
@@ -148,7 +145,6 @@ static void BufferLinkBattleResults(void);
 static void BufferNumTrades(void);
 static void BufferBerryCrushPoints(void);
 static void BufferUnionRoomStats(void);
-static void BufferLinkContestNum(void);
 static void BufferBattleFacilityStats(void);
 static void PrintStatOnBackOfCard(u8 top, const u8 *str1, u8 *str2, const u8 *color);
 static void LoadStickerGfx(void);
@@ -664,8 +660,6 @@ u32 CountPlayerTrainerStars(void)
         stars++;
     if (HasAllHoennMons())
         stars++;
-    if (CountPlayerMuseumPaintings() >= CONTEST_CATEGORIES_COUNT)
-        stars++;
     if (HasAllFrontierSymbols())
         stars++;
 
@@ -681,8 +675,6 @@ static u8 GetRubyTrainerStars(struct TrainerCard *trainerCard)
     if (trainerCard->caughtAllHoenn)
         stars++;
     if (trainerCard->battleTowerStraightWins > 49)
-        stars++;
-    if (trainerCard->hasAllPaintings)
         stars++;
 
     return stars;
@@ -736,16 +728,11 @@ static void SetPlayerCardData(struct TrainerCard *trainerCard, u8 cardType)
         trainerCard->battleTowerStraightWins = 0;
     // Seems like GF got CARD_TYPE_FRLG and CARD_TYPE_RS wrong.
     case CARD_TYPE_FRLG:
-        trainerCard->contestsWithFriends = GetCappedGameStat(GAME_STAT_WON_LINK_CONTEST, 999);
-        if (CountPlayerMuseumPaintings() >= CONTEST_CATEGORIES_COUNT)
-            trainerCard->hasAllPaintings = TRUE;
         trainerCard->stars = GetRubyTrainerStars(trainerCard);
         break;
     case CARD_TYPE_RS:
         trainerCard->battleTowerWins = 0;
         trainerCard->battleTowerStraightWins = 0;
-        trainerCard->contestsWithFriends = 0;
-        trainerCard->hasAllPaintings = 0;
         trainerCard->stars = 0;
         break;
     }
@@ -963,7 +950,6 @@ static bool8 PrintAllOnCardBack(void)
         break;
     case 5:
         PrintUnionStringOnCard();
-        PrintContestStringOnCard();
         break;
     case 6:
         PrintPokemonIconsOnCard();
@@ -988,7 +974,6 @@ static void BufferTextsVarsForCardPage2(void)
     BufferNumTrades();
     BufferBerryCrushPoints();
     BufferUnionRoomStats();
-    BufferLinkContestNum();
     BufferBattleFacilityStats();
 }
 
@@ -1264,18 +1249,6 @@ static void PrintUnionStringOnCard(void)
         PrintStatOnBackOfCard(3, gText_UnionTradesAndBattles, sData->textUnionRoomStats, sTrainerCardStatColors);
 }
 
-static void BufferLinkContestNum(void)
-{
-    if (sData->cardType != CARD_TYPE_FRLG && sData->trainerCard.contestsWithFriends)
-        ConvertIntToDecimalStringN(sData->textNumLinkContests, sData->trainerCard.contestsWithFriends, STR_CONV_MODE_RIGHT_ALIGN, 5);
-}
-
-static void PrintContestStringOnCard(void)
-{
-    if (sData->cardType != CARD_TYPE_FRLG && sData->trainerCard.contestsWithFriends)
-        PrintStatOnBackOfCard(4, gText_WonContestsWFriends, sData->textNumLinkContests, sTrainerCardStatColors);
-}
-
 static void BufferBattleFacilityStats(void)
 {
     switch (sData->cardType)
@@ -1525,11 +1498,6 @@ static void DrawCardBackStats(void)
         {
             FillBgTilemapBufferRect(3, 141, 27, 9, 1, 1, 0);
             FillBgTilemapBufferRect(3, 157, 27, 10, 1, 1, 0);
-        }
-        if (sData->trainerCard.contestsWithFriends)
-        {
-            FillBgTilemapBufferRect(3, 141, 27, 13, 1, 1, 0);
-            FillBgTilemapBufferRect(3, 157, 27, 14, 1, 1, 0);
         }
         if (sData->hasBattleTowerWins)
         {

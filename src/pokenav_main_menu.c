@@ -89,9 +89,6 @@ static const u8 *const sHelpBarTexts[HELPBAR_COUNT] =
     [HELPBAR_NONE]                 = gText_Pokenav_ClearButtonList,
     [HELPBAR_MAP_ZOOMED_OUT]       = gText_PokenavMap_ZoomedOutButtons,
     [HELPBAR_MAP_ZOOMED_IN]        = gText_PokenavMap_ZoomedInButtons,
-    [HELPBAR_CONDITION_MON_LIST]   = gText_PokenavCondition_MonListButtons,
-    [HELPBAR_CONDITION_MON_STATUS] = gText_PokenavCondition_MonStatusButtons,
-    [HELPBAR_CONDITION_MARKINGS]   = gText_PokenavCondition_MarkingButtons,
     [HELPBAR_MC_TRAINER_LIST]      = gText_PokenavMatchCall_TrainerListButtons,
     [HELPBAR_MC_CALL_MENU]         = gText_PokenavMatchCall_CallMenuButtons,
     [HELPBAR_MC_CHECK_PAGE]        = gText_PokenavMatchCall_CheckTrainerButtons,
@@ -136,11 +133,6 @@ static const struct CompressedSpriteSheet sMenuLeftHeaderSpriteSheets[] =
         .data = gPokenavLeftHeaderMainMenu_Gfx,
         .size = 0x20,
         .tag = 3
-    },
-    [POKENAV_GFX_CONDITION_MENU] = {
-        .data = gPokenavLeftHeaderCondition_Gfx,
-        .size = 0x20,
-        .tag = 1
     },
     [POKENAV_GFX_RIBBONS_MENU] = {
         .data = gPokenavLeftHeaderRibbons_Gfx,

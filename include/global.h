@@ -521,7 +521,6 @@ struct SaveBlock2
     /*0x1EC*/ struct BerryCrush berryCrush;
     /*0x1FC*/ struct PokemonJumpRecords pokeJump;
     /*0x20C*/ struct BerryPickingResults berryPick;
-    /*0x624*/ u16 contestLinkResults[CONTEST_CATEGORIES_COUNT][CONTESTANT_COUNT];
     /*0x64C*/ struct BattleFrontier frontier;
 }; // sizeof=0xF2C
 
@@ -641,18 +640,6 @@ struct RecordMixingGift
 {
     int checksum;
     struct RecordMixingGiftData data;
-};
-
-struct ContestWinner
-{
-    u32 personality;
-    u32 trainerId;
-    u16 species;
-    u8 contestCategory;
-    u8 monName[POKEMON_NAME_LENGTH + 1];
-    u8 trainerName[PLAYER_NAME_LENGTH + 1];
-    u8 contestRank;
-    //u8 padding;
 };
 
 struct Mail
@@ -819,9 +806,6 @@ struct SaveBlock1
     /*0x2BE0*/ struct Mail mail[MAIL_COUNT];
     /*0x2E20*/ u8 unlockedTrendySayings[NUM_TRENDY_SAYING_BYTES]; // Bitfield for unlockable Easy Chat words in EC_GROUP_TRENDY_SAYING
     /*0x2E25*/ //u8 padding5[3];
-#ifndef FREE_CONTEST_WINNERS
-    /*0x2e90*/ struct ContestWinner contestWinners[NUM_CONTEST_WINNERS]; // see CONTEST_WINNER_*
-#endif
     /*0x3030*/ struct DayCare daycare;
     /*0x3150*/ struct LinkBattleRecords linkBattleRecords;
     /*0x31DC*/ struct Roamer roamer;
@@ -844,14 +828,6 @@ struct SaveBlock1
 };
 
 extern struct SaveBlock1 *gSaveBlock1Ptr;
-
-#ifdef FREE_CONTEST_WINNERS
-// No saved contest winners (Contest Hall, Museum): reads get empty ones
-extern const struct ContestWinner gNoContestWinners[NUM_CONTEST_WINNERS];
-#define CONTEST_WINNERS gNoContestWinners
-#else
-#define CONTEST_WINNERS gSaveBlock1Ptr->contestWinners
-#endif
 
 // The Apprentices saved from the Battle Tower lobby and record mixing, read
 // the same way as ENIGMA_BERRY. When freed they read as never met.

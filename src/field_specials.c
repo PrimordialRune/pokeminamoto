@@ -1170,46 +1170,6 @@ void ResetTrickHouseNuggetFlag(void)
     FlagClear(flag);
 }
 
-bool8 CheckLeadMonCool(void)
-{
-    if (GetMonData(&gPlayerParty[GetLeadMonIndex()], MON_DATA_COOL) < 200)
-        return FALSE;
-
-    return TRUE;
-}
-
-bool8 CheckLeadMonBeauty(void)
-{
-    if (GetMonData(&gPlayerParty[GetLeadMonIndex()], MON_DATA_BEAUTY) < 200)
-        return FALSE;
-
-    return TRUE;
-}
-
-bool8 CheckLeadMonCute(void)
-{
-    if (GetMonData(&gPlayerParty[GetLeadMonIndex()], MON_DATA_CUTE) < 200)
-        return FALSE;
-
-    return TRUE;
-}
-
-bool8 CheckLeadMonSmart(void)
-{
-    if (GetMonData(&gPlayerParty[GetLeadMonIndex()], MON_DATA_SMART) < 200)
-        return FALSE;
-
-    return TRUE;
-}
-
-bool8 CheckLeadMonTough(void)
-{
-    if (GetMonData(&gPlayerParty[GetLeadMonIndex()], MON_DATA_TOUGH) < 200)
-        return FALSE;
-
-    return TRUE;
-}
-
 void IsGrassTypeInParty(void)
 {
     u8 i;

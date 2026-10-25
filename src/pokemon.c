@@ -7125,3 +7125,9 @@ u8 *MonSpritesGfxManager_GetSpritePtr(u8 managerId, u8 spriteNum)
         return gfx->spritePointers[spriteNum];
     }
 }
+
+// Used by the summary screen's move list and battle animations.
+bool8 IsSpeciesNotUnown(u16 species)
+{
+    return species != SPECIES_UNOWN;
+}

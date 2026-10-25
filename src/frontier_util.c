@@ -74,7 +74,6 @@ static void ShowPikeResultsWindow(void);
 static void ShowFactoryResultsWindow(u8);
 static void ShowArenaResultsWindow(void);
 static void ShowPyramidResultsWindow(void);
-static void ShowLinkContestResultsWindow(void);
 static void CopyFrontierBrainText(bool8 playerWonText);
 
 // const rom data
@@ -634,17 +633,6 @@ static const struct WindowTemplate sFrontierResultsWindowTemplate =
     .baseBlock = 1
 };
 
-static const struct WindowTemplate sLinkContestResultsWindowTemplate =
-{
-    .bg = 0,
-    .tilemapLeft = 2,
-    .tilemapTop = 2,
-    .width = 26,
-    .height = 15,
-    .paletteNum = 15,
-    .baseBlock = 1
-};
-
 static const struct WindowTemplate sRankingHallRecordsWindowTemplate =
 {
     .bg = 0,
@@ -928,9 +916,6 @@ static void ShowFacilityResultsWindow(void)
         break;
     case FRONTIER_FACILITY_PYRAMID:
         ShowPyramidResultsWindow();
-        break;
-    case FACILITY_LINK_CONTEST:
-        ShowLinkContestResultsWindow();
         break;
     }
 }
@@ -1458,57 +1443,6 @@ static void ShowPyramidResultsWindow(void)
     PyramidPrintRecordStreak(FRONTIER_LVL_50, 64, 111, 65);
     PyramidPrintPrevOrCurrentStreak(FRONTIER_LVL_OPEN, 64, 111, 97);
     PyramidPrintRecordStreak(FRONTIER_LVL_OPEN, 64, 111, 113);
-    PutWindowTilemap(gRecordsWindowId);
-    CopyWindowToVram(gRecordsWindowId, COPYWIN_FULL);
-}
-
-// Link contest records. Why is it in this file?
-static void ShowLinkContestResultsWindow(void)
-{
-    const u8 *str;
-    s32 i, j;
-    s32 x;
-
-    gRecordsWindowId = AddWindow(&sLinkContestResultsWindowTemplate);
-    DrawStdWindowFrame(gRecordsWindowId, FALSE);
-    FillWindowPixelBuffer(gRecordsWindowId, PIXEL_FILL(1));
-
-    StringExpandPlaceholders(gStringVar4, gText_LinkContestResults);
-    x = GetStringCenterAlignXOffset(FONT_NORMAL, gStringVar4, 208);
-    AddTextPrinterParameterized(gRecordsWindowId, FONT_NORMAL, gStringVar4, x, 1, TEXT_SKIP_DRAW, NULL);
-
-    str = gText_1st;
-    x = GetStringRightAlignXOffset(FONT_NORMAL, str, 38) + 50;
-    AddTextPrinterParameterized(gRecordsWindowId, FONT_NORMAL, str, x, 25, TEXT_SKIP_DRAW, NULL);
-
-    str = gText_2nd;
-    x = GetStringRightAlignXOffset(FONT_NORMAL, str, 38) + 88;
-    AddTextPrinterParameterized(gRecordsWindowId, FONT_NORMAL, str, x, 25, TEXT_SKIP_DRAW, NULL);
-
-    str = gText_3rd;
-    x = GetStringRightAlignXOffset(FONT_NORMAL, str, 38) + 126;
-    AddTextPrinterParameterized(gRecordsWindowId, FONT_NORMAL, str, x, 25, TEXT_SKIP_DRAW, NULL);
-
-    str = gText_4th;
-    x = GetStringRightAlignXOffset(FONT_NORMAL, str, 38) + 164;
-    AddTextPrinterParameterized(gRecordsWindowId, FONT_NORMAL, str, x, 25, TEXT_SKIP_DRAW, NULL);
-
-    x = 6;
-    AddTextPrinterParameterized(gRecordsWindowId, FONT_NORMAL, gText_Cool, x, 41, TEXT_SKIP_DRAW, NULL);
-    AddTextPrinterParameterized(gRecordsWindowId, FONT_NORMAL, gText_Beauty, x, 57, TEXT_SKIP_DRAW, NULL);
-    AddTextPrinterParameterized(gRecordsWindowId, FONT_NORMAL, gText_Cute, x, 73, TEXT_SKIP_DRAW, NULL);
-    AddTextPrinterParameterized(gRecordsWindowId, FONT_NORMAL, gText_Smart, x, 89, TEXT_SKIP_DRAW, NULL);
-    AddTextPrinterParameterized(gRecordsWindowId, FONT_NORMAL, gText_Tough, x, 105, TEXT_SKIP_DRAW, NULL);
-
-    for (i = 0; i < CONTEST_CATEGORIES_COUNT; i++)
-    {
-        for (j = 0; j < CONTESTANT_COUNT; j++)
-        {
-            ConvertIntToDecimalStringN(gStringVar4, gSaveBlock2Ptr->contestLinkResults[i][j], STR_CONV_MODE_RIGHT_ALIGN, 4);
-            AddTextPrinterParameterized(gRecordsWindowId, FONT_NORMAL, gStringVar4, (j * 38) + 64, (i * 16) + 41, TEXT_SKIP_DRAW, NULL);
-        }
-    }
-
     PutWindowTilemap(gRecordsWindowId);
     CopyWindowToVram(gRecordsWindowId, COPYWIN_FULL);
 }

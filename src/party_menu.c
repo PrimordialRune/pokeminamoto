@@ -9,7 +9,6 @@
 #include "battle_pyramid.h"
 #include "battle_pyramid_bag.h"
 #include "bg.h"
-#include "contest.h"
 #include "data.h"
 #include "decompress.h"
 #include "easy_chat.h"
@@ -256,7 +255,6 @@ static void DisplayPartyPokemonDataForMultiBattle(u8);
 static void LoadPartyBoxPalette(struct PartyMenuBox *, u8);
 static void DrawEmptySlot(u8 windowId);
 static void DisplayPartyPokemonDataForRelearner(u8);
-static void DisplayPartyPokemonDataForContest(u8);
 static void DisplayPartyPokemonDataForChooseHalf(u8);
 static void DisplayPartyPokemonDataForWirelessMinigame(u8);
 static void DisplayPartyPokemonDataForBattlePyramidHeldItem(u8);
@@ -451,8 +449,6 @@ static void SlideMultiPartyMenuBoxSpritesOneStep(u8);
 static void Task_WaitAfterMultiPartnerPartySlideIn(u8);
 static void BufferMonSelection(void);
 static void Task_PartyMenuWaitForFade(u8 taskId);
-static void Task_ChooseContestMon(u8 taskId);
-static void CB2_ChooseContestMon(void);
 static void Task_ChoosePartyMon(u8 taskId);
 static void Task_ChooseMonForMoveRelearner(u8);
 static void CB2_ChooseMonForMoveRelearner(void);
@@ -849,8 +845,6 @@ static void RenderPartyMenuBox(u8 slot)
         {
             if (gPartyMenu.menuType == PARTY_MENU_TYPE_MOVE_RELEARNER)
                 DisplayPartyPokemonDataForRelearner(slot);
-            else if (gPartyMenu.menuType == PARTY_MENU_TYPE_CONTEST)
-                DisplayPartyPokemonDataForContest(slot);
             else if (gPartyMenu.menuType == PARTY_MENU_TYPE_CHOOSE_HALF)
                 DisplayPartyPokemonDataForChooseHalf(slot);
             else if (gPartyMenu.menuType == PARTY_MENU_TYPE_MINIGAME)
@@ -927,22 +921,6 @@ static void DisplayPartyPokemonDataForChooseHalf(u8 slot)
             }
         }
         DisplayPartyPokemonDescriptionData(slot, PARTYBOX_DESC_ABLE_3);
-    }
-}
-
-static void DisplayPartyPokemonDataForContest(u8 slot)
-{
-    switch (GetContestEntryEligibility(&gPlayerParty[slot]))
-    {
-    case CANT_ENTER_CONTEST:
-    case CANT_ENTER_CONTEST_EGG:
-    case CANT_ENTER_CONTEST_FAINTED:
-        DisplayPartyPokemonDescriptionData(slot, PARTYBOX_DESC_NOT_ABLE);
-        break;
-    case CAN_ENTER_CONTEST_EQUAL_RANK:
-    case CAN_ENTER_CONTEST_HIGH_RANK:
-        DisplayPartyPokemonDescriptionData(slot, PARTYBOX_DESC_ABLE);
-        break;
     }
 }
 
@@ -1414,9 +1392,7 @@ static bool8 DisplayCancelChooseMonYesNo(u8 taskId)
 {
     const u8 *stringPtr = NULL;
 
-    if (gPartyMenu.menuType == PARTY_MENU_TYPE_CONTEST)
-        stringPtr = gText_CancelParticipation;
-    else if (gPartyMenu.menuType == PARTY_MENU_TYPE_CHOOSE_HALF)
+    if (gPartyMenu.menuType == PARTY_MENU_TYPE_CHOOSE_HALF)
         stringPtr = GetFacilityCancelString();
 
     if (stringPtr == NULL)
@@ -2686,7 +2662,6 @@ static u8 GetPartyMenuActionsType(struct Pokemon *mon)
         actionType = ACTIONS_TAKEITEM_TOSS;
         break;
     // The following have no selection actions (i.e. they exit immediately upon selection)
-    // PARTY_MENU_TYPE_CONTEST
     // PARTY_MENU_TYPE_CHOOSE_MON
     // PARTY_MENU_TYPE_MULTI_SHOWCASE
     // PARTY_MENU_TYPE_MOVE_RELEARNER
@@ -6227,33 +6202,6 @@ static void Task_PartyMenuWaitForFade(u8 taskId)
         UnlockPlayerFieldControls();
         ScriptContext_Enable();
     }
-}
-
-void ChooseContestMon(void)
-{
-    LockPlayerFieldControls();
-    FadeScreen(FADE_TO_BLACK, 0);
-    CreateTask(Task_ChooseContestMon, 10);
-}
-
-static void Task_ChooseContestMon(u8 taskId)
-{
-    if (!gPaletteFade.active)
-    {
-        CleanupOverworldWindowsAndTilemaps();
-        InitPartyMenu(PARTY_MENU_TYPE_CONTEST, PARTY_LAYOUT_SINGLE, PARTY_ACTION_CHOOSE_AND_CLOSE, FALSE, PARTY_MSG_CHOOSE_MON, Task_HandleChooseMonInput, CB2_ChooseContestMon);
-        DestroyTask(taskId);
-    }
-}
-
-static void CB2_ChooseContestMon(void)
-{
-    gContestMonPartyIndex = GetCursorSelectionMonId();
-    if (gContestMonPartyIndex >= PARTY_SIZE)
-        gContestMonPartyIndex = PARTY_NOTHING_CHOSEN;
-    gSpecialVar_0x8004 = gContestMonPartyIndex;
-    gFieldCallback2 = CB2_FadeFromPartyMenu;
-    SetMainCallback2(CB2_ReturnToField);
 }
 
 // Used as a script special for showing a party mon to various npcs (e.g. in-game trades, move deleter)
