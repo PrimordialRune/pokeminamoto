@@ -97,6 +97,9 @@ void Regress_OverworldTick(void);
 bool8 Regress_ScriptIdle(void);
 void Regress_Reseed(void);
 void Regress_StackInit(void);
+void Regress_NoteFail(u32 kind);
+void Regress_NoteTiles(u32 start, u32 count);
+void Regress_SpriteStatics(const u8 *tileBitmap, const u16 *palTags);
 
 #define REGRESS_NOTE_ALLOC(start, ptr, size) Regress_NoteAlloc(start, ptr, size)
 #define REGRESS_NOTE_DMA_QUEUE(pending) Regress_NoteDmaQueue(pending)
@@ -105,6 +108,10 @@ void Regress_StackInit(void);
 #define REGRESS_OVERWORLD_TICK() Regress_OverworldTick()
 #define REGRESS_RESEED() Regress_Reseed()
 #define REGRESS_STACK_INIT() Regress_StackInit()
+// Evaluates to `value`, counting a failure of the given kind on the way
+#define REGRESS_NOTE_FAIL(kind, value) (Regress_NoteFail(kind), (value))
+#define REGRESS_NOTE_TILES(start, count) Regress_NoteTiles(start, count)
+#define REGRESS_SPRITE_STATICS(bitmap, tags) Regress_SpriteStatics(bitmap, tags)
 
 #else
 
@@ -115,6 +122,9 @@ void Regress_StackInit(void);
 #define REGRESS_OVERWORLD_TICK()
 #define REGRESS_RESEED()
 #define REGRESS_STACK_INIT()
+#define REGRESS_NOTE_FAIL(kind, value) (value)
+#define REGRESS_NOTE_TILES(start, count)
+#define REGRESS_SPRITE_STATICS(bitmap, tags)
 
 #endif // REGRESS_HOOKS
 

@@ -5,7 +5,8 @@ Substitute plus the party menu and summary inside a battle, the Pokédex area
 map and the bedroom PC, plus power-on through the intro. Each scene starts from the same savestate (new game + regress
 setup) and reports its heap peak, alloc failures and DMA queue peak, with
 screenshots. Usage: scene_check.py ROM ELF OUTDIR [--video]
-(ROM from make release REGRESS=1 DINFO=1)."""
+(ROM from make release REGRESS=1 DINFO=1). Also reports each scene's OBJ tile, palette,
+sprite and object event use, and exits 1 if any sprite, palette, tile or window allocation failed."""
 import sys, os, json, shutil, subprocess
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import run as R
@@ -24,6 +25,10 @@ for _ in range(4): emu.press("B", hold=4, after=8)
 R.wait_field(emu)
 boot = emu.regress()   # stats count from power-on: title, Birch's intro, truck
 print(f"{'boot_intro':22s} heap {boot['heapPeak']:6d} fails {boot['heapFails']} dma {boot['dmaPeak']} full {boot['dmaFull']}", flush=True)
+failures = []
+boot_limits = emu.limits()
+print(f"{'':22s} {R.limits_text(boot_limits)}", flush=True)
+failures += R.limit_failures("boot_intro", boot_limits)
 emu.command(R.CMD_SETUP); R.wait_field(emu)
 base_state = os.path.join(out, "base.ss")
 emu.cmd(f"savestate {base_state}")
@@ -220,8 +225,10 @@ for name, fn in SCENES:
     st = emu.regress()
     snap(f"{name}_end")
     report[name] = dict(heapPeak=st["heapPeak"], heapFails=st["heapFails"], dmaPeak=st["dmaPeak"],
-                        dmaFull=st["dmaFull"], backToField=bool(ok))
+                        dmaFull=st["dmaFull"], backToField=bool(ok), limits=emu.limits())
+    failures += R.limit_failures(name, report[name]["limits"])
     print(f"{name:22s} heap {st['heapPeak']:6d} fails {st['heapFails']} dma {st['dmaPeak']} full {st['dmaFull']} field {ok}", flush=True)
+    print(f"{'':22s} {R.limits_text(report[name]['limits'])}", flush=True)
 
 with open(os.path.join(out, "scenes.json"), "w") as f:
     json.dump(report, f, indent=1)
@@ -232,3 +239,9 @@ if video and shutil.which("ffmpeg"):
                     os.path.join(out, "scenes.mp4")], check=True)
     shutil.rmtree(emu.video_dir)
 emu.cmd("quit")
+report["boot_intro"]["limits"] = boot_limits
+with open(os.path.join(out, "scenes.json"), "w") as f:
+    json.dump(report, f, indent=1)
+for f in failures:
+    print("RESOURCE FAILURE:", f)
+sys.exit(1 if failures else 0)

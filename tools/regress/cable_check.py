@@ -17,6 +17,7 @@ while not emu.in_overworld():
 for _ in range(4): emu.press("B", hold=4, after=8)
 R.wait_field(emu)
 emu.command(R.CMD_SETUP); R.wait_field(emu)
+emu.reset_stats()
 emu.record = True
 emu.command(R.CMD_CABLE_CLUB); R.wait_field(emu)
 shots = [emu.screenshot("cc_00_room")]
@@ -49,5 +50,11 @@ if shutil.which("ffmpeg"):
                     "-vf", "scale=720:480:flags=neighbor", "-pix_fmt", "yuv420p",
                     os.path.join(out, "cable.mp4")], check=True)
     shutil.rmtree(emu.video_dir)
+lim = emu.limits()   # counted since the setup command
+print(R.limits_text(lim))
+failures = R.limit_failures("cable_check", lim)
 emu.cmd("quit")
-print(json.dumps(dict(ok=True, shots=shots)))
+for f in failures:
+    print("RESOURCE FAILURE:", f)
+print(json.dumps(dict(ok=not failures, shots=shots, limits=lim)))
+sys.exit(1 if failures else 0)

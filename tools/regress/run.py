@@ -40,8 +40,27 @@ CMD_SETUP, CMD_WILD, CMD_TRAINER, CMD_PC, CMD_DUMP, CMD_HEAL, CMD_TV, CMD_CABLE_
 MENU = ["POKEDEX", "POKEMON", "BAG", "PLAYER", "SAVE", "OPTION", "EXIT"]
 
 
+# struct RegressState: the resource-limit fields follow dump[] (40 + 2 * REGRESS_DUMP_WORDS)
+LIMITS_OFF = 40 + 2 * 1024
+LIMIT_FAILS = ("spriteFails", "paletteFails", "tileFails", "windowFails")
+
+
 class Fail(Exception):
     pass
+
+
+def limits_text(lim):
+    """One line for a scene's resource limits."""
+    def v(x):
+        return "-" if x is None else str(x)
+    return (f"obj tiles high {lim['tileHigh']:4d} free run {v(lim['tileFreeRunMin']):>4s} pal free {v(lim['palFreeMin']):>2s} "
+            f"sprites {lim['spritesMax']:3d} objevents {lim['objEventsMax']:2d} "
+            f"fails spr {lim['spriteFails']} pal {lim['paletteFails']} tiles {lim['tileFails']} win {lim['windowFails']}")
+
+
+def limit_failures(name, lim):
+    """Messages for every nonzero failure counter of a scene's limits dict."""
+    return [f"{name}: {k} = {lim[k]}" for k in LIMIT_FAILS if lim.get(k)]
 
 
 class Emu:
@@ -124,6 +143,16 @@ class Emu:
                     heapFails=heap_fails, dmaPeak=dma_peak, dmaFull=dma_full, frames=frames,
                     lagFrames=lag, busySum=busy_sum, busyMax=busy_max, dumpWords=dump_words)
 
+    def limits(self):
+        """Resource limits of the scene so far (struct RegressState, appended after dump[])."""
+        raw = self.read(self.rs + LIMITS_OFF, 20)
+        (tile_high, run_min, pal_min, sprites, objs, sprite_f, pal_f, tile_f, win_f, _) = struct.unpack("<10H", raw)
+        return dict(tileHigh=tile_high,
+                    tileFreeRunMin=run_min - 1 if run_min else None,
+                    palFreeMin=pal_min - 1 if pal_min else None,
+                    spritesMax=sprites, objEventsMax=objs,
+                    spriteFails=sprite_f, paletteFails=pal_f, tileFails=tile_f, windowFails=win_f)
+
     def player_choosing_action(self):
         # The player controller's HandleInputChooseAction is the static one
         # closest below its HandleInputChooseMove (another controller has one too).
@@ -137,6 +166,7 @@ class Emu:
     def reset_stats(self):
         # heapPeak .. busyLinesMax (offsets 8..35)
         self.cmd(f"write {self.rs + 8:#x} {'00' * 28}")
+        self.cmd(f"write {self.rs + LIMITS_OFF:#x} {'00' * 20}")
 
     def command(self, c, wait=600, arg=0):
         done = self.u8(self.rs + 5)
@@ -225,11 +255,13 @@ def scene(emu, report, name, fn):
         "dmaPeak": st["dmaPeak"], "dmaFull": st["dmaFull"],
         "frames": st["frames"], "lagFrames": st["lagFrames"],
         "busyAvg": round(st["busySum"] / frames, 1), "busyMax": st["busyMax"],
+        "limits": emu.limits(),
     }
     entry["shot"] = os.path.relpath(emu.screenshot(f"{len(report['scenes']):02d}_{name}"), emu.out)
     report["scenes"][name] = entry
     print(f"  {name:14s} heap {entry['heapPeak']:6d} fails {entry['heapFails']} dma {entry['dmaPeak']:3d} "
           f"full {entry['dmaFull']} lag {entry['lagFrames']:3d} busy {entry['busyAvg']}/{entry['busyMax']}", flush=True)
+    print(f"  {'':14s} {limits_text(entry['limits'])}", flush=True)
 
 
 def menu_to(emu, item):
@@ -466,6 +498,10 @@ def main():
     # The system stack top is IWRAM_END - 0x1c0 (src/crt0.s).
     low = emu.u32(emu.rs + 40 + 2 * 1024 + 28)
     report["checks"]["stackDepthBytes"] = (0x3008000 - 0x1c0 - low) if low else None
+    failures = []
+    for name, entry in report["scenes"].items():
+        failures += limit_failures(name, entry["limits"])
+    report["checks"]["resourceFailures"] = failures
     with open(os.path.join(args.out, "report.json"), "w") as f:
         json.dump(report, f, indent=1)
 
@@ -478,7 +514,9 @@ def main():
     emu.cmd("quit")
     print("save round trip:", report["checks"]["saveRoundTrip"])
     print("stack depth (bytes):", report["checks"]["stackDepthBytes"])
-    return 0 if report["checks"]["saveRoundTrip"] else 1
+    for f in failures:
+        print("RESOURCE FAILURE:", f)
+    return 0 if report["checks"]["saveRoundTrip"] and not failures else 1
 
 
 if __name__ == "__main__":

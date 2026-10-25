@@ -110,6 +110,25 @@ def main():
                  f"new {max(s['heapPeak'] for s in b['scenes'].values())}")
 
     lines.append("")
+    lines.append("## Resource limits per scene (base / new): OBJ tile high-water, smallest free OBJ tile run, "
+                 "fewest free OBJ palettes, most sprites, most object events")
+    lines.append("| scene | tile high | free run | pal free | sprites | objevents | failures (new) |")
+    lines.append("|---|---|---|---|---|---|---|")
+    for name, sa in a["scenes"].items():
+        sb = b["scenes"].get(name)
+        la, lb = sa.get("limits"), sb.get("limits") if sb else None
+        if not lb:
+            continue
+        fails = {k: lb[k] for k in ("spriteFails", "paletteFails", "tileFails", "windowFails") if lb[k]}
+        if fails:
+            ok = False
+
+        def pair(k):
+            return f"{la[k] if la else '?'}/{lb[k]}"
+        lines.append(f"| {name} | {pair('tileHigh')} | {pair('tileFreeRunMin')} | {pair('palFreeMin')} | "
+                     f"{pair('spritesMax')} | {pair('objEventsMax')} | {fails or 0} |")
+
+    lines.append("")
     lines.append("## Checkpoint screenshots")
     os.makedirs(os.path.join(args.new, "diff"), exist_ok=True)
     shots_a = {**{k: v["shot"] for k, v in a["scenes"].items()}, **a.get("snaps", {})}

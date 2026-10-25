@@ -21,6 +21,7 @@
 #include "pokemon.h"
 #include "pokemon_storage_system.h"
 #include "random.h"
+#include "sprite.h"
 #include "script.h"
 #include "script_pokemon_util.h"
 #include "event_scripts.h"
@@ -128,6 +129,99 @@ static void NoteStack(void)
     gRegress.stackLowest = (u32)p;
 }
 
+void Regress_NoteFail(u32 kind)
+{
+    switch (kind)
+    {
+    case REGRESS_FAIL_SPRITE:
+        gRegress.spriteFails++;
+        break;
+    case REGRESS_FAIL_PALETTE:
+        gRegress.paletteFails++;
+        break;
+    case REGRESS_FAIL_TILES:
+        gRegress.tileFails++;
+        break;
+    case REGRESS_FAIL_WINDOW:
+        gRegress.windowFails++;
+        break;
+    }
+}
+
+void Regress_NoteTiles(u32 start, u32 count)
+{
+    if (start + count > gRegress.tileHigh)
+        gRegress.tileHigh = start + count;
+}
+
+void Regress_SpriteStatics(const u8 *tileBitmap, const u16 *palTags)
+{
+    gRegress.tileBitmap = tileBitmap;
+    gRegress.palTags = palTags;
+}
+
+// Sampled every few frames (cheap, but it must not disturb the lag numbers)
+static void SampleResources(void)
+{
+    u32 i, run, best, count;
+
+    count = 0;
+    for (i = 0; i < MAX_SPRITES; i++)
+        count += gSprites[i].inUse;
+    if (count > gRegress.spritesMax)
+        gRegress.spritesMax = count;
+
+    count = 0;
+    for (i = 0; i < OBJECT_EVENTS_COUNT; i++)
+        count += gObjectEvents[i].active;
+    if (count > gRegress.objEventsMax)
+        gRegress.objEventsMax = count;
+
+    if (gRegress.tileBitmap != NULL)
+    {
+        const u8 *bitmap = gRegress.tileBitmap;
+        u32 bit;
+
+        run = best = 0;
+        for (i = gReservedSpriteTileCount; i < TOTAL_OBJ_TILE_COUNT; i++)
+        {
+            if ((i & 7) == 0 && i + 8 <= TOTAL_OBJ_TILE_COUNT)
+            {
+                // whole bytes: skip fully used ones, add fully free ones
+                if (bitmap[i / 8] == 0xFF)
+                {
+                    run = 0;
+                    i += 7;
+                    continue;
+                }
+                if (bitmap[i / 8] == 0)
+                {
+                    run += 8;
+                    if (run > best)
+                        best = run;
+                    i += 7;
+                    continue;
+                }
+            }
+            bit = (bitmap[i / 8] >> (i % 8)) & 1;
+            if (bit)
+                run = 0;
+            else if (++run > best)
+                best = run;
+        }
+        if (gRegress.tileFreeRunMin == 0 || best + 1 < gRegress.tileFreeRunMin)
+            gRegress.tileFreeRunMin = best + 1;
+    }
+    if (gRegress.palTags != NULL)
+    {
+        count = 0;
+        for (i = gReservedSpritePaletteCount; i < 16; i++)
+            count += gRegress.palTags[i] == TAG_NONE;
+        if (gRegress.palFreeMin == 0 || count + 1 < gRegress.palFreeMin)
+            gRegress.palFreeMin = count + 1;
+    }
+}
+
 void Regress_FrameEnd(void)
 {
     u32 busy = (REG_VCOUNT + 228 - 160) % 228;
@@ -143,6 +237,9 @@ void Regress_FrameEnd(void)
     gRegress.lastVblank = vbl;
     if (gRegress.frames % STACK_SCAN_INTERVAL == 0)
         NoteStack();
+    // Only on frames with plenty of idle time left, so sampling never causes a lag frame
+    if ((gRegress.frames & 3) == 0 && busy < 120)
+        SampleResources();
 }
 
 static void Setup(void)
