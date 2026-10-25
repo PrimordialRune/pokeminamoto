@@ -9,48 +9,6 @@
 #include "script.h"
 #include "task.h"
 
-static u32 GetMirageRnd(void)
-{
-    u32 hi = VarGet(VAR_MIRAGE_RND_H);
-    u32 lo = VarGet(VAR_MIRAGE_RND_L);
-    return (hi << 16) | lo;
-}
-
-static void SetMirageRnd(u32 rnd)
-{
-    VarSet(VAR_MIRAGE_RND_H, rnd >> 16);
-    VarSet(VAR_MIRAGE_RND_L, rnd);
-}
-
-// unused
-void InitMirageRnd(void)
-{
-    SetMirageRnd((Random() << 16) | Random());
-}
-
-void UpdateMirageRnd(u16 days)
-{
-    s32 rnd = GetMirageRnd();
-    while (days)
-    {
-        rnd = ISO_RANDOMIZE2(rnd);
-        days--;
-    }
-    SetMirageRnd(rnd);
-}
-
-bool8 IsMirageIslandPresent(void)
-{
-    u16 rnd = GetMirageRnd() >> 16;
-    int i;
-
-    for (i = 0; i < PARTY_SIZE; i++)
-        if (GetMonData(&gPlayerParty[i], MON_DATA_SPECIES) && (GetMonData(&gPlayerParty[i], MON_DATA_PERSONALITY) & 0xFFFF) == rnd)
-            return TRUE;
-
-    return FALSE;
-}
-
 void UpdateShoalTideFlag(void)
 {
     static const u8 tide[] =

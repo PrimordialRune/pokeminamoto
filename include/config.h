@@ -47,35 +47,6 @@
 // Fixes the bugs identified in vanilla (see every #ifdef BUGFIX)
 #define BUGFIX
 
-// Save-block cleanup: each define below removes save data for a Hoenn or
-// e-Reader system that Minamoto never reaches, freeing EWRAM and flash.
-// Comment one out to bring that system's data back. Changing any of these
-// changes the save layout, so older saves stop loading.
-#define FREE_MYSTERY_EVENT_BUFFERS      // ramScript, Mystery Event scripts, record mixing gift item (1120 B)
-#define FREE_MYSTERY_GIFT               // Wonder Cards/News and their flags (876 B)
-#define FREE_RECORD_MIXING_HALL_RECORDS // Battle Frontier Ranking Hall records (1032 B)
-#define FREE_UNION_ROOM_CHAT            // Union Room chat registered texts (210 B)
-#define FREE_BATTLE_TOWER_E_READER      // e-Reader Battle Tower trainer (188 B)
-#define FREE_EXTRA_SEEN_FLAGS           // the two anti-cheat copies of Pokedex seen flags (104 B)
-#define FREE_ENIGMA_BERRY               // e-Reader Enigma Berry (52 B)
-#define FREE_GCN_LINK                   // data Colosseum/XD read and write over the GameCube link (45 B)
-#define FREE_EASY_CHAT_PHRASES          // editable trainer card profile and link battle lines, now fixed (48 B)
-#define FREE_WALDA_PHRASE               // Walda's custom PC wallpaper (24 B)
-#define FREE_DEWFORD_TRENDS             // Dewford Hall trendy phrases (40 B)
-#define FREE_TV                         // TV shows, PokeNews, mass outbreaks, Gabby & Ty (1,000 B)
-#define FREE_MAUVILLE_OLD_MAN           // Mauville old man (bard, hipster, trader, storyteller, giddy) (64 B)
-#define FREE_LILYCOVE_LADY              // Lilycove favor/quiz/contest lady (64 B)
-#define FREE_RECORDED_BATTLE            // Battle Frontier battle recorder: its RAM buffers (about 4 KB EWRAM); the flash sector stays unused
-#define FREE_TRAINER_HILL               // Trainer Hill times and challenge state (28 B)
-#define FREE_POKEBLOCKS                 // Pokéblock case and Berry Blender records (326 B); the case is always empty
-#define FREE_CONTEST_WINNERS            // Contest Hall and Museum winners (416 B)
-#define FREE_GIFT_RIBBONS               // which distribution ribbons the player owns (11 B)
-#define FREE_FOUR_PLAYER_LINK           // cable link for 3-4 players (multi battles, 3-4 player record mixing): the receive queue holds 2 players (1.6 KB IWRAM)
-#define FREE_WIRELESS                   // Wireless Adapter (Union Room, wireless minigames) and saved names of wirelessly linked trainers (about 7 KB IWRAM, 240 B save); cable link stays
-#define FREE_CONTESTS                   // Pokémon Contests and their paintings: the halls are gone, so no script can start one; contest move effects stay in the move data
-#define FREE_BERRY_FIX_PROGRAM          // Ruby/Sapphire berry glitch fix sent over the cable (B+SELECT on the title screen)
-#define FREE_APPRENTICE                 // Battle Tower Apprentice and the 4 saved ones (316 B)
-
 // Save only the flash sectors whose data changed, copy-on-write with a commit
 // record written last (src/save.c, above WriteSaveData), instead of Emerald's
 // two save slots that rewrite all 13 sectors every save. Comment it out to go

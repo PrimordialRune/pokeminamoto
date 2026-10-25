@@ -78,12 +78,8 @@ enum
     POKENAV_SUBSTRUCT_REGION_MAP_ZOOM,
     POKENAV_SUBSTRUCT_MATCH_CALL_MAIN,
     POKENAV_SUBSTRUCT_MATCH_CALL_OPEN,
-    POKENAV_SUBSTRUCT_CONDITION_SEARCH_RESULTS,
-    POKENAV_SUBSTRUCT_CONDITION_SEARCH_RESULTS_GFX,
     POKENAV_SUBSTRUCT_RIBBONS_MON_LIST,
     POKENAV_SUBSTRUCT_RIBBONS_MON_MENU,
-    POKENAV_SUBSTRUCT_CONDITION_GRAPH_MENU,
-    POKENAV_SUBSTRUCT_CONDITION_GRAPH_MENU_GFX,
     POKENAV_SUBSTRUCT_RIBBONS_SUMMARY_LIST,
     POKENAV_SUBSTRUCT_RIBBONS_SUMMARY_MENU,
     POKENAV_SUBSTRUCT_UNUSED,
@@ -96,7 +92,6 @@ enum
 enum
 {
     POKENAV_GFX_MAIN_MENU,
-    POKENAV_GFX_CONDITION_MENU,
     POKENAV_GFX_RIBBONS_MENU,
     POKENAV_GFX_MATCH_CALL_MENU,
     POKENAV_GFX_MAP_MENU_ZOOMED_OUT,
@@ -116,17 +111,11 @@ enum
 #define POKENAV_MENU_IDS_START 100000
 enum
 {
-    POKENAV_MAIN_MENU = POKENAV_MENU_IDS_START, // The main menu where the player selects Hoenn Map/Condition/Match Call/Ribbons
+    POKENAV_MAIN_MENU = POKENAV_MENU_IDS_START, // The main menu where the player selects Hoenn Map/Match Call/Ribbons
     POKENAV_MAIN_MENU_CURSOR_ON_MAP,
-    POKENAV_CONDITION_MENU,                     // The first Condition screen where the player selects Party or Search
-    POKENAV_CONDITION_SEARCH_MENU,              // The Condition search menu where the player selects a search parameter
     POKENAV_MAIN_MENU_CURSOR_ON_MATCH_CALL,
     POKENAV_MAIN_MENU_CURSOR_ON_RIBBONS,
     POKENAV_REGION_MAP,
-    POKENAV_CONDITION_GRAPH_PARTY,              // The Condition graph screen when Party has been selected
-    POKENAV_CONDITION_SEARCH_RESULTS,           // The list of results from a Condition search
-    POKENAV_CONDITION_GRAPH_SEARCH,             // The Condition graph screen when a search result has been selected
-    POKENAV_RETURN_CONDITION_SEARCH,            // Exited the graph screen back to the list of Condition search results
     POKENAV_MATCH_CALL,
     POKENAV_RIBBONS_MON_LIST,                   // The list of Pokémon with ribbons
     POKENAV_RIBBONS_SUMMARY_SCREEN,             // The ribbon summary screen shown when a Pokémon has been selected
@@ -138,8 +127,6 @@ enum
     POKENAV_MENU_TYPE_DEFAULT,
     POKENAV_MENU_TYPE_UNLOCK_MC,
     POKENAV_MENU_TYPE_UNLOCK_MC_RIBBONS,
-    POKENAV_MENU_TYPE_CONDITION,
-    POKENAV_MENU_TYPE_CONDITION_SEARCH,
     POKENAV_MENU_TYPE_COUNT
 };
 
@@ -148,32 +135,19 @@ enum
 enum
 {
     POKENAV_MENUITEM_MAP,
-    POKENAV_MENUITEM_CONDITION,
     POKENAV_MENUITEM_MATCH_CALL,
     POKENAV_MENUITEM_RIBBONS,
     POKENAV_MENUITEM_SWITCH_OFF,
-    POKENAV_MENUITEM_CONDITION_PARTY,
-    POKENAV_MENUITEM_CONDITION_SEARCH,
-    POKENAV_MENUITEM_CONDITION_CANCEL,
-    POKENAV_MENUITEM_CONDITION_SEARCH_COOL,
-    POKENAV_MENUITEM_CONDITION_SEARCH_BEAUTY,
-    POKENAV_MENUITEM_CONDITION_SEARCH_CUTE,
-    POKENAV_MENUITEM_CONDITION_SEARCH_SMART,
-    POKENAV_MENUITEM_CONDITION_SEARCH_TOUGH,
-    POKENAV_MENUITEM_CONDITION_SEARCH_CANCEL,
 };
 
-// Max menu options (condition search uses 6)
-#define MAX_POKENAV_MENUITEMS 6
+// Max menu options (Map, Match Call, Ribbons, Switch Off)
+#define MAX_POKENAV_MENUITEMS 4
 
 enum
 {
     HELPBAR_NONE,
     HELPBAR_MAP_ZOOMED_OUT,
     HELPBAR_MAP_ZOOMED_IN,
-    HELPBAR_CONDITION_MON_LIST,
-    HELPBAR_CONDITION_MON_STATUS,
-    HELPBAR_CONDITION_MARKINGS,
     HELPBAR_MC_TRAINER_LIST,
     HELPBAR_MC_CALL_MENU,
     HELPBAR_MC_CHECK_PAGE,
@@ -239,31 +213,10 @@ enum RegionMapFuncIds
 {
     POKENAV_MENU_FUNC_NONE,
     POKENAV_MENU_FUNC_MOVE_CURSOR,
-    POKENAV_MENU_FUNC_OPEN_CONDITION,
     POKENAV_MENU_FUNC_RETURN_TO_MAIN,
-    POKENAV_MENU_FUNC_OPEN_CONDITION_SEARCH,
-    POKENAV_MENU_FUNC_RETURN_TO_CONDITION,
     POKENAV_MENU_FUNC_NO_RIBBON_WINNERS,
     POKENAV_MENU_FUNC_RESHOW_DESCRIPTION,
     POKENAV_MENU_FUNC_OPEN_FEATURE,
-};
-
-enum
-{
-    CONDITION_FUNC_NONE,
-    CONDITION_FUNC_SLIDE_MON_IN,
-    CONDITION_FUNC_RETURN,
-    CONDITION_FUNC_NO_TRANSITION,
-    CONDITION_FUNC_SLIDE_MON_OUT,
-    CONDITION_FUNC_ADD_MARKINGS,
-    CONDITION_FUNC_CLOSE_MARKINGS,
-};
-
-enum
-{
-    CONDITION_LOAD_MON_INFO,
-    CONDITION_LOAD_GRAPH,
-    CONDITION_LOAD_MON_PIC,
 };
 
 #define POKENAV_MENU_FUNC_EXIT  -1
@@ -306,9 +259,6 @@ enum {
 };
 
 // pokenav.c
-void SetSelectedConditionSearch(u32 cursorPos);
-u32 GetSelectedConditionSearch(void);
-
 void CB2_InitPokeNav(void);
 u32 CreateLoopedTask(LoopedTask loopedTask, u32 priority);
 bool32 FuncIsActiveLoopedTask(LoopedTask func);
@@ -386,8 +336,6 @@ void ShutdownPokenav(void);
 bool32 PokenavCallback_Init_MainMenuCursorOnMap(void);
 bool32 PokenavCallback_Init_MainMenuCursorOnMatchCall(void);
 bool32 PokenavCallback_Init_MainMenuCursorOnRibbons(void);
-bool32 PokenavCallback_Init_ConditionMenu(void);
-bool32 PokenavCallback_Init_ConditionSearchMenu(void);
 u32 GetMenuHandlerCallback(void);
 void FreeMenuHandlerSubstruct1(void);
 int GetPokenavMenuType(void);
@@ -438,43 +386,6 @@ void CreateRegionMapLoopedTask(s32 index);
 bool32 IsRegionMapLoopedTaskActive(void);
 void FreeRegionMapSubstruct1(void);
 void FreeRegionMapSubstruct2(void);
-
-// pokenav_conditions.c
-bool32 PokenavCallback_Init_ConditionGraph_Party(void);
-bool32 PokenavCallback_Init_ConditionGraph_Search(void);
-u32 GetConditionGraphMenuCallback(void);
-void FreeConditionGraphMenuSubstruct1(void);
-bool32 LoadConditionGraphMenuGfx(void);
-bool32 IsConditionMenuSearchMode(void);
-struct ConditionGraph *GetConditionGraphPtr(void);
-u16 GetConditionGraphCurrentListIndex(void);
-u16 GetMonListCount(void);
-u8 GetNumConditionMonSparkles(void);
-bool32 LoadNextConditionMenuMonData(u8 mode);
-u8 TryGetMonMarkId(void);
-u8 *GetConditionMonNameText(u8 loadId);
-u8 *GetConditionMonLocationText(u8 loadId);
-u16 GetConditionMonDataBuffer(void);
-void *GetConditionMonPicGfx(u8 loadId);
-void *GetConditionMonPal(u8 loadId);
-
-// pokenav_conditions_gfx.c
-bool32 OpenConditionGraphMenu(void);
-void CreateConditionGraphMenuLoopedTask(s32 id);
-u32 IsConditionGraphMenuLoopedTaskActive(void);
-void FreeConditionGraphMenuSubstruct2(void);
-u8 GetMonMarkingsData(void);
-
-// pokenav_conditions_search_results.c
-bool32 PokenavCallback_Init_ConditionSearch(void);
-bool32 PokenavCallback_Init_ReturnToMonSearchList(void);
-u32 GetConditionSearchResultsCallback(void);
-void FreeSearchResultSubstruct1(void);
-bool32 OpenConditionSearchResults(void);
-bool32 OpenConditionSearchListFromGraph(void);
-void CreateSearchResultsLoopedTask(s32 idx);
-bool32 IsSearchResultLoopedTaskActive(void);
-void FreeSearchResultSubstruct2(void);
 
 // pokenav_ribbons_list.c
 bool32 PokenavCallback_Init_MonRibbonList(void);

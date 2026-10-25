@@ -8,7 +8,6 @@
 #include "event_data.h"
 #include "international_string_util.h"
 #include "link.h"
-#include "link_rfu.h"
 #include "main.h"
 #include "menu.h"
 #include "overworld.h"
@@ -101,28 +100,6 @@ void HasEnoughMonsForDoubleBattle(void)
         gSpecialVar_Result = PLAYER_HAS_ONE_USABLE_MON;
         break;
     }
-}
-
-static bool8 CheckPartyMonHasHeldItem(u16 item)
-{
-    int i;
-
-    for(i = 0; i < PARTY_SIZE; i++)
-    {
-        u16 species = GetMonData(&gPlayerParty[i], MON_DATA_SPECIES_OR_EGG);
-        if (species != SPECIES_NONE && species != SPECIES_EGG && GetMonData(&gPlayerParty[i], MON_DATA_HELD_ITEM) == item)
-            return TRUE;
-    }
-    return FALSE;
-}
-
-bool8 DoesPartyHaveEnigmaBerry(void)
-{
-    bool8 hasItem = CheckPartyMonHasHeldItem(ITEM_ENIGMA_BERRY);
-    if (hasItem == TRUE)
-        GetBerryNameByBerryType(ItemIdToBerryType(ITEM_ENIGMA_BERRY), gStringVar1);
-
-    return hasItem;
 }
 
 void CreateScriptedWildMon(u16 species, u8 level, u16 item)

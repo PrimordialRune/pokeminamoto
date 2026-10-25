@@ -142,7 +142,6 @@ struct
 };
 
 #include "data/text/ribbon_descriptions.h"
-#include "data/text/gift_ribbon_descriptions.h"
 
 static const u16 sRibbonIcons1_Pal[] = INCBIN_U16("graphics/pokenav/ribbons/icons1.gbapal");
 static const u16 sRibbonIcons2_Pal[] = INCBIN_U16("graphics/pokenav/ribbons/icons2.gbapal");
@@ -826,22 +825,6 @@ static void PrintRibbonNameAndDescription(struct Pokenav_RibbonsSummaryMenu *men
         // Print normal ribbon name/description
         for (i = 0; i < 2; i++)
             AddTextPrinterParameterized3(menu->ribbonCountWindowId, FONT_NORMAL, 0, (i * 16) + 1, color, TEXT_SKIP_DRAW, gRibbonDescriptionPointers[ribbonId][i]);
-    }
-    else
-    {
-        // ribbonId here is one of the 'gift' ribbon slots, used to read
-        // its actual value from giftRibbons to determine which specific
-        // gift ribbon it is
-        ribbonId = GIFT_RIBBONS[ribbonId - FIRST_GIFT_RIBBON];
-
-        // If 0, this gift ribbon slot is unoccupied
-        if (ribbonId == 0)
-            return;
-
-        // Print gift ribbon name/description
-        ribbonId--;
-        for (i = 0; i < 2; i++)
-            AddTextPrinterParameterized3(menu->ribbonCountWindowId, FONT_NORMAL, 0, (i * 16) + 1, color, TEXT_SKIP_DRAW, gGiftRibbonDescriptionPointers[ribbonId][i]);
     }
 
     CopyWindowToVram(menu->ribbonCountWindowId, COPYWIN_GFX);

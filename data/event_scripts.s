@@ -1,6 +1,5 @@
 #include "config.h"
 #include "constants/global.h"
-#include "constants/apprentice.h"
 #include "constants/battle.h"
 #include "constants/battle_arena.h"
 #include "constants/battle_dome.h"
@@ -36,8 +35,7 @@
 #include "constants/lilycove_lady.h"
 #include "constants/map_scripts.h"
 #include "constants/maps.h"
-#include "constants/removed_maps.h"
-#include "constants/mauville_old_man.h"
+#include "constants/parked_maps.h"
 #include "constants/metatile_labels.h"
 #include "constants/moves.h"
 #include "constants/party_menu.h"
@@ -49,10 +47,8 @@
 #include "constants/sound.h"
 #include "constants/species.h"
 #include "constants/trade.h"
-#include "constants/trainer_hill.h"
 #include "constants/trainers.h"
 #include "constants/tv.h"
-#include "constants/union_room.h"
 #include "constants/vars.h"
 #include "constants/weather.h"
 	.include "asm/macros.inc"
@@ -81,8 +77,8 @@ gSpecialVars::
 	.4byte gSpecialVar_Result
 	.4byte gSpecialVar_ItemId
 	.4byte gSpecialVar_LastTalked
-	.4byte gSpecialVar_ContestRank
-	.4byte gSpecialVar_ContestCategory
+	.4byte gSpecialVar_Unused_0x8010
+	.4byte gSpecialVar_Unused_0x8011
 	.4byte gSpecialVar_MonBoxId
 	.4byte gSpecialVar_MonBoxPos
 	.4byte gSpecialVar_Unused_0x8014
@@ -121,10 +117,7 @@ gStdScripts_End::
 	.include "data/scripts/shared_secret_base.inc"
 	.include "data/maps/BattleColosseum_2P/scripts.inc"
 	.include "data/maps/TradeCenter/scripts.inc"
-	.include "data/maps/RecordCorner/scripts.inc"
-	.include "data/maps/BattleColosseum_4P/scripts.inc"
 	.include "data/maps/InsideOfTruck/scripts.inc"
-	.include "data/maps/UnionRoom/scripts.inc"
 
 	.include "data/scripts/std_msgbox.inc"
 	.include "data/scripts/trainer_battle.inc"
@@ -203,7 +196,6 @@ EventScript_SetBrineyLocation_Route109::
 
 	.include "data/scripts/pkmn_center_nurse.inc"
 	.include "data/scripts/obtain_item.inc"
-	.include "data/scripts/record_mix.inc"
 	.include "data/scripts/pc.inc"
 
 @ scripts/notices.inc? signs.inc? See comment about text/notices.inc
@@ -224,12 +216,6 @@ Common_ShowEasyChatScreen::
 Common_EventScript_ReadyPetalburgGymForBattle::
 	clearflag FLAG_HIDE_PETALBURG_GYM_GREETER
 	setflag FLAG_PETALBURG_MART_EXPANDED_ITEMS
-	return
-
-Common_EventScript_BufferTrendyPhrase::
-	dotimebasedevents
-	setvar VAR_0x8004, 0
-	special BufferTrendyPhraseString
 	return
 
 EventScript_BackupMrBrineyLocation::
@@ -256,10 +242,6 @@ Common_EventScript_ShowNoRoomForDecor::
 
 Common_EventScript_NoRoomForDecor::
 	msgbox gText_NoRoomLeftForAnother, MSGBOX_DEFAULT
-	return
-
-Common_EventScript_SetAbnormalWeather::
-	setweather WEATHER_ABNORMAL
 	return
 
 Common_EventScript_PlayGymBadgeFanfare::
@@ -325,15 +307,6 @@ EventScript_HideMrBriney::
 	setvar VAR_BRINEY_LOCATION, 0
 	return
 
-RusturfTunnel_EventScript_SetRusturfTunnelOpen::
-	removeobject LOCALID_RUSTURF_TUNNEL_WANDAS_BF
-	removeobject LOCALID_RUSTURF_TUNNEL_WANDA
-	clearflag FLAG_HIDE_VERDANTURF_TOWN_WANDAS_HOUSE_WANDAS_BOYFRIEND
-	clearflag FLAG_HIDE_VERDANTURF_TOWN_WANDAS_HOUSE_WANDA
-	setvar VAR_RUSTURF_TUNNEL_STATE, 6
-	setflag FLAG_RUSTURF_TUNNEL_OPENED
-	return
-
 EventScript_UnusedBoardFerry::
 	delay 30
 	applymovement LOCALID_PLAYER, Common_Movement_WalkInPlaceFasterUp
@@ -367,7 +340,6 @@ Common_EventScript_PlayerHandedOverTheItem::
 
 	.include "data/scripts/movement.inc"
 	.include "data/scripts/check_furniture.inc"
-	.include "data/text/record_mix.inc"
 	.include "data/text/pc.inc"
 	.include "data/text/pkmn_center_nurse.inc"
 	.include "data/text/mart_clerk.inc"
@@ -410,9 +382,6 @@ gText_PokemonTrainerSchoolEmail::
 
 gText_PlayerHouseBootPC::
 	.string "{PLAYER} booted up the PC.$"
-
-gText_PokeblockLinkCanceled::
-	.string "The link was canceled.$"
 
 gText_UnusedNicknameReceivedPokemon::
 	.string "Want to give a nickname to\n"
@@ -467,18 +436,9 @@ gText_SorryTradeCenterInspections::
 	.string "I'm terribly sorry. The TRADE CENTER\n"
 	.string "is undergoing inspections.$"
 
-@ Unused
-gText_SorryRecordCornerPreparation::
-	.string "I'm terribly sorry. The RECORD CORNER\n"
-	.string "is under preparation.$"
-
 gText_PlayerHandedOverTheItem::
 	.string "{PLAYER} handed over the\n"
 	.string "{STR_VAR_1}.$"
-
-gText_ThankYouForAccessingMysteryGift::
-	.string "Thank you for accessing the\n"
-	.string "MYSTERY GIFT System.$"
 
 gText_PlayerFoundOneTMHM::
 	.string "{PLAYER} found one {STR_VAR_1}\n"
@@ -493,8 +453,6 @@ gText_LegendaryFlewAway::
 	.string "The {STR_VAR_1} flew away!$"
 
 	.include "data/text/pc_transfer.inc"
-	.include "data/text/questionnaire.inc"
-	.include "data/text/abnormal_weather.inc"
 
 EventScript_SelectWithoutRegisteredItem::
 	msgbox gText_SelectWithoutRegisteredItem, MSGBOX_SIGN
@@ -514,18 +472,6 @@ EventScript_CableClub_SetVarResult0::
 	setvar VAR_RESULT, 0
 	return
 
-Common_EventScript_UnionRoomAttendant::
-	call CableClub_EventScript_UnionRoomAttendant
-	end
-
-Common_EventScript_WirelessClubAttendant::
-	call CableClub_EventScript_WirelessClubAttendant
-	end
-
-Common_EventScript_DirectCornerAttendant::
-	call CableClub_EventScript_DirectCornerAttendant
-	end
-
 Common_EventScript_RemoveStaticPokemon::
 	fadescreenswapbuffers FADE_TO_BLACK
 	removeobject VAR_LAST_TALKED
@@ -543,27 +489,19 @@ Common_EventScript_LegendaryFlewAway::
 	end
 
 	.include "data/scripts/pc_transfer.inc"
-	.include "data/scripts/questionnaire.inc"
-	.include "data/scripts/abnormal_weather.inc"
 	.include "data/scripts/trainer_script.inc"
 	.include "data/scripts/berry_tree.inc"
 	.include "data/scripts/secret_base.inc"
 	.include "data/scripts/cable_club.inc"
 	.include "data/text/cable_club.inc"
 	.include "data/text/contest_strings.inc"
-	.include "data/text/contest_link.inc"
-	.include "data/text/contest_painting.inc"
 	.include "data/text/trick_house_mechadolls.inc"
 	.include "data/scripts/tv.inc"
-	.include "data/text/tv.inc"
-	.include "data/text/pokemon_news.inc"
-	.include "data/scripts/mauville_man.inc"
 	.include "data/scripts/field_move_scripts.inc"
 	.include "data/scripts/item_ball_scripts.inc"
 	.include "data/scripts/day_care.inc"
 	.include "data/scripts/flash.inc"
 	.include "data/scripts/players_house.inc"
-	.include "data/text/mauville_man.inc"
 	.include "data/text/trainers.inc"
 	.include "data/scripts/repel.inc"
 	.include "data/scripts/safari_zone.inc"
@@ -577,16 +515,13 @@ Common_EventScript_LegendaryFlewAway::
 	.include "data/text/check_furniture.inc"
 	.include "data/scripts/cave_hole.inc"
 	.include "data/text/match_call.inc"
-	.include "data/text/apprentice.inc"
 	.include "data/text/battle_dome.inc"
 	.include "data/scripts/battle_pike.inc"
-	.include "data/text/blend_master.inc"
+	.include "data/scripts/parked_frontier.inc"
 	.include "data/text/battle_tent.inc"
 	.include "data/text/event_ticket_2.inc"
 	.include "data/text/move_tutors.inc"
-	.include "data/scripts/trainer_hill.inc"
 	.include "data/scripts/test_signpost.inc"
-	.include "data/scripts/removed_maps.inc"
 #ifndef RELEASE
 	.include "data/scripts/debug.inc"
 #endif

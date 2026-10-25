@@ -18,7 +18,7 @@
 #include "constants/layouts.h"
 #include "constants/region_map_sections.h"
 #include "constants/trainers.h"
-#include "constants/removed_maps.h"
+#include "constants/parked_maps.h"
 
 // This file's functions.
 static void InitVerdanturfTentChallenge(void);

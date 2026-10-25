@@ -30,7 +30,6 @@
 #define B_ACTION_RUN                    3
 #define B_ACTION_SAFARI_WATCH_CAREFULLY 4
 #define B_ACTION_SAFARI_BALL            5
-#define B_ACTION_SAFARI_POKEBLOCK       6
 #define B_ACTION_SAFARI_GO_NEAR         7
 #define B_ACTION_SAFARI_RUN             8
 #define B_ACTION_WALLY_THROW            9
@@ -244,7 +243,6 @@ struct BattleResults
     u8 playerMon1Name[POKEMON_NAME_LENGTH + 1];    // 0x8
     u8 battleTurnCounter;     // 0x13
     u8 playerMon2Name[POKEMON_NAME_LENGTH + 1];    // 0x14
-    u8 pokeblockThrows;       // 0x1F
     u16 lastOpponentSpecies;  // 0x20
     u16 lastUsedMovePlayer;   // 0x22
     u16 lastUsedMoveOpponent; // 0x24
@@ -255,98 +253,12 @@ struct BattleResults
     u8 catchAttempts[POKEBALL_COUNT - 1];     // 0x36 Doesn't include Master ball
 };
 
-struct BattleTv_Side
-{
-    u32 spikesMonId:3;
-    u32 reflectMonId:3;
-    u32 lightScreenMonId:3;
-    u32 safeguardMonId:3;
-    u32 mistMonId:3;
-    u32 futureSightMonId:3;
-    u32 doomDesireMonId:3;
-    u32 perishSongMonId:3;
-    u32 wishMonId:3;
-    u32 grudgeMonId:3;
-    u32 usedMoveSlot:2;
-    u32 spikesMoveSlot:2;
-    u32 reflectMoveSlot:2;
-    u32 lightScreenMoveSlot:2;
-    u32 safeguardMoveSlot:2;
-    u32 mistMoveSlot:2;
-    u32 futureSightMoveSlot:2;
-    u32 doomDesireMoveSlot:2;
-    u32 perishSongMoveSlot:2;
-    u32 wishMoveSlot:2;
-    u32 grudgeMoveSlot:2;
-    u32 destinyBondMonId:3;
-    u32 destinyBondMoveSlot:2;
-    u32 faintCause:4;
-    u32 faintCauseMonId:3;
-    u32 explosion:1;
-    u32 explosionMoveSlot:2;
-    u32 explosionMonId:3;
-    u32 perishSong:1;
-};
-
-struct BattleTv_Position
-{
-    u32 curseMonId:3;
-    u32 leechSeedMonId:3;
-    u32 nightmareMonId:3;
-    u32 wrapMonId:3;
-    u32 attractMonId:3;
-    u32 confusionMonId:3;
-    u32 curseMoveSlot:2;
-    u32 leechSeedMoveSlot:2;
-    u32 nightmareMoveSlot:2;
-    u32 wrapMoveSlot:2;
-    u32 attractMoveSlot:2;
-    u32 confusionMoveSlot:2;
-    u32 waterSportMoveSlot:2;
-    u32 waterSportMonId:3;
-    u32 mudSportMonId:3;
-    u32 mudSportMoveSlot:2;
-    u32 ingrainMonId:3;
-    u32 ingrainMoveSlot:2;
-    u32 attackedByMonId:3;
-    u32 attackedByMoveSlot:2;
-};
-
-struct BattleTv_Mon
-{
-    u32 psnMonId:3;
-    u32 badPsnMonId:3;
-    u32 brnMonId:3;
-    u32 prlzMonId:3;
-    u32 slpMonId:3;
-    u32 frzMonId:3;
-    u32 psnMoveSlot:2;
-    u32 badPsnMoveSlot:2;
-    u32 brnMoveSlot:2;
-    u32 prlzMoveSlot:2;
-    u32 slpMoveSlot:2;
-    u32 frzMoveSlot:2;
-};
-
-struct BattleTv
-{
-    struct BattleTv_Mon mon[NUM_BATTLE_SIDES][PARTY_SIZE];
-    struct BattleTv_Position pos[NUM_BATTLE_SIDES][2]; // [side][flank]
-    struct BattleTv_Side side[NUM_BATTLE_SIDES];
-};
-
-struct BattleTvMovePoints
-{
-    s16 points[2][PARTY_SIZE * 4];
-};
-
 struct LinkBattlerHeader
 {
     u8 versionSignatureLo;
     u8 versionSignatureHi;
     u8 vsScreenHealthFlagsLo;
     u8 vsScreenHealthFlagsHi;
-    struct BattleEnigmaBerry battleEnigmaBerry;
 };
 
 struct BattleStruct
@@ -381,7 +293,6 @@ struct BattleStruct
     u8 caughtMonNick[POKEMON_NAME_LENGTH + 1];
     u8 unused_2;
     u8 safariGoNearCounter;
-    u8 safariPkblThrowCounter;
     u8 safariEscapeFactor;
     u8 safariCatchFactor;
     u8 linkBattleVsSpriteId_V; // The letter "V"
@@ -432,8 +343,6 @@ struct BattleStruct
     u8 wishPerishSongBattlerId;
     bool8 overworldWeatherDone;
     u8 atkCancelerTracker;
-    struct BattleTvMovePoints tvMovePoints;
-    struct BattleTv tv;
     u8 unused_7[0x28];
     u8 AI_monToSwitchIntoId[MAX_BATTLERS_COUNT];
     s8 arenaMindPoints[2];
@@ -697,7 +606,6 @@ extern u16 gIntroSlideFlags;
 extern u8 gSentPokesToOpponent[2];
 extern u16 gDynamicBasePower;
 extern u16 gExpShareExp;
-extern struct BattleEnigmaBerry gEnigmaBerries[MAX_BATTLERS_COUNT];
 extern struct BattleScripting gBattleScripting;
 extern struct BattleStruct *gBattleStruct;
 extern u8 *gLinkBattleSendBuffer;

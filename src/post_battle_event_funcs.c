@@ -6,17 +6,12 @@
 #include "load_save.h"
 #include "overworld.h"
 #include "script_pokemon_util.h"
-#include "tv.h"
 #include "constants/heal_locations.h"
 
 int GameClear(void)
 {
     int i;
     bool32 ribbonGet;
-    struct RibbonCounter {
-        u8 partyIndex;
-        u8 count;
-    } ribbonCounts[6];
 
     HealPlayerParty();
 
@@ -46,16 +41,12 @@ int GameClear(void)
     {
         struct Pokemon *mon = &gPlayerParty[i];
 
-        ribbonCounts[i].partyIndex = i;
-        ribbonCounts[i].count = 0;
-
         if (GetMonData(mon, MON_DATA_SANITY_HAS_SPECIES)
          && !GetMonData(mon, MON_DATA_SANITY_IS_EGG)
          && !GetMonData(mon, MON_DATA_CHAMPION_RIBBON))
         {
             u8 val[1] = {TRUE};
             SetMonData(mon, MON_DATA_CHAMPION_RIBBON, val);
-            ribbonCounts[i].count = GetRibbonCount(mon);
             ribbonGet = TRUE;
         }
     }
@@ -64,21 +55,6 @@ int GameClear(void)
     {
         IncrementGameStat(GAME_STAT_RECEIVED_RIBBONS);
         FlagSet(FLAG_SYS_RIBBON_GET);
-
-        for (i = 1; i < 6; i++)
-        {
-            if (ribbonCounts[i].count > ribbonCounts[0].count)
-            {
-                struct RibbonCounter prevBest = ribbonCounts[0];
-                ribbonCounts[0] = ribbonCounts[i];
-                ribbonCounts[i] = prevBest;
-            }
-        }
-
-        if (ribbonCounts[0].count > NUM_CUTIES_RIBBONS)
-        {
-            TryPutSpotTheCutiesOnAir(&gPlayerParty[ribbonCounts[0].partyIndex], MON_DATA_CHAMPION_RIBBON);
-        }
     }
 
     SetMainCallback2(CB2_DoHallOfFameScreen);

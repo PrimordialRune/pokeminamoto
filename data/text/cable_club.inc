@@ -32,10 +32,6 @@ CableClub_Text_NeedTwoMonsToTrade:
 	.string "For trading, you must have at\n"
 	.string "least two POKéMON with you.$"
 
-CableClub_Text_CantTradeEnigmaBerry:
-	.string "A POKéMON holding the {STR_VAR_1}\n"
-	.string "BERRY can't be traded.$"
-
 gText_PleaseWaitForLink::
 	.string "Please wait.\n"
 	.string "… … B Button: Cancel$"
@@ -224,10 +220,6 @@ CableClub_Text_NeedBerryForBerryCrush:
 CableClub_Text_NeedTwoMonsForUnionRoom:
 	.string "To enter the UNION ROOM, you must\n"
 	.string "have at least two POKéMON.$"
-
-CableClub_Text_NoEnigmaBerryInUnionRoom:
-	.string "No POKéMON holding the {STR_VAR_1}\n"
-	.string "BERRY may enter the UNION ROOM.$"
 
 CableClub_Text_UnionRoomAdapterNotConnected:
 	.string "This is the POKéMON WIRELESS CLUB\n"

@@ -440,12 +440,5 @@ bool8 MovementType_Invisible_Step0(struct ObjectEvent *objectEvent, struct Sprit
 bool8 MovementType_Invisible_Step1(struct ObjectEvent *objectEvent, struct Sprite *sprite);
 bool8 MovementType_Invisible_Step2(struct ObjectEvent *objectEvent, struct Sprite *sprite);
 
-u8 CreateVirtualObject(u8 graphicsId, u8 virtualObjId, s16 x, s16 y, u8 elevation, u8 direction);
-void TurnVirtualObject(u8 virtualObjId, u8 direction);
-void SetVirtualObjectGraphics(u8 virtualObjId, u8 graphicsId);
-void SetVirtualObjectInvisibility(u8 virtualObjId, bool32 invisible);
-bool32 IsVirtualObjectInvisible(u8 virtualObjId);
-void SetVirtualObjectSpriteAnim(u8 virtualObjId, u8 animNum);
-bool32 IsVirtualObjectAnimating(u8 virtualObjId);
 
 #endif //GUARD_EVENT_OBJECT_MOVEMENT_H

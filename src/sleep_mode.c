@@ -59,7 +59,7 @@ void SleepMode_Enter(void)
     u16 dispcnt, backdrop, ie;
 
     // Never while linked: the other side would time out.
-    if (gReceivedRemoteLinkPlayers || gWirelessCommType != 0 || gLinkTransferringData)
+    if (gReceivedRemoteLinkPlayers || gLinkTransferringData)
         return;
 
     WaitForKeysReleased();

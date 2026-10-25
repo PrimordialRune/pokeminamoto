@@ -60,12 +60,6 @@
 	special CallFrontierUtilFunc
 	.endm
 
-	@ Checks if the Battle Frontier TV special should air, and if so attempts to set it up
-	.macro frontier_checkairshow
-	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_CHECK_AIR_TV_SHOW
-	special CallFrontierUtilFunc
-	.endm
-
 	@ Get the status of the Frontier Brain (Not ready, Silver/Gold streak before symbols, Silver/Gold streak after symbols)
 	.macro frontier_getbrainstatus
 	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_GET_BRAIN_STATUS
@@ -124,12 +118,6 @@
 	@ Resets the party held items to what they were upon entering the challenge
 	.macro frontier_restorehelditems
 	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_RESTORE_HELD_ITEMS
-	special CallFrontierUtilFunc
-	.endm
-
-	@ Move the recorded battle to save data
-	.macro frontier_savebattle
-	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_SAVE_BATTLE
 	special CallFrontierUtilFunc
 	.endm
 

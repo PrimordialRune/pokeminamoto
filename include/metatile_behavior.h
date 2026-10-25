@@ -111,7 +111,6 @@ bool8 MetatileBehavior_IsRegionMap(u8 metatileBehavior);
 bool8 MetatileBehavior_IsClosedSootopolisDoor(u8 metatileBehavior);
 bool8 MetatileBehavior_IsSkyPillarClosedDoor(u8 metatileBehavior);
 bool8 MetatileBehavior_IsRoulette(u8 metatileBehavior);
-bool8 MetatileBehavior_IsPokeblockFeeder(u8 metatileBehavior);
 bool8 MetatileBehavior_IsSecretBaseJumpMat(u8 metatileBehavior);
 bool8 MetatileBehavior_IsSecretBaseSpinMat(u8 metatileBehavior);
 bool8 MetatileBehavior_IsLavaridgeB1FWarp(u8 metatileBehavior);
@@ -141,11 +140,8 @@ bool8 MetatileBehavior_IsTrashCan(u8 metatileBehavior);
 bool8 MetatileBehavior_IsShopShelf(u8 metatileBehavior);
 bool8 MetatileBehavior_IsBlueprint(u8 metatileBehavior);
 bool8 MetatileBehavior_IsBattlePyramidWarp(u8 metatileBehavior);
-bool8 MetatileBehavior_IsPlayerFacingWirelessBoxResults(u8 tile, u8 playerDir);
 bool8 MetatileBehavior_IsCableBoxResults2(u8 tile, u8 playerDir);
-bool8 MetatileBehavior_IsQuestionnaire(u8 metatileBehavior);
 bool8 MetatileBehavior_IsLongGrass_Duplicate(u8 metatileBehavior);
 bool8 MetatileBehavior_IsLongGrassSouthEdge(u8 metatileBehavior);
-bool8 MetatileBehavior_IsTrainerHillTimer(u8 metatileBehavior);
 
 #endif // GUARD_METATILE_BEHAVIOR_H

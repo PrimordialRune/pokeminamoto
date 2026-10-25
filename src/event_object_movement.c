@@ -6,14 +6,12 @@
 #include "event_data.h"
 #include "event_object_movement.h"
 #include "event_scripts.h"
-#include "faraway_island.h"
 #include "field_camera.h"
 #include "field_effect.h"
 #include "field_effect_helpers.h"
 #include "field_player_avatar.h"
 #include "fieldmap.h"
 #include "field_weather.h"
-#include "mauville_old_man.h"
 #include "metatile_behavior.h"
 #include "overworld.h"
 #include "palette.h"
@@ -21,16 +19,13 @@
 #include "sprite.h"
 #include "task.h"
 #include "trainer_see.h"
-#include "trainer_hill.h"
 #include "util.h"
 #include "debug_menu.h"
 #include "constants/event_object_movement.h"
 #include "constants/event_objects.h"
 #include "constants/field_effects.h"
 #include "constants/items.h"
-#include "constants/mauville_old_man.h"
 #include "constants/trainer_types.h"
-#include "constants/union_room.h"
 
 #define SPECIAL_LOCALIDS_START (min(LOCALID_CAMERA, \
                                 min(LOCALID_PLAYER, \
@@ -123,7 +118,6 @@ static void GetGroundEffectFlags_Seaweed(struct ObjectEvent *, u32 *);
 static void GetGroundEffectFlags_JumpLanding(struct ObjectEvent *, u32 *);
 static u8 ObjectEventGetNearbyReflectionType(struct ObjectEvent *);
 static u8 GetReflectionTypeByMetatileBehavior(u32);
-static void InitObjectPriorityByElevation(struct Sprite *, u8);
 static void ObjectEventUpdateSubpriority(struct ObjectEvent *, struct Sprite *);
 static void DoTracksGroundEffect_None(struct ObjectEvent *, struct Sprite *, u8);
 static void DoTracksGroundEffect_Footprints(struct ObjectEvent *, struct Sprite *, u8);
@@ -132,7 +126,6 @@ static void DoRippleFieldEffect(struct ObjectEvent *, struct Sprite *);
 static void DoGroundEffects_OnSpawn(struct ObjectEvent *, struct Sprite *);
 static void DoGroundEffects_OnBeginStep(struct ObjectEvent *, struct Sprite *);
 static void DoGroundEffects_OnFinishStep(struct ObjectEvent *, struct Sprite *);
-static void VirtualObject_UpdateAnim(struct Sprite *);
 static void ApplyLevitateMovement(u8);
 static bool8 MovementType_Disguise_Callback(struct ObjectEvent *, struct Sprite *);
 static bool8 MovementType_Buried_Callback(struct ObjectEvent *, struct Sprite *);
@@ -168,7 +161,6 @@ static void ObjectEventSetSingleMovement(struct ObjectEvent *, struct Sprite *, 
 static void SetSpriteDataForNormalStep(struct Sprite *, u8, u8);
 static void InitSpriteForFigure8Anim(struct Sprite *);
 static bool8 AnimateSpriteInFigure8(struct Sprite *);
-static void SpriteCB_VirtualObject(struct Sprite *);
 static void DoShadowFieldEffect(struct ObjectEvent *);
 static void SetJumpSpriteData(struct Sprite *, u8, u8, u8);
 static void SetWalkSlowSpriteData(struct Sprite *, u8);
@@ -1344,10 +1336,7 @@ u8 Unref_TryInitLocalObjectEvent(u8 localId)
     {
         if (CurrentBattlePyramidLocation() != PYRAMID_LOCATION_NONE)
             objectEventCount = GetNumBattlePyramidObjectEvents();
-        else if (InTrainerHill())
-            objectEventCount = HILL_TRAINERS_PER_FLOOR;
-        else
-            objectEventCount = gMapHeader.events->objectEventCount;
+        else objectEventCount = gMapHeader.events->objectEventCount;
 
         for (i = 0; i < objectEventCount; i++)
         {
@@ -1581,52 +1570,6 @@ u8 CreateObjectGraphicsSprite(u16 graphicsId, void (*callback)(struct Sprite *),
     return spriteId;
 }
 
-#define sVirtualObjId   data[0]
-#define sVirtualObjElev data[1]
-
-// "Virtual Objects" are a class of sprites used instead of a full object event.
-// Used when more objects are needed than the object event limit (for Contest / Battle Dome audiences and group members in Union Room).
-// A unique id is given as an argument and stored in the sprite data to allow referring back to the same virtual object.
-// They can be turned (and, in the case of the Union Room, animated teleporting in and out) but do not have movement types
-// or any of the other data normally associated with object events.
-u8 CreateVirtualObject(u8 graphicsId, u8 virtualObjId, s16 x, s16 y, u8 elevation, u8 direction)
-{
-    u8 spriteId;
-    struct Sprite *sprite;
-    struct SpriteTemplate spriteTemplate;
-    const struct SubspriteTable *subspriteTables;
-    const struct ObjectEventGraphicsInfo *graphicsInfo;
-
-    graphicsInfo = GetObjectEventGraphicsInfo(graphicsId);
-    CopyObjectGraphicsInfoToSpriteTemplate(graphicsId, SpriteCB_VirtualObject, &spriteTemplate, &subspriteTables);
-    *(u16 *)&spriteTemplate.paletteTag = TAG_NONE;
-    x += MAP_OFFSET;
-    y += MAP_OFFSET;
-    SetSpritePosToOffsetMapCoords(&x, &y, 8, 16);
-    spriteId = CreateSpriteAtEnd(&spriteTemplate, x, y, 0);
-    if (spriteId != MAX_SPRITES)
-    {
-        sprite = &gSprites[spriteId];
-        sprite->centerToCornerVecX = -(graphicsInfo->width >> 1);
-        sprite->centerToCornerVecY = -(graphicsInfo->height >> 1);
-        sprite->y += sprite->centerToCornerVecY;
-        sprite->oam.paletteNum = LoadObjectEventGraphicsPalette(graphicsInfo);
-
-        sprite->coordOffsetEnabled = TRUE;
-        sprite->sVirtualObjId = virtualObjId;
-        sprite->sVirtualObjElev = elevation;
-        if (subspriteTables != NULL)
-        {
-            SetSubspriteTables(sprite, subspriteTables);
-            sprite->subspriteMode = SUBSPRITES_IGNORE_PRIORITY;
-        }
-        InitObjectPriorityByElevation(sprite, elevation);
-        SetObjectSubpriorityByElevation(elevation, sprite, 1);
-        StartSpriteAnim(sprite, GetFaceDirectionAnimNum(direction));
-    }
-    return spriteId;
-}
-
 void TrySpawnObjectEvents(s16 cameraX, s16 cameraY)
 {
     u8 i;
@@ -1641,10 +1584,7 @@ void TrySpawnObjectEvents(s16 cameraX, s16 cameraY)
 
         if (CurrentBattlePyramidLocation() != PYRAMID_LOCATION_NONE)
             objectCount = GetNumBattlePyramidObjectEvents();
-        else if (InTrainerHill())
-            objectCount = HILL_TRAINERS_PER_FLOOR;
-        else
-            objectCount = gMapHeader.events->objectEventCount;
+        else objectCount = gMapHeader.events->objectEventCount;
 
         for (i = 0; i < objectCount; i++)
         {
@@ -1886,16 +1826,8 @@ static void SetBerryTreeGraphics(struct ObjectEvent *objectEvent, struct Sprite 
 
 const struct ObjectEventGraphicsInfo *GetObjectEventGraphicsInfo(u8 graphicsId)
 {
-    u8 bard;
-
     if (graphicsId >= OBJ_EVENT_GFX_VARS)
         graphicsId = VarGetObjectEventGraphicsId(graphicsId - OBJ_EVENT_GFX_VARS);
-
-    if (graphicsId == OBJ_EVENT_GFX_BARD)
-    {
-        bard = GetCurrentMauvilleOldMan();
-        return gMauvilleOldManGraphicsInfoPointers[bard];
-    }
 
     if (graphicsId >= NUM_OBJ_EVENT_GFX)
         graphicsId = OBJ_EVENT_GFX_NINJA_BOY;
@@ -4232,24 +4164,7 @@ bool8 CopyablePlayerMovement_WalkNormal(struct ObjectEvent *objectEvent, struct 
     s16 y;
 
     direction = playerDirection;
-    if (ObjectEventIsFarawayIslandMew(objectEvent))
-    {
-        direction = GetMewMoveDirection();
-        if (direction == DIR_NONE)
-        {
-            direction = playerDirection;
-            direction = GetCopyDirection(gInitialMovementTypeFacingDirections[objectEvent->movementType], objectEvent->directionSequenceIndex, direction);
-            ObjectEventMoveDestCoords(objectEvent, direction, &x, &y);
-            ObjectEventSetSingleMovement(objectEvent, sprite, GetFaceDirectionMovementAction(direction));
-            objectEvent->singleMovementActive = TRUE;
-            sprite->sTypeFuncId = 2;
-            return TRUE;
-        }
-    }
-    else
-    {
-        direction = GetCopyDirection(gInitialMovementTypeFacingDirections[objectEvent->movementType], objectEvent->directionSequenceIndex, direction);
-    }
+    direction = GetCopyDirection(gInitialMovementTypeFacingDirections[objectEvent->movementType], objectEvent->directionSequenceIndex, direction);
     ObjectEventMoveDestCoords(objectEvent, direction, &x, &y);
     ObjectEventSetSingleMovement(objectEvent, sprite, GetWalkNormalMovementAction(direction));
 
@@ -7779,12 +7694,6 @@ static void UpdateObjectEventElevationAndPriority(struct ObjectEvent *objEvent, 
     sprite->oam.priority = sElevationToPriority[objEvent->previousElevation];
 }
 
-static void InitObjectPriorityByElevation(struct Sprite *sprite, u8 elevation)
-{
-    sprite->subspriteTableNum = sElevationToSubspriteTableNum[elevation];
-    sprite->oam.priority = sElevationToPriority[elevation];
-}
-
 u8 ElevationToPriority(u8 elevation)
 {
     return sElevationToPriority[elevation];
@@ -8080,9 +7989,6 @@ static void (*const sGroundEffectFuncs[])(struct ObjectEvent *objEvent, struct S
 static void DoFlaggedGroundEffects(struct ObjectEvent *objEvent, struct Sprite *sprite, u32 flags)
 {
     u8 i;
-
-    if (ObjectEventIsFarawayIslandMew(objEvent) == TRUE && !ShouldMewShakeGrass(objEvent))
-        return;
 
     for (i = 0; i < ARRAY_COUNT(sGroundEffectFuncs); i++, flags >>= 1)
         if (flags & 1)
@@ -8618,181 +8524,6 @@ void UpdateObjectEventSpriteInvisibility(struct Sprite *sprite, bool8 invisible)
         sprite->invisible = TRUE;
     if ((s16)y >= DISPLAY_HEIGHT + 16 || y2 < -16)
         sprite->invisible = TRUE;
-}
-
-#define sInvisible     data[2]
-#define sAnimNum       data[3]
-#define sAnimState     data[4]
-
-static void SpriteCB_VirtualObject(struct Sprite *sprite)
-{
-    VirtualObject_UpdateAnim(sprite);
-    SetObjectSubpriorityByElevation(sprite->sVirtualObjElev, sprite, 1);
-    UpdateObjectEventSpriteInvisibility(sprite, sprite->sInvisible);
-}
-
-static void UNUSED DestroyVirtualObjects(void)
-{
-    int i;
-
-    for (i = 0; i < MAX_SPRITES; i++)
-    {
-        struct Sprite *sprite = &gSprites[i];
-        if(sprite->inUse && sprite->callback == SpriteCB_VirtualObject)
-            DestroySprite(sprite);
-    }
-}
-
-static int GetVirtualObjectSpriteId(u8 virtualObjId)
-{
-    int i;
-
-    for (i = 0; i < MAX_SPRITES; i++)
-    {
-        struct Sprite *sprite = &gSprites[i];
-        if (sprite->inUse && sprite->callback == SpriteCB_VirtualObject && (u8)sprite->sVirtualObjId == virtualObjId)
-            return i;
-    }
-    return MAX_SPRITES;
-}
-
-void TurnVirtualObject(u8 virtualObjId, u8 direction)
-{
-    u8 spriteId = GetVirtualObjectSpriteId(virtualObjId);
-
-    if (spriteId != MAX_SPRITES)
-        StartSpriteAnim(&gSprites[spriteId], GetFaceDirectionAnimNum(direction));
-}
-
-void SetVirtualObjectGraphics(u8 virtualObjId, u8 graphicsId)
-{
-    int spriteId = GetVirtualObjectSpriteId(virtualObjId);
-
-    if (spriteId != MAX_SPRITES)
-    {
-        struct Sprite *sprite = &gSprites[spriteId];
-        const struct ObjectEventGraphicsInfo *graphicsInfo = GetObjectEventGraphicsInfo(graphicsId);
-        u16 tileNum = sprite->oam.tileNum;
-
-        sprite->oam = *graphicsInfo->oam;
-        sprite->oam.tileNum = tileNum;
-        sprite->oam.paletteNum = LoadObjectEventGraphicsPalette(graphicsInfo);
-        sprite->images = graphicsInfo->images;
-
-        if (graphicsInfo->subspriteTables == NULL)
-        {
-            sprite->subspriteTables = NULL;
-            sprite->subspriteTableNum = 0;
-            sprite->subspriteMode = SUBSPRITES_OFF;
-        }
-        else
-        {
-            SetSubspriteTables(sprite, graphicsInfo->subspriteTables);
-            sprite->subspriteMode = SUBSPRITES_IGNORE_PRIORITY;
-        }
-        StartSpriteAnim(sprite, 0);
-    }
-}
-
-void SetVirtualObjectInvisibility(u8 virtualObjId, bool32 invisible)
-{
-    u8 spriteId = GetVirtualObjectSpriteId(virtualObjId);
-
-    if (spriteId == MAX_SPRITES)
-        return;
-
-    if (invisible)
-        gSprites[spriteId].sInvisible = TRUE;
-    else
-        gSprites[spriteId].sInvisible = FALSE;
-}
-
-bool32 IsVirtualObjectInvisible(u8 virtualObjId)
-{
-    u8 spriteId = GetVirtualObjectSpriteId(virtualObjId);
-
-    if (spriteId == MAX_SPRITES)
-        return FALSE;
-
-    return (gSprites[spriteId].sInvisible == TRUE);
-}
-
-void SetVirtualObjectSpriteAnim(u8 virtualObjId, u8 animNum)
-{
-    u8 spriteId = GetVirtualObjectSpriteId(virtualObjId);
-
-    if (spriteId != MAX_SPRITES)
-    {
-        gSprites[spriteId].sAnimNum = animNum;
-        gSprites[spriteId].sAnimState = 0;
-    }
-}
-
-static void MoveUnionRoomObjectUp(struct Sprite *sprite)
-{
-    switch(sprite->sAnimState)
-    {
-    case 0:
-        sprite->y2 = 0;
-        sprite->sAnimState++;
-    case 1:
-        sprite->y2 -= 8;
-        if (sprite->y2 == -DISPLAY_HEIGHT)
-        {
-            sprite->y2 = 0;
-            sprite->sInvisible = TRUE;
-            sprite->sAnimNum = 0;
-            sprite->sAnimState = 0;
-        }
-    }
-}
-
-static void MoveUnionRoomObjectDown(struct Sprite *sprite)
-{
-    switch(sprite->sAnimState)
-    {
-    case 0:
-        sprite->y2 = -DISPLAY_HEIGHT;
-        sprite->sAnimState++;
-    case 1:
-        sprite->y2 += 8;
-        if(sprite->y2 == 0)
-        {
-            sprite->sAnimNum = 0;
-            sprite->sAnimState = 0;
-        }
-    }
-}
-
-static void VirtualObject_UpdateAnim(struct Sprite *sprite)
-{
-    switch(sprite->sAnimNum)
-    {
-    case UNION_ROOM_SPAWN_IN:
-        MoveUnionRoomObjectDown(sprite);
-        break;
-    case UNION_ROOM_SPAWN_OUT:
-        MoveUnionRoomObjectUp(sprite);
-        break;
-    case 0:
-        break;
-    default:
-        sprite->sAnimNum = 0;
-        break;
-    }
-}
-
-bool32 IsVirtualObjectAnimating(u8 virtualObjId)
-{
-    u8 spriteId = GetVirtualObjectSpriteId(virtualObjId);
-
-    if (spriteId == MAX_SPRITES)
-        return FALSE;
-
-    if (gSprites[spriteId].sAnimNum != 0)
-        return TRUE;
-
-    return FALSE;
 }
 
 u32 StartFieldEffectForObjectEvent(u8 fieldEffectId, struct ObjectEvent *objectEvent)

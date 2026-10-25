@@ -15,11 +15,9 @@
 #include "gpu_regs.h"
 #include "io_reg.h"
 #include "link.h"
-#include "link_rfu.h"
 #include "load_save.h"
 #include "main.h"
 #include "menu.h"
-#include "mirage_tower.h"
 #include "metatile_behavior.h"
 #include "palette.h"
 #include "overworld.h"
@@ -33,12 +31,10 @@
 #include "constants/event_objects.h"
 #include "constants/songs.h"
 #include "constants/rgb.h"
-#include "trainer_hill.h"
 #include "fldeff.h"
 
 static void Task_ExitNonAnimDoor(u8);
 static void Task_ExitNonDoor(u8);
-static void Task_DoContestHallWarp(u8);
 static void FillPalBufferWhite(void);
 static void Task_ExitDoor(u8);
 static bool32 WaitForWeatherFadeIn(void);
@@ -117,20 +113,6 @@ static void SetPlayerVisibility(bool8 visible)
     SetPlayerInvisibility(!visible);
 }
 
-static void Task_WaitForUnionRoomFade(u8 taskId)
-{
-    if (WaitForWeatherFadeIn() == TRUE)
-        DestroyTask(taskId);
-}
-
-void FieldCB_ContinueScriptUnionRoom(void)
-{
-    LockPlayerFieldControls();
-    Overworld_PlaySpecialMapMusic();
-    FadeInFromBlack();
-    CreateTask(Task_WaitForUnionRoomFade, 10);
-}
-
 static void Task_WaitForFadeAndEnableScriptCtx(u8 taskID)
 {
     if (WaitForWeatherFadeIn() == TRUE)
@@ -190,7 +172,7 @@ void FieldCB_ReturnToFieldCableLink(void)
     CreateTask(Task_ReturnToFieldCableLink, 10);
 }
 
-static void Task_ReturnToFieldWirelessLink(u8 taskId)
+static void Task_ReturnToFieldStandbyLink(u8 taskId)
 {
     struct Task *task = &gTasks[taskId];
 
@@ -201,12 +183,7 @@ static void Task_ReturnToFieldWirelessLink(u8 taskId)
         task->tState++;
         break;
     case 1:
-        if (!IsLinkTaskFinished())
-        {
-            if (++task->data[1] > 1800)
-                RfuSetErrorParams(F_RFU_ERROR_6 | F_RFU_ERROR_7);
-        }
-        else
+        if (IsLinkTaskFinished())
         {
             WarpFadeInScreen();
             task->tState++;
@@ -223,35 +200,12 @@ static void Task_ReturnToFieldWirelessLink(u8 taskId)
     }
 }
 
-void Task_ReturnToFieldRecordMixing(u8 taskId)
-{
-    struct Task *task = &gTasks[taskId];
-
-    switch (task->tState)
-    {
-    case 0:
-        SetLinkStandbyCallback();
-        task->tState++;
-        break;
-    case 1:
-        if (IsLinkTaskFinished())
-            task->tState++;
-        break;
-    case 2:
-        StartSendingKeysToLink();
-        ResetAllMultiplayerState();
-        UnlockPlayerFieldControls();
-        DestroyTask(taskId);
-        break;
-    }
-}
-
-void FieldCB_ReturnToFieldWirelessLink(void)
+void FieldCB_ReturnToFieldStandbyLink(void)
 {
     LockPlayerFieldControls();
     Overworld_PlaySpecialMapMusic();
     FillPalBufferBlack();
-    CreateTask(Task_ReturnToFieldWirelessLink, 10);
+    CreateTask(Task_ReturnToFieldStandbyLink, 10);
 }
 
 static void SetUpWarpExitTask(void)
@@ -289,8 +243,7 @@ void FieldCB_WarpExitFadeFromWhite(void)
 
 void FieldCB_WarpExitFadeFromBlack(void)
 {
-    if (!OnTrainerHillEReaderChallengeFloor()) // always false
-        Overworld_PlaySpecialMapMusic();
+    Overworld_PlaySpecialMapMusic();
     FadeInFromBlack();
     SetUpWarpExitTask();
     LockPlayerFieldControls();
@@ -569,14 +522,6 @@ void DoMossdeepGymWarp(void)
     gFieldCallback = FieldCB_MossdeepGymWarpExit;
 }
 
-void DoPortholeWarp(void)
-{
-    LockPlayerFieldControls();
-    WarpFadeOutScreen();
-    CreateTask(Task_WarpAndLoadMap, 10);
-    gFieldCallback = FieldCB_ShowPortholeView;
-}
-
 static void Task_DoCableClubWarp(u8 taskId)
 {
     struct Task *task = &gTasks[taskId];
@@ -658,11 +603,6 @@ static void Task_WarpAndLoadMap(u8 taskId)
     case 1:
         if (!PaletteFadeActive())
         {
-            if (task->data[1] == 0)
-            {
-                ClearMirageTowerPulseBlendEffect();
-                task->data[1] = 1;
-            }
             if (BGMusicStopped())
                 task->tState++;
         }
@@ -726,42 +666,6 @@ static void Task_DoDoorWarp(u8 taskId)
         task->func = Task_WarpAndLoadMap;
         break;
     }
-}
-
-static void Task_DoContestHallWarp(u8 taskId)
-{
-    struct Task *task = &gTasks[taskId];
-
-    switch (task->tState)
-    {
-    case 0:
-        FreezeObjectEvents();
-        LockPlayerFieldControls();
-        task->tState++;
-        break;
-    case 1:
-        if (!PaletteFadeActive() && BGMusicStopped())
-        {
-            task->tState++;
-        }
-        break;
-    case 2:
-        WarpIntoMap();
-        SetMainCallback2(CB2_ReturnToFieldContestHall);
-        DestroyTask(taskId);
-        break;
-    }
-}
-
-void DoContestHallWarp(void)
-{
-    LockPlayerFieldControls();
-    TryFadeOutOldMapMusic();
-    WarpFadeOutScreen();
-    PlayRainStoppingSoundEffect();
-    PlaySE(SE_EXIT);
-    gFieldCallback = FieldCB_WarpExitFadeFromBlack;
-    CreateTask(Task_DoContestHallWarp, 10);
 }
 
 static void SetFlashScanlineEffectWindowBoundary(u16 *dest, u32 y, s32 left, s32 right)

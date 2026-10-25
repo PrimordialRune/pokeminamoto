@@ -999,8 +999,7 @@ void AnimTask_HazeScrollingFog(u8 taskId)
     SetAnimBgAttribute(1, BG_ANIM_PRIORITY, 1);
     SetAnimBgAttribute(1, BG_ANIM_SCREEN_SIZE, 0);
 
-    if (!IsContest())
-        SetAnimBgAttribute(1, BG_ANIM_CHAR_BASE_BLOCK, 1);
+    SetAnimBgAttribute(1, BG_ANIM_CHAR_BASE_BLOCK, 1);
 
     gBattle_BG1_X = 0;
     gBattle_BG1_Y = 0;
@@ -1067,8 +1066,7 @@ static void AnimTask_HazeScrollingFog_Step(u8 taskId)
         gTasks[taskId].data[12]++;
         // fall through
     case 4:
-        if (!IsContest())
-            SetAnimBgAttribute(1, BG_ANIM_CHAR_BASE_BLOCK, 0);
+        SetAnimBgAttribute(1, BG_ANIM_CHAR_BASE_BLOCK, 0);
 
         gBattle_BG1_X = 0;
         gBattle_BG1_Y = 0;
@@ -1104,8 +1102,7 @@ void AnimTask_MistBallFog(u8 taskId)
     SetAnimBgAttribute(1, BG_ANIM_PRIORITY, 1);
     SetAnimBgAttribute(1, BG_ANIM_SCREEN_SIZE, 0);
 
-    if (!IsContest())
-        SetAnimBgAttribute(1, BG_ANIM_CHAR_BASE_BLOCK, 1);
+    SetAnimBgAttribute(1, BG_ANIM_CHAR_BASE_BLOCK, 1);
 
     gBattle_BG1_X = 0;
     gBattle_BG1_Y = 0;
@@ -1169,8 +1166,7 @@ static void AnimTask_MistBallFog_Step(u8 taskId)
 
         // fall through
     case 4:
-        if (!IsContest())
-            SetAnimBgAttribute(1, BG_ANIM_CHAR_BASE_BLOCK, 0);
+        SetAnimBgAttribute(1, BG_ANIM_CHAR_BASE_BLOCK, 0);
 
         gBattle_BG1_X = 0;
         gBattle_BG1_Y = 0;
@@ -1228,11 +1224,6 @@ static void InitPoisonGasCloudAnim(struct Sprite *sprite)
         sprite->data[7] |= GetBattlerSpriteBGPriority(gBattleAnimTarget) << 8;
     }
 
-    if (IsContest())
-    {
-        sprite->data[6] = 1;
-        sprite->subpriority = 0x80;
-    }
 
     InitAnimLinearTranslation(sprite);
     sprite->callback = MovePoisonGasCloud;
@@ -1263,9 +1254,7 @@ static void MovePoisonGasCloud(struct Sprite *sprite)
             sprite->data[3] = sprite->y;
             sprite->data[4] = sprite->y + 29;
             sprite->data[7]++;
-            if (IsContest())
-                sprite->data[5] = 80;
-            else if (GET_BATTLER_SIDE2(gBattleAnimTarget) != B_SIDE_PLAYER)
+            if (GET_BATTLER_SIDE2(gBattleAnimTarget) != B_SIDE_PLAYER)
                 sprite->data[5] = 204;
             else
                 sprite->data[5] = 80;
@@ -1282,26 +1271,13 @@ static void MovePoisonGasCloud(struct Sprite *sprite)
         value = gSineTable[sprite->data[5]];
         sprite->x2 += value >> 3;
         sprite->y2 += (gSineTable[sprite->data[5] + 0x40] * -3) >> 8;
-        if (!IsContest())
-        {
-            u16 var0 = sprite->data[5] - 0x40;
-            if (var0 <= 0x7F)
-                sprite->oam.priority = sprite->data[7] >> 8;
-            else
-                sprite->oam.priority = (sprite->data[7] >> 8) + 1;
-
-            sprite->data[5] = (sprite->data[5] + 4) & 0xFF;
-        }
+        u16 var0 = sprite->data[5] - 0x40;
+        if (var0 <= 0x7F)
+            sprite->oam.priority = sprite->data[7] >> 8;
         else
-        {
-            u16 var0 = sprite->data[5] - 0x40;
-            if (var0 <= 0x7F)
-                sprite->subpriority = 128;
-            else
-                sprite->subpriority = 140;
+            sprite->oam.priority = (sprite->data[7] >> 8) + 1;
 
-            sprite->data[5] = (sprite->data[5] - 4) & 0xFF;
-        }
+        sprite->data[5] = (sprite->data[5] + 4) & 0xFF;
 
         if (sprite->data[0] <= 0)
         {
@@ -1309,9 +1285,7 @@ static void MovePoisonGasCloud(struct Sprite *sprite)
             sprite->data[1] = sprite->x += sprite->x2;
             sprite->data[3] = sprite->y += sprite->y2;
             sprite->data[4] = sprite->y + 4;
-            if (IsContest())
-                sprite->data[2] = -16;
-            else if (GET_BATTLER_SIDE2(gBattleAnimTarget) != B_SIDE_PLAYER)
+            if (GET_BATTLER_SIDE2(gBattleAnimTarget) != B_SIDE_PLAYER)
                 sprite->data[2] = DISPLAY_WIDTH + 16;
             else
                 sprite->data[2] = -16;

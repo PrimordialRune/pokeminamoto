@@ -46,17 +46,6 @@ enum {
     REQUEST_SPEED_BATTLE,
     REQUEST_SPATK_BATTLE,
     REQUEST_SPDEF_BATTLE,
-    REQUEST_COOL_BATTLE,
-    REQUEST_BEAUTY_BATTLE,
-    REQUEST_CUTE_BATTLE,
-    REQUEST_SMART_BATTLE,
-    REQUEST_TOUGH_BATTLE,
-    REQUEST_SHEEN_BATTLE,
-    REQUEST_COOL_RIBBON_BATTLE,
-    REQUEST_BEAUTY_RIBBON_BATTLE,
-    REQUEST_CUTE_RIBBON_BATTLE,
-    REQUEST_SMART_RIBBON_BATTLE,
-    REQUEST_TOUGH_RIBBON_BATTLE,
 };
 
 // Accessors for gBattleControllerExecFlags.
@@ -281,7 +270,7 @@ void BtlController_EmitHidePartyStatusSummary(u8 bufferId);
 void BtlController_EmitEndBounceEffect(u8 bufferId);
 void BtlController_EmitSpriteInvisibility(u8 bufferId, bool8 isInvisible);
 void BtlController_EmitBattleAnimation(u8 bufferId, u8 animationId, u16 argument);
-void BtlController_EmitLinkStandbyMsg(u8 bufferId, u8 mode, bool32 record);
+void BtlController_EmitLinkStandbyMsg(u8 bufferId, u8 mode);
 void BtlController_EmitResetActionMoveSelection(u8 bufferId, u8 caseId);
 void BtlController_EmitEndLinkBattle(u8 bufferId, u8 battleOutcome);
 
@@ -300,7 +289,6 @@ void ActionSelectionDestroyCursorAt(u8 cursorPosition);
 void InitMoveSelectionsVarsAndStrings(void);
 
 // recorded player controller
-void SetControllerToRecordedPlayer(void);
 
 // opponent controller
 void SetControllerToOpponent(void);
@@ -315,7 +303,6 @@ void SetControllerToSafari(void);
 void SetControllerToWally(void);
 
 // recorded opponent controller
-void SetControllerToRecordedOpponent(void);
 
 // link opponent
 void SetControllerToLinkOpponent(void);

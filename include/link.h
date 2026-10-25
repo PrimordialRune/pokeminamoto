@@ -2,14 +2,9 @@
 #define GUARD_LINK_H
 
 #define MAX_LINK_PLAYERS 4
-#define MAX_RFU_PLAYERS 5
 #define CMD_LENGTH 8
 #define QUEUE_CAPACITY 50
-#ifdef FREE_FOUR_PLAYER_LINK
 #define LINK_QUEUE_PLAYERS 2 // the cable link refuses to start with more
-#else
-#define LINK_QUEUE_PLAYERS MAX_LINK_PLAYERS
-#endif
 #define OVERWORLD_RECV_QUEUE_MAX 3
 #define BLOCK_BUFFER_SIZE 0x100
 
@@ -59,7 +54,6 @@
 #define LINKCMD_BLENDER_SCORE_MISS      0x2345
 #define LINKCMD_READY_EXIT_STANDBY      0x2FFE
 #define LINKCMD_SEND_PACKET             0x2FFF
-#define LINKCMD_BLENDER_SEND_KEYS       0x4444
 #define LINKCMD_BLENDER_SCORE_BEST      0x4523
 #define LINKCMD_BLENDER_SCORE_GOOD      0x5432
 #define LINKCMD_DUMMY_1                 0x5555
@@ -71,7 +65,6 @@
 #define LINKCMD_COUNTDOWN               0x7FFF
 #define LINKCMD_CONT_BLOCK              0x8888
 #define LINKCMD_BLENDER_NO_BERRIES      0x9999
-#define LINKCMD_BLENDER_NO_PBLOCK_SPACE 0xAAAA
 #define LINKCMD_SEND_ITEM               0xAAAB
 #define LINKCMD_READY_TO_TRADE          0xAABB
 #define LINKCMD_READY_FINISH_TRADE      0xABCD
@@ -243,20 +236,18 @@ struct BlockRequest
 };
 
 extern struct Link gLink;
-extern u16 ALIGNED(4) gRecvCmds[MAX_RFU_PLAYERS][CMD_LENGTH];
+extern u16 ALIGNED(4) gRecvCmds[MAX_LINK_PLAYERS][CMD_LENGTH];
 extern u8 gBlockSendBuffer[BLOCK_BUFFER_SIZE];
 extern u16 gLinkType;
 extern u32 gLinkStatus;
-extern u16 gBlockRecvBuffer[MAX_RFU_PLAYERS][BLOCK_BUFFER_SIZE / 2];
+extern u16 gBlockRecvBuffer[MAX_LINK_PLAYERS][BLOCK_BUFFER_SIZE / 2];
 extern u16 gSendCmd[CMD_LENGTH];
-extern struct LinkPlayer gLinkPlayers[MAX_RFU_PLAYERS];
+extern struct LinkPlayer gLinkPlayers[MAX_LINK_PLAYERS];
 extern bool8 gReceivedRemoteLinkPlayers;
-extern u32 gBerryBlenderKeySendAttempts;
 extern bool8 gLinkVSyncDisabled;
 extern u32 gLinkStatus;
 
 
-bool8 IsWirelessAdapterConnected(void);
 void Task_DestroySelf(u8 taskId);
 void OpenLink(void);
 void CloseLink(void);
@@ -287,26 +278,20 @@ void LinkVSync(void);
 void Timer3Intr(void);
 void SerialCB(void);
 bool32 InUnionRoom(void);
-void LoadWirelessStatusIndicatorSpriteGfx(void);
 bool8 IsLinkTaskFinished(void);
-void CreateWirelessStatusIndicatorSprite(u8 x, u8 y);
 void SetLinkStandbyCallback(void);
-void SetWirelessCommType1(void);
 void CheckShouldAdvanceLinkState(void);
 void SetCloseLinkCallback(void);
 bool8 HandleLinkConnection(void);
 void SetLinkDebugValues(u32 seed, u32 flags);
-void SetBerryBlenderLinkCallback(void);
 void SetSuppressLinkErrorMessage(bool8 flag);
 void ConvertLinkPlayerName(struct LinkPlayer *player);
 void ClearSavedLinkPlayers(void);
-void SetLinkErrorBuffer(u32 status, u8 lastSendQueueCount, u8 lastRecvQueueCount, bool8 disconnected);
 void LocalLinkPlayerToBlock(void);
 void LinkPlayerFromBlock(u32 who);
 bool32 Link_AnyPartnersPlayingFRLG_JP(void);
 void ResetLinkPlayerCount(void);
 void SaveLinkPlayers(u8 playerCount);
-void SetWirelessCommType0(void);
 bool32 IsLinkRecvQueueAtOverworldMax(void);
 
 extern u16 gLinkPartnersHeldKeys[6];
@@ -322,7 +307,6 @@ extern bool8 gReadyToExitStandby[MAX_LINK_PLAYERS];
 extern bool8 gReadyToCloseLink[MAX_LINK_PLAYERS];
 extern u16 gReadyCloseLinkType;
 extern u8 gSuppressLinkErrorMessage;
-extern u8 gWirelessCommType;
 extern bool8 gSavedLinkPlayerCount;
 extern u8 gSavedMultiplayerId;
 extern struct LinkTestBGInfo gLinkTestBGInfo;

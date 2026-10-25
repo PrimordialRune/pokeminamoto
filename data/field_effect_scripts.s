@@ -316,7 +316,6 @@ gFieldEffectScript_FieldMoveShowMonInit::
 	field_eff_end
 
 gFieldEffectScript_UsePuzzleEffect::
-	field_eff_callnative FldEff_UsePuzzleEffect
 	field_eff_end
 
 gFieldEffectScript_SecretBaseBootPC::

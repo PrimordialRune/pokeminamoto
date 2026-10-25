@@ -1,7 +1,6 @@
 #include "global.h"
 #include "script.h"
 #include "event_data.h"
-#include "mystery_gift.h"
 #include "util.h"
 #include "constants/event_objects.h"
 #include "constants/map_scripts.h"
@@ -20,7 +19,6 @@ enum {
     CONTEXT_SHUTDOWN,
 };
 
-extern const u8 *gRamScriptRetAddr;
 
 static u8 sGlobalScriptContextStatus;
 static struct ScriptContext sGlobalScriptContext;
@@ -375,141 +373,3 @@ void TryRunOnWarpIntoMapScript(void)
     if (ptr)
         RunScriptImmediately(ptr);
 }
-
-#ifdef FREE_MYSTERY_EVENT_BUFFERS
-// Mystery Event scripts have no save space, so every RAM script is "missing".
-u32 CalculateRamScriptChecksum(void)
-{
-    return 0;
-}
-
-void ClearRamScript(void)
-{
-}
-
-bool8 InitRamScript(const u8 *script, u16 scriptSize, u8 mapGroup, u8 mapNum, u8 localId)
-{
-    return FALSE;
-}
-
-const u8 *GetRamScript(u8 localId, const u8 *script)
-{
-    gRamScriptRetAddr = NULL;
-    return script;
-}
-
-bool32 ValidateSavedRamScript(void)
-{
-    return FALSE;
-}
-
-u8 *GetSavedRamScriptIfValid(void)
-{
-    return NULL;
-}
-
-void InitRamScript_NoObjectEvent(u8 *script, u16 scriptSize)
-{
-}
-#else
-u32 CalculateRamScriptChecksum(void)
-{
-    return CalcCRC16WithTable((u8 *)(&gSaveBlock1Ptr->ramScript.data), sizeof(gSaveBlock1Ptr->ramScript.data));
-}
-
-void ClearRamScript(void)
-{
-    CpuFill32(0, &gSaveBlock1Ptr->ramScript, sizeof(struct RamScript));
-}
-
-bool8 InitRamScript(const u8 *script, u16 scriptSize, u8 mapGroup, u8 mapNum, u8 localId)
-{
-    struct RamScriptData *scriptData = &gSaveBlock1Ptr->ramScript.data;
-
-    ClearRamScript();
-
-    if (scriptSize > sizeof(scriptData->script))
-        return FALSE;
-
-    scriptData->magic = RAM_SCRIPT_MAGIC;
-    scriptData->mapGroup = mapGroup;
-    scriptData->mapNum = mapNum;
-    scriptData->localId = localId;
-    memcpy(scriptData->script, script, scriptSize);
-    gSaveBlock1Ptr->ramScript.checksum = CalculateRamScriptChecksum();
-    return TRUE;
-}
-
-const u8 *GetRamScript(u8 localId, const u8 *script)
-{
-    struct RamScriptData *scriptData = &gSaveBlock1Ptr->ramScript.data;
-    gRamScriptRetAddr = NULL;
-    if (scriptData->magic != RAM_SCRIPT_MAGIC)
-        return script;
-    if (scriptData->mapGroup != gSaveBlock1Ptr->location.mapGroup)
-        return script;
-    if (scriptData->mapNum != gSaveBlock1Ptr->location.mapNum)
-        return script;
-    if (scriptData->localId != localId)
-        return script;
-    if (CalculateRamScriptChecksum() != gSaveBlock1Ptr->ramScript.checksum)
-    {
-        ClearRamScript();
-        return script;
-    }
-    else
-    {
-        gRamScriptRetAddr = script;
-        return scriptData->script;
-    }
-}
-
-#define NO_OBJECT LOCALID_PLAYER
-
-bool32 ValidateSavedRamScript(void)
-{
-    struct RamScriptData *scriptData = &gSaveBlock1Ptr->ramScript.data;
-    if (scriptData->magic != RAM_SCRIPT_MAGIC)
-        return FALSE;
-    if (scriptData->mapGroup != MAP_GROUP(MAP_UNDEFINED))
-        return FALSE;
-    if (scriptData->mapNum != MAP_NUM(MAP_UNDEFINED))
-        return FALSE;
-    if (scriptData->localId != NO_OBJECT)
-        return FALSE;
-    if (CalculateRamScriptChecksum() != gSaveBlock1Ptr->ramScript.checksum)
-        return FALSE;
-    return TRUE;
-}
-
-u8 *GetSavedRamScriptIfValid(void)
-{
-    struct RamScriptData *scriptData = &gSaveBlock1Ptr->ramScript.data;
-    if (!ValidateSavedWonderCard())
-        return NULL;
-    if (scriptData->magic != RAM_SCRIPT_MAGIC)
-        return NULL;
-    if (scriptData->mapGroup != MAP_GROUP(MAP_UNDEFINED))
-        return NULL;
-    if (scriptData->mapNum != MAP_NUM(MAP_UNDEFINED))
-        return NULL;
-    if (scriptData->localId != NO_OBJECT)
-        return NULL;
-    if (CalculateRamScriptChecksum() != gSaveBlock1Ptr->ramScript.checksum)
-    {
-        ClearRamScript();
-        return NULL;
-    }
-    else
-    {
-        return scriptData->script;
-    }
-}
-
-void InitRamScript_NoObjectEvent(u8 *script, u16 scriptSize)
-{
-    if (scriptSize > sizeof(gSaveBlock1Ptr->ramScript.data.script))
-        scriptSize = sizeof(gSaveBlock1Ptr->ramScript.data.script);
-    InitRamScript(script, scriptSize, MAP_GROUP(MAP_UNDEFINED), MAP_NUM(MAP_UNDEFINED), NO_OBJECT);
-}
-#endif // FREE_MYSTERY_EVENT_BUFFERS

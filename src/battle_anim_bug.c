@@ -200,13 +200,7 @@ static void AnimMegahornHorn(struct Sprite *sprite)
 {
     CMD_ARGS(x1, y1, x2, y2, duration);
 
-    if (IsContest())
-    {
-        StartSpriteAffineAnim(sprite, 2);
-        cmd->x2 = -cmd->x2;
-        cmd->x1 = -cmd->x1;
-    }
-    else if (GetBattlerSide(gBattleAnimTarget) == B_SIDE_PLAYER)
+    if (GetBattlerSide(gBattleAnimTarget) == B_SIDE_PLAYER)
     {
         StartSpriteAffineAnim(sprite, 1);
         cmd->y1 = -cmd->y1;
@@ -230,12 +224,7 @@ static void AnimLeechLifeNeedle(struct Sprite *sprite)
 {
     CMD_ARGS(x, y, duration);
 
-    if (IsContest())
-    {
-        cmd->x = -cmd->x;
-        StartSpriteAffineAnim(sprite, 2);
-    }
-    else if (GetBattlerSide(gBattleAnimTarget) == B_SIDE_PLAYER)
+    if (GetBattlerSide(gBattleAnimTarget) == B_SIDE_PLAYER)
     {
         cmd->y = -cmd->y;
         cmd->x = -cmd->x;
@@ -259,8 +248,6 @@ static void AnimTranslateWebThread(struct Sprite *sprite)
 {
     CMD_ARGS(x, y, unk2, amplitude, targetsBoth);
 
-    if (IsContest())
-        cmd->unk2 /= 2;
 
     InitSpritePosToAnimAttacker(sprite, TRUE);
     sprite->data[0] = cmd->unk2;
@@ -370,21 +357,14 @@ static void AnimTranslateStinger(struct Sprite *sprite)
     s16 lVarX, lVarY;
     u16 rot;
 
-    if (IsContest())
+    if (GetBattlerSide(gBattleAnimAttacker))
     {
         cmd->targetX = -cmd->targetX;
-    }
-    else
-    {
-        if (GetBattlerSide(gBattleAnimAttacker))
-        {
-            cmd->targetX = -cmd->targetX;
-            cmd->intialY = -cmd->intialY;
-            cmd->targetY = -cmd->targetY;
-        }
+        cmd->intialY = -cmd->intialY;
+        cmd->targetY = -cmd->targetY;
     }
 
-    if (!IsContest() && GetBattlerSide(gBattleAnimAttacker) == GetBattlerSide(gBattleAnimTarget))
+    if (GetBattlerSide(gBattleAnimAttacker) == GetBattlerSide(gBattleAnimTarget))
     {
         if (GetBattlerPosition(gBattleAnimTarget) == B_POSITION_PLAYER_LEFT
          || GetBattlerPosition(gBattleAnimTarget) == B_POSITION_OPPONENT_LEFT)

@@ -3,8 +3,6 @@
 #include "crt0.h"
 #include "malloc.h"
 #include "link.h"
-#include "link_rfu.h"
-#include "librfu.h"
 #include "m4a.h"
 #include "bg.h"
 #include "rtc.h"
@@ -23,7 +21,6 @@
 #include "text.h"
 #include "intro.h"
 #include "main.h"
-#include "trainer_hill.h"
 #include "test_runner.h"
 #include "constants/rgb.h"
 
@@ -103,7 +100,6 @@ void AgbMain(void)
     InitIntrHandlers();
     m4aSoundInit();
     EnableVCountIntrAtLine150();
-    InitRFU();
     RtcInit();
     CheckForFlashMemory();
     InitMainCallbacks();
@@ -139,8 +135,6 @@ void AgbMain(void)
          && JOY_HELD_RAW(A_BUTTON)
          && JOY_HELD_RAW(B_START_SELECT) == B_START_SELECT)
         {
-            rfu_REQ_stopMode();
-            rfu_waitREQComplete();
             DoSoftReset();
         }
 
@@ -180,7 +174,6 @@ static void UpdateLinkAndCallCallbacks(void)
 static void InitMainCallbacks(void)
 {
     gMain.vblankCounter1 = 0;
-    gTrainerHillVBlankCounter = NULL;
     gMain.vblankCounter2 = 0;
     gMain.callback1 = NULL;
 #ifdef TEST_BUILD
@@ -346,15 +339,10 @@ void SetSerialCallback(IntrCallback callback)
 
 static void VBlankIntr(void)
 {
-    if (gWirelessCommType != 0)
-        RfuVSync();
-    else if (gLinkVSyncDisabled == FALSE)
+    if (gLinkVSyncDisabled == FALSE)
         LinkVSync();
 
     gMain.vblankCounter1++;
-
-    if (gTrainerHillVBlankCounter && *gTrainerHillVBlankCounter < 0xFFFFFFFF)
-        (*gTrainerHillVBlankCounter)++;
 
     if (gMain.vblankCallback)
         gMain.vblankCallback();
@@ -369,10 +357,8 @@ static void VBlankIntr(void)
     m4aSoundMain();
     TryReceiveLinkBattleData();
 
-    if (TEST_RNG_STIR_ALLOWED() && (!gMain.inBattle || !(gBattleTypeFlags & (BATTLE_TYPE_LINK | BATTLE_TYPE_FRONTIER | BATTLE_TYPE_RECORDED))))
+    if (TEST_RNG_STIR_ALLOWED() && (!gMain.inBattle || !(gBattleTypeFlags & (BATTLE_TYPE_LINK | BATTLE_TYPE_FRONTIER))))
         Random();
-
-    UpdateWirelessStatusIndicatorSprite();
 
     INTR_CHECK |= INTR_FLAG_VBLANK;
     gMain.intrCheck |= INTR_FLAG_VBLANK;
@@ -419,29 +405,9 @@ static void WaitForVBlank(void)
     REGRESS_FRAME_END();
     gMain.intrCheck &= ~INTR_FLAG_VBLANK;
 
-    if (gWirelessCommType != 0)
-    {
-        // Desynchronization may occur if the wireless adapter is connected
-        // and the CPU is halted by VBlankIntrWait.
-        while (!(gMain.intrCheck & INTR_FLAG_VBLANK))
-            ;
-    }
-    else
-    {
-        // Halt the CPU until the VBlank interrupt instead of spinning, which
-        // saves battery. The BIOS watches INTR_CHECK, which VBlankIntr sets.
-        VBlankIntrWait();
-    }
-}
-
-void SetTrainerHillVBlankCounter(u32 *counter)
-{
-    gTrainerHillVBlankCounter = counter;
-}
-
-void ClearTrainerHillVBlankCounter(void)
-{
-    gTrainerHillVBlankCounter = NULL;
+    // Halt the CPU until the VBlank interrupt instead of spinning, which
+    // saves battery. The BIOS watches INTR_CHECK, which VBlankIntr sets.
+    VBlankIntrWait();
 }
 
 void DoSoftReset(void)

@@ -27,9 +27,9 @@ gScriptCmdTable::
 	script_cmd_table_entry SCR_OP_CALL_STD                      ScrCmd_callstd                        @ 0x09
 	script_cmd_table_entry SCR_OP_GOTO_STD_IF                   ScrCmd_gotostd_if                     @ 0x0a
 	script_cmd_table_entry SCR_OP_CALL_STD_IF                   ScrCmd_callstd_if                     @ 0x0b
-	script_cmd_table_entry SCR_OP_RETURNRAM                     ScrCmd_returnram                      @ 0x0c
-	script_cmd_table_entry SCR_OP_ENDRAM                        ScrCmd_endram                         @ 0x0d
-	script_cmd_table_entry SCR_OP_SETMYSTERYEVENTSTATUS         ScrCmd_setmysteryeventstatus          @ 0x0e
+	script_cmd_table_entry SCR_OP_RETURNRAM                     ScrCmd_nop                      @ 0x0c
+	script_cmd_table_entry SCR_OP_ENDRAM                        ScrCmd_nop                         @ 0x0d
+	script_cmd_table_entry SCR_OP_SETMYSTERYEVENTSTATUS         ScrCmd_nop          @ 0x0e
 	script_cmd_table_entry SCR_OP_LOAD_WORD                     ScrCmd_loadword                       @ 0x0f
 	script_cmd_table_entry SCR_OP_LOAD_BYTE                     ScrCmd_loadbyte                       @ 0x10
 	script_cmd_table_entry SCR_OP_SETPTR                        ScrCmd_setptr                         @ 0x11
@@ -134,7 +134,7 @@ gScriptCmdTable::
 	script_cmd_table_entry SCR_OP_DRAWBOXTEXT                   ScrCmd_drawboxtext                    @ 0x74
 	script_cmd_table_entry SCR_OP_SHOWMONPIC                    ScrCmd_showmonpic                     @ 0x75
 	script_cmd_table_entry SCR_OP_HIDEMONPIC                    ScrCmd_hidemonpic                     @ 0x76
-	script_cmd_table_entry SCR_OP_SHOWCONTESTPAINTING           ScrCmd_showcontestpainting            @ 0x77
+	script_cmd_table_entry SCR_OP_SHOWCONTESTPAINTING           ScrCmd_nop            @ 0x77
 	script_cmd_table_entry SCR_OP_BRAILLEMESSAGE                ScrCmd_braillemessage                 @ 0x78
 	script_cmd_table_entry SCR_OP_GIVEMON                       ScrCmd_givemon                        @ 0x79
 	script_cmd_table_entry SCR_OP_GIVEEGG                       ScrCmd_giveegg                        @ 0x7a
@@ -154,10 +154,10 @@ gScriptCmdTable::
 	script_cmd_table_entry SCR_OP_POKEMARTDECORATION2           ScrCmd_pokemartdecoration2            @ 0x88
 	script_cmd_table_entry SCR_OP_PLAYSLOTMACHINE               ScrCmd_playslotmachine                @ 0x89
 	script_cmd_table_entry SCR_OP_SETBERRYTREE                  ScrCmd_setberrytree                   @ 0x8a
-	script_cmd_table_entry SCR_OP_CHOOSECONTESTMON              ScrCmd_choosecontestmon               @ 0x8b
-	script_cmd_table_entry SCR_OP_STARTCONTEST                  ScrCmd_startcontest                   @ 0x8c
-	script_cmd_table_entry SCR_OP_SHOWCONTESTRESULTS            ScrCmd_showcontestresults             @ 0x8d
-	script_cmd_table_entry SCR_OP_CONTESTLINKTRANSFER           ScrCmd_contestlinktransfer            @ 0x8e
+	script_cmd_table_entry SCR_OP_CHOOSECONTESTMON              ScrCmd_nop               @ 0x8b
+	script_cmd_table_entry SCR_OP_STARTCONTEST                  ScrCmd_nop                   @ 0x8c
+	script_cmd_table_entry SCR_OP_SHOWCONTESTRESULTS            ScrCmd_nop             @ 0x8d
+	script_cmd_table_entry SCR_OP_CONTESTLINKTRANSFER           ScrCmd_nop            @ 0x8e
 	script_cmd_table_entry SCR_OP_RANDOM                        ScrCmd_random                         @ 0x8f
 	script_cmd_table_entry SCR_OP_ADDMONEY                      ScrCmd_addmoney                       @ 0x90
 	script_cmd_table_entry SCR_OP_REMOVEMONEY                   ScrCmd_removemoney                    @ 0x91
@@ -165,7 +165,7 @@ gScriptCmdTable::
 	script_cmd_table_entry SCR_OP_SHOWMONEYBOX                  ScrCmd_showmoneybox                   @ 0x93
 	script_cmd_table_entry SCR_OP_HIDEMONEYBOX                  ScrCmd_hidemoneybox                   @ 0x94
 	script_cmd_table_entry SCR_OP_UPDATEMONEYBOX                ScrCmd_updatemoneybox                 @ 0x95
-	script_cmd_table_entry SCR_OP_GETPOKENEWSACTIVE             ScrCmd_getpokenewsactive              @ 0x96
+	script_cmd_table_entry SCR_OP_GETPOKENEWSACTIVE             ScrCmd_nop              @ 0x96
 	script_cmd_table_entry SCR_OP_FADESCREEN                    ScrCmd_fadescreen                     @ 0x97
 	script_cmd_table_entry SCR_OP_FADESCREENSPEED               ScrCmd_fadescreenspeed                @ 0x98
 	script_cmd_table_entry SCR_OP_SETFLASHLEVEL                 ScrCmd_setflashlevel                  @ 0x99
@@ -185,8 +185,8 @@ gScriptCmdTable::
 	script_cmd_table_entry SCR_OP_SETMAPLAYOUTINDEX             ScrCmd_setmaplayoutindex              @ 0xa7
 	script_cmd_table_entry SCR_OP_SETOBJECTSUBPRIORITY          ScrCmd_setobjectsubpriority           @ 0xa8
 	script_cmd_table_entry SCR_OP_RESETOBJECTSUBPRIORITY        ScrCmd_resetobjectsubpriority         @ 0xa9
-	script_cmd_table_entry SCR_OP_CREATEVOBJECT                 ScrCmd_createvobject                  @ 0xaa
-	script_cmd_table_entry SCR_OP_TURNVOBJECT                   ScrCmd_turnvobject                    @ 0xab
+	script_cmd_table_entry SCR_OP_CREATEVOBJECT                 ScrCmd_nop                  @ 0xaa
+	script_cmd_table_entry SCR_OP_TURNVOBJECT                   ScrCmd_nop                    @ 0xab
 	script_cmd_table_entry SCR_OP_OPENDOOR                      ScrCmd_opendoor                       @ 0xac
 	script_cmd_table_entry SCR_OP_CLOSEDOOR                     ScrCmd_closedoor                      @ 0xad
 	script_cmd_table_entry SCR_OP_WAITDOORANIM                  ScrCmd_waitdooranim                   @ 0xae
@@ -199,14 +199,14 @@ gScriptCmdTable::
 	script_cmd_table_entry SCR_OP_REMOVECOINS                   ScrCmd_removecoins                    @ 0xb5
 	script_cmd_table_entry SCR_OP_SETWILDBATTLE                 ScrCmd_setwildbattle                  @ 0xb6
 	script_cmd_table_entry SCR_OP_DOWILDBATTLE                  ScrCmd_dowildbattle                   @ 0xb7
-	script_cmd_table_entry SCR_OP_SETVADDRESS                   ScrCmd_setvaddress                    @ 0xb8
-	script_cmd_table_entry SCR_OP_VGOTO                         ScrCmd_vgoto                          @ 0xb9
-	script_cmd_table_entry SCR_OP_VCALL                         ScrCmd_vcall                          @ 0xba
-	script_cmd_table_entry SCR_OP_VGOTO_IF                      ScrCmd_vgoto_if                       @ 0xbb
-	script_cmd_table_entry SCR_OP_VCALL_IF                      ScrCmd_vcall_if                       @ 0xbc
-	script_cmd_table_entry SCR_OP_VMESSAGE                      ScrCmd_vmessage                       @ 0xbd
-	script_cmd_table_entry SCR_OP_VBUFFERMESSAGE                ScrCmd_vbuffermessage                 @ 0xbe
-	script_cmd_table_entry SCR_OP_VBUFFERSTRING                 ScrCmd_vbufferstring                  @ 0xbf
+	script_cmd_table_entry SCR_OP_SETVADDRESS                   ScrCmd_nop                    @ 0xb8
+	script_cmd_table_entry SCR_OP_VGOTO                         ScrCmd_nop                          @ 0xb9
+	script_cmd_table_entry SCR_OP_VCALL                         ScrCmd_nop                          @ 0xba
+	script_cmd_table_entry SCR_OP_VGOTO_IF                      ScrCmd_nop                       @ 0xbb
+	script_cmd_table_entry SCR_OP_VCALL_IF                      ScrCmd_nop                       @ 0xbc
+	script_cmd_table_entry SCR_OP_VMESSAGE                      ScrCmd_nop                       @ 0xbd
+	script_cmd_table_entry SCR_OP_VBUFFERMESSAGE                ScrCmd_nop                 @ 0xbe
+	script_cmd_table_entry SCR_OP_VBUFFERSTRING                 ScrCmd_nop                  @ 0xbf
 	script_cmd_table_entry SCR_OP_SHOWCOINSBOX                  ScrCmd_showcoinsbox                   @ 0xc0
 	script_cmd_table_entry SCR_OP_HIDECOINSBOX                  ScrCmd_hidecoinsbox                   @ 0xc1
 	script_cmd_table_entry SCR_OP_UPDATECOINSBOX                ScrCmd_updatecoinsbox                 @ 0xc2
@@ -222,7 +222,7 @@ gScriptCmdTable::
 	script_cmd_table_entry SCR_OP_COMPAREHIDDENVAR              ScrCmd_nop1                           @ 0xcc
 	script_cmd_table_entry SCR_OP_SETMODERNFATEFULENCOUNTER     ScrCmd_setmodernfatefulencounter      @ 0xcd
 	script_cmd_table_entry SCR_OP_CHECKMODERNFATEFULENCOUNTER   ScrCmd_checkmodernfatefulencounter    @ 0xce
-	script_cmd_table_entry SCR_OP_TRYWONDERCARDSCRIPT           ScrCmd_trywondercardscript            @ 0xcf
+	script_cmd_table_entry SCR_OP_TRYWONDERCARDSCRIPT           ScrCmd_nop            @ 0xcf
 	script_cmd_table_entry SCR_OP_SETWORLDMAPFLAG               ScrCmd_nop1                           @ 0xd0
 	script_cmd_table_entry SCR_OP_WARPSPINENTER                 ScrCmd_warpspinenter                  @ 0xd1
 	script_cmd_table_entry SCR_OP_SETMONMETLOCATION             ScrCmd_setmonmetlocation              @ 0xd2
@@ -240,7 +240,7 @@ gScriptCmdTable::
 	script_cmd_table_entry SCR_OP_BUFFERTRAINERNAME             ScrCmd_buffertrainername              @ 0xde
 	script_cmd_table_entry SCR_OP_POKENAVCALL                   ScrCmd_pokenavcall                    @ 0xdf
 	script_cmd_table_entry SCR_OP_WARPWHITEFADE                 ScrCmd_warpwhitefade                  @ 0xe0
-	script_cmd_table_entry SCR_OP_BUFFERCONTESTNAME             ScrCmd_buffercontestname              @ 0xe1
+	script_cmd_table_entry SCR_OP_BUFFERCONTESTNAME             ScrCmd_nop              @ 0xe1
 	script_cmd_table_entry SCR_OP_BUFFERITEMNAMEPLURAL          ScrCmd_bufferitemnameplural           @ 0xe2
 	script_cmd_table_entry SCR_OP_DYNMULTICHOICE                ScrCmd_dynmultichoice                 @ 0xe3
 	script_cmd_table_entry SCR_OP_DYNMULTIPUSH                  ScrCmd_dynmultipush                   @ 0xe4

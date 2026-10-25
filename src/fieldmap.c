@@ -6,13 +6,11 @@
 #include "fldeff_misc.h"
 #include "frontier_util.h"
 #include "menu.h"
-#include "mirage_tower.h"
 #include "overworld.h"
 #include "palette.h"
 #include "pokenav.h"
 #include "script.h"
 #include "secret_base.h"
-#include "trainer_hill.h"
 #include "tv.h"
 #include "constants/rgb.h"
 #include "constants/metatile_behaviors.h"
@@ -87,12 +85,6 @@ void InitBattlePyramidMap(bool8 setPlayerPosition)
 {
     CpuFastFill16(MAPGRID_UNDEFINED, sBackupMapData, sizeof(sBackupMapData));
     GenerateBattlePyramidFloorLayout(sBackupMapData, setPlayerPosition);
-}
-
-void InitTrainerHillMap(void)
-{
-    CpuFastFill16(MAPGRID_UNDEFINED, sBackupMapData, sizeof(sBackupMapData));
-    GenerateTrainerHillFloorLayout(sBackupMapData);
 }
 
 static void InitMapLayoutData(struct MapHeader *mapHeader)
@@ -659,7 +651,6 @@ bool8 CameraMove(int x, int y)
     else
     {
         SaveMapView();
-        ClearMirageTowerPulseBlendEffect();
         old_x = gSaveBlock1Ptr->pos.x;
         old_y = gSaveBlock1Ptr->pos.y;
         connection = GetIncomingConnection(direction, gSaveBlock1Ptr->pos.x, gSaveBlock1Ptr->pos.y);

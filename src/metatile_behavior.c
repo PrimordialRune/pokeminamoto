@@ -1091,14 +1091,6 @@ bool8 MetatileBehavior_IsRoulette(u8 metatileBehavior) // unused
         return FALSE;
 }
 
-bool8 MetatileBehavior_IsPokeblockFeeder(u8 metatileBehavior)
-{
-    if (metatileBehavior == MB_POKEBLOCK_FEEDER)
-        return TRUE;
-    else
-        return FALSE;
-}
-
 bool8 MetatileBehavior_IsSecretBaseJumpMat(u8 metatileBehavior)
 {
     if (metatileBehavior == MB_SECRET_BASE_JUMP_MAT)
@@ -1349,29 +1341,11 @@ bool8 MetatileBehavior_IsBattlePyramidWarp(u8 metatileBehavior)
         return FALSE;
 }
 
-bool8 MetatileBehavior_IsPlayerFacingWirelessBoxResults(u8 tile, u8 playerDir)
-{
-    if (playerDir != CONNECTION_NORTH) // if the player isn't facing north, forget about it.
-        return FALSE;
-    else if (tile == MB_WIRELESS_BOX_RESULTS) // is the player's north tile the monitor with results?
-        return TRUE;
-    else
-        return FALSE;
-}
-
 bool8 MetatileBehavior_IsCableBoxResults2(u8 tile, u8 playerDir)
 {
     if (playerDir != CONNECTION_NORTH) // if the player isn't facing north, forget about it.
         return FALSE;
     else if (tile == MB_CABLE_BOX_RESULTS_2) // is the player's north tile the monitor with results?
-        return TRUE;
-    else
-        return FALSE;
-}
-
-bool8 MetatileBehavior_IsQuestionnaire(u8 metatileBehavior)
-{
-    if (metatileBehavior == MB_QUESTIONNAIRE)
         return TRUE;
     else
         return FALSE;
@@ -1393,10 +1367,3 @@ bool8 MetatileBehavior_IsLongGrassSouthEdge(u8 metatileBehavior)
         return FALSE;
 }
 
-bool8 MetatileBehavior_IsTrainerHillTimer(u8 metatileBehavior)
-{
-    if (metatileBehavior == MB_TRAINER_HILL_TIMER)
-        return TRUE;
-    else
-        return FALSE;
-}

@@ -8,7 +8,6 @@
 #include "load_save.h"
 #include "overworld.h"
 #include "pokemon_storage_system.h"
-#include "trainer_hill.h"
 #include "link.h"
 #include "malloc.h"
 #include "regress.h"
@@ -1321,10 +1320,8 @@ static u8 TryLoadSaveSlot(u16 sectorId, struct SaveSectorLocation *locations)
 u8 HandleSavingData(u8 saveType)
 {
     u8 i;
-    u32 *backupVar = gTrainerHillVBlankCounter;
     u8 *tempAddr;
 
-    gTrainerHillVBlankCounter = NULL;
     UpdateSaveAddresses();
     switch (saveType)
     {
@@ -1379,7 +1376,6 @@ u8 HandleSavingData(u8 saveType)
         WriteSaveData();
         break;
     }
-    gTrainerHillVBlankCounter = backupVar;
     return 0;
 }
 

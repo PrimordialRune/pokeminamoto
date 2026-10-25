@@ -225,7 +225,7 @@ extern struct BattleMsgData *gBattleMsgDataPtr;
 
 extern const u8 *const gBattleStringsTable[];
 extern const u8 *const gStatNamesTable[];
-extern const u8 *const gPokeblockWasTooXStringTable[];
+extern const u8 *const gWasTooXStringTable[];
 extern const u8 *const gRefereeStringsTable[];
 extern const u8 *const gRoundsStringTable[];
 
@@ -238,14 +238,13 @@ extern const u8 gText_WhatWillPkmnDo2[];
 extern const u8 gText_WhatWillWallyDo[];
 extern const u8 gText_LinkStandby[];
 extern const u8 gText_BattleMenu[];
-extern const u8 gText_SafariZoneMenu[];
 extern const u8 gText_TalkStub[];
 extern const u8 gText_BattleMenuFight[];
 extern const u8 gText_BattleMenuPkmn[];
 extern const u8 gText_BattleMenuItem[];
 extern const u8 gText_BattleMenuRun[];
 extern const u8 gText_SafariMenuBall[];
-extern const u8 gText_SafariMenuBlock[];
+extern const u8 gText_SafariMenuNone[];
 extern const u8 gText_SafariMenuNear[];
 extern const u8 gText_MoveInterfaceType[];
 extern const u8 gText_MoveInterfaceDynamicColors[];

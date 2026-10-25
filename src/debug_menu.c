@@ -684,7 +684,7 @@ static void Describe_Trainer(u32 value, u8 *dest)
 static const u8 sMapGroupSizes[MAP_GROUPS_COUNT] = MAP_GROUP_SIZES;
 
 // Only maps from the generated map group tables can be a warp target: the group and
-// number must be inside those tables (the removed-map groups 0x7B-0x7E in removed_maps.h
+// number must be inside those tables (the parked groups 0x7B-0x7E in parked_maps.h
 // are not real), and the link rooms are skipped because they need a link partner.
 static bool8 Warp_IsValidMap(u32 group, u32 num)
 {
@@ -693,8 +693,7 @@ static bool8 Warp_IsValidMap(u32 group, u32 num)
     if (group >= MAP_GROUPS_COUNT || num >= sMapGroupSizes[group])
         return FALSE;
     map = (group << 8) | num;
-    if (map == MAP_BATTLE_COLOSSEUM_2P || map == MAP_BATTLE_COLOSSEUM_4P
-     || map == MAP_TRADE_CENTER || map == MAP_RECORD_CORNER || map == MAP_UNION_ROOM)
+    if (map == MAP_BATTLE_COLOSSEUM_2P || map == MAP_TRADE_CENTER)
         return FALSE;
     return TRUE;
 }
