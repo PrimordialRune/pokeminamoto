@@ -10,12 +10,16 @@
 #include "pokemon_storage_system.h"
 #include "trainer_hill.h"
 #include "link.h"
+#include "malloc.h"
 #include "constants/game_stat.h"
 
 static u16 CalculateChecksum(void *, u16);
+static u16 CalculateSectorChecksum(void *, u16, u16, u16);
 static bool8 ReadFlashSector(u8, struct SaveSector *);
 static u8 GetSaveValidStatus(const struct SaveSectorLocation *);
 static u8 CopySaveSlotData(u16, struct SaveSectorLocation *);
+static bool32 IsCurrentFormatSector(const struct SaveSector *);
+static u8 TryMigrateSave(struct SaveSectorLocation *);
 static u8 TryWriteSector(u8, u8 *);
 static u8 HandleWriteSector(u16, const struct SaveSectorLocation *);
 static u8 HandleReplaceSector(u16, const struct SaveSectorLocation *);
@@ -96,6 +100,51 @@ STATIC_ASSERT(NUM_SECTORS_PER_SLOT * NUM_SAVE_SLOTS <= SECTOR_ID_FREE_1 && SECTO
 // ids that mixes two saves and loads as if it were good.
 STATIC_ASSERT(NUM_SAVE_SLOTS % NUM_SECTORS_PER_SLOT != 0, TornSaveLeavesSectorIdMissing);
 
+// Every slot chunk is a whole number of words: the checksum adds up words, and
+// a migration checks old sectors over all of their data (see TryMigrateSave).
+STATIC_ASSERT(sizeof(struct SaveBlock2) % 4 == 0 && sizeof(struct SaveBlock1) % 4 == 0
+           && sizeof(struct PokemonStorage) % 4 == 0 && SECTOR_DATA_SIZE % 4 == 0, SaveChunksAreWords);
+STATIC_ASSERT(offsetof(struct SaveBlock2, saveFormatVersion) == 0x16, SaveBlock2VersionInPadding);
+
+// The layout hash goes into every sector footer next to SAVE_FORMAT_VERSION.
+// It changes when any save block changes size or the sectors are laid out
+// differently, so a build that changed the layout without bumping the version
+// still refuses saves it would misread. It is never 0 (Emerald's footer).
+#define LAYOUT_HASH_STEP(h, x) ((h) * 33u + (u32)(x))
+#define SAVE_LAYOUT_HASH_32                                                        \
+    LAYOUT_HASH_STEP(LAYOUT_HASH_STEP(LAYOUT_HASH_STEP(LAYOUT_HASH_STEP(           \
+    LAYOUT_HASH_STEP(LAYOUT_HASH_STEP(LAYOUT_HASH_STEP(LAYOUT_HASH_STEP(5381u,     \
+        SECTOR_DATA_SIZE), NUM_SECTORS_PER_SLOT), SECTOR_ID_SAVEBLOCK2),           \
+        SECTOR_ID_SAVEBLOCK1_START), SECTOR_ID_PKMN_STORAGE_START),                \
+        sizeof(struct SaveBlock2)), sizeof(struct SaveBlock1)), sizeof(struct PokemonStorage))
+#define SAVE_LAYOUT_HASH ((u16)(SAVE_LAYOUT_HASH_32 % 0xFFFFu + 1))
+
+// Migrations turn the save image of one version into the next. The image is
+// the data of every slot sector in id order (sector i at i * SECTOR_DATA_SIZE,
+// zero padded), and a migration rewrites it in place into the next version's
+// layout. LoadGameSave runs them one after another from the save's version up
+// to SAVE_FORMAT_VERSION. Only the sector contents can change this way: the
+// slot layout on the flash (NUM_SECTORS_PER_SLOT, two rotating slots) must stay
+// the same across versions, or loading old saves needs more than a migration.
+typedef bool8 (*SaveMigrationFunc)(u8 *image);
+
+struct SaveMigration
+{
+    u16 fromVersion;
+    u16 fromLayoutHash; // the layout hash saves of fromVersion carry
+    SaveMigrationFunc migrate;
+};
+
+static const struct SaveMigration sSaveMigrations[] =
+{
+    // Version 1 is the first versioned layout, so there is nothing to migrate yet.
+    // { .fromVersion = 1, .fromLayoutHash = 0x...., .migrate = MigrateSave_1To2 },
+    { .fromVersion = 0, .fromLayoutHash = 0, .migrate = NULL },
+};
+
+#define SAVE_MIGRATION_IMAGE_SIZE (NUM_SECTORS_PER_SLOT * SECTOR_DATA_SIZE)
+STATIC_ASSERT(SAVE_MIGRATION_IMAGE_SIZE <= HEAP_SIZE, SaveMigrationImageFitsInHeap);
+
 COMMON_DATA u16 gLastWrittenSector = 0;
 COMMON_DATA u32 gLastSaveCounter = 0;
 COMMON_DATA u16 gLastKnownGoodSector = 0;
@@ -111,6 +160,12 @@ COMMON_DATA u16 gSaveUnusedVar2 = 0;
 COMMON_DATA u16 gSaveAttemptStatus = 0;
 
 EWRAM_DATA struct SaveSector gSaveDataBuffer = {0}; // Buffer used for reading/writing sectors
+// The newest intact sector of another version the last load found: its
+// version, layout hash and save counter
+EWRAM_DATA static u16 sForeignSaveVersion = 0;
+EWRAM_DATA static u16 sForeignSaveLayoutHash = 0;
+EWRAM_DATA static u32 sForeignSaveCounter = 0;
+EWRAM_DATA static bool8 sForeignSaveFound = FALSE;
 
 void ClearSaveData(void)
 {
@@ -214,12 +269,14 @@ static u8 HandleWriteSector(u16 sectorId, const struct SaveSectorLocation *locat
     gReadWriteSector->id = sectorId;
     gReadWriteSector->signature = SECTOR_SIGNATURE;
     gReadWriteSector->counter = gSaveCounter;
+    gReadWriteSector->formatVersion = SAVE_FORMAT_VERSION;
+    gReadWriteSector->layoutHash = SAVE_LAYOUT_HASH;
 
     // Copy current data to temp buffer for writing
     for (i = 0; i < size; i++)
         gReadWriteSector->data[i] = data[i];
 
-    gReadWriteSector->checksum = CalculateChecksum(data, size);
+    gReadWriteSector->checksum = CalculateSectorChecksum(data, size, SAVE_FORMAT_VERSION, SAVE_LAYOUT_HASH);
 
     return TryWriteSector(sector, gReadWriteSector->data);
 }
@@ -348,12 +405,14 @@ static u8 HandleReplaceSector(u16 sectorId, const struct SaveSectorLocation *loc
     gReadWriteSector->id = sectorId;
     gReadWriteSector->signature = SECTOR_SIGNATURE;
     gReadWriteSector->counter = gSaveCounter;
+    gReadWriteSector->formatVersion = SAVE_FORMAT_VERSION;
+    gReadWriteSector->layoutHash = SAVE_LAYOUT_HASH;
 
     // Copy current data to temp buffer for writing
     for (i = 0; i < size; i++)
         gReadWriteSector->data[i] = data[i];
 
-    gReadWriteSector->checksum = CalculateChecksum(data, size);
+    gReadWriteSector->checksum = CalculateSectorChecksum(data, size, SAVE_FORMAT_VERSION, SAVE_LAYOUT_HASH);
 
     // Erase old save data
     EraseFlashSector(sector);
@@ -492,6 +551,8 @@ static u8 TryLoadSaveSlot(u16 sectorId, struct SaveSectorLocation *locations)
     else
     {
         status = GetSaveValidStatus(locations);
+        if (status == SAVE_STATUS_INCOMPATIBLE)
+            return TryMigrateSave(locations); // leaves the save blocks alone if it can't
         CopySaveSlotData(FULL_SAVE_SLOT, locations);
     }
 
@@ -511,12 +572,12 @@ static u8 CopySaveSlotData(u16 sectorId, struct SaveSectorLocation *locations)
         ReadFlashSector(i + slotOffset, gReadWriteSector);
 
         id = gReadWriteSector->id;
-        if (id >= NUM_SECTORS_PER_SLOT) // a sector from another layout, e.g. Emerald's 14th
+        if (!IsCurrentFormatSector(gReadWriteSector)) // e.g. Emerald's 14th sector
             continue;
         if (id == 0)
             gLastWrittenSector = i;
 
-        checksum = CalculateChecksum(gReadWriteSector->data, locations[id].size);
+        checksum = CalculateSectorChecksum(gReadWriteSector->data, locations[id].size, SAVE_FORMAT_VERSION, SAVE_LAYOUT_HASH);
 
         // Only copy data for sectors whose signature and checksum fields are correct
         if (gReadWriteSector->signature == SECTOR_SIGNATURE && gReadWriteSector->checksum == checksum)
@@ -530,77 +591,106 @@ static u8 CopySaveSlotData(u16 sectorId, struct SaveSectorLocation *locations)
     return SAVE_STATUS_OK;
 }
 
-static u8 GetSaveValidStatus(const struct SaveSectorLocation *locations)
+static bool32 IsCurrentFormatSector(const struct SaveSector *sector)
+{
+    return sector->formatVersion == SAVE_FORMAT_VERSION
+        && sector->layoutHash == SAVE_LAYOUT_HASH
+        && sector->id < NUM_SECTORS_PER_SLOT;
+}
+
+// Checks one save slot for a complete save of the given version. Sectors of
+// any other version count as foreign: their version goes into
+// sForeignSaveVersion/LayoutHash and they don't make the slot invalid.
+// Sectors of the current version are checked over their chunk size, like
+// Emerald; other versions over all their data, which is the same sum since
+// the rest of a sector is zero (SaveChunksAreWords).
+static u8 GetSaveSlotStatus(u16 slotOffset, u16 version, u16 layoutHash, const struct SaveSectorLocation *locations, u32 *counter)
 {
     u16 i;
-    u16 checksum;
-    u32 saveSlot1Counter = 0;
-    u32 saveSlot2Counter = 0;
+    u16 size;
     u32 validSectorFlags = 0;
     bool8 signatureValid = FALSE;
+    bool8 foreign = FALSE;
+
+    for (i = 0; i < NUM_SECTORS_PER_SLOT; i++)
+    {
+        ReadFlashSector(i + slotOffset, gReadWriteSector);
+        if (gReadWriteSector->signature != SECTOR_SIGNATURE)
+            continue;
+
+        signatureValid = TRUE;
+        if (gReadWriteSector->formatVersion != version
+         || gReadWriteSector->layoutHash != layoutHash
+         || gReadWriteSector->id >= NUM_SECTORS_PER_SLOT)
+        {
+            foreign = TRUE;
+            if ((gReadWriteSector->formatVersion != SAVE_FORMAT_VERSION || gReadWriteSector->layoutHash != SAVE_LAYOUT_HASH)
+             && gReadWriteSector->checksum == CalculateSectorChecksum(gReadWriteSector->data, SECTOR_DATA_SIZE,
+                                                gReadWriteSector->formatVersion, gReadWriteSector->layoutHash)
+             && (!sForeignSaveFound || gReadWriteSector->counter > sForeignSaveCounter))
+            {
+                sForeignSaveFound = TRUE;
+                sForeignSaveVersion = gReadWriteSector->formatVersion;
+                sForeignSaveLayoutHash = gReadWriteSector->layoutHash;
+                sForeignSaveCounter = gReadWriteSector->counter;
+            }
+            continue;
+        }
+
+        size = (version == SAVE_FORMAT_VERSION) ? locations[gReadWriteSector->id].size : SECTOR_DATA_SIZE;
+        if (gReadWriteSector->checksum == CalculateSectorChecksum(gReadWriteSector->data, size, version, layoutHash))
+        {
+            *counter = gReadWriteSector->counter;
+            validSectorFlags |= 1 << gReadWriteSector->id;
+        }
+    }
+
+    if (!signatureValid)
+        return SAVE_STATUS_EMPTY; // No sectors in the slot have the correct signature, treat it as empty
+    if (validSectorFlags == (1 << NUM_SECTORS_PER_SLOT) - 1)
+        return SAVE_STATUS_OK;
+    if (foreign && validSectorFlags == 0)
+        return SAVE_STATUS_INCOMPATIBLE; // only sectors of another version
+    return SAVE_STATUS_ERROR;
+}
+
+static u8 GetSaveValidStatus(const struct SaveSectorLocation *locations)
+{
+    u32 saveSlot1Counter = 0;
+    u32 saveSlot2Counter = 0;
     u8 saveSlot1Status;
     u8 saveSlot2Status;
 
-    // Check save slot 1
-    for (i = 0; i < NUM_SECTORS_PER_SLOT; i++)
+    sForeignSaveVersion = 0;
+    sForeignSaveLayoutHash = 0;
+    sForeignSaveCounter = 0;
+    sForeignSaveFound = FALSE;
+    saveSlot1Status = GetSaveSlotStatus(0, SAVE_FORMAT_VERSION, SAVE_LAYOUT_HASH, locations, &saveSlot1Counter);
+    saveSlot2Status = GetSaveSlotStatus(NUM_SECTORS_PER_SLOT, SAVE_FORMAT_VERSION, SAVE_LAYOUT_HASH, locations, &saveSlot2Counter);
+
+    if (((saveSlot1Status == SAVE_STATUS_INCOMPATIBLE || saveSlot2Status == SAVE_STATUS_INCOMPATIBLE)
+      && (saveSlot1Status == SAVE_STATUS_INCOMPATIBLE || saveSlot1Status == SAVE_STATUS_EMPTY)
+      && (saveSlot2Status == SAVE_STATUS_INCOMPATIBLE || saveSlot2Status == SAVE_STATUS_EMPTY))
+     // A newer save of another version (a later build saved last): loading the
+     // older slot of this version instead would quietly undo that progress
+     || (sForeignSaveFound
+      && (saveSlot1Status != SAVE_STATUS_OK || sForeignSaveCounter > saveSlot1Counter)
+      && (saveSlot2Status != SAVE_STATUS_OK || sForeignSaveCounter > saveSlot2Counter)
+      && (saveSlot1Status == SAVE_STATUS_OK || saveSlot2Status == SAVE_STATUS_OK)))
     {
-        ReadFlashSector(i, gReadWriteSector);
-        if (gReadWriteSector->signature == SECTOR_SIGNATURE && gReadWriteSector->id < NUM_SECTORS_PER_SLOT)
-        {
-            signatureValid = TRUE;
-            checksum = CalculateChecksum(gReadWriteSector->data, locations[gReadWriteSector->id].size);
-            if (gReadWriteSector->checksum == checksum)
-            {
-                saveSlot1Counter = gReadWriteSector->counter;
-                validSectorFlags |= 1 << gReadWriteSector->id;
-            }
-        }
+        // Nothing usable but a save of another version. The next save counts
+        // on from it, so it is newer than everything left on the flash.
+        gSaveCounter = sForeignSaveCounter;
+        gLastWrittenSector = 0;
+        return SAVE_STATUS_INCOMPATIBLE;
     }
 
-    if (signatureValid)
-    {
-        if (validSectorFlags == (1 << NUM_SECTORS_PER_SLOT) - 1)
-            saveSlot1Status = SAVE_STATUS_OK;
-        else
-            saveSlot1Status = SAVE_STATUS_ERROR;
-    }
-    else
-    {
-        // No sectors in slot 1 have the correct signature, treat it as empty
+    // Sectors left from another version next to a save of this one (the
+    // first save over an old file only replaces one slot) are as good as empty
+    if (saveSlot1Status == SAVE_STATUS_INCOMPATIBLE)
         saveSlot1Status = SAVE_STATUS_EMPTY;
-    }
-
-    validSectorFlags = 0;
-    signatureValid = FALSE;
-
-    // Check save slot 2
-    for (i = 0; i < NUM_SECTORS_PER_SLOT; i++)
-    {
-        ReadFlashSector(i + NUM_SECTORS_PER_SLOT, gReadWriteSector);
-        if (gReadWriteSector->signature == SECTOR_SIGNATURE && gReadWriteSector->id < NUM_SECTORS_PER_SLOT)
-        {
-            signatureValid = TRUE;
-            checksum = CalculateChecksum(gReadWriteSector->data, locations[gReadWriteSector->id].size);
-            if (gReadWriteSector->checksum == checksum)
-            {
-                saveSlot2Counter = gReadWriteSector->counter;
-                validSectorFlags |= 1 << gReadWriteSector->id;
-            }
-        }
-    }
-
-    if (signatureValid)
-    {
-        if (validSectorFlags == (1 << NUM_SECTORS_PER_SLOT) - 1)
-            saveSlot2Status = SAVE_STATUS_OK;
-        else
-            saveSlot2Status = SAVE_STATUS_ERROR;
-    }
-    else
-    {
-        // No sectors in slot 2 have the correct signature, treat it as empty.
+    if (saveSlot2Status == SAVE_STATUS_INCOMPATIBLE)
         saveSlot2Status = SAVE_STATUS_EMPTY;
-    }
 
     if (saveSlot1Status == SAVE_STATUS_OK && saveSlot2Status == SAVE_STATUS_OK)
     {
@@ -655,6 +745,75 @@ static u8 GetSaveValidStatus(const struct SaveSectorLocation *locations)
     return SAVE_STATUS_CORRUPT;
 }
 
+static const struct SaveMigration *FindSaveMigration(u16 version)
+{
+    u32 i;
+    for (i = 0; i < ARRAY_COUNT(sSaveMigrations); i++)
+    {
+        if (sSaveMigrations[i].migrate != NULL && sSaveMigrations[i].fromVersion == version)
+            return &sSaveMigrations[i];
+    }
+    return NULL;
+}
+
+// The flash holds only a save of another version (sForeignSaveVersion). If it
+// is older and there are migrations from it up to this version, load it into
+// gHeap, migrate it there and copy the result into the save blocks. Otherwise
+// leave everything alone and report the save as incompatible.
+static u8 TryMigrateSave(struct SaveSectorLocation *locations)
+{
+    u16 version = sForeignSaveVersion;
+    u16 layoutHash = sForeignSaveLayoutHash;
+    const struct SaveMigration *migration;
+    u32 slot1Counter = 0, slot2Counter = 0;
+    u8 slot1Status, slot2Status;
+    u16 slotOffset, i, v;
+    u8 *image = gHeap; // free here, see LoadGameSave
+
+    if (version == 0 || version >= SAVE_FORMAT_VERSION)
+        return SAVE_STATUS_INCOMPATIBLE;
+    migration = FindSaveMigration(version);
+    if (migration == NULL || migration->fromLayoutHash != layoutHash)
+        return SAVE_STATUS_INCOMPATIBLE;
+    for (v = version + 1; v < SAVE_FORMAT_VERSION; v++)
+    {
+        if (FindSaveMigration(v) == NULL)
+            return SAVE_STATUS_INCOMPATIBLE;
+    }
+
+    slot1Status = GetSaveSlotStatus(0, version, layoutHash, locations, &slot1Counter);
+    slot2Status = GetSaveSlotStatus(NUM_SECTORS_PER_SLOT, version, layoutHash, locations, &slot2Counter);
+    if (slot1Status == SAVE_STATUS_OK && (slot2Status != SAVE_STATUS_OK || slot1Counter >= slot2Counter))
+        gSaveCounter = slot1Counter;
+    else if (slot2Status == SAVE_STATUS_OK)
+        gSaveCounter = slot2Counter;
+    else
+        return SAVE_STATUS_INCOMPATIBLE; // the old save is damaged too
+
+    // Read the slot into the image, sector i at i * SECTOR_DATA_SIZE
+    slotOffset = NUM_SECTORS_PER_SLOT * (gSaveCounter % NUM_SAVE_SLOTS);
+    for (i = 0; i < NUM_SECTORS_PER_SLOT; i++)
+    {
+        ReadFlashSector(i + slotOffset, gReadWriteSector);
+        if (gReadWriteSector->id >= NUM_SECTORS_PER_SLOT)
+            return SAVE_STATUS_INCOMPATIBLE;
+        if (gReadWriteSector->id == 0)
+            gLastWrittenSector = i;
+        memcpy(&image[gReadWriteSector->id * SECTOR_DATA_SIZE], gReadWriteSector->data, SECTOR_DATA_SIZE);
+    }
+
+    for (v = version; v < SAVE_FORMAT_VERSION; v++)
+    {
+        if (!FindSaveMigration(v)->migrate(image))
+            return SAVE_STATUS_INCOMPATIBLE;
+    }
+
+    for (i = 0; i < NUM_SECTORS_PER_SLOT; i++)
+        memcpy(locations[i].data, &image[i * SECTOR_DATA_SIZE], locations[i].size);
+    gSaveBlock2Ptr->saveFormatVersion = SAVE_FORMAT_VERSION;
+    return SAVE_STATUS_OK;
+}
+
 static u8 TryLoadSaveSector(u8 sectorId, u8 *data, u16 size)
 {
     u16 i;
@@ -704,9 +863,27 @@ static u16 CalculateChecksum(void *data, u16 size)
     return ((checksum >> 16) + checksum);
 }
 
+// Like CalculateChecksum, but the footer's version and layout hash are part of it
+static u16 CalculateSectorChecksum(void *data, u16 size, u16 version, u16 layoutHash)
+{
+    u16 i;
+    u32 checksum = version | (layoutHash << 16);
+
+    for (i = 0; i < (size / 4); i++)
+    {
+        checksum += *((u32 *)data);
+        data += sizeof(u32);
+    }
+
+    return ((checksum >> 16) + checksum);
+}
+
 static void UpdateSaveAddresses(void)
 {
     int i = SECTOR_ID_SAVEBLOCK2;
+
+    // Every save path starts here, so the RAM image always says what it is
+    gSaveBlock2Ptr->saveFormatVersion = SAVE_FORMAT_VERSION;
     gRamSaveSectorLocations[i].data = (void *)(gSaveBlock2Ptr) + sSaveSlotLayout[i].offset;
     gRamSaveSectorLocations[i].size = sSaveSlotLayout[i].size;
 

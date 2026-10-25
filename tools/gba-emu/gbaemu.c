@@ -692,6 +692,34 @@ static void cmdLoadSav(const char* path) {
 	reply("{\"ok\":true,\"bytes\":%zd,\"note\":\"core reset with save loaded\"}", size);
 }
 
+/* Write the battery save (flash/SRAM contents) to a .sav file. */
+static void cmdDumpSav(const char* path) {
+	if (!needCore()) {
+		return;
+	}
+	void* data = NULL;
+	size_t size = core->savedataClone(core, &data);
+	if (!size || !data) {
+		free(data);
+		replyError("no save data");
+		return;
+	}
+	FILE* f = fopen(path, "wb");
+	if (!f) {
+		free(data);
+		replyError("cannot open %s: %s", path, strerror(errno));
+		return;
+	}
+	size_t wrote = fwrite(data, 1, size, f);
+	fclose(f);
+	free(data);
+	if (wrote != size) {
+		replyError("short write on %s", path);
+		return;
+	}
+	reply("{\"ok\":true,\"path\":\"%s\",\"bytes\":%zu}", path, size);
+}
+
 static void cmdReset(void) {
 	if (!needCore()) {
 		return;
@@ -744,7 +772,7 @@ static void cmdLog(void) {
 }
 
 static void cmdHelp(void) {
-	reply("{\"ok\":true,\"commands\":\"load <rom> | reset | loadsav <file> | run [frames] | step [n] | regs | "
+	reply("{\"ok\":true,\"commands\":\"load <rom> | reset | loadsav <file> | dumpsav <file> | run [frames] | step [n] | regs | "
 	      "read <addr> <len> | write <addr> <hex> | keys <mask> | break <addr> | watch <addr> [w|r|rw|c] | "
 	      "profile <frames> <file> | delete <id> | list | screenshot <png> | savestate <file> | loadstate <file> | gdb [port] | "
 	      "gdbframes <n> | scale <1-4> | log | info | quit\"}");
@@ -771,6 +799,7 @@ static bool dispatch(char* line) {
 	if (!strcmp(line, "load")) cmdLoad(args);
 	else if (!strcmp(line, "reset")) cmdReset();
 	else if (!strcmp(line, "loadsav")) cmdLoadSav(args);
+	else if (!strcmp(line, "dumpsav")) cmdDumpSav(args);
 	else if (!strcmp(line, "run")) cmdRun(args);
 	else if (!strcmp(line, "step")) cmdStep(args);
 	else if (!strcmp(line, "profile")) cmdProfile(args);

@@ -4,7 +4,7 @@
 #include "main.h"
 
 // Each 4 KiB flash sector contains 3968 bytes of actual data followed by a 128 byte footer.
-// Only 12 bytes of the footer are used.
+// Only 16 bytes of the footer are used.
 #define SECTOR_DATA_SIZE 3968
 #define SECTOR_FOOTER_SIZE 128
 #define SECTOR_SIZE (SECTOR_DATA_SIZE + SECTOR_FOOTER_SIZE)
@@ -32,7 +32,8 @@
 // Trainer Hill (FREE_TRAINER_HILL) and the battle recorder (FREE_RECORDED_BATTLE)
 // are gone, so nothing writes these two sectors either; TryWriteSpecialSaveSector
 // refuses them while those defines are set. Nothing erases sectors 26, 27, 30
-// or 31: they are free for future Minamoto data (4 sectors, 16 KB).
+// or 31: they are free for future Minamoto data (4 sectors, 16 KB). They can
+// still hold whatever an older build left there, so erase one before using it.
 #define SECTOR_ID_TRAINER_HILL       30
 #define SECTOR_ID_RECORDED_BATTLE    31
 #define SECTOR_ID_FREE_3             SECTOR_ID_TRAINER_HILL
@@ -41,9 +42,18 @@
 
 #define NUM_HOF_SECTORS 2
 
+// Version of the save layout, stored in every sector footer and at the start
+// of SaveBlock2. Bump it whenever a change moves or resizes anything in
+// SaveBlock1, SaveBlock2 or PokemonStorage (the layout hash in save.c catches
+// size changes that forget to), and add an entry to sSaveMigrations in
+// src/save.c if saves of the old version should keep loading.
+// Version 0 is every save written before versioning (Emerald's footer).
+#define SAVE_FORMAT_VERSION 1
+
 #define SAVE_STATUS_EMPTY    0
 #define SAVE_STATUS_OK       1
 #define SAVE_STATUS_CORRUPT  2
+#define SAVE_STATUS_INCOMPATIBLE 3 // a save of another version that can't be migrated; left on the flash
 #define SAVE_STATUS_NO_FLASH 4
 #define SAVE_STATUS_ERROR    0xFF
 
@@ -81,9 +91,11 @@ struct SaveSectorLocation
 struct SaveSector
 {
     u8 data[SECTOR_DATA_SIZE];
-    u8 unused[SECTOR_FOOTER_SIZE - 12]; // Unused portion of the footer
+    u8 unused[SECTOR_FOOTER_SIZE - 16]; // Unused portion of the footer
+    u16 formatVersion; // SAVE_FORMAT_VERSION; 0 in saves from before versioning
+    u16 layoutHash;    // hash of the save block sizes and the sector layout
     u16 id;
-    u16 checksum;
+    u16 checksum;      // covers the data, formatVersion and layoutHash
     u32 signature;
     u32 counter;
 }; // size is SECTOR_SIZE (0x1000)
@@ -114,6 +126,8 @@ bool8 LinkFullSave_ReplaceLastSector(void);
 bool8 LinkFullSave_SetLastSectorSignature(void);
 bool8 WriteSaveBlock2(void);
 bool8 WriteSaveBlock1Sector(void);
+// SAVE_NORMAL may use gHeap as scratch space to migrate an old save, so it
+// must only run while nothing is allocated (its callers InitHeap right after).
 u8 LoadGameSave(u8 saveType);
 u32 TryReadSpecialSaveSector(u8 sector, u8 *dst);
 u32 TryWriteSpecialSaveSector(u8 sector, u8 *src);

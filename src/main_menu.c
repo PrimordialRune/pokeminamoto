@@ -651,6 +651,13 @@ static void Task_MainMenuCheckSaveFile(u8 taskId)
                 tMenuType = HAS_NO_SAVED_GAME;
                 gTasks[taskId].func = Task_WaitForSaveFileErrorWindow;
                 break;
+            case SAVE_STATUS_INCOMPATIBLE:
+                // The old save stays on the flash until the player saves
+                // over it, and saving asks before overwriting it.
+                CreateMainMenuErrorWindow(gText_SaveFileIncompatible);
+                tMenuType = HAS_NO_SAVED_GAME;
+                gTasks[taskId].func = Task_WaitForSaveFileErrorWindow;
+                break;
             case SAVE_STATUS_ERROR:
                 CreateMainMenuErrorWindow(gText_SaveFileCorrupted);
                 gTasks[taskId].func = Task_WaitForSaveFileErrorWindow;
