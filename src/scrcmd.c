@@ -24,7 +24,6 @@
 #include "malloc.h"
 #include "menu.h"
 #include "money.h"
-#include "mystery_event_script.h"
 #include "palette.h"
 #include "party_menu.h"
 #include "pokemon_storage_system.h"
@@ -50,8 +49,6 @@
 typedef u16 (*SpecialFunc)(void);
 typedef void (*NativeFunc)(void);
 
-EWRAM_DATA const u8 *gRamScriptRetAddr = NULL;
-static EWRAM_DATA u32 sAddressOffset = 0; // For relative addressing in vgoto etc., used by saved scripts (e.g. Mystery Event)
 static EWRAM_DATA u16 sPauseCounter = 0;
 static EWRAM_DATA u16 sMovingNpcId = 0;
 static EWRAM_DATA u16 sMovingNpcMapGroup = 0;
@@ -184,51 +181,6 @@ bool8 ScrCmd_call_if(struct ScriptContext *ctx)
     return FALSE;
 }
 
-bool8 ScrCmd_setvaddress(struct ScriptContext *ctx)
-{
-    u32 addr1 = (u32)ctx->scriptPtr - 1;
-    u32 addr2 = ScriptReadWord(ctx);
-
-    sAddressOffset = addr2 - addr1;
-    return FALSE;
-}
-
-bool8 ScrCmd_vgoto(struct ScriptContext *ctx)
-{
-    u32 addr = ScriptReadWord(ctx);
-
-    ScriptJump(ctx, (u8 *)(addr - sAddressOffset));
-    return FALSE;
-}
-
-bool8 ScrCmd_vcall(struct ScriptContext *ctx)
-{
-    u32 addr = ScriptReadWord(ctx);
-
-    ScriptCall(ctx, (u8 *)(addr - sAddressOffset));
-    return FALSE;
-}
-
-bool8 ScrCmd_vgoto_if(struct ScriptContext *ctx)
-{
-    u8 condition = ScriptReadByte(ctx);
-    const u8 *ptr = (const u8 *)(ScriptReadWord(ctx) - sAddressOffset);
-
-    if (sScriptConditionTable[condition][ctx->comparisonResult] == 1)
-        ScriptJump(ctx, ptr);
-    return FALSE;
-}
-
-bool8 ScrCmd_vcall_if(struct ScriptContext *ctx)
-{
-    u8 condition = ScriptReadByte(ctx);
-    const u8 *ptr = (const u8 *)(ScriptReadWord(ctx) - sAddressOffset);
-
-    if (sScriptConditionTable[condition][ctx->comparisonResult] == 1)
-        ScriptCall(ctx, ptr);
-    return FALSE;
-}
-
 bool8 ScrCmd_gotostd(struct ScriptContext *ctx)
 {
     u8 index = ScriptReadByte(ctx);
@@ -274,27 +226,6 @@ bool8 ScrCmd_callstd_if(struct ScriptContext *ctx)
         if (ptr < gStdScripts_End)
             ScriptCall(ctx, *ptr);
     }
-    return FALSE;
-}
-
-bool8 ScrCmd_returnram(struct ScriptContext *ctx)
-{
-    ScriptJump(ctx, gRamScriptRetAddr);
-    return FALSE;
-}
-
-bool8 ScrCmd_endram(struct ScriptContext *ctx)
-{
-    ClearRamScript();
-    StopScript(ctx);
-    return TRUE;
-}
-
-bool8 ScrCmd_setmysteryeventstatus(struct ScriptContext *ctx)
-{
-    u8 status = ScriptReadByte(ctx);
-
-    SetMysteryEventScriptStatus(status);
     return FALSE;
 }
 
@@ -1634,14 +1565,6 @@ bool8 ScrCmd_closebraillemessage(struct ScriptContext *ctx)
     return FALSE;
 }
 
-bool8 ScrCmd_vmessage(struct ScriptContext *ctx)
-{
-    u32 msg = ScriptReadWord(ctx);
-
-    ShowFieldMessage((u8 *)(msg - sAddressOffset));
-    return FALSE;
-}
-
 bool8 ScrCmd_bufferspeciesname(struct ScriptContext *ctx)
 {
     u8 stringVarIndex = ScriptReadByte(ctx);
@@ -1746,25 +1669,6 @@ bool8 ScrCmd_bufferstring(struct ScriptContext *ctx)
     const u8 *text = (u8 *)ScriptReadWord(ctx);
 
     StringCopy(sScriptStringVars[stringVarIndex], text);
-    return FALSE;
-}
-
-bool8 ScrCmd_vbuffermessage(struct ScriptContext *ctx)
-{
-    const u8 *ptr = (u8 *)(ScriptReadWord(ctx) - sAddressOffset);
-
-    StringExpandPlaceholders(gStringVar4, ptr);
-    return FALSE;
-}
-
-bool8 ScrCmd_vbufferstring(struct ScriptContext *ctx)
-{
-    u8 stringVarIndex = ScriptReadByte(ctx);
-    u32 addr = ScriptReadWord(ctx);
-
-    const u8 *src = (u8 *)(addr - sAddressOffset);
-    u8 *dest = sScriptStringVars[stringVarIndex];
-    StringCopy(dest, src);
     return FALSE;
 }
 
@@ -2283,18 +2187,6 @@ bool8 ScrCmd_checkmodernfatefulencounter(struct ScriptContext *ctx)
     u16 partyIndex = VarGet(ScriptReadHalfword(ctx));
 
     gSpecialVar_Result = GetMonData(&gPlayerParty[partyIndex], MON_DATA_MODERN_FATEFUL_ENCOUNTER, NULL);
-    return FALSE;
-}
-
-bool8 ScrCmd_trywondercardscript(struct ScriptContext *ctx)
-{
-    const u8 *script = GetSavedRamScriptIfValid();
-
-    if (script)
-    {
-        gRamScriptRetAddr = ctx->scriptPtr;
-        ScriptJump(ctx, script);
-    }
     return FALSE;
 }
 

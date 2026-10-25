@@ -312,7 +312,6 @@ static const u8 *GetInteractedObjectEventScript(struct MapPosition *position, u8
 
     script = GetObjectEventScriptPointerByObjectEventId(objectEventId);
 
-    script = GetRamScript(gSpecialVar_LastTalked, script);
     return script;
 }
 
@@ -405,8 +404,6 @@ static const u8 *GetInteractedMetatileScript(struct MapPosition *position, u8 me
         return EventScript_WirelessBoxResults;
     if (MetatileBehavior_IsCableBoxResults2(metatileBehavior, direction) == TRUE)
         return EventScript_CableBoxResults;
-    if (MetatileBehavior_IsQuestionnaire(metatileBehavior) == TRUE)
-        return EventScript_Questionnaire;
 
     elevation = position->elevation;
     if (elevation == MapGridGetElevationAt(position->x, position->y))

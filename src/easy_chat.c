@@ -13,7 +13,6 @@
 #include "graphics.h"
 #include "international_string_util.h"
 #include "main.h"
-#include "mystery_gift.h"
 #include "menu.h"
 #include "overworld.h"
 #include "palette.h"
@@ -112,9 +111,6 @@ static void SetKeyboardCursorToLastColumn(void);
 static u8 GetLastAlphabetColumn(u8);
 static void ReduceToValidWordSelectColumn(void);
 static bool8 IsSelectedWordIndexInvalid(void);
-#ifndef FREE_MYSTERY_GIFT
-static int DidPlayerInputMysteryGiftPhrase(void);
-#endif
 static u16 DidPlayerInputABerryMasterWifePhrase(void);
 static bool8 InitEasyChatScreenControl_(void);
 static void LoadEasyChatPalettes(void);
@@ -620,18 +616,6 @@ static const struct EasyChatScreenTemplate sEasyChatScreenTemplates[] = {
         .confirmText1 = gText_TheImage,
         .confirmText2 = gText_IsAsShownOkay,
     },
-    {
-        .type = EASY_CHAT_TYPE_QUESTIONNAIRE,
-        .numColumns = 2,
-        .numRows = 2,
-        .frameId = FRAMEID_GENERAL_2x2,
-        .fourFooterOptions = FALSE,
-        .titleText = gText_Questionnaire,
-        .instructionsText1 = gText_CombineFourWordsOrPhrases,
-        .instructionsText2 = gText_AndFillOutTheQuestionnaire,
-        .confirmText1 = gText_TheAnswer,
-        .confirmText2 = gText_IsAsShownOkay,
-    },
 };
 
 // IDs are used indirectly as indexes into gEasyChatWordsByLetterPointers
@@ -644,14 +628,6 @@ static const u8 sAlphabetGroupIdMap[NUM_ALPHABET_ROWS][NUM_ALPHABET_COLUMNS] = {
     {20, 21, 22, 23, 24, 25, 26},
 };
 
-#ifndef FREE_MYSTERY_GIFT
-static const u16 sMysteryGiftPhrase[NUM_QUESTIONNAIRE_WORDS] = {
-    EC_WORD_LINK,
-    EC_WORD_TOGETHER,
-    EC_WORD_WITH,
-    EC_WORD_ALL,
-};
-#endif
 
 static const u16 sBerryMasterWifePhrases[][2] = {
     [PHRASE_GREAT_BATTLE - 1]        = {EC_WORD_GREAT, EC_WORD_BATTLE},
@@ -1462,9 +1438,6 @@ void ShowEasyChatScreen(void)
         words = gSaveBlock2Ptr->apprentices[0].speechWon;
 #endif
         break;
-    case EASY_CHAT_TYPE_QUESTIONNAIRE:
-        words = GetQuestionnaireWordsPtr();
-        break;
     default:
         return;
     }
@@ -2083,11 +2056,6 @@ static u16 TryConfirmWords(void)
             return ECFUNC_MSG_CANT_EXIT;
         }
 
-        sEasyChatScreen->inputState = INPUTSTATE_CONFIRM_WORDS_YES_NO;
-        return ECFUNC_PROMPT_CONFIRM;
-    }
-    else if (sEasyChatScreen->type == EASY_CHAT_TYPE_QUESTIONNAIRE)
-    {
         sEasyChatScreen->inputState = INPUTSTATE_CONFIRM_WORDS_YES_NO;
         return ECFUNC_PROMPT_CONFIRM;
     }
@@ -2864,28 +2832,12 @@ static void SetSpecialEasyChatResult(void)
 {
     switch (sEasyChatScreen->type)
     {
-    case EASY_CHAT_TYPE_QUESTIONNAIRE:
-#ifdef FREE_MYSTERY_GIFT
-        gSpecialVar_0x8004 = 0;
-#else
-        if (DidPlayerInputMysteryGiftPhrase())
-            gSpecialVar_0x8004 = 2;
-        else
-            gSpecialVar_0x8004 = 0;
-#endif
-        break;
     case EASY_CHAT_TYPE_GOOD_SAYING:
         gSpecialVar_0x8004 = DidPlayerInputABerryMasterWifePhrase();
         break;
     }
 }
 
-#ifndef FREE_MYSTERY_GIFT
-static int DidPlayerInputMysteryGiftPhrase(void)
-{
-    return !IsPhraseDifferentThanPlayerInput(sMysteryGiftPhrase, ARRAY_COUNT(sMysteryGiftPhrase));
-}
-#endif
 
 static u16 DidPlayerInputABerryMasterWifePhrase(void)
 {
@@ -5624,14 +5576,6 @@ void InitializeEasyChatWordArray(u16 *words, u16 length)
     u16 i;
     for (i = length - 1; i != EC_EMPTY_WORD; i--)
         *(words++) = EC_EMPTY_WORD;
-}
-
-void InitQuestionnaireWords(void)
-{
-    int i;
-    u16 *words = GetQuestionnaireWordsPtr();
-    for (i = 0; i < NUM_QUESTIONNAIRE_WORDS; i++)
-        words[i] = EC_EMPTY_WORD;
 }
 
 bool32 IsEasyChatAnswerUnlocked(int easyChatWord)

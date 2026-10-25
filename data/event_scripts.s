@@ -456,10 +456,6 @@ gText_PlayerHandedOverTheItem::
 	.string "{PLAYER} handed over the\n"
 	.string "{STR_VAR_1}.$"
 
-gText_ThankYouForAccessingMysteryGift::
-	.string "Thank you for accessing the\n"
-	.string "MYSTERY GIFT System.$"
-
 gText_PlayerFoundOneTMHM::
 	.string "{PLAYER} found one {STR_VAR_1}\n"
 	.string "{STR_VAR_2}!$"
@@ -473,7 +469,6 @@ gText_LegendaryFlewAway::
 	.string "The {STR_VAR_1} flew away!$"
 
 	.include "data/text/pc_transfer.inc"
-	.include "data/text/questionnaire.inc"
 	.include "data/text/abnormal_weather.inc"
 
 EventScript_SelectWithoutRegisteredItem::
@@ -523,7 +518,6 @@ Common_EventScript_LegendaryFlewAway::
 	end
 
 	.include "data/scripts/pc_transfer.inc"
-	.include "data/scripts/questionnaire.inc"
 	.include "data/scripts/abnormal_weather.inc"
 	.include "data/scripts/trainer_script.inc"
 	.include "data/scripts/berry_tree.inc"

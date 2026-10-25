@@ -79,22 +79,6 @@
 	.byte \function
 	.endm
 
-	@ Equivalent to the 'return' command for a RAM script.
-	.macro returnram
-	.byte SCR_OP_RETURNRAM
-	.endm
-
-	@ Equivalent to the 'end' command for a RAM script.
-	.macro endram
-	.byte SCR_OP_ENDRAM
-	.endm
-
-	@ Sets the Mystery Event script status (MEVENT_STATUS_*).
-	.macro setmysteryeventstatus value:req
-	.byte SCR_OP_SETMYSTERYEVENTSTATUS
-	.byte \value
-	.endm
-
 	@ Sets the value at the specified script data index to a fixed 4-byte value.
 	.macro loadword destIndex:req, value:req
 	.byte SCR_OP_LOAD_WORD
@@ -1441,57 +1425,6 @@
 	.byte SCR_OP_DOWILDBATTLE
 	.endm
 
-	@ Sets a relative address to be used by the other vcommands as part of a Mystery Gift script.
-	.macro setvaddress pointer:req
-	.byte SCR_OP_SETVADDRESS
-	.4byte \pointer
-	.endm
-
-	@ Equivalent to goto using the relative address set by setvaddress.
-	.macro vgoto destination:req
-	.byte SCR_OP_VGOTO
-	.4byte \destination
-	.endm
-
-	@ Equivalent to call using the relative address set by setvaddress.
-	.macro vcall destination:req
-	.byte SCR_OP_VCALL
-	.4byte \destination
-	.endm
-
-	@ Equivalent to goto_if using the relative address set by setvaddress.
-	.macro vgoto_if condition:req, destination:req
-	.byte SCR_OP_VGOTO_IF
-	.byte \condition
-	.4byte \destination
-	.endm
-
-	@ Equivalent to call_if using the relative address set by setvaddress.
-	.macro vcall_if condition:req, destination:req
-	.byte SCR_OP_VCALL_IF
-	.byte \condition
-	.4byte \destination
-	.endm
-
-	@ Equivalent to message using the relative address set by setvaddress.
-	.macro vmessage text:req
-	.byte SCR_OP_VMESSAGE
-	.4byte \text
-	.endm
-
-	@ Expands the given text at the pointer (- the relative address set by setvaddress) into gStringVar4
-	.macro vbuffermessage text:req
-	.byte SCR_OP_VBUFFERMESSAGE
-	.4byte \text
-	.endm
-
-	@ Equivalent to bufferstring using the relative address set by setvaddress.
-	.macro vbufferstring stringVarIndex:req, text:req
-	.byte SCR_OP_VBUFFERSTRING
-	stringvar \stringVarIndex
-	.4byte \text
-	.endm
-
 	@ Create a window showing how many Coins the player has.
 	.macro showcoinsbox x:req, y:req
 	.byte SCR_OP_SHOWCOINSBOX
@@ -1584,12 +1517,6 @@
 	.macro checkmodernfatefulencounter slot:req
 	.byte SCR_OP_CHECKMODERNFATEFULENCOUNTER
 	.2byte \slot
-	.endm
-
-	@ Jumps to the ram script saved from a Wonder Card. If there is no valid saved Wonder Card or if the
-	@ ram script is invalid then this does nothing.
-	.macro trywondercardscript
-	.byte SCR_OP_TRYWONDERCARDSCRIPT
 	.endm
 
 	@ Used only in FireRed/LeafGreen, does nothing in Emerald.
@@ -1846,24 +1773,6 @@
 
 	.macro call_if_ne a:req, b, c @ NOT EQUAL
 	trycompare call_if, 5, \a, \b, \c
-	.endm
-
-	.macro vgoto_if_eq a:req, b, c
-	trycompare vgoto_if, TRUE, \a, \b, \c
-	.endm
-
-	.macro vgoto_if_ne a:req, b, c
-	trycompare vgoto_if, FALSE, \a, \b, \c
-	.endm
-
-	.macro vgoto_if_unset flag:req, dest:req
-	checkflag \flag
-	vgoto_if FALSE, \dest
-	.endm
-
-	.macro vgoto_if_set flag:req, dest:req
-	checkflag \flag
-	vgoto_if TRUE, \dest
 	.endm
 
 	.macro goto_if_defeated trainer:req, dest:req

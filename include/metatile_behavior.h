@@ -142,7 +142,6 @@ bool8 MetatileBehavior_IsBlueprint(u8 metatileBehavior);
 bool8 MetatileBehavior_IsBattlePyramidWarp(u8 metatileBehavior);
 bool8 MetatileBehavior_IsPlayerFacingWirelessBoxResults(u8 tile, u8 playerDir);
 bool8 MetatileBehavior_IsCableBoxResults2(u8 tile, u8 playerDir);
-bool8 MetatileBehavior_IsQuestionnaire(u8 metatileBehavior);
 bool8 MetatileBehavior_IsLongGrass_Duplicate(u8 metatileBehavior);
 bool8 MetatileBehavior_IsLongGrassSouthEdge(u8 metatileBehavior);
 

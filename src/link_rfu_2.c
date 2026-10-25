@@ -15,7 +15,6 @@
 #include "task.h"
 #include "text.h"
 #include "save.h"
-#include "mystery_gift_menu.h"
 #ifndef FREE_WIRELESS
 
 enum {

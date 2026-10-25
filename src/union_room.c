@@ -24,8 +24,6 @@
 #include "load_save.h"
 #include "menu.h"
 #include "menu_helpers.h"
-#include "mystery_gift.h"
-#include "mystery_gift_menu.h"
 #include "overworld.h"
 #include "palette.h"
 #include "party_menu.h"
@@ -282,6 +280,16 @@ static void TradeBoardListMenuItemPrintFunc(u8, u32, u8);
 static void ItemPrintFunc_EmptyList(u8, u32, u8);
 
 #include "data/union_room.h"
+
+// Mystery Gift is gone; these were already no-op stubs. Union Room goes next.
+#define MysteryGift_TryEnableStatsByFlagId(x) ((void)0)
+#define MysteryGift_DisableStats() ((void)0)
+#define GetWonderCardFlagID() 0
+#define GetMysteryGiftBaseBlock() 0
+#define MG_DrawTextBorder(w) ((void)0)
+#define MG_AddMessageTextPrinter(str) ((void)0)
+#define PrintMysteryGiftMenuMessage(a, b) 0
+#define DoMysteryGiftYesNo(a, b, c, d) 0
 
 static void PrintNumPlayersWaitingForMsg(u8 windowId, u8 capacityCode, u8 stringId)
 {

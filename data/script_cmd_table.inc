@@ -27,9 +27,9 @@ gScriptCmdTable::
 	script_cmd_table_entry SCR_OP_CALL_STD                      ScrCmd_callstd                        @ 0x09
 	script_cmd_table_entry SCR_OP_GOTO_STD_IF                   ScrCmd_gotostd_if                     @ 0x0a
 	script_cmd_table_entry SCR_OP_CALL_STD_IF                   ScrCmd_callstd_if                     @ 0x0b
-	script_cmd_table_entry SCR_OP_RETURNRAM                     ScrCmd_returnram                      @ 0x0c
-	script_cmd_table_entry SCR_OP_ENDRAM                        ScrCmd_endram                         @ 0x0d
-	script_cmd_table_entry SCR_OP_SETMYSTERYEVENTSTATUS         ScrCmd_setmysteryeventstatus          @ 0x0e
+	script_cmd_table_entry SCR_OP_RETURNRAM                     ScrCmd_nop                      @ 0x0c
+	script_cmd_table_entry SCR_OP_ENDRAM                        ScrCmd_nop                         @ 0x0d
+	script_cmd_table_entry SCR_OP_SETMYSTERYEVENTSTATUS         ScrCmd_nop          @ 0x0e
 	script_cmd_table_entry SCR_OP_LOAD_WORD                     ScrCmd_loadword                       @ 0x0f
 	script_cmd_table_entry SCR_OP_LOAD_BYTE                     ScrCmd_loadbyte                       @ 0x10
 	script_cmd_table_entry SCR_OP_SETPTR                        ScrCmd_setptr                         @ 0x11
@@ -199,14 +199,14 @@ gScriptCmdTable::
 	script_cmd_table_entry SCR_OP_REMOVECOINS                   ScrCmd_removecoins                    @ 0xb5
 	script_cmd_table_entry SCR_OP_SETWILDBATTLE                 ScrCmd_setwildbattle                  @ 0xb6
 	script_cmd_table_entry SCR_OP_DOWILDBATTLE                  ScrCmd_dowildbattle                   @ 0xb7
-	script_cmd_table_entry SCR_OP_SETVADDRESS                   ScrCmd_setvaddress                    @ 0xb8
-	script_cmd_table_entry SCR_OP_VGOTO                         ScrCmd_vgoto                          @ 0xb9
-	script_cmd_table_entry SCR_OP_VCALL                         ScrCmd_vcall                          @ 0xba
-	script_cmd_table_entry SCR_OP_VGOTO_IF                      ScrCmd_vgoto_if                       @ 0xbb
-	script_cmd_table_entry SCR_OP_VCALL_IF                      ScrCmd_vcall_if                       @ 0xbc
-	script_cmd_table_entry SCR_OP_VMESSAGE                      ScrCmd_vmessage                       @ 0xbd
-	script_cmd_table_entry SCR_OP_VBUFFERMESSAGE                ScrCmd_vbuffermessage                 @ 0xbe
-	script_cmd_table_entry SCR_OP_VBUFFERSTRING                 ScrCmd_vbufferstring                  @ 0xbf
+	script_cmd_table_entry SCR_OP_SETVADDRESS                   ScrCmd_nop                    @ 0xb8
+	script_cmd_table_entry SCR_OP_VGOTO                         ScrCmd_nop                          @ 0xb9
+	script_cmd_table_entry SCR_OP_VCALL                         ScrCmd_nop                          @ 0xba
+	script_cmd_table_entry SCR_OP_VGOTO_IF                      ScrCmd_nop                       @ 0xbb
+	script_cmd_table_entry SCR_OP_VCALL_IF                      ScrCmd_nop                       @ 0xbc
+	script_cmd_table_entry SCR_OP_VMESSAGE                      ScrCmd_nop                       @ 0xbd
+	script_cmd_table_entry SCR_OP_VBUFFERMESSAGE                ScrCmd_nop                 @ 0xbe
+	script_cmd_table_entry SCR_OP_VBUFFERSTRING                 ScrCmd_nop                  @ 0xbf
 	script_cmd_table_entry SCR_OP_SHOWCOINSBOX                  ScrCmd_showcoinsbox                   @ 0xc0
 	script_cmd_table_entry SCR_OP_HIDECOINSBOX                  ScrCmd_hidecoinsbox                   @ 0xc1
 	script_cmd_table_entry SCR_OP_UPDATECOINSBOX                ScrCmd_updatecoinsbox                 @ 0xc2
@@ -222,7 +222,7 @@ gScriptCmdTable::
 	script_cmd_table_entry SCR_OP_COMPAREHIDDENVAR              ScrCmd_nop1                           @ 0xcc
 	script_cmd_table_entry SCR_OP_SETMODERNFATEFULENCOUNTER     ScrCmd_setmodernfatefulencounter      @ 0xcd
 	script_cmd_table_entry SCR_OP_CHECKMODERNFATEFULENCOUNTER   ScrCmd_checkmodernfatefulencounter    @ 0xce
-	script_cmd_table_entry SCR_OP_TRYWONDERCARDSCRIPT           ScrCmd_trywondercardscript            @ 0xcf
+	script_cmd_table_entry SCR_OP_TRYWONDERCARDSCRIPT           ScrCmd_nop            @ 0xcf
 	script_cmd_table_entry SCR_OP_SETWORLDMAPFLAG               ScrCmd_nop1                           @ 0xd0
 	script_cmd_table_entry SCR_OP_WARPSPINENTER                 ScrCmd_warpspinenter                  @ 0xd1
 	script_cmd_table_entry SCR_OP_SETMONMETLOCATION             ScrCmd_setmonmetlocation              @ 0xd2

@@ -22,7 +22,6 @@
 #include "link.h"
 #include "list_menu.h"
 #include "main.h"
-#include "mystery_gift.h"
 #include "match_call.h"
 #include "menu.h"
 #include "overworld.h"
@@ -55,7 +54,6 @@
 #include "constants/items.h"
 #include "constants/heal_locations.h"
 #include "constants/map_types.h"
-#include "constants/mystery_gift.h"
 #include "constants/slot_machine.h"
 #include "constants/songs.h"
 #include "constants/moves.h"
@@ -1494,25 +1492,6 @@ bool8 MonOTNameNotPlayer(void)
         return FALSE;
 
     return TRUE;
-}
-
-u16 GetMysteryGiftCardStat(void)
-{
-    switch (gSpecialVar_Result)
-    {
-    case GET_NUM_STAMPS:
-        return MysteryGift_GetCardStat(CARD_STAT_NUM_STAMPS);
-    case GET_MAX_STAMPS:
-        return MysteryGift_GetCardStat(CARD_STAT_MAX_STAMPS);
-    case GET_CARD_BATTLES_WON:
-        return MysteryGift_GetCardStat(CARD_STAT_BATTLES_WON);
-    case GET_CARD_BATTLES_LOST: // Never occurs
-        return MysteryGift_GetCardStat(CARD_STAT_BATTLES_LOST);
-    case GET_CARD_NUM_TRADES: // Never occurs
-        return MysteryGift_GetCardStat(CARD_STAT_NUM_TRADES);
-    default:
-        return 0;
-    }
 }
 
 bool8 BufferTMHMMoveName(void)
@@ -3495,15 +3474,6 @@ bool32 IsTrainerRegistered(void)
             return TRUE;
     }
     return FALSE;
-}
-
-// Always returns FALSE
-bool32 ShouldDistributeEonTicket(void)
-{
-    if (!VarGet(VAR_DISTRIBUTE_EON_TICKET))
-        return FALSE;
-
-    return TRUE;
 }
 
 #define tState data[0]
