@@ -8,6 +8,7 @@
 #include "event_object_lock.h"
 #include "event_object_movement.h"
 #include "field_player_avatar.h"
+#include "field_scanline.h"
 #include "field_screen_effect.h"
 #include "field_special_scene.h"
 #include "field_weather.h"
@@ -975,6 +976,8 @@ void AnimateFlash(u8 newFlashLevel)
 {
     u8 curFlashLevel = GetFlashLevel();
     bool8 fullBrightness = FALSE;
+
+    FieldScanline_Stop();  // the circle takes DMA0
     if (newFlashLevel == 0)
         fullBrightness = TRUE;
     StartUpdateFlashLevelEffect(DISPLAY_WIDTH / 2, DISPLAY_HEIGHT / 2, sFlashLevelToRadius[curFlashLevel], sFlashLevelToRadius[newFlashLevel], fullBrightness, 1);
@@ -1206,8 +1209,12 @@ static void Task_OrbEffect(u8 taskId)
 
 void DoOrbEffect(void)
 {
-    u8 taskId = CreateTask(Task_OrbEffect, 80);
-    s16 *data = gTasks[taskId].data;
+    u8 taskId;
+    s16 *data;
+
+    FieldScanline_Stop();  // the orb circle takes DMA0
+    taskId = CreateTask(Task_OrbEffect, 80);
+    data = gTasks[taskId].data;
 
     if (gSpecialVar_Result == 0)
     {

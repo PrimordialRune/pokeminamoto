@@ -45,20 +45,38 @@ void ScanlineEffect_Clear(void)
 
 void ScanlineEffect_SetParams(struct ScanlineEffectParams params)
 {
-    if (params.dmaControl == SCANLINE_EFFECT_DMACNT_16BIT)  // 16-bit
+    // The DMA count (low half of dmaControl) is how many registers each HBlank
+    // writes, consecutive from dmaDest (e.g. 3 words = BG1-3 HOFS/VOFS).
+    // Everything in Emerald writes one, and keeps its old test: only the exact
+    // SCANLINE_EFFECT_DMACNT_16BIT counts as 16-bit (the Flash circle's WIN0H
+    // control does not, and has always run with the 32-bit offsets).
+    u32 unitsPerLine = params.dmaControl & 0xFFFF;
+    bool32 is16Bit;
+
+    if (unitsPerLine <= 1)
+    {
+        unitsPerLine = 1;
+        is16Bit = (params.dmaControl == SCANLINE_EFFECT_DMACNT_16BIT);
+    }
+    else
+    {
+        is16Bit = !(params.dmaControl & (DMA_32BIT << 16));
+    }
+    gScanlineEffect.unitsPerLine = unitsPerLine;
+    if (is16Bit)
     {
         // Set the DMA src to the value for the second scanline because the
         // first DMA transfer occurs in HBlank *after* the first scanline is drawn
-        gScanlineEffect.dmaSrcBuffers[0] = (u16 *)gScanlineEffectRegBuffers[0] + 1;
-        gScanlineEffect.dmaSrcBuffers[1] = (u16 *)gScanlineEffectRegBuffers[1] + 1;
+        gScanlineEffect.dmaSrcBuffers[0] = (u16 *)gScanlineEffectRegBuffers[0] + unitsPerLine;
+        gScanlineEffect.dmaSrcBuffers[1] = (u16 *)gScanlineEffectRegBuffers[1] + unitsPerLine;
         gScanlineEffect.setFirstScanlineReg = CopyValue16Bit;
     }
-    else  // assume 32-bit
+    else  // 32-bit
     {
         // Set the DMA src to the value for the second scanline because the
         // first DMA transfer occurs in HBlank *after* the first scanline is drawn
-        gScanlineEffect.dmaSrcBuffers[0] = (u32 *)gScanlineEffectRegBuffers[0] + 1;
-        gScanlineEffect.dmaSrcBuffers[1] = (u32 *)gScanlineEffectRegBuffers[1] + 1;
+        gScanlineEffect.dmaSrcBuffers[0] = (u32 *)gScanlineEffectRegBuffers[0] + unitsPerLine;
+        gScanlineEffect.dmaSrcBuffers[1] = (u32 *)gScanlineEffectRegBuffers[1] + unitsPerLine;
         gScanlineEffect.setFirstScanlineReg = CopyValue32Bit;
     }
 
@@ -102,16 +120,20 @@ static void CopyValue16Bit(void)
 {
     vu16 *dest = (vu16 *)gScanlineEffect.dmaDest;
     vu16 *src = (vu16 *)&gScanlineEffectRegBuffers[gScanlineEffect.srcBuffer];
+    u32 i;
 
-    *dest = *src;
+    for (i = 0; i < gScanlineEffect.unitsPerLine; i++)
+        dest[i] = src[i];
 }
 
 static void CopyValue32Bit(void)
 {
     vu32 *dest = (vu32 *)gScanlineEffect.dmaDest;
     vu32 *src = (vu32 *)&gScanlineEffectRegBuffers[gScanlineEffect.srcBuffer];
+    u32 i;
 
-    *dest = *src;
+    for (i = 0; i < gScanlineEffect.unitsPerLine; i++)
+        dest[i] = src[i];
 }
 
 #define tStartLine            data[0]

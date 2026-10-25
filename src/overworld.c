@@ -20,6 +20,7 @@
 #include "field_specials.h"
 #include "field_tasks.h"
 #include "field_weather.h"
+#include "field_scanline.h"
 #include "fieldmap.h"
 #include "fldeff.h"
 #include "gpu_regs.h"
@@ -1395,6 +1396,7 @@ static void OverworldBasic(void)
     UpdateTilesetAnimations();
     DoScheduledBgTilemapCopiesToVram();
     DayNight_Update();
+    FieldScanline_Update();
 }
 
 // This CB2 is used when starting
