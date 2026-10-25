@@ -160,8 +160,9 @@ void Regress_SpriteStatics(const u8 *tileBitmap, const u16 *palTags)
     gRegress.palTags = palTags;
 }
 
-// Sampled every few frames (cheap, but it must not disturb the lag numbers)
-static void SampleResources(void)
+// Sampled between frames, only when the frame left idle time, so that it does not
+// change the lag numbers or the timing of later frames
+static void SampleResources(u32 busy)
 {
     u32 i, run, best, count;
 
@@ -177,7 +178,7 @@ static void SampleResources(void)
     if (count > gRegress.objEventsMax)
         gRegress.objEventsMax = count;
 
-    if (gRegress.tileBitmap != NULL)
+    if (gRegress.tileBitmap != NULL && busy < 120 && (gRegress.frames & 3) == 0)
     {
         const u8 *bitmap = gRegress.tileBitmap;
         u32 bit;
@@ -237,9 +238,8 @@ void Regress_FrameEnd(void)
     gRegress.lastVblank = vbl;
     if (gRegress.frames % STACK_SCAN_INTERVAL == 0)
         NoteStack();
-    // Only on frames with plenty of idle time left, so sampling never causes a lag frame
-    if ((gRegress.frames & 3) == 0 && busy < 120)
-        SampleResources();
+    if (busy < 170)
+        SampleResources(busy);
 }
 
 static void Setup(void)
