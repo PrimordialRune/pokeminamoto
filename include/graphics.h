@@ -4948,17 +4948,6 @@ extern const u32 gKantoTrainerCardFrontLink_Tilemap[];
 extern const u32 gHoennTrainerCardBg_Tilemap[];
 
 // Frontier Pass
-extern const u32 gFrontierPassBg_Gfx[];
-extern const u32 gFrontierPassBg_Tilemap[];
-extern const u16 gFrontierPassBg_Pal[][16];
-extern const u32 gFrontierPassMapAndCard_Gfx[];
-extern const u32 gFrontierPassCancelButton_Tilemap[];
-extern const u32 gFrontierPassCancelButtonHighlighted_Tilemap[];
-extern const u32 gFrontierPassMedals_Gfx[];
-extern const u16 gFrontierPassCursor_Pal[];
-extern const u16 gFrontierPassMedalsGold_Pal[];
-extern const u16 gFrontierPassMedalsSilver_Pal[];
-extern const u16 gFrontierPassMapCursor_Pal[];
 
 // Easy Chat Screen
 extern const u32 gEasyChatWindow_Gfx[];

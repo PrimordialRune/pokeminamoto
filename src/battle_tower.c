@@ -11,7 +11,6 @@
 #include "battle.h"
 #include "frontier_util.h"
 #include "strings.h"
-#include "recorded_battle.h"
 #include "easy_chat.h"
 #include "gym_leader_rematch.h"
 #include "battle_transition.h"
@@ -1398,17 +1397,11 @@ u8 GetFrontierTrainerFrontSpriteId(u16 trainerId)
     }
     else if (trainerId < TRAINER_RECORD_MIXING_APPRENTICE)
     {
-        if (gBattleTypeFlags & BATTLE_TYPE_RECORDED)
-            return gFacilityClassToPicIndex[GetRecordedBattleRecordMixFriendClass()];
-        else
-            return gFacilityClassToPicIndex[gSaveBlock2Ptr->frontier.towerRecords[trainerId - TRAINER_RECORD_MIXING_FRIEND].facilityClass];
+        return gFacilityClassToPicIndex[gSaveBlock2Ptr->frontier.towerRecords[trainerId - TRAINER_RECORD_MIXING_FRIEND].facilityClass];
     }
     else
     {
-        if (gBattleTypeFlags & BATTLE_TYPE_RECORDED)
-            return gFacilityClassToPicIndex[gApprentices[GetRecordedBattleApprenticeId()].facilityClass];
-        else
-            return gFacilityClassToPicIndex[gApprentices[SAVED_APPRENTICES[trainerId - TRAINER_RECORD_MIXING_APPRENTICE].id].facilityClass];
+        return gFacilityClassToPicIndex[gApprentices[SAVED_APPRENTICES[trainerId - TRAINER_RECORD_MIXING_APPRENTICE].id].facilityClass];
     }
 }
 
@@ -1431,25 +1424,11 @@ u8 GetFrontierOpponentClass(u16 trainerId)
     }
     else if (trainerId < TRAINER_RECORD_MIXING_APPRENTICE)
     {
-        if (gBattleTypeFlags & BATTLE_TYPE_RECORDED)
-        {
-            trainerClass = gFacilityClassToTrainerClass[GetRecordedBattleRecordMixFriendClass()];
-        }
-        else
-        {
-            trainerClass = gFacilityClassToTrainerClass[gSaveBlock2Ptr->frontier.towerRecords[trainerId - TRAINER_RECORD_MIXING_FRIEND].facilityClass];
-        }
+        trainerClass = gFacilityClassToTrainerClass[gSaveBlock2Ptr->frontier.towerRecords[trainerId - TRAINER_RECORD_MIXING_FRIEND].facilityClass];
     }
     else
     {
-        if (gBattleTypeFlags & BATTLE_TYPE_RECORDED)
-        {
-            trainerClass = gFacilityClassToTrainerClass[gApprentices[GetRecordedBattleApprenticeId()].facilityClass];
-        }
-        else
-        {
-            trainerClass = gFacilityClassToTrainerClass[gApprentices[SAVED_APPRENTICES[trainerId - TRAINER_RECORD_MIXING_APPRENTICE].id].facilityClass];
-        }
+        trainerClass = gFacilityClassToTrainerClass[gApprentices[SAVED_APPRENTICES[trainerId - TRAINER_RECORD_MIXING_APPRENTICE].id].facilityClass];
     }
 
     return trainerClass;
@@ -1466,17 +1445,11 @@ static u8 GetFrontierTrainerFacilityClass(u16 trainerId)
     }
     else if (trainerId < TRAINER_RECORD_MIXING_APPRENTICE)
     {
-        if (gBattleTypeFlags & BATTLE_TYPE_RECORDED)
-            facilityClass = GetRecordedBattleRecordMixFriendClass();
-        else
-            facilityClass = gSaveBlock2Ptr->frontier.towerRecords[trainerId - TRAINER_RECORD_MIXING_FRIEND].facilityClass;
+        facilityClass = gSaveBlock2Ptr->frontier.towerRecords[trainerId - TRAINER_RECORD_MIXING_FRIEND].facilityClass;
     }
     else
     {
-        if (gBattleTypeFlags & BATTLE_TYPE_RECORDED)
-            facilityClass = gApprentices[GetRecordedBattleApprenticeId()].facilityClass;
-        else
-            facilityClass = gApprentices[SAVED_APPRENTICES[trainerId - TRAINER_RECORD_MIXING_APPRENTICE].id].facilityClass;
+        facilityClass = gApprentices[SAVED_APPRENTICES[trainerId - TRAINER_RECORD_MIXING_APPRENTICE].id].facilityClass;
     }
 
     return facilityClass;
@@ -1504,33 +1477,17 @@ void GetFrontierTrainerName(u8 *dst, u16 trainerId)
     }
     else if (trainerId < TRAINER_RECORD_MIXING_APPRENTICE)
     {
-        if (gBattleTypeFlags & BATTLE_TYPE_RECORDED)
-        {
-            GetRecordedBattleRecordMixFriendName(dst);
-            return;
-        }
-        else
-        {
-            struct EmeraldBattleTowerRecord *record = &gSaveBlock2Ptr->frontier.towerRecords[trainerId - TRAINER_RECORD_MIXING_FRIEND];
-            TVShowConvertInternationalString(dst, record->name, record->language);
-            return;
-        }
+        struct EmeraldBattleTowerRecord *record = &gSaveBlock2Ptr->frontier.towerRecords[trainerId - TRAINER_RECORD_MIXING_FRIEND];
+        TVShowConvertInternationalString(dst, record->name, record->language);
+        return;
     }
     else
     {
         u8 id, language;
 
-        if (gBattleTypeFlags & BATTLE_TYPE_RECORDED)
-        {
-            id = GetRecordedBattleApprenticeId();
-            language = GetRecordedBattleApprenticeLanguage();
-        }
-        else
-        {
-            const struct Apprentice *apprentice = &SAVED_APPRENTICES[trainerId - TRAINER_RECORD_MIXING_APPRENTICE];
-            id = apprentice->id;
-            language = apprentice->language;
-        }
+        const struct Apprentice *apprentice = &SAVED_APPRENTICES[trainerId - TRAINER_RECORD_MIXING_APPRENTICE];
+        id = apprentice->id;
+        language = apprentice->language;
         TVShowConvertInternationalString(dst, GetApprenticeNameInLanguage(id, language), language);
         return;
     }
@@ -1905,7 +1862,6 @@ static void HandleSpecialTrainerBattleEnd(void)
 {
     s32 i;
 
-    RecordedBattle_SaveBattleOutcome();
     switch (gBattleScripting.specialTrainerBattleType)
     {
     case SPECIAL_BATTLE_TOWER:
@@ -3039,17 +2995,11 @@ void GetBattleTowerTrainerLanguage(u8 *dst, u16 trainerId)
     }
     else if (trainerId < TRAINER_RECORD_MIXING_APPRENTICE)
     {
-        if (gBattleTypeFlags & BATTLE_TYPE_RECORDED)
-            *dst = GetRecordedBattleRecordMixFriendLanguage();
-        else
-            *dst = gSaveBlock2Ptr->frontier.towerRecords[trainerId - TRAINER_RECORD_MIXING_FRIEND].language;
+        *dst = gSaveBlock2Ptr->frontier.towerRecords[trainerId - TRAINER_RECORD_MIXING_FRIEND].language;
     }
     else
     {
-        if (gBattleTypeFlags & BATTLE_TYPE_RECORDED)
-            *dst = GetRecordedBattleApprenticeLanguage();
-        else
-            *dst = SAVED_APPRENTICES[trainerId - TRAINER_RECORD_MIXING_APPRENTICE].language;
+        *dst = SAVED_APPRENTICES[trainerId - TRAINER_RECORD_MIXING_APPRENTICE].language;
     }
 }
 
@@ -3353,7 +3303,7 @@ bool32 ValidateBattleTowerRecord(u8 recordId) // unused
 
 void TrySetLinkBattleTowerEnemyPartyLevel(void)
 {
-    if (gBattleTypeFlags & (BATTLE_TYPE_LINK | BATTLE_TYPE_RECORDED_LINK))
+    if (gBattleTypeFlags & BATTLE_TYPE_LINK)
     {
         s32 i;
         u8 enemyLevel = SetFacilityPtrsGetLevel();

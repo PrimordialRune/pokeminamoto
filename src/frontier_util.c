@@ -20,7 +20,6 @@
 #include "tv.h"
 #include "apprentice.h"
 #include "pokedex.h"
-#include "recorded_battle.h"
 #include "data.h"
 #include "strings.h"
 #include "malloc.h"
@@ -66,7 +65,6 @@ static void CheckBattleTypeFlag(void);
 static void CheckPartyIneligibility(void);
 static void IncrementWinStreak(void);
 static void RestoreHeldItems(void);
-static void SaveRecordBattle(void);
 static void BufferFrontierTrainerName(void);
 static void ResetSketchedMoves(void);
 static void SetFacilityBrainObjectEvent(void);
@@ -622,7 +620,6 @@ static void (*const sFrontierUtilFuncs[])(void) =
     [FRONTIER_UTIL_FUNC_CHECK_INELIGIBLE]      = CheckPartyIneligibility,
     [FRONTIER_UTIL_FUNC_INCREMENT_STREAK]      = IncrementWinStreak,
     [FRONTIER_UTIL_FUNC_RESTORE_HELD_ITEMS]    = RestoreHeldItems,
-    [FRONTIER_UTIL_FUNC_SAVE_BATTLE]           = SaveRecordBattle,
     [FRONTIER_UTIL_FUNC_BUFFER_TRAINER_NAME]   = BufferFrontierTrainerName,
     [FRONTIER_UTIL_FUNC_RESET_SKETCH_MOVES]    = ResetSketchedMoves,
     [FRONTIER_UTIL_FUNC_SET_BRAIN_OBJECT]      = SetFacilityBrainObjectEvent,
@@ -837,9 +834,6 @@ static void GetFrontierData(void)
         gSpecialVar_Result = gBattleOutcome;
         gBattleOutcome = 0;
         break;
-    case FRONTIER_DATA_RECORD_DISABLED:
-        gSpecialVar_Result = gSaveBlock2Ptr->frontier.disableRecordBattle;
-        break;
     case FRONTIER_DATA_HEARD_BRAIN_SPEECH:
         gSpecialVar_Result = gSaveBlock2Ptr->frontier.battledBrainFlags & sBattledBrainBitFlags[facility][hasSymbol];
         break;
@@ -871,9 +865,6 @@ static void SetFrontierData(void)
     case FRONTIER_DATA_SELECTED_MON_ORDER:
         for (i = 0; i < MAX_FRONTIER_PARTY_SIZE; i++)
             gSaveBlock2Ptr->frontier.selectedPartyMons[i] = gSelectedOrderFromParty[i];
-        break;
-    case FRONTIER_DATA_RECORD_DISABLED:
-        gSaveBlock2Ptr->frontier.disableRecordBattle = gSpecialVar_0x8006;
         break;
     case FRONTIER_DATA_HEARD_BRAIN_SPEECH:
         gSaveBlock2Ptr->frontier.battledBrainFlags |= sBattledBrainBitFlags[facility][hasSymbol];
@@ -1714,17 +1705,11 @@ void CopyFrontierTrainerText(u8 whichText, u16 trainerId)
         }
         else if (trainerId < TRAINER_RECORD_MIXING_APPRENTICE)
         {
-            if (gBattleTypeFlags & BATTLE_TYPE_RECORDED)
-                FrontierSpeechToString(GetRecordedBattleEasyChatSpeech());
-            else
-                FrontierSpeechToString(gSaveBlock2Ptr->frontier.towerRecords[trainerId - TRAINER_RECORD_MIXING_FRIEND].speechWon);
+            FrontierSpeechToString(gSaveBlock2Ptr->frontier.towerRecords[trainerId - TRAINER_RECORD_MIXING_FRIEND].speechWon);
         }
         else
         {
-            if (gBattleTypeFlags & BATTLE_TYPE_RECORDED)
-                FrontierSpeechToString(GetRecordedBattleEasyChatSpeech());
-            else
-                FrontierSpeechToString(SAVED_APPRENTICES[trainerId - TRAINER_RECORD_MIXING_APPRENTICE].speechWon);
+            FrontierSpeechToString(SAVED_APPRENTICES[trainerId - TRAINER_RECORD_MIXING_APPRENTICE].speechWon);
         }
         break;
     case FRONTIER_PLAYER_WON_TEXT:
@@ -1738,23 +1723,12 @@ void CopyFrontierTrainerText(u8 whichText, u16 trainerId)
         }
         else if (trainerId < TRAINER_RECORD_MIXING_APPRENTICE)
         {
-            if (gBattleTypeFlags & BATTLE_TYPE_RECORDED)
-                FrontierSpeechToString(GetRecordedBattleEasyChatSpeech());
-            else
-                FrontierSpeechToString(gSaveBlock2Ptr->frontier.towerRecords[trainerId - TRAINER_RECORD_MIXING_FRIEND].speechLost);
+            FrontierSpeechToString(gSaveBlock2Ptr->frontier.towerRecords[trainerId - TRAINER_RECORD_MIXING_FRIEND].speechLost);
         }
         else
         {
-            if (gBattleTypeFlags & BATTLE_TYPE_RECORDED)
-            {
-                trainerId = GetRecordedBattleApprenticeId();
-                FrontierSpeechToString(gApprentices[trainerId].speechLost);
-            }
-            else
-            {
-                trainerId = SAVED_APPRENTICES[trainerId - TRAINER_RECORD_MIXING_APPRENTICE].id;
-                FrontierSpeechToString(gApprentices[trainerId].speechLost);
-            }
+            trainerId = SAVED_APPRENTICES[trainerId - TRAINER_RECORD_MIXING_APPRENTICE].id;
+            FrontierSpeechToString(gApprentices[trainerId].speechLost);
         }
         break;
     }
@@ -2152,12 +2126,6 @@ static void RestoreHeldItems(void)
     }
 }
 
-static void SaveRecordBattle(void)
-{
-    gSpecialVar_Result = MoveRecordedBattleToSaveData();
-    gSaveBlock2Ptr->frontier.disableRecordBattle = TRUE;
-}
-
 static void BufferFrontierTrainerName(void)
 {
     switch (gSpecialVar_0x8005)
@@ -2485,10 +2453,7 @@ u8 GetFrontierBrainTrainerPicIndex(void)
 {
     s32 facility;
 
-    if (gBattleTypeFlags & BATTLE_TYPE_RECORDED)
-        facility = GetRecordedBattleFrontierFacility();
-    else
-        facility = VarGet(VAR_FRONTIER_FACILITY);
+    facility = VarGet(VAR_FRONTIER_FACILITY);
 
     return gTrainers[sFrontierBrainTrainerIds[facility]].trainerPic;
 }
@@ -2497,10 +2462,7 @@ u8 GetFrontierBrainTrainerClass(void)
 {
     s32 facility;
 
-    if (gBattleTypeFlags & BATTLE_TYPE_RECORDED)
-        facility = GetRecordedBattleFrontierFacility();
-    else
-        facility = VarGet(VAR_FRONTIER_FACILITY);
+    facility = VarGet(VAR_FRONTIER_FACILITY);
 
     return gTrainers[sFrontierBrainTrainerIds[facility]].trainerClass;
 }
@@ -2510,10 +2472,7 @@ void CopyFrontierBrainTrainerName(u8 *dst)
     s32 i;
     s32 facility;
 
-    if (gBattleTypeFlags & BATTLE_TYPE_RECORDED)
-        facility = GetRecordedBattleFrontierFacility();
-    else
-        facility = VarGet(VAR_FRONTIER_FACILITY);
+    facility = VarGet(VAR_FRONTIER_FACILITY);
 
     for (i = 0; i < PLAYER_NAME_LENGTH; i++)
         dst[i] = gTrainers[sFrontierBrainTrainerIds[facility]].trainerName[i];
@@ -2650,16 +2609,8 @@ static void CopyFrontierBrainText(bool8 playerWonText)
     s32 facility;
     s32 symbol;
 
-    if (gBattleTypeFlags & BATTLE_TYPE_RECORDED)
-    {
-        facility = GetRecordedBattleFrontierFacility();
-        symbol = GetRecordedBattleFronterBrainSymbol();
-    }
-    else
-    {
-        facility = VarGet(VAR_FRONTIER_FACILITY);
-        symbol = GetFronterBrainSymbol();
-    }
+    facility = VarGet(VAR_FRONTIER_FACILITY);
+    symbol = GetFronterBrainSymbol();
 
     switch (playerWonText)
     {

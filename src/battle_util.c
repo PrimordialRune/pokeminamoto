@@ -485,7 +485,7 @@ void HandleAction_Run(void)
 {
     gBattlerAttacker = gBattlerByTurnOrder[gCurrentTurnActionNumber];
 
-    if (gBattleTypeFlags & (BATTLE_TYPE_LINK | BATTLE_TYPE_RECORDED_LINK))
+    if (gBattleTypeFlags & BATTLE_TYPE_LINK)
     {
         gCurrentTurnActionNumber = gBattlersCount;
 
@@ -504,7 +504,6 @@ void HandleAction_Run(void)
         }
 
         gBattleOutcome |= B_OUTCOME_LINK_BATTLE_RAN;
-        gSaveBlock2Ptr->frontier.disableRecordBattle = TRUE;
     }
     else
     {
@@ -2485,40 +2484,37 @@ u8 AbilityBattleEffects(u8 caseID, u8 battler, u8 ability, u8 special, u16 moveA
             switch (gLastUsedAbility)
             {
             case ABILITYEFFECT_SWITCH_IN_WEATHER:
-                if (!(gBattleTypeFlags & BATTLE_TYPE_RECORDED))
+                switch (GetCurrentWeather())
                 {
-                    switch (GetCurrentWeather())
+                case WEATHER_RAIN:
+                case WEATHER_RAIN_THUNDERSTORM:
+                case WEATHER_DOWNPOUR:
+                    if (!(gBattleWeather & B_WEATHER_RAIN))
                     {
-                    case WEATHER_RAIN:
-                    case WEATHER_RAIN_THUNDERSTORM:
-                    case WEATHER_DOWNPOUR:
-                        if (!(gBattleWeather & B_WEATHER_RAIN))
-                        {
-                            gBattleWeather = (B_WEATHER_RAIN_TEMPORARY | B_WEATHER_RAIN_PERMANENT);
-                            gBattleScripting.animArg1 = B_ANIM_RAIN_CONTINUES;
-                            gBattleScripting.battler = battler;
-                            effect++;
-                        }
-                        break;
-                    case WEATHER_SANDSTORM:
-                        if (!(gBattleWeather & B_WEATHER_SANDSTORM))
-                        {
-                            gBattleWeather = B_WEATHER_SANDSTORM;
-                            gBattleScripting.animArg1 = B_ANIM_SANDSTORM_CONTINUES;
-                            gBattleScripting.battler = battler;
-                            effect++;
-                        }
-                        break;
-                    case WEATHER_DROUGHT:
-                        if (!(gBattleWeather & B_WEATHER_SUN))
-                        {
-                            gBattleWeather = B_WEATHER_SUN;
-                            gBattleScripting.animArg1 = B_ANIM_SUN_CONTINUES;
-                            gBattleScripting.battler = battler;
-                            effect++;
-                        }
-                        break;
+                        gBattleWeather = (B_WEATHER_RAIN_TEMPORARY | B_WEATHER_RAIN_PERMANENT);
+                        gBattleScripting.animArg1 = B_ANIM_RAIN_CONTINUES;
+                        gBattleScripting.battler = battler;
+                        effect++;
                     }
+                    break;
+                case WEATHER_SANDSTORM:
+                    if (!(gBattleWeather & B_WEATHER_SANDSTORM))
+                    {
+                        gBattleWeather = B_WEATHER_SANDSTORM;
+                        gBattleScripting.animArg1 = B_ANIM_SANDSTORM_CONTINUES;
+                        gBattleScripting.battler = battler;
+                        effect++;
+                    }
+                    break;
+                case WEATHER_DROUGHT:
+                    if (!(gBattleWeather & B_WEATHER_SUN))
+                    {
+                        gBattleWeather = B_WEATHER_SUN;
+                        gBattleScripting.animArg1 = B_ANIM_SUN_CONTINUES;
+                        gBattleScripting.battler = battler;
+                        effect++;
+                    }
+                    break;
                 }
                 if (effect != 0)
                 {
@@ -3891,7 +3887,7 @@ u8 IsMonDisobedient(void)
     s32 calc;
     u8 obedienceLevel = 0;
 
-    if (gBattleTypeFlags & (BATTLE_TYPE_LINK | BATTLE_TYPE_RECORDED_LINK))
+    if (gBattleTypeFlags & BATTLE_TYPE_LINK)
         return 0;
     if (GetBattlerSide(gBattlerAttacker) == B_SIDE_OPPONENT)
         return 0;
@@ -3901,8 +3897,6 @@ u8 IsMonDisobedient(void)
         if (gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER && GetBattlerPosition(gBattlerAttacker) == 2)
             return 0;
         if (gBattleTypeFlags & BATTLE_TYPE_FRONTIER)
-            return 0;
-        if (gBattleTypeFlags & BATTLE_TYPE_RECORDED)
             return 0;
         if (!IsOtherTrainer(gBattleMons[gBattlerAttacker].otId, gBattleMons[gBattlerAttacker].otName))
             return 0;

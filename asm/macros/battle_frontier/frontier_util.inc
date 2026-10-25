@@ -127,12 +127,6 @@
 	special CallFrontierUtilFunc
 	.endm
 
-	@ Move the recorded battle to save data
-	.macro frontier_savebattle
-	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_SAVE_BATTLE
-	special CallFrontierUtilFunc
-	.endm
-
 	@ Buffer the name of gTrainerBattleOpponent_A in STR_VAR_1 (0) or STR_VAR_2 (1)
 	.macro frontier_gettrainername stringVar:req
 	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_BUFFER_TRAINER_NAME

@@ -1423,7 +1423,7 @@ static void TrySetBattleSeminarShow(void)
     u16 powerOverride;
     u16 currMoveSaved;
 
-    if (gBattleTypeFlags & (BATTLE_TYPE_DOUBLE | BATTLE_TYPE_LINK | BATTLE_TYPE_RECORDED_LINK))
+    if (gBattleTypeFlags & (BATTLE_TYPE_DOUBLE | BATTLE_TYPE_LINK))
         return;
     else if (GetBattlerSide(gBattlerAttacker) == B_SIDE_OPPONENT)
         return;
