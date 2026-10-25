@@ -57,13 +57,11 @@ static EWRAM_DATA u8 sRepeatRun = 0;
 static void MakeMon(struct Pokemon *mon, u16 species, u8 level, const u16 *moves)
 {
     u32 i;
-    u32 pp = 10;
 
     CreateMon(mon, species, level, 31, TRUE, 0, OT_ID_PLAYER_ID, 0);
     for (i = 0; i < MAX_MON_MOVES; i++)
     {
         SetMonData(mon, MON_DATA_MOVE1 + i, &moves[i]);
-        SetMonData(mon, MON_DATA_PP1 + i, &pp);
     }
 }
 

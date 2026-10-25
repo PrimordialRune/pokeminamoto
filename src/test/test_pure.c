@@ -119,13 +119,13 @@ static void Test_TpCostFollowsPower(void)
     {
         u32 other;
 
-        if (gBattleMoves[move].power == 0)
+        if (gMovesInfo[move].power == 0)
             continue;
         for (other = MOVE_POUND; other < MOVE_STRUGGLE; other++)
         {
-            if (gBattleMoves[other].power != 0 && gBattleMoves[other].power > gBattleMoves[move].power
-             && gBattleMoves[other].type == gBattleMoves[move].type
-             && gBattleMoves[other].effect == gBattleMoves[move].effect
+            if (gMovesInfo[other].power != 0 && gMovesInfo[other].power > gMovesInfo[move].power
+             && gMovesInfo[other].type == gMovesInfo[move].type
+             && gMovesInfo[other].effect == gMovesInfo[move].effect
              && GetMoveTPCost(other) < GetMoveTPCost(move))
                 ASSERT_EQ(other, move);
         }
