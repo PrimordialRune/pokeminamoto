@@ -3766,22 +3766,13 @@ u32 GetBoxMonData3(struct BoxPokemon *boxMon, s32 field, u8 *data)
         retVal = substruct2->spDefenseEV;
         break;
     case MON_DATA_COOL:
-        retVal = substruct2->cool;
-        break;
     case MON_DATA_BEAUTY:
-        retVal = substruct2->beauty;
-        break;
     case MON_DATA_CUTE:
-        retVal = substruct2->cute;
-        break;
     case MON_DATA_SMART:
-        retVal = substruct2->smart;
-        break;
     case MON_DATA_TOUGH:
-        retVal = substruct2->tough;
-        break;
     case MON_DATA_SHEEN:
-        retVal = substruct2->sheen;
+        // Contest stats are gone; their bytes hold per-mon data now
+        retVal = 0;
         break;
     case MON_DATA_POKERUS:
         retVal = substruct3->pokerus;
@@ -3894,6 +3885,41 @@ u32 GetBoxMonData3(struct BoxPokemon *boxMon, s32 field, u8 *data)
               | (substruct3->speedIV << 15)
               | (substruct3->spAttackIV << 20)
               | (substruct3->spDefenseIV << 25);
+        break;
+    case MON_DATA_MOVE_RANK1:
+        retVal = substruct1->moveRank0;
+        break;
+    case MON_DATA_MOVE_RANK2:
+        retVal = substruct1->moveRank1;
+        break;
+    case MON_DATA_MOVE_RANK3:
+        retVal = substruct1->moveRank2;
+        break;
+    case MON_DATA_MOVE_RANK4:
+        retVal = substruct1->moveRank3;
+        break;
+    case MON_DATA_MOVE_RANKS:
+        retVal = substruct1->moveRank0
+              | (substruct1->moveRank1 << MOVE_RANK_BITS)
+              | (substruct1->moveRank2 << (MOVE_RANK_BITS * 2))
+              | (substruct1->moveRank3 << (MOVE_RANK_BITS * 3));
+        break;
+    case MON_DATA_SPECIAL_AWAKENED:
+        retVal = substruct1->specialAwakened;
+        break;
+    case MON_DATA_SPECIAL_PROGRESS:
+        retVal = substruct2->specialProgress;
+        break;
+    case MON_DATA_SAVED_TP:
+        retVal = substruct1->savedTp;
+        break;
+    case MON_DATA_DVS:
+        // Gen 1 order, 4 bits each: Attack 15-12, Defense 11-8, Speed 7-4, Special 3-0.
+        // A DV is the top 4 bits of the 5-bit IV; Special reads the Sp. Atk IV.
+        retVal = ((substruct3->attackIV >> 1) << 12)
+              | ((substruct3->defenseIV >> 1) << 8)
+              | ((substruct3->speedIV >> 1) << 4)
+              | (substruct3->spAttackIV >> 1);
         break;
     case MON_DATA_KNOWN_MOVES:
         if (substruct0->species && !substruct3->isEgg)
@@ -4146,22 +4172,12 @@ void SetBoxMonData(struct BoxPokemon *boxMon, s32 field, const void *dataArg)
         SET8(substruct2->spDefenseEV);
         break;
     case MON_DATA_COOL:
-        SET8(substruct2->cool);
-        break;
     case MON_DATA_BEAUTY:
-        SET8(substruct2->beauty);
-        break;
     case MON_DATA_CUTE:
-        SET8(substruct2->cute);
-        break;
     case MON_DATA_SMART:
-        SET8(substruct2->smart);
-        break;
     case MON_DATA_TOUGH:
-        SET8(substruct2->tough);
-        break;
     case MON_DATA_SHEEN:
-        SET8(substruct2->sheen);
+        // Contest stats are gone; their bytes hold per-mon data now, so writes are dropped
         break;
     case MON_DATA_POKERUS:
         SET8(substruct3->pokerus);
@@ -4281,6 +4297,51 @@ void SetBoxMonData(struct BoxPokemon *boxMon, s32 field, const void *dataArg)
         substruct3->speedIV = (ivs >> 15) & MAX_IV_MASK;
         substruct3->spAttackIV = (ivs >> 20) & MAX_IV_MASK;
         substruct3->spDefenseIV = (ivs >> 25) & MAX_IV_MASK;
+        break;
+    }
+    case MON_DATA_MOVE_RANK1:
+        substruct1->moveRank0 = data[0];
+        break;
+    case MON_DATA_MOVE_RANK2:
+        substruct1->moveRank1 = data[0];
+        break;
+    case MON_DATA_MOVE_RANK3:
+        substruct1->moveRank2 = data[0];
+        break;
+    case MON_DATA_MOVE_RANK4:
+        substruct1->moveRank3 = data[0];
+        break;
+    case MON_DATA_MOVE_RANKS:
+    {
+        u16 ranks = data[0] | (data[1] << 8);
+        substruct1->moveRank0 = ranks & MOVE_RANK_MAX;
+        substruct1->moveRank1 = (ranks >> MOVE_RANK_BITS) & MOVE_RANK_MAX;
+        substruct1->moveRank2 = (ranks >> (MOVE_RANK_BITS * 2)) & MOVE_RANK_MAX;
+        substruct1->moveRank3 = (ranks >> (MOVE_RANK_BITS * 3)) & MOVE_RANK_MAX;
+        break;
+    }
+    case MON_DATA_SPECIAL_AWAKENED:
+        substruct1->specialAwakened = data[0];
+        break;
+    case MON_DATA_SPECIAL_PROGRESS:
+        SET8(substruct2->specialProgress);
+        break;
+    case MON_DATA_SAVED_TP:
+        substruct1->savedTp = min(data[0], TP_MAX);
+        break;
+    case MON_DATA_DVS:
+    {
+        // See GetBoxMonData. Each IV becomes DV * 2 + (DV & 1), so DV 15 is IV 31;
+        // Sp. Def follows Special, and the HP IV is rebuilt from the DVs' low bits as in Gen 1.
+        u16 dvs = data[0] | (data[1] << 8);
+        u8 atk = (dvs >> 12) & 0xF, def = (dvs >> 8) & 0xF, spe = (dvs >> 4) & 0xF, spc = dvs & 0xF;
+        u8 hp = ((atk & 1) << 3) | ((def & 1) << 2) | ((spe & 1) << 1) | (spc & 1);
+        substruct3->hpIV = (hp << 1) | (hp & 1);
+        substruct3->attackIV = (atk << 1) | (atk & 1);
+        substruct3->defenseIV = (def << 1) | (def & 1);
+        substruct3->speedIV = (spe << 1) | (spe & 1);
+        substruct3->spAttackIV = (spc << 1) | (spc & 1);
+        substruct3->spDefenseIV = (spc << 1) | (spc & 1);
         break;
     }
     default:

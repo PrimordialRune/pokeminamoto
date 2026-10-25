@@ -89,22 +89,69 @@ enum {
     MON_DATA_SPEED2,
     MON_DATA_SPATK2,
     MON_DATA_SPDEF2,
+    // Minamoto per-mon data, see the bit map above struct PokemonSubstruct0
+    MON_DATA_MOVE_RANK1,
+    MON_DATA_MOVE_RANK2,
+    MON_DATA_MOVE_RANK3,
+    MON_DATA_MOVE_RANK4,
+    MON_DATA_MOVE_RANKS,       // all four ranks packed, 3 bits each, slot 1 in bits 0-2
+    MON_DATA_SPECIAL_AWAKENED, // the species' Special (signature) move is unsealed
+    MON_DATA_SPECIAL_PROGRESS, // progress towards awakening the Special, 0-255
+    MON_DATA_SAVED_TP,         // TP kept between battles (unused: TP resets each battle for now)
+    MON_DATA_DVS,              // Gen 1 DVs, a view over the IVs (no storage of its own)
 };
+
+// Per-mon data: reclaimed space in struct BoxPokemon (docs/engineering/per-mon-data.md).
+// BoxPokemon must stay 80 bytes and Pokemon 100 (save format, link, daycare,
+// PC). Space that Emerald used for systems Minamoto drops is reused here; it is
+// all inside the encrypted, checksummed substructs unless noted.
+//
+// Allocated (accessors in GetBoxMonData/SetBoxMonData, MON_DATA_* above):
+//   substruct1 bits  0-11  moveRank[4]      3 bits each, MOVE_RANK_NONE..7. Placeholder:
+//                                           move ranks were dropped from the design 2026-10-22.
+//   substruct1 bit  12     specialAwakened  1 bit: the Special (signature move) is unsealed.
+//                                           The Special itself comes from the species (ROM
+//                                           table), it is a fifth move, not one of the 4 slots.
+//   substruct1 bits 13-19  savedTp          7 bits, 0-TP_MAX. Unused while TP resets to
+//                                           TP_MAX each battle; reserved for TP that persists.
+//   substruct1 bits 20-31  reserved         12 bits
+//   substruct2 byte 6      specialProgress  8 bits: progress towards awakening (was cool)
+// Gen 1 DVs (MON_DATA_DVS) reuse the IVs: DV = IV >> 1, no extra bits.
+//
+// Free, not allocated yet:
+//   substruct0 freedPpBonuses   8 bits  (PP Up bonuses, PP removed)
+//   substruct0 filler          16 bits
+//   substruct2 freedContest[5] 40 bits  (beauty, cute, smart, tough, sheen; contests removed)
+// Reclaimable once their accessors are retired (still read or written today):
+//   substruct3 cool..toughRibbon 15 bits, winning..worldRibbon + unusedRibbons 15 bits
+//              (championRibbon stays), abilityNum 1 bit (if abilities go),
+//              modernFatefulEncounter 1 bit (Mew obedience)
+//   substruct0 species bits 9-15 (species ids stay below 512; needs masking in the accessors)
+//   BoxPokemon.unknown 16 bits (outside the encryption and checksum)
+#define MOVE_RANK_BITS 3
+#define MOVE_RANK_MAX  ((1 << MOVE_RANK_BITS) - 1)
 
 struct PokemonSubstruct0
 {
     u16 species;
     u16 heldItem;
     u32 experience;
-    u8 freedPpBonuses; // PP Up bonuses until PP was removed; free for per-mon data
+    u8 freedPpBonuses; // free (PP Up bonuses until PP was removed)
     u8 friendship;
-    u16 filler;
+    u16 filler;        // free
 };
 
 struct PokemonSubstruct1
 {
     u16 moves[MAX_MON_MOVES];
-    u8 freedPp[MAX_MON_MOVES]; // PP until it was removed; free for per-mon data
+    // These 4 bytes held PP until it was removed
+    u32 moveRank0:3;   // placeholder, see the bit map above
+    u32 moveRank1:3;
+    u32 moveRank2:3;
+    u32 moveRank3:3;
+    u32 specialAwakened:1;
+    u32 savedTp:7;
+    u32 reserved:12;
 };
 
 struct PokemonSubstruct2
@@ -115,12 +162,10 @@ struct PokemonSubstruct2
     u8 speedEV;
     u8 spAttackEV;
     u8 spDefenseEV;
-    u8 cool;
-    u8 beauty;
-    u8 cute;
-    u8 smart;
-    u8 tough;
-    u8 sheen;
+    // These 6 bytes held the contest stats (cool..sheen) until contests were removed;
+    // MON_DATA_COOL..MON_DATA_SHEEN now read 0 and write nothing.
+    u8 specialProgress;  // was cool
+    u8 freedContest[5];  // free (was beauty, cute, smart, tough, sheen)
 };
 
 struct PokemonSubstruct3
@@ -225,6 +270,13 @@ struct Pokemon
     u16 spAttack;
     u16 spDefense;
 };
+
+// The save format, the daycare, the PC and link trades all depend on these sizes:
+// new per-mon data goes into the reclaimed bits listed above, never new fields.
+STATIC_ASSERT(sizeof(struct PokemonSubstruct1) == 12, PokemonSubstruct1Size)
+STATIC_ASSERT(sizeof(struct PokemonSubstruct2) == 12, PokemonSubstruct2Size)
+STATIC_ASSERT(sizeof(struct BoxPokemon) == 80, BoxPokemonSize)
+STATIC_ASSERT(sizeof(struct Pokemon) == 100, PokemonSize)
 
 struct MonSpritesGfxManager
 {
