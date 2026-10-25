@@ -59,3 +59,4 @@ data/scripts/*.inc
 
 # Porytiles binary (tools/setup-cloud.sh downloads it)
 tools/porytiles/bin/
+__pycache__/
