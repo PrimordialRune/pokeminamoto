@@ -481,6 +481,7 @@ static bool8 SetUpFieldMove_Waterfall(void);
 static bool8 SetUpFieldMove_Dive(void);
 
 // static const data
+#include "data/pokemon/tutor_moves.h"
 #include "data/pokemon/tutor_learnsets.h"
 #include "data/party_menu.h"
 

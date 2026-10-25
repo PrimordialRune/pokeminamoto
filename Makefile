@@ -274,6 +274,7 @@ include graphics_file_rules.mk
 include map_data_rules.mk
 include spritesheet_rules.mk
 include json_data_rules.mk
+include generated_data_rules.mk
 include audio_rules.mk
 
 # NOTE: Tools must have been built prior (FIXME)
