@@ -209,7 +209,6 @@ static void SetRectangleCursorPos_AlphabetMode(s8, s8);
 static void SpriteCB_WordSelectCursor(struct Sprite *);
 static void SetWordSelectCursorPos(u8, u8);
 static bool8 EasyChatIsNationalPokedexEnabled(void);
-static u16 GetRandomUnlockedEasyChatPokemon(void);
 static void SetUnlockedEasyChatGroups(void);
 static void SetUnlockedWordsByAlphabet(void);
 static u8 *CopyEasyChatWordPadded(u8 *, u16, u16);
@@ -5139,16 +5138,6 @@ u16 GetRandomEasyChatWordFromGroup(u16 groupId)
     return EC_WORD(groupId, index);
 }
 
-u16 GetRandomEasyChatWordFromUnlockedGroup(u16 groupId)
-{
-    if (!IsEasyChatGroupUnlocked(groupId))
-        return EC_EMPTY_WORD;
-
-    if (groupId == EC_GROUP_POKEMON)
-        return GetRandomUnlockedEasyChatPokemon();
-
-    return GetRandomEasyChatWordFromGroup(groupId);
-}
 
 /*
     ### Trendy Sayings
@@ -5198,35 +5187,6 @@ static u8 GetNumTrendySayingsUnlocked(void)
     return numUnlocked;
 }
 
-u16 UnlockRandomTrendySaying(void)
-{
-    u16 i;
-    u16 numToSkip;
-    u8 numUnlocked = GetNumTrendySayingsUnlocked();
-    if (numUnlocked == NUM_TRENDY_SAYINGS)
-        return EC_EMPTY_WORD;
-
-    numToSkip = Random() % (NUM_TRENDY_SAYINGS - numUnlocked);
-    for (i = 0; i < NUM_TRENDY_SAYINGS; i++)
-    {
-        if (!IsTrendySayingUnlocked(i))
-        {
-            if (numToSkip)
-            {
-                // Skip the first n locked words, as determined by the Random call above.
-                numToSkip--;
-            }
-            else
-            {
-                UnlockTrendySaying(i);
-                return EC_WORD(EC_GROUP_TRENDY_SAYING, i);
-            }
-        }
-    }
-
-    // Would only be reached if there are no new words to teach, which is handled at the start.
-    return EC_EMPTY_WORD;
-}
 
 static u16 UNUSED GetRandomUnlockedTrendySaying(void)
 {
@@ -5255,34 +5215,6 @@ static bool8 EasyChatIsNationalPokedexEnabled(void)
     return IsNationalPokedexEnabled();
 }
 
-static u16 GetRandomUnlockedEasyChatPokemon(void)
-{
-    u16 i;
-    u16 numWords;
-    const u16 *species;
-    u16 index = EasyChat_GetNumWordsInGroup(EC_GROUP_POKEMON);
-    if (index == 0)
-        return EC_EMPTY_WORD;
-
-    index = Random() % index;
-    species = gEasyChatGroups[EC_GROUP_POKEMON].wordData.valueList;
-    numWords = gEasyChatGroups[EC_GROUP_POKEMON].numWords;
-    for (i = 0; i < numWords; i++)
-    {
-        u16 dexNum = SpeciesToNationalPokedexNum(*species);
-        if (GetSetPokedexFlag(dexNum, FLAG_GET_SEEN))
-        {
-            if (index)
-                index--;
-            else
-                return EC_WORD(EC_GROUP_POKEMON, *species);
-        }
-
-        species++;
-    }
-
-    return EC_EMPTY_WORD;
-}
 
 void InitEasyChatPhrases(void)
 {
@@ -5567,13 +5499,3 @@ void InitializeEasyChatWordArray(u16 *words, u16 length)
         *(words++) = EC_EMPTY_WORD;
 }
 
-bool32 IsEasyChatAnswerUnlocked(int easyChatWord)
-{
-    int groupId = EC_GROUP(easyChatWord);
-    int mask = EC_MASK_GROUP;
-    int index = EC_INDEX(easyChatWord);
-    if (!IsEasyChatGroupUnlocked(groupId & mask))
-        return FALSE;
-    else
-        return IsEasyChatIndexAndGroupUnlocked(index, groupId & mask);
-}

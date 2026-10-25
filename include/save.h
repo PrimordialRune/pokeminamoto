@@ -134,7 +134,6 @@ bool8 WriteSaveBlock1Sector(void);
 // SAVE_NORMAL may use gHeap as scratch space to migrate an old save, so it
 // must only run while nothing is allocated (its callers InitHeap right after).
 u8 LoadGameSave(u8 saveType);
-u32 TryReadSpecialSaveSector(u8 sector, u8 *dst);
 u32 TryWriteSpecialSaveSector(u8 sector, u8 *src);
 void Task_LinkFullSave(u8 taskId);
 

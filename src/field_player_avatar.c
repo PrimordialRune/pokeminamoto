@@ -1095,40 +1095,6 @@ void PlayerGetDestCoords(s16 *x, s16 *y)
     *y = gObjectEvents[gPlayerAvatar.objectEventId].currentCoords.y;
 }
 
-u8 player_get_pos_including_state_based_drift(s16 *x, s16 *y)
-{
-    struct ObjectEvent *object = &gObjectEvents[gPlayerAvatar.objectEventId];
-
-    if (object->heldMovementActive && !object->heldMovementFinished && !gSprites[object->spriteId].data[2])
-    {
-        *x = object->currentCoords.x;
-        *y = object->currentCoords.y;
-
-        switch (object->movementActionId)
-        {
-        case MOVEMENT_ACTION_WALK_NORMAL_DOWN:
-        case MOVEMENT_ACTION_PLAYER_RUN_DOWN:
-            (*y)++;
-            return TRUE;
-        case MOVEMENT_ACTION_WALK_NORMAL_UP:
-        case MOVEMENT_ACTION_PLAYER_RUN_UP:
-            (*y)--;
-            return TRUE;
-        case MOVEMENT_ACTION_WALK_NORMAL_LEFT:
-        case MOVEMENT_ACTION_PLAYER_RUN_LEFT:
-            (*x)--;
-            return TRUE;
-        case MOVEMENT_ACTION_WALK_NORMAL_RIGHT:
-        case MOVEMENT_ACTION_PLAYER_RUN_RIGHT:
-            (*x)++;
-            return TRUE;
-        }
-    }
-
-    *x = -1;
-    *y = -1;
-    return FALSE;
-}
 
 u8 GetPlayerFacingDirection(void)
 {
@@ -1145,11 +1111,6 @@ u8 PlayerGetElevation(void)
     return gObjectEvents[gPlayerAvatar.objectEventId].previousElevation;
 }
 
-// unused
-void MovePlayerToMapCoords(s16 x, s16 y)
-{
-    MoveObjectEventToMapCoords(&gObjectEvents[gPlayerAvatar.objectEventId], x, y);
-}
 
 u8 TestPlayerAvatarFlags(u8 flag)
 {
@@ -1209,23 +1170,6 @@ u8 GetPlayerAvatarGraphicsIdByStateId(u8 state)
     return GetPlayerAvatarGraphicsIdByStateIdAndGender(state, gPlayerAvatar.gender);
 }
 
-u8 unref_GetRivalAvatarGenderByGraphicsId(u8 gfxId)
-{
-    switch (gfxId)
-    {
-    case OBJ_EVENT_GFX_RIVAL_MAY_NORMAL:
-    case OBJ_EVENT_GFX_RIVAL_MAY_MACH_BIKE:
-    case OBJ_EVENT_GFX_RIVAL_MAY_ACRO_BIKE:
-    case OBJ_EVENT_GFX_RIVAL_MAY_SURFING:
-    case OBJ_EVENT_GFX_RIVAL_MAY_FIELD_MOVE:
-    case OBJ_EVENT_GFX_MAY_UNDERWATER:
-    case OBJ_EVENT_GFX_MAY_FISHING:
-    case OBJ_EVENT_GFX_MAY_WATERING:
-        return FEMALE;
-    default:
-        return MALE;
-    }
-}
 
 u8 GetPlayerAvatarGenderByGraphicsId(u8 gfxId)
 {

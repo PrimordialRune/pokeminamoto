@@ -1448,10 +1448,6 @@ const u8 *GetTrainerBLoseText(void)
     return gStringVar4;
 }
 
-const u8 *GetTrainerWonSpeech(void)
-{
-    return ReturnEmptyStringIfNull(sTrainerVictorySpeech);
-}
 
 static const u8 *GetTrainerCantBattleSpeech(void)
 {
@@ -1549,31 +1545,7 @@ void UpdateRematchIfDefeated(s32 rematchTableId)
         SetRematchIdForTrainer(gRematchTable, rematchTableId);
 }
 
-static bool32 DoesSomeoneWantRematchIn_(const struct RematchTrainer *table, u16 mapGroup, u16 mapNum)
-{
-    s32 i;
 
-    for (i = 0; i < REMATCH_TABLE_ENTRIES; i++)
-    {
-        if (table[i].mapGroup == mapGroup && table[i].mapNum == mapNum && gSaveBlock1Ptr->trainerRematches[i] != 0)
-            return TRUE;
-    }
-
-    return FALSE;
-}
-
-static bool32 IsRematchTrainerIn_(const struct RematchTrainer *table, u16 mapGroup, u16 mapNum)
-{
-    s32 i;
-
-    for (i = 0; i < REMATCH_TABLE_ENTRIES; i++)
-    {
-        if (table[i].mapGroup == mapGroup && table[i].mapNum == mapNum)
-            return TRUE;
-    }
-
-    return FALSE;
-}
 
 static bool8 IsFirstTrainerIdReadyForRematch(const struct RematchTrainer *table, u16 firstBattleTrainerId)
 {
@@ -1731,15 +1703,7 @@ void TryUpdateRandomTrainerRematches(u16 mapGroup, u16 mapNum)
         gSaveBlock1Ptr->trainerRematchStepCounter = 0;
 }
 
-bool32 DoesSomeoneWantRematchIn(u16 mapGroup, u16 mapNum)
-{
-    return DoesSomeoneWantRematchIn_(gRematchTable, mapGroup, mapNum);
-}
 
-bool32 IsRematchTrainerIn(u16 mapGroup, u16 mapNum)
-{
-    return IsRematchTrainerIn_(gRematchTable, mapGroup, mapNum);
-}
 
 static u16 GetRematchTrainerId(u16 trainerId)
 {

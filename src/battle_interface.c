@@ -1314,17 +1314,6 @@ static void UpdateSpritePos(u8 spriteId, s16 x, s16 y)
     gSprites[spriteId].y = y;
 }
 
-void DestoryHealthboxSprite(u8 healthboxSpriteId)
-{
-    struct Sprite *tpBar = &gSprites[gSprites[gSprites[healthboxSpriteId].oam.affineParam].hOther_TpBarSpriteId];
-
-    if (tpBar->hTp_PipsSpriteId != MAX_SPRITES)
-        DestroySprite(&gSprites[tpBar->hTp_PipsSpriteId]);
-    DestroySprite(&gSprites[gSprites[gSprites[healthboxSpriteId].oam.affineParam].hOther_TpBarSpriteId]);
-    DestroySprite(&gSprites[gSprites[healthboxSpriteId].oam.affineParam]);
-    DestroySprite(&gSprites[gSprites[healthboxSpriteId].hMain_HealthBarSpriteId]);
-    DestroySprite(&gSprites[healthboxSpriteId]);
-}
 
 void DummyBattleInterfaceFunc(u8 healthboxSpriteId, bool8 isDoubleBattleBattlerOnly)
 {

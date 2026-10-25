@@ -758,14 +758,6 @@ bool8 TranslateAnimHorizontalArc(struct Sprite *sprite)
     return FALSE;
 }
 
-bool8 TranslateAnimVerticalArc(struct Sprite *sprite)
-{
-    if (AnimTranslateLinear(sprite))
-        return TRUE;
-    sprite->data[7] += sprite->data[6];
-    sprite->x2 += Sin((u8)(sprite->data[7] >> 8), sprite->data[5]);
-    return FALSE;
-}
 
 void SetSpritePrimaryCoordsFromSecondaryCoords(struct Sprite *sprite)
 {

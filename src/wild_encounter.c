@@ -52,10 +52,6 @@ EWRAM_DATA static u8 sWildEncountersDisabled = 0;
 
 #include "data/wild_encounters.h"
 
-void DisableWildEncounters(bool8 disabled)
-{
-    sWildEncountersDisabled = disabled;
-}
 
 
 // LAND_WILD_COUNT

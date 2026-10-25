@@ -87,11 +87,6 @@ void DisableResetRTC(void)
     FlagClear(FLAG_SYS_RESET_RTC_ENABLE);
 }
 
-void EnableResetRTC(void)
-{
-    VarSet(VAR_RESET_RTC_ENABLE, 0x920);
-    FlagSet(FLAG_SYS_RESET_RTC_ENABLE);
-}
 
 bool32 CanResetRTC(void)
 {

@@ -879,11 +879,6 @@ const u8 *GetItemName(u16 itemId)
     return gItems[SanitizeItemId(itemId)].name;
 }
 
-// Unused
-u16 GetItemId(u16 itemId)
-{
-    return gItems[SanitizeItemId(itemId)].itemId;
-}
 
 u16 GetItemPrice(u16 itemId)
 {
@@ -910,11 +905,6 @@ u8 GetItemImportance(u16 itemId)
     return gItems[SanitizeItemId(itemId)].importance;
 }
 
-// Unused
-u8 GetItemRegistrability(u16 itemId)
-{
-    return gItems[SanitizeItemId(itemId)].registrability;
-}
 
 u8 GetItemPocket(u16 itemId)
 {

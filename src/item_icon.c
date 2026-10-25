@@ -120,42 +120,6 @@ u8 AddItemIconSprite(u16 tilesTag, u16 paletteTag, u16 itemId)
     }
 }
 
-u8 AddCustomItemIconSprite(const struct SpriteTemplate *customSpriteTemplate, u16 tilesTag, u16 paletteTag, u16 itemId)
-{
-    if (!AllocItemIconTemporaryBuffers())
-    {
-        return MAX_SPRITES;
-    }
-    else
-    {
-        u8 spriteId;
-        struct SpriteSheet spriteSheet;
-        struct CompressedSpritePalette spritePalette;
-        struct SpriteTemplate *spriteTemplate;
-
-        LZDecompressWram(GetItemIconPicOrPalette(itemId, 0), gItemIconDecompressionBuffer);
-        CopyItemIconPicTo4x4Buffer(gItemIconDecompressionBuffer, gItemIcon4x4Buffer);
-        spriteSheet.data = gItemIcon4x4Buffer;
-        spriteSheet.size = 0x200;
-        spriteSheet.tag = tilesTag;
-        LoadSpriteSheet(&spriteSheet);
-
-        spritePalette.data = GetItemIconPicOrPalette(itemId, 1);
-        spritePalette.tag = paletteTag;
-        LoadCompressedSpritePalette(&spritePalette);
-
-        spriteTemplate = Alloc(sizeof(*spriteTemplate));
-        CpuCopy16(customSpriteTemplate, spriteTemplate, sizeof(*spriteTemplate));
-        spriteTemplate->tileTag = tilesTag;
-        spriteTemplate->paletteTag = paletteTag;
-        spriteId = CreateSprite(spriteTemplate, 0, 0, 0);
-
-        FreeItemIconTemporaryBuffers();
-        Free(spriteTemplate);
-
-        return spriteId;
-    }
-}
 
 const void *GetItemIconPicOrPalette(u16 itemId, u8 which)
 {

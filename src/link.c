@@ -137,8 +137,6 @@ static void Task_PrintTestData(u8);
 
 static void LinkCB_ReadyCloseLink(void);
 static void LinkCB_WaitCloseLink(void);
-static void LinkCB_ReadyCloseLinkWithJP(void);
-static void LinkCB_WaitCloseLinkWithJP(void);
 static void LinkCB_Standby(void);
 static void LinkCB_StandbyForAll(void);
 
@@ -684,10 +682,6 @@ static void LinkCB_SendHeldKeys(void)
         BuildSendCmd(LINKCMD_SEND_HELD_KEYS);
 }
 
-void ClearLinkCallback(void)
-{
-    gLinkCallback = NULL;
-}
 
 void ClearLinkCallback_2(void)
 {
@@ -714,10 +708,6 @@ static int AreAnyLinkPlayersUsingVersions(u32 version1, u32 version2)
     return -1;
 }
 
-u32 LinkDummy_Return2(void)
-{
-    return 2;
-}
 
 static bool32 UNUSED IsFullLinkGroupWithNoRS(void)
 {
@@ -737,17 +727,6 @@ bool32 Link_AnyPartnersPlayingRubyOrSapphire(void)
     return FALSE;
 }
 
-bool32 Link_AnyPartnersPlayingFRLG_JP(void)
-{
-    int i;
-
-    i = AreAnyLinkPlayersUsingVersions(VERSION_FIRE_RED, VERSION_LEAF_GREEN);
-    if (i >= 0 && gLinkPlayers[i].language == LANGUAGE_JAPANESE)
-    {
-        return TRUE;
-    }
-    return FALSE;
-}
 
 void OpenLinkTimed(void)
 {
@@ -857,10 +836,6 @@ bool8 IsLinkPlayerDataExchangeComplete(void)
     return retval;
 }
 
-u32 GetLinkPlayerTrainerId(u8 who)
-{
-    return gLinkPlayers[who].trainerId;
-}
 
 void ResetLinkPlayers(void)
 {
@@ -1149,17 +1124,6 @@ u8 GetSavedLinkPlayerCountAsBitFlags(void)
     return flags;
 }
 
-u8 GetLinkPlayerCountAsBitFlags(void)
-{
-    int i;
-    u8 flags;
-
-    flags = 0;
-    for (i = 0; i < GetLinkPlayerCount(); i++)
-        flags |= (1 << i);
-
-    return flags;
-}
 
 void SaveLinkPlayers(u8 playerCount)
 {
@@ -1213,19 +1177,6 @@ bool8 DoesLinkPlayerCountMatchSaved(void)
     return FALSE;
 }
 
-void ClearSavedLinkPlayers(void)
-{
-    // The CpuSet loop below is incorrectly writing to NULL
-    // instead of sSavedLinkPlayers.
-    // Additionally it's using the wrong array size.
-#ifdef UBFIX
-    memset(sSavedLinkPlayers, 0, sizeof(sSavedLinkPlayers));
-#else
-    int i;
-    for (i = 0; i < MAX_LINK_PLAYERS; i++)
-        CpuSet(&sSavedLinkPlayers[i], NULL, sizeof(struct LinkPlayer));
-#endif
-}
 
 void CheckLinkPlayersMatchSaved(void)
 {
@@ -1322,60 +1273,8 @@ static void LinkCB_WaitCloseLink(void)
     }
 }
 
-// Used instead of SetCloseLinkCallback when disconnecting from an attempt to link with a foreign game
-void SetCloseLinkCallbackHandleJP(void)
-{
-    if (gLinkCallback != NULL)
-    {
-        sReadyCloseLinkAttempts++;
-    }
-    else
-    {
-        gLinkCallback = LinkCB_ReadyCloseLinkWithJP;
-        gLinkDummy1 = FALSE;
-        gReadyCloseLinkType = 0;
-    }
-}
 
-static void LinkCB_ReadyCloseLinkWithJP(void)
-{
-    if (gLastRecvQueueCount == 0)
-    {
-        BuildSendCmd(LINKCMD_READY_CLOSE_LINK);
-        gLinkCallback = LinkCB_WaitCloseLinkWithJP;
-    }
-}
 
-static void LinkCB_WaitCloseLinkWithJP(void)
-{
-    int i;
-    unsigned count;
-    u8 linkPlayerCount;
-
-    linkPlayerCount = GetLinkPlayerCount();
-    count = 0;
-
-    // Wait for all non-foreign players to be ready
-    for (i = 0; i < linkPlayerCount; i++)
-    {
-        // Rather than communicate with the foreign game
-        // just assume they're ready to disconnect
-        if (gLinkPlayers[i].language == LANGUAGE_JAPANESE)
-            count++;
-        else if (gReadyToCloseLink[i])
-            count++;
-    }
-
-    if (count == linkPlayerCount)
-    {
-        // All ready, close link
-        gBattleTypeFlags &= ~BATTLE_TYPE_LINK_IN_BATTLE;
-        gLinkVSyncDisabled = TRUE;
-        CloseLink();
-        gLinkCallback = NULL;
-        gLinkDummy1 = TRUE;
-    }
-}
 
 void SetLinkStandbyCallback(void)
 {
@@ -1541,33 +1440,7 @@ bool8 HasLinkErrorOccurred(void)
     return gLinkErrorOccurred;
 }
 
-void LocalLinkPlayerToBlock(void)
-{
-    struct LinkPlayerBlock *block;
 
-    InitLocalLinkPlayer();
-    block = &gLocalLinkPlayerBlock;
-    block->linkPlayer = gLocalLinkPlayer;
-    memcpy(block->magic1, sASCIIGameFreakInc, sizeof(block->magic1) - 1);
-    memcpy(block->magic2, sASCIIGameFreakInc, sizeof(block->magic2) - 1);
-    memcpy(gBlockSendBuffer, block, sizeof(*block));
-}
-
-void LinkPlayerFromBlock(u32 who)
-{
-    u8 who_ = who;
-    struct LinkPlayerBlock *block;
-    struct LinkPlayer *player;
-
-    block = (struct LinkPlayerBlock *)gBlockRecvBuffer[who_];
-    player = &gLinkPlayers[who_];
-    *player = block->linkPlayer;
-    ConvertLinkPlayerName(player);
-
-    if (strcmp(block->magic1, sASCIIGameFreakInc) != 0
-     || strcmp(block->magic2, sASCIIGameFreakInc) != 0)
-        SetMainCallback2(CB2_LinkError);
-}
 
 // When this function returns TRUE the callbacks are skipped
 bool8 HandleLinkConnection(void)
@@ -2081,34 +1954,4 @@ static void SendRecvDone(void)
     }
 }
 
-void ResetSendBuffer(void)
-{
-    u8 i;
-    u8 j;
 
-    gLink.sendQueue.count = 0;
-    gLink.sendQueue.pos = 0;
-    for (i = 0; i < CMD_LENGTH; i++)
-    {
-        for (j = 0; j < QUEUE_CAPACITY; j++)
-            gLink.sendQueue.data[i][j] = LINKCMD_NONE;
-    }
-}
-
-void ResetRecvBuffer(void)
-{
-    u8 i;
-    u8 j;
-    u8 k;
-
-    gLink.recvQueue.count = 0;
-    gLink.recvQueue.pos = 0;
-    for (i = 0; i < LINK_QUEUE_PLAYERS; i++)
-    {
-        for (j = 0; j < CMD_LENGTH; j++)
-        {
-            for (k = 0; k < QUEUE_CAPACITY; k++)
-                gLink.recvQueue.data[i][j][k] = LINKCMD_NONE;
-        }
-    }
-}

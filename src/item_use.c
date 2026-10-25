@@ -952,12 +952,6 @@ void ItemUseInBattle_Medicine(u8 taskId)
     ItemUseInBattle_ShowPartyMenu(taskId);
 }
 
-// Unused. Sacred Ash cannot be used in battle
-void ItemUseInBattle_SacredAsh(u8 taskId)
-{
-    gItemUseCB = ItemUseCB_SacredAsh;
-    ItemUseInBattle_ShowPartyMenu(taskId);
-}
 
 void ItemUseInBattle_TPRecovery(u8 taskId)
 {

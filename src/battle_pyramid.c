@@ -1458,15 +1458,7 @@ void CopyPyramidTrainerSpeechBefore(u16 trainerId)
     FrontierSpeechToString(gFacilityTrainers[trainerId].speechBefore);
 }
 
-void CopyPyramidTrainerWinSpeech(u16 trainerId)
-{
-    FrontierSpeechToString(gFacilityTrainers[trainerId].speechWin);
-}
 
-void CopyPyramidTrainerLoseSpeech(u16 trainerId)
-{
-    FrontierSpeechToString(gFacilityTrainers[trainerId].speechLose);
-}
 
 u8 GetTrainerEncounterMusicIdInBattlePyramid(u16 trainerId)
 {

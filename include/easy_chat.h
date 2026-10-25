@@ -128,13 +128,10 @@ struct EasyChatWordsByLetter
 void InitEasyChatPhrases(void);
 void ShowEasyChatScreen(void);
 u8 *CopyEasyChatWord(u8 *dest, u16 easyChatWord);
-bool32 IsEasyChatAnswerUnlocked(int easyChatWord);
 void InitializeEasyChatWordArray(u16 *words, u16 length);
 u8 *ConvertEasyChatWordsToString(u8 *dest, const u16 *src, u16 columns, u16 rows);
 u16 GetRandomEasyChatWordFromGroup(u16 groupId);
-u16 UnlockRandomTrendySaying(void);
 u16 EasyChat_GetNumWordsInGroup(u8 groupId);
-u16 GetRandomEasyChatWordFromUnlockedGroup(u16 groupId);
 void DoEasyChatScreen(u8 type, u16 *words, MainCallback exitCallback, u8 displayedPersonType);
 void UnlockTrendySaying(u8 wordIndex);
 

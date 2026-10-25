@@ -711,22 +711,6 @@ void MoveBattlerSpriteToBG(u8 battler, bool8 toBG_2, bool8 setSpriteInvisible)
     }
 }
 
-void RelocateBattleBgPal(u16 paletteNum, u16 *dest, u32 offset, bool8 largeScreen)
-{
-    s32 i, j;
-    s32 size;
-
-    if (!largeScreen)
-        size = 32;
-    else
-        size = 64;
-    paletteNum <<= 12;
-    for (i = 0; i < size; i++)
-    {
-        for (j = 0; j < 32; j++)
-            dest[j + i * 32] = ((dest[j + i * 32] & 0xFFF) | paletteNum) + offset;
-    }
-}
 
 void ResetBattleAnimBg(bool8 toBG2)
 {

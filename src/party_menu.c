@@ -1200,10 +1200,6 @@ u8 GetCursorSelectionMonId(void)
     return gPartyMenu.slotId;
 }
 
-u8 GetPartyMenuType(void)
-{
-    return gPartyMenu.menuType;
-}
 
 void Task_HandleChooseMonInput(u8 taskId)
 {

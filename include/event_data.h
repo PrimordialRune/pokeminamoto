@@ -8,7 +8,6 @@ void DisableNationalPokedex(void);
 void EnableNationalPokedex(void);
 bool32 IsNationalPokedexEnabled(void);
 void DisableResetRTC(void);
-void EnableResetRTC(void);
 bool32 CanResetRTC(void);
 u16 *GetVarPointer(u16 id);
 u16 VarGet(u16 id);

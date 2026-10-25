@@ -46,8 +46,5 @@ struct ImageProcessingContext
     u8 personality;
 };
 
-void ApplyImageProcessingEffects(struct ImageProcessingContext *context);
-void ApplyImageProcessingQuantization(struct ImageProcessingContext *context);
-void ConvertImageProcessingToGBA(struct ImageProcessingContext *context);
 
 #endif

@@ -652,10 +652,6 @@ void RecordItemEffectBattle(u8 battler, u8 itemEffect)
     BATTLE_HISTORY->itemEffects[battler] = itemEffect;
 }
 
-void ClearBattlerItemEffectHistory(u8 battler)
-{
-    BATTLE_HISTORY->itemEffects[battler] = 0;
-}
 
 static void Cmd_if_random_less_than(void)
 {

@@ -204,13 +204,6 @@ bool8 Regress_ScriptIdle(void)
 }
 #endif
 
-bool8 ScriptContext_IsEnabled(void)
-{
-    if (sGlobalScriptContextStatus == CONTEXT_RUNNING)
-        return TRUE;
-    else
-        return FALSE;
-}
 
 // Re-initializes the global script context to zero.
 void ScriptContext_Init(void)

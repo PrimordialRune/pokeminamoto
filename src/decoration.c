@@ -834,10 +834,6 @@ static void ReturnToActionsMenuFromCategories(u8 taskId)
     gTasks[taskId].func = HandleDecorationActionsMenuInput;
 }
 
-void CopyDecorationCategoryName(u8 *dest, u8 category)
-{
-    StringCopy(dest, sDecorationCategoryNames[category]);
-}
 
 static void InitDecorationItemsMenuLimits(void)
 {

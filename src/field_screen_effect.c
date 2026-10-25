@@ -407,12 +407,6 @@ static void Task_ReturnToFieldNoScript(u8 taskId)
     }
 }
 
-void FieldCB_ReturnToFieldNoScript(void)
-{
-    LockPlayerFieldControls();
-    FadeInFromBlack();
-    CreateTask(Task_ReturnToFieldNoScript, 10);
-}
 
 void FieldCB_ReturnToFieldNoScriptCheckMusic(void)
 {

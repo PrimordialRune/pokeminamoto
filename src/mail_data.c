@@ -151,10 +151,6 @@ void TakeMailFromMon(struct Pokemon *mon)
     }
 }
 
-void ClearMailItemId(u8 mailId)
-{
-    gSaveBlock1Ptr->mail[mailId].itemId = ITEM_NONE;
-}
 
 u8 TakeMailFromMonAndSave(struct Pokemon *mon)
 {

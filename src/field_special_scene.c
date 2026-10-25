@@ -236,16 +236,6 @@ static void Task_HandleTruckSequence(u8 taskId)
     }
 }
 
-void ExecuteTruckSequence(void)
-{
-    MapGridSetMetatileIdAt(4 + MAP_OFFSET, 1 + MAP_OFFSET, METATILE_InsideOfTruck_DoorClosedFloor_Top);
-    MapGridSetMetatileIdAt(4 + MAP_OFFSET, 2 + MAP_OFFSET, METATILE_InsideOfTruck_DoorClosedFloor_Mid);
-    MapGridSetMetatileIdAt(4 + MAP_OFFSET, 3 + MAP_OFFSET, METATILE_InsideOfTruck_DoorClosedFloor_Bottom);
-    DrawWholeMapView();
-    LockPlayerFieldControls();
-    CpuFastFill(0, gPlttBufferFaded, PLTT_SIZE);
-    CreateTask(Task_HandleTruckSequence, 0xA);
-}
 
 void EndTruckSequence(u8 taskId)
 {
