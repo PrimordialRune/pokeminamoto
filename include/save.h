@@ -27,13 +27,18 @@
 // 13 sectors instead of Emerald's 14. That frees the last two slot sectors.
 #define SECTOR_ID_FREE_1             26
 #define SECTOR_ID_FREE_2             27
+// The copy-on-write save (SAVE_COPY_ON_WRITE) uses slot 1 and 2 as the A and B
+// homes of the 13 sectors and these two as its commit sectors
+#define SECTOR_ID_SAVE_COMMIT_0      SECTOR_ID_FREE_1
+#define SECTOR_ID_SAVE_COMMIT_1      SECTOR_ID_FREE_2
 #define SECTOR_ID_HOF_1              28
 #define SECTOR_ID_HOF_2              29
 // Trainer Hill (FREE_TRAINER_HILL) and the battle recorder (FREE_RECORDED_BATTLE)
 // are gone, so nothing writes these two sectors either; TryWriteSpecialSaveSector
 // refuses them while those defines are set. Nothing erases sectors 26, 27, 30
-// or 31: they are free for future Minamoto data (4 sectors, 16 KB). They can
-// still hold whatever an older build left there, so erase one before using it.
+// or 31: they are free for future Minamoto data (4 sectors, 16 KB; 30 and 31
+// only, 8 KB, with SAVE_COPY_ON_WRITE). They can still hold whatever an older
+// build left there, so erase one before using it.
 #define SECTOR_ID_TRAINER_HILL       30
 #define SECTOR_ID_RECORDED_BATTLE    31
 #define SECTOR_ID_FREE_3             SECTOR_ID_TRAINER_HILL

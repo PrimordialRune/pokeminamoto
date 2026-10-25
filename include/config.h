@@ -76,6 +76,12 @@
 #define FREE_BERRY_FIX_PROGRAM          // Ruby/Sapphire berry glitch fix sent over the cable (B+SELECT on the title screen)
 #define FREE_APPRENTICE                 // Battle Tower Apprentice and the 4 saved ones (316 B)
 
+// Save only the flash sectors whose data changed, copy-on-write with a commit
+// record written last (src/save.c, above WriteSaveData), instead of Emerald's
+// two save slots that rewrite all 13 sectors every save. Comment it out to go
+// back to the two slots; each scheme reads the other's saves as incompatible.
+#define SAVE_COPY_ON_WRITE
+
 // Debug menus (overworld: hold R + START, battle: hold L + SELECT). Every modern
 // build has them except `make release`, which defines RELEASE. See include/debug_menu.h.
 #if MODERN && !defined(RELEASE)

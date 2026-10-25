@@ -16,22 +16,27 @@
 static u16 CalculateChecksum(void *, u16);
 static u16 CalculateSectorChecksum(void *, u16, u16, u16);
 static bool8 ReadFlashSector(u8, struct SaveSector *);
+static u8 TryWriteSector(u8, u8 *);
+static void FillSaveSector(u16, const struct SaveSectorLocation *, u32);
+static u8 RunSaveMigrations(u8 *, u16, struct SaveSectorLocation *);
+#ifndef SAVE_COPY_ON_WRITE
 static u8 GetSaveValidStatus(const struct SaveSectorLocation *);
 static u8 CopySaveSlotData(u16, struct SaveSectorLocation *);
 static bool32 IsCurrentFormatSector(const struct SaveSector *);
 static u8 TryMigrateSave(struct SaveSectorLocation *);
-static u8 TryWriteSector(u8, u8 *);
 static u8 HandleWriteSector(u16, const struct SaveSectorLocation *);
 static u8 HandleReplaceSector(u16, const struct SaveSectorLocation *);
+#endif
 
 // Divide save blocks into individual chunks to be written to flash sectors
 
 /*
  * Sector Layout:
  *
- * Sectors 0 - 12:      Save Slot 1
- * Sectors 13 - 25:     Save Slot 2
+ * Sectors 0 - 12:      Save Slot 1 (copy-on-write save: home A of sectors 0-12)
+ * Sectors 13 - 25:     Save Slot 2 (copy-on-write save: home B of sectors 0-12)
  * Sectors 26 - 27:     Free (Emerald's 14th sector of each slot)
+ *                      (copy-on-write save: the two commit sectors)
  * Sectors 28 - 29:     Hall of Fame
  * Sector 30:           Free (was Trainer Hill)
  * Sector 31:           Free (was Recorded Battle)
@@ -45,6 +50,10 @@ static u8 HandleReplaceSector(u16, const struct SaveSectorLocation *);
  * off by a power loss fall back to the other slot, see below.
  *
  * See SECTOR_ID_* constants in save.h
+ *
+ * That is Emerald's scheme. With SAVE_COPY_ON_WRITE (include/config.h) the
+ * game data is instead written copy-on-write, see the comment above
+ * WriteSaveData further down.
  */
 
 #define SAVEBLOCK_CHUNK(structure, chunkNum)                                   \
@@ -110,13 +119,18 @@ STATIC_ASSERT(offsetof(struct SaveBlock2, saveFormatVersion) == 0x16, SaveBlock2
 // It changes when any save block changes size or the sectors are laid out
 // differently, so a build that changed the layout without bumping the version
 // still refuses saves it would misread. It is never 0 (Emerald's footer).
+#ifdef SAVE_COPY_ON_WRITE
+#define SAVE_SCHEME 1 // the same data in another place: the schemes can't read each other's saves
+#else
+#define SAVE_SCHEME 0
+#endif
 #define LAYOUT_HASH_STEP(h, x) ((h) * 33u + (u32)(x))
 #define SAVE_LAYOUT_HASH_32                                                        \
-    LAYOUT_HASH_STEP(LAYOUT_HASH_STEP(LAYOUT_HASH_STEP(LAYOUT_HASH_STEP(           \
+    LAYOUT_HASH_STEP(LAYOUT_HASH_STEP(LAYOUT_HASH_STEP(LAYOUT_HASH_STEP(LAYOUT_HASH_STEP( \
     LAYOUT_HASH_STEP(LAYOUT_HASH_STEP(LAYOUT_HASH_STEP(LAYOUT_HASH_STEP(5381u,     \
         SECTOR_DATA_SIZE), NUM_SECTORS_PER_SLOT), SECTOR_ID_SAVEBLOCK2),           \
         SECTOR_ID_SAVEBLOCK1_START), SECTOR_ID_PKMN_STORAGE_START),                \
-        sizeof(struct SaveBlock2)), sizeof(struct SaveBlock1)), sizeof(struct PokemonStorage))
+        sizeof(struct SaveBlock2)), sizeof(struct SaveBlock1)), sizeof(struct PokemonStorage)), SAVE_SCHEME)
 #define SAVE_LAYOUT_HASH ((u16)(SAVE_LAYOUT_HASH_32 % 0xFFFFu + 1))
 
 // Migrations turn the save image of one version into the next. The image is
@@ -124,8 +138,9 @@ STATIC_ASSERT(offsetof(struct SaveBlock2, saveFormatVersion) == 0x16, SaveBlock2
 // zero padded), and a migration rewrites it in place into the next version's
 // layout. LoadGameSave runs them one after another from the save's version up
 // to SAVE_FORMAT_VERSION. Only the sector contents can change this way: the
-// slot layout on the flash (NUM_SECTORS_PER_SLOT, two rotating slots) must stay
-// the same across versions, or loading old saves needs more than a migration.
+// way sectors sit on the flash (NUM_SECTORS_PER_SLOT, the two slots or the
+// homes and commit sectors) must stay the same across versions, or loading
+// old saves needs more than a migration.
 typedef bool8 (*SaveMigrationFunc)(u8 *image);
 
 struct SaveMigration
@@ -160,12 +175,18 @@ COMMON_DATA u16 gSaveUnusedVar2 = 0;
 COMMON_DATA u16 gSaveAttemptStatus = 0;
 
 EWRAM_DATA struct SaveSector gSaveDataBuffer = {0}; // Buffer used for reading/writing sectors
+#ifndef SAVE_COPY_ON_WRITE
 // The newest intact sector of another version the last load found: its
 // version, layout hash and save counter
 EWRAM_DATA static u16 sForeignSaveVersion = 0;
 EWRAM_DATA static u16 sForeignSaveLayoutHash = 0;
 EWRAM_DATA static u32 sForeignSaveCounter = 0;
 EWRAM_DATA static bool8 sForeignSaveFound = FALSE;
+#endif
+
+#ifdef SAVE_COPY_ON_WRITE
+static void CowForgetSave(void);
+#endif
 
 void ClearSaveData(void)
 {
@@ -177,6 +198,9 @@ void ClearSaveData(void)
         EraseFlashSector(i);
         EraseFlashSector(i + SECTORS_COUNT / 2);
     }
+#ifdef SAVE_COPY_ON_WRITE
+    CowForgetSave();
+#endif
 }
 
 void Save_ResetSaveCounters(void)
@@ -184,6 +208,9 @@ void Save_ResetSaveCounters(void)
     gSaveCounter = 0;
     gLastWrittenSector = 0;
     gDamagedSaveSectors = 0;
+#ifdef SAVE_COPY_ON_WRITE
+    CowForgetSave();
+#endif
 }
 
 static bool32 SetDamagedSectorBits(u8 op, u8 sectorId)
@@ -207,6 +234,32 @@ static bool32 SetDamagedSectorBits(u8 op, u8 sectorId)
     return retVal;
 }
 
+// Fills the sector buffer with sector sectorId of the save blocks and its footer
+static void FillSaveSector(u16 sectorId, const struct SaveSectorLocation *locations, u32 counter)
+{
+    u16 i;
+    u8 *data = locations[sectorId].data;
+    u16 size = locations[sectorId].size;
+
+    // Clear temp save sector
+    for (i = 0; i < SECTOR_SIZE; i++)
+        ((u8 *)gReadWriteSector)[i] = 0;
+
+    // Set footer data
+    gReadWriteSector->id = sectorId;
+    gReadWriteSector->signature = SECTOR_SIGNATURE;
+    gReadWriteSector->counter = counter;
+    gReadWriteSector->formatVersion = SAVE_FORMAT_VERSION;
+    gReadWriteSector->layoutHash = SAVE_LAYOUT_HASH;
+
+    // Copy current data to temp buffer for writing
+    for (i = 0; i < size; i++)
+        gReadWriteSector->data[i] = data[i];
+
+    gReadWriteSector->checksum = CalculateSectorChecksum(data, size, SAVE_FORMAT_VERSION, SAVE_LAYOUT_HASH);
+}
+
+#ifndef SAVE_COPY_ON_WRITE
 static u8 WriteSaveSectorOrSlot(u16 sectorId, const struct SaveSectorLocation *locations)
 {
     u32 status;
@@ -247,39 +300,22 @@ static u8 WriteSaveSectorOrSlot(u16 sectorId, const struct SaveSectorLocation *l
 
 static u8 HandleWriteSector(u16 sectorId, const struct SaveSectorLocation *locations)
 {
-    u16 i;
     u16 sector;
-    u8 *data;
-    u16 size;
 
     // Adjust sector id for current save slot
     sector = sectorId + gLastWrittenSector;
     sector %= NUM_SECTORS_PER_SLOT;
     sector += NUM_SECTORS_PER_SLOT * (gSaveCounter % NUM_SAVE_SLOTS);
 
-    // Get current save data
-    data = locations[sectorId].data;
-    size = locations[sectorId].size;
-
-    // Clear temp save sector
-    for (i = 0; i < SECTOR_SIZE; i++)
-        ((u8 *)gReadWriteSector)[i] = 0;
-
-    // Set footer data
-    gReadWriteSector->id = sectorId;
-    gReadWriteSector->signature = SECTOR_SIGNATURE;
-    gReadWriteSector->counter = gSaveCounter;
-    gReadWriteSector->formatVersion = SAVE_FORMAT_VERSION;
-    gReadWriteSector->layoutHash = SAVE_LAYOUT_HASH;
-
-    // Copy current data to temp buffer for writing
-    for (i = 0; i < size; i++)
-        gReadWriteSector->data[i] = data[i];
-
-    gReadWriteSector->checksum = CalculateSectorChecksum(data, size, SAVE_FORMAT_VERSION, SAVE_LAYOUT_HASH);
-
+    FillSaveSector(sectorId, locations, gSaveCounter);
     return TryWriteSector(sector, gReadWriteSector->data);
 }
+
+static u8 WriteSaveData(void)
+{
+    return WriteSaveSectorOrSlot(FULL_SAVE_SLOT, gRamSaveSectorLocations);
+}
+#endif // !SAVE_COPY_ON_WRITE
 
 static u8 HandleWriteSectorNBytes(u8 sectorId, u8 *data, u16 size)
 {
@@ -316,6 +352,7 @@ static u8 TryWriteSector(u8 sector, u8 *data)
     }
 }
 
+#ifndef SAVE_COPY_ON_WRITE
 static u32 RestoreSaveBackupVarsAndIncrement(const struct SaveSectorLocation *locations)
 {
     gReadWriteSector = &gSaveDataBuffer;
@@ -384,8 +421,6 @@ static u8 HandleReplaceSector(u16 sectorId, const struct SaveSectorLocation *loc
 {
     u16 i;
     u16 sector;
-    u8 *data;
-    u16 size;
     u8 status;
 
     // Adjust sector id for current save slot
@@ -393,26 +428,7 @@ static u8 HandleReplaceSector(u16 sectorId, const struct SaveSectorLocation *loc
     sector %= NUM_SECTORS_PER_SLOT;
     sector += NUM_SECTORS_PER_SLOT * (gSaveCounter % NUM_SAVE_SLOTS);
 
-    // Get current save data
-    data = locations[sectorId].data;
-    size = locations[sectorId].size;
-
-    // Clear temp save sector.
-    for (i = 0; i < SECTOR_SIZE; i++)
-        ((u8 *)gReadWriteSector)[i] = 0;
-
-    // Set footer data
-    gReadWriteSector->id = sectorId;
-    gReadWriteSector->signature = SECTOR_SIGNATURE;
-    gReadWriteSector->counter = gSaveCounter;
-    gReadWriteSector->formatVersion = SAVE_FORMAT_VERSION;
-    gReadWriteSector->layoutHash = SAVE_LAYOUT_HASH;
-
-    // Copy current data to temp buffer for writing
-    for (i = 0; i < size; i++)
-        gReadWriteSector->data[i] = data[i];
-
-    gReadWriteSector->checksum = CalculateSectorChecksum(data, size, SAVE_FORMAT_VERSION, SAVE_LAYOUT_HASH);
+    FillSaveSector(sectorId, locations, gSaveCounter);
 
     // Erase old save data
     EraseFlashSector(sector);
@@ -745,6 +761,8 @@ static u8 GetSaveValidStatus(const struct SaveSectorLocation *locations)
     return SAVE_STATUS_CORRUPT;
 }
 
+#endif // !SAVE_COPY_ON_WRITE
+
 static const struct SaveMigration *FindSaveMigration(u16 version)
 {
     u32 i;
@@ -756,6 +774,44 @@ static const struct SaveMigration *FindSaveMigration(u16 version)
     return NULL;
 }
 
+// Whether a save of this version and layout hash can be migrated
+static bool32 CanMigrateSave(u16 version, u16 layoutHash)
+{
+    const struct SaveMigration *migration;
+    u16 v;
+
+    if (version == 0 || version >= SAVE_FORMAT_VERSION)
+        return FALSE;
+    migration = FindSaveMigration(version);
+    if (migration == NULL || migration->fromLayoutHash != layoutHash)
+        return FALSE;
+    for (v = version + 1; v < SAVE_FORMAT_VERSION; v++)
+    {
+        if (FindSaveMigration(v) == NULL)
+            return FALSE;
+    }
+    return TRUE;
+}
+
+// Migrates the image of a save of the given version (read from the flash by
+// the caller) up to this version and copies it into the save blocks
+static u8 RunSaveMigrations(u8 *image, u16 version, struct SaveSectorLocation *locations)
+{
+    u16 i, v;
+
+    for (v = version; v < SAVE_FORMAT_VERSION; v++)
+    {
+        if (!FindSaveMigration(v)->migrate(image))
+            return SAVE_STATUS_INCOMPATIBLE;
+    }
+
+    for (i = 0; i < NUM_SECTORS_PER_SLOT; i++)
+        memcpy(locations[i].data, &image[i * SECTOR_DATA_SIZE], locations[i].size);
+    gSaveBlock2Ptr->saveFormatVersion = SAVE_FORMAT_VERSION;
+    return SAVE_STATUS_OK;
+}
+
+#ifndef SAVE_COPY_ON_WRITE
 // The flash holds only a save of another version (sForeignSaveVersion). If it
 // is older and there are migrations from it up to this version, load it into
 // gHeap, migrate it there and copy the result into the save blocks. Otherwise
@@ -764,22 +820,13 @@ static u8 TryMigrateSave(struct SaveSectorLocation *locations)
 {
     u16 version = sForeignSaveVersion;
     u16 layoutHash = sForeignSaveLayoutHash;
-    const struct SaveMigration *migration;
     u32 slot1Counter = 0, slot2Counter = 0;
     u8 slot1Status, slot2Status;
-    u16 slotOffset, i, v;
+    u16 slotOffset, i;
     u8 *image = gHeap; // free here, see LoadGameSave
 
-    if (version == 0 || version >= SAVE_FORMAT_VERSION)
+    if (!CanMigrateSave(version, layoutHash))
         return SAVE_STATUS_INCOMPATIBLE;
-    migration = FindSaveMigration(version);
-    if (migration == NULL || migration->fromLayoutHash != layoutHash)
-        return SAVE_STATUS_INCOMPATIBLE;
-    for (v = version + 1; v < SAVE_FORMAT_VERSION; v++)
-    {
-        if (FindSaveMigration(v) == NULL)
-            return SAVE_STATUS_INCOMPATIBLE;
-    }
 
     slot1Status = GetSaveSlotStatus(0, version, layoutHash, locations, &slot1Counter);
     slot2Status = GetSaveSlotStatus(NUM_SECTORS_PER_SLOT, version, layoutHash, locations, &slot2Counter);
@@ -802,17 +849,9 @@ static u8 TryMigrateSave(struct SaveSectorLocation *locations)
         memcpy(&image[gReadWriteSector->id * SECTOR_DATA_SIZE], gReadWriteSector->data, SECTOR_DATA_SIZE);
     }
 
-    for (v = version; v < SAVE_FORMAT_VERSION; v++)
-    {
-        if (!FindSaveMigration(v)->migrate(image))
-            return SAVE_STATUS_INCOMPATIBLE;
-    }
-
-    for (i = 0; i < NUM_SECTORS_PER_SLOT; i++)
-        memcpy(locations[i].data, &image[i * SECTOR_DATA_SIZE], locations[i].size);
-    gSaveBlock2Ptr->saveFormatVersion = SAVE_FORMAT_VERSION;
-    return SAVE_STATUS_OK;
+    return RunSaveMigrations(image, version, locations);
 }
+#endif // !SAVE_COPY_ON_WRITE
 
 static u8 TryLoadSaveSector(u8 sectorId, u8 *data, u16 size)
 {
@@ -900,6 +939,381 @@ static void UpdateSaveAddresses(void)
     }
 }
 
+#ifdef SAVE_COPY_ON_WRITE
+/*
+ * Copy-on-write save (SAVE_COPY_ON_WRITE, include/config.h)
+ *
+ * Sector id i (0-12, same chunks as above) has two homes on the flash:
+ * A = sector i and B = sector NUM_SECTORS_PER_SLOT + i. A commit record says
+ * which home holds each id; the two commit sectors take turns, generation g
+ * goes into SECTOR_ID_SAVE_COMMIT_0 + g % 2.
+ *
+ * A save of generation g + 1:
+ *  1. hashes every sector's data and compares it with the hash of what its
+ *     current home holds (remembered from the load or the last save); only
+ *     ids that changed are written, each into its other home, and verified,
+ *  2. erases the commit sector generation g - 1 used and programs the new
+ *     record into it except its last byte, and verifies that,
+ *  3. programs the record's last byte: the save is committed.
+ * Nothing the generation g record points at is written before step 3, and its
+ * commit sector is not touched at all, so a power cut at any point leaves the
+ * generation g save loadable: the loader takes the newest commit record that
+ * is complete and whose sectors check out. A cut in step 1 or 2 loses the
+ * new save, never the old one. Sector writes that fail verification mark the
+ * sector in gDamagedSaveSectors and stop the save; the sectors marked are
+ * never part of the committed save, so the save-failed screen can wipe them.
+ *
+ * The record also holds a hash of all 13 sectors' contents, so a commit
+ * record can't be paired with sectors that were overwritten after it (which
+ * the order above never does, but a half-erased or damaged sector could).
+ *
+ * The content hash is a 32-bit FNV-1a over words: a change of any one word
+ * always changes it, and the chance that a bigger change keeps it is 1 in
+ * 2^32 per changed sector per save. The sector checksum (Emerald's 16-bit
+ * word sum) is too weak for this: swapping two Pokémon in a box keeps it.
+ */
+
+#define SAVE_COMMIT_MAGIC 0x4D4F4321 // "!COM"
+#define SAVE_COMMIT_DONE  0x5A       // the last byte of a complete record
+
+struct SaveCommit
+{
+    u32 magic;         // SAVE_COMMIT_MAGIC
+    u16 formatVersion; // SAVE_FORMAT_VERSION of the save
+    u16 layoutHash;
+    u32 generation;    // goes up by one with every save
+    u32 contentHash;   // CowCombineHashes of the sectors at their homes
+    u16 homes;         // bit i set: sector id i is in its B home
+    u16 unused;        // 0xFFFF
+    u16 check;         // CalculateChecksum of everything above
+    u8 done;           // SAVE_COMMIT_DONE, programmed last: the commit point
+    u8 padding;
+};
+
+STATIC_ASSERT(NUM_SECTORS_PER_SLOT <= 16, SaveCommitHomesFitInU16);
+STATIC_ASSERT(offsetof(struct SaveCommit, check) % 4 == 0, SaveCommitCheckIsWordSum);
+STATIC_ASSERT(NUM_SECTORS_PER_SLOT * 2 <= SECTOR_ID_SAVE_COMMIT_0
+           && SECTOR_ID_SAVE_COMMIT_0 + 1 == SECTOR_ID_SAVE_COMMIT_1
+           && SECTOR_ID_SAVE_COMMIT_1 < SECTOR_ID_HOF_1, SaveCowLayoutFits);
+
+#define COW_HOME_SECTOR(id, inB) ((id) + ((inB) ? NUM_SECTORS_PER_SLOT : 0))
+#define COW_COMMIT_SECTOR(generation) (SECTOR_ID_SAVE_COMMIT_0 + ((generation) & 1))
+
+struct CowState
+{
+    u32 generation;
+    u16 homes;     // as in SaveCommit
+    u16 hashValid; // bit i set: hashes[i] is what id i's current home holds
+    u32 hashes[NUM_SECTORS_PER_SLOT];
+};
+
+enum
+{
+    COW_IDLE,
+    COW_WRITING,   // CowBegin ran, sectors are being written
+    COW_COMMITTING // the record is programmed except its last byte
+};
+
+// sCow is the committed save; sCowPending the one being written (120 B)
+EWRAM_DATA static struct CowState sCow = {0};
+EWRAM_DATA static struct CowState sCowPending = {0};
+EWRAM_DATA static u8 sCowNextSector = 0;
+EWRAM_DATA static u8 sCowStage = COW_IDLE;
+
+// FNV-1a over the words of a sector's data, zero padded to SECTOR_DATA_SIZE,
+// so it is the same whatever size the layout gives the sector
+static u32 CowHash(const void *data, u16 size)
+{
+    const u32 *words = data;
+    u32 hash = 0x811C9DC5;
+    u16 i;
+
+    for (i = 0; i < size / 4; i++)
+        hash = (hash ^ words[i]) * 0x01000193;
+    for (; i < SECTOR_DATA_SIZE / 4; i++)
+        hash *= 0x01000193;
+    return hash;
+}
+
+static u32 CowCombineHashes(const u32 *hashes)
+{
+    u32 hash = 0x811C9DC5;
+    u16 i;
+
+    for (i = 0; i < NUM_SECTORS_PER_SLOT; i++)
+        hash = (hash ^ hashes[i]) * 0x01000193;
+    return hash;
+}
+
+static void CowForgetSave(void)
+{
+    memset(&sCow, 0, sizeof(sCow));
+    sCowStage = COW_IDLE;
+}
+
+static void CowBegin(void)
+{
+    gReadWriteSector = &gSaveDataBuffer;
+    // The save-failed screen has wiped what the last attempt marked, and a
+    // sector this save doesn't write must not fail it
+    gDamagedSaveSectors = 0;
+    sCowPending = sCow;
+    sCowPending.generation = sCow.generation + 1;
+    sCowNextSector = 0;
+    sCowStage = COW_WRITING;
+}
+
+// Writes the next sector whose data changed into its other home. FALSE when
+// no changed sector is left.
+static bool8 CowWriteNextChanged(void)
+{
+    const struct SaveSectorLocation *locations = gRamSaveSectorLocations;
+
+    while (sCowNextSector < NUM_SECTORS_PER_SLOT)
+    {
+        u8 id = sCowNextSector++;
+        u16 bit = 1 << id;
+        u32 hash = CowHash(locations[id].data, locations[id].size);
+
+        if ((sCow.hashValid & bit) && sCow.hashes[id] == hash)
+            continue; // its home already holds this
+
+        FillSaveSector(id, locations, sCowPending.generation);
+        if (TryWriteSector(COW_HOME_SECTOR(id, !(sCow.homes & bit)), gReadWriteSector->data) == SAVE_STATUS_OK)
+        {
+            sCowPending.homes ^= bit;
+            sCowPending.hashes[id] = hash;
+            sCowPending.hashValid |= bit;
+        }
+        return TRUE;
+    }
+    return FALSE;
+}
+
+static void CowFillCommit(struct SaveCommit *commit, const struct CowState *state)
+{
+    memset(commit, 0xFF, sizeof(*commit));
+    commit->magic = SAVE_COMMIT_MAGIC;
+    commit->formatVersion = SAVE_FORMAT_VERSION;
+    commit->layoutHash = SAVE_LAYOUT_HASH;
+    commit->generation = state->generation;
+    commit->contentHash = CowCombineHashes(state->hashes);
+    commit->homes = state->homes;
+    commit->check = CalculateChecksum(commit, offsetof(struct SaveCommit, check));
+    commit->done = SAVE_COMMIT_DONE;
+}
+
+// Step 2: erase the commit sector and program the record but its last byte
+static u8 CowWriteCommitRecord(void)
+{
+    u16 sector = COW_COMMIT_SECTOR(sCowPending.generation);
+    struct SaveCommit *commit = (struct SaveCommit *)gSaveDataBuffer.data;
+    struct SaveCommit readBack;
+    u32 i, try;
+
+    if (sCowStage != COW_WRITING || gDamagedSaveSectors)
+        return SAVE_STATUS_ERROR;
+    if (sCowPending.hashValid != (1 << NUM_SECTORS_PER_SLOT) - 1)
+        return SAVE_STATUS_ERROR; // can't happen: every unknown sector gets written
+
+    CowFillCommit(commit, &sCowPending);
+    for (try = 0; try < 3; try++)
+    {
+        if (EraseFlashSector(sector))
+            continue;
+        for (i = 0; i < offsetof(struct SaveCommit, done); i++)
+        {
+            if (ProgramFlashByte(sector, i, ((u8 *)commit)[i]))
+                break;
+        }
+        ReadFlash(sector, 0, (u8 *)&readBack, sizeof(readBack));
+        if (i == offsetof(struct SaveCommit, done)
+         && memcmp(&readBack, commit, offsetof(struct SaveCommit, done)) == 0
+         && readBack.done == 0xFF)
+        {
+            sCowStage = COW_COMMITTING;
+            return SAVE_STATUS_OK;
+        }
+    }
+    SetDamagedSectorBits(ENABLE, sector);
+    return SAVE_STATUS_ERROR;
+}
+
+// Step 3: program the record's last byte. Only now is the new save the one
+// that loads.
+static u8 CowFinishCommit(void)
+{
+    u16 sector = COW_COMMIT_SECTOR(sCowPending.generation);
+    u8 done;
+
+    if (sCowStage != COW_COMMITTING || gDamagedSaveSectors)
+        return SAVE_STATUS_ERROR;
+
+    ProgramFlashByte(sector, offsetof(struct SaveCommit, done), SAVE_COMMIT_DONE);
+    ReadFlash(sector, offsetof(struct SaveCommit, done), &done, 1);
+    sCowStage = COW_IDLE;
+    if (done != SAVE_COMMIT_DONE)
+    {
+        SetDamagedSectorBits(ENABLE, sector);
+        return SAVE_STATUS_ERROR;
+    }
+    sCow = sCowPending;
+    return SAVE_STATUS_OK;
+}
+
+// A whole save in one go
+static u8 WriteSaveData(void)
+{
+    CowBegin();
+    while (CowWriteNextChanged())
+    {
+        if (gDamagedSaveSectors)
+        {
+            sCowStage = COW_IDLE;
+            return SAVE_STATUS_ERROR;
+        }
+    }
+    if (CowWriteCommitRecord() != SAVE_STATUS_OK)
+        return SAVE_STATUS_ERROR;
+    return CowFinishCommit();
+}
+
+static bool32 CowReadCommit(u16 sector, struct SaveCommit *commit)
+{
+    ReadFlash(sector, 0, (u8 *)commit, sizeof(*commit));
+    return commit->magic == SAVE_COMMIT_MAGIC
+        && commit->done == SAVE_COMMIT_DONE
+        && commit->check == CalculateChecksum(commit, offsetof(struct SaveCommit, check));
+}
+
+// Checks that every sector the record points at is intact and belongs to it.
+// With dest set, also copies their data: into the save blocks for a save of
+// this version (dest == NULL image), or whole sectors into a migration image.
+// hashes gets each sector's content hash.
+static bool32 CowReadCommittedSectors(const struct SaveCommit *commit, bool32 copy, u8 *image, u32 *hashes)
+{
+    const struct SaveSectorLocation *locations = gRamSaveSectorLocations;
+    bool32 current = (commit->formatVersion == SAVE_FORMAT_VERSION && commit->layoutHash == SAVE_LAYOUT_HASH);
+    u16 i, size;
+
+    for (i = 0; i < NUM_SECTORS_PER_SLOT; i++)
+    {
+        ReadFlashSector(COW_HOME_SECTOR(i, commit->homes & (1 << i)), gReadWriteSector);
+        size = current ? locations[i].size : SECTOR_DATA_SIZE;
+        if (gReadWriteSector->signature != SECTOR_SIGNATURE
+         || gReadWriteSector->id != i
+         || gReadWriteSector->formatVersion != commit->formatVersion
+         || gReadWriteSector->layoutHash != commit->layoutHash
+         || gReadWriteSector->counter > commit->generation
+         || gReadWriteSector->checksum != CalculateSectorChecksum(gReadWriteSector->data, size,
+                                              commit->formatVersion, commit->layoutHash))
+            return FALSE;
+        hashes[i] = CowHash(gReadWriteSector->data, SECTOR_DATA_SIZE);
+        if (copy && image != NULL)
+            memcpy(&image[i * SECTOR_DATA_SIZE], gReadWriteSector->data, SECTOR_DATA_SIZE);
+        else if (copy)
+            memcpy(locations[i].data, gReadWriteSector->data, locations[i].size);
+    }
+    return CowCombineHashes(hashes) == commit->contentHash;
+}
+
+// Whether the save sectors hold a save in another format (Emerald's, or the
+// two-slot scheme). Sectors of this format with no commit record are a first
+// save that never finished: no save, as far as the player is concerned.
+static bool32 CowFlashHasOldSave(void)
+{
+    u16 i;
+
+    for (i = 0; i < NUM_SECTORS_PER_SLOT * 2 + 2; i++)
+    {
+        ReadFlashSector(i, gReadWriteSector);
+        if (gReadWriteSector->signature == SECTOR_SIGNATURE
+         && (gReadWriteSector->formatVersion != SAVE_FORMAT_VERSION || gReadWriteSector->layoutHash != SAVE_LAYOUT_HASH))
+            return TRUE;
+    }
+    return FALSE;
+}
+
+static u8 TryLoadSaveSlot(u16 sectorId, struct SaveSectorLocation *locations)
+{
+    struct SaveCommit commits[2];
+    bool8 valid[2];
+    u32 hashes[NUM_SECTORS_PER_SLOT];
+    u32 newestGeneration = 0;
+    s8 newest = -1, newestForeign = -1;
+    u8 order[2];
+    u8 i, status;
+
+    gReadWriteSector = &gSaveDataBuffer;
+    CowForgetSave();
+
+    for (i = 0; i < 2; i++)
+    {
+        valid[i] = CowReadCommit(SECTOR_ID_SAVE_COMMIT_0 + i, &commits[i]);
+        if (!valid[i])
+            continue;
+        if (commits[i].generation >= newestGeneration)
+            newestGeneration = commits[i].generation;
+        if (commits[i].formatVersion != SAVE_FORMAT_VERSION || commits[i].layoutHash != SAVE_LAYOUT_HASH)
+        {
+            if (newestForeign < 0 || commits[i].generation > commits[newestForeign].generation)
+                newestForeign = i;
+        }
+        else if (newest < 0 || commits[i].generation > commits[newest].generation)
+        {
+            newest = i;
+        }
+    }
+    // Whatever happens, the next save's commit must be the newest record
+    sCow.generation = newestGeneration;
+
+    if (newestForeign >= 0 && (newest < 0 || commits[newestForeign].generation > commits[newest].generation))
+    {
+        // The newest save is of another version
+        const struct SaveCommit *commit = &commits[newestForeign];
+        u8 *image = gHeap; // free here, see LoadGameSave
+
+        sCow.homes = commit->homes;
+        if (!CanMigrateSave(commit->formatVersion, commit->layoutHash)
+         || !CowReadCommittedSectors(commit, TRUE, image, hashes))
+            return SAVE_STATUS_INCOMPATIBLE;
+        status = RunSaveMigrations(image, commit->formatVersion, locations);
+        // The flash still holds the old version, so the next save writes everything
+        sCow.generation = commit->generation;
+        return status;
+    }
+
+    if (newest < 0)
+        return CowFlashHasOldSave() ? SAVE_STATUS_INCOMPATIBLE : SAVE_STATUS_EMPTY;
+
+    // Newest first, then the other record if it is of this version too
+    order[0] = newest;
+    order[1] = newest ^ 1;
+    for (i = 0; i < 2; i++)
+    {
+        const struct SaveCommit *commit = &commits[order[i]];
+        if (!valid[order[i]] || commit->formatVersion != SAVE_FORMAT_VERSION || commit->layoutHash != SAVE_LAYOUT_HASH)
+            break;
+        if (!CowReadCommittedSectors(commit, FALSE, NULL, hashes))
+            continue;
+        CowReadCommittedSectors(commit, TRUE, NULL, hashes);
+        // Saving goes on from the record that loaded, so the next commit
+        // replaces the other record, never this one
+        sCow.generation = commit->generation;
+        sCow.homes = commit->homes;
+        memcpy(sCow.hashes, hashes, sizeof(hashes));
+        sCow.hashValid = (1 << NUM_SECTORS_PER_SLOT) - 1;
+        // Like Emerald: the newest save was damaged, the one before it loaded
+        return (i == 0) ? SAVE_STATUS_OK : SAVE_STATUS_ERROR;
+    }
+
+    // No commit record of this version has intact sectors. Home bits from the
+    // newest record keep the next save off what is left of it.
+    sCow.homes = commits[newest].homes;
+    return SAVE_STATUS_CORRUPT;
+}
+#endif // SAVE_COPY_ON_WRITE
+
 u8 HandleSavingData(u8 saveType)
 {
     u8 i;
@@ -921,7 +1335,7 @@ u8 HandleSavingData(u8 saveType)
 
         // Write the full save slot first
         CopyPartyAndObjectsToSave();
-        WriteSaveSectorOrSlot(FULL_SAVE_SLOT, gRamSaveSectorLocations);
+        WriteSaveData();
 
         // Save the Hall of Fame
         tempAddr = gDecompressionBuffer;
@@ -931,17 +1345,24 @@ u8 HandleSavingData(u8 saveType)
     case SAVE_NORMAL:
     default:
         CopyPartyAndObjectsToSave();
-        WriteSaveSectorOrSlot(FULL_SAVE_SLOT, gRamSaveSectorLocations);
+        WriteSaveData();
         break;
     case SAVE_LINK:
     case SAVE_EREADER: // Dummied, now duplicate of SAVE_LINK
         // Used by link / Battle Frontier
-        // Write only SaveBlocks 1 and 2 (skips the PC)
         CopyPartyAndObjectsToSave();
+#ifdef SAVE_COPY_ON_WRITE
+        // A normal save: it only writes what changed anyway, and a PC box
+        // changed since the last save is kept too
+        WriteSaveData();
+#else
+        // Write only SaveBlocks 1 and 2 (skips the PC), in place in the
+        // current slot
         for(i = SECTOR_ID_SAVEBLOCK2; i <= SECTOR_ID_SAVEBLOCK1_END; i++)
             HandleReplaceSector(i, gRamSaveSectorLocations);
         for(i = SECTOR_ID_SAVEBLOCK2; i <= SECTOR_ID_SAVEBLOCK1_END; i++)
             WriteSectorSignatureByte_NoOffset(i, gRamSaveSectorLocations);
+#endif
         break;
     case SAVE_OVERWRITE_DIFFERENT_FILE:
         // Erase Hall of Fame. Emerald also erased the Trainer Hill and
@@ -951,7 +1372,7 @@ u8 HandleSavingData(u8 saveType)
 
         // Overwrite save slot
         CopyPartyAndObjectsToSave();
-        WriteSaveSectorOrSlot(FULL_SAVE_SLOT, gRamSaveSectorLocations);
+        WriteSaveData();
         break;
     }
     gTrainerHillVBlankCounter = backupVar;
@@ -979,6 +1400,78 @@ u8 TrySavingData(u8 saveType)
         return SAVE_STATUS_ERROR;
     }
 }
+
+#ifdef SAVE_COPY_ON_WRITE
+// The link saves split a save over several frames: Task_LinkFullSave keeps
+// both players in step between the steps, and the commit byte is the last.
+bool8 LinkFullSave_Init(void)
+{
+    if (gFlashMemoryPresent != TRUE)
+        return TRUE;
+    UpdateSaveAddresses();
+    CopyPartyAndObjectsToSave();
+    CowBegin();
+    return FALSE;
+}
+
+// Writes the next changed sector. TRUE when there are none left (or a write
+// failed, which also shows the save-failed screen).
+bool8 LinkFullSave_WriteSector(void)
+{
+    if (sCowStage == COW_WRITING && CowWriteNextChanged() && !gDamagedSaveSectors)
+        return FALSE;
+    if (gDamagedSaveSectors)
+        DoSaveFailedScreen(SAVE_NORMAL);
+    return TRUE;
+}
+
+// Programs the commit record but its last byte
+bool8 LinkFullSave_ReplaceLastSector(void)
+{
+    CowWriteCommitRecord();
+    if (gDamagedSaveSectors)
+        DoSaveFailedScreen(SAVE_NORMAL);
+    return FALSE;
+}
+
+// Commits the save
+bool8 LinkFullSave_SetLastSectorSignature(void)
+{
+    CowFinishCommit();
+    if (gDamagedSaveSectors)
+        DoSaveFailedScreen(SAVE_NORMAL);
+    return FALSE;
+}
+
+// WriteSaveBlock2, then WriteSaveBlock1Sector once a frame until it returns
+// TRUE, is a save spread over frames for link screens. In Emerald they wrote
+// the save blocks in place; here they write the changed sectors one per call
+// and commit at the end.
+bool8 WriteSaveBlock2(void)
+{
+    if (gFlashMemoryPresent != TRUE)
+        return TRUE;
+
+    UpdateSaveAddresses();
+    CopyPartyAndObjectsToSave();
+    CowBegin();
+    CowWriteNextChanged();
+    return FALSE;
+}
+
+bool8 WriteSaveBlock1Sector(void)
+{
+    if (sCowStage == COW_WRITING && !gDamagedSaveSectors && CowWriteNextChanged())
+        return FALSE;
+
+    if (CowWriteCommitRecord() == SAVE_STATUS_OK)
+        CowFinishCommit();
+    if (gDamagedSaveSectors)
+        DoSaveFailedScreen(SAVE_LINK);
+    return TRUE;
+}
+
+#else
 
 bool8 LinkFullSave_Init(void)
 {
@@ -1063,6 +1556,7 @@ bool8 WriteSaveBlock1Sector(void)
 
     return finished;
 }
+#endif // SAVE_COPY_ON_WRITE
 
 u8 LoadGameSave(u8 saveType)
 {
