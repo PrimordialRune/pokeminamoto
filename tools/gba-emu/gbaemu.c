@@ -348,6 +348,63 @@ static void cmdRun(const char* args) {
 	reply("%s", out);
 }
 
+
+/* profile <frames> <file>: run with single-stepping and write "pc cycles"
+ * lines (cycles spent while that instruction ran, halted time included) to
+ * <file>. Slow (a few hundred frames per second); tools/regress/profile.py
+ * turns it into per-function totals. */
+struct ProfEntry {
+	uint32_t pc;
+	uint64_t cycles;
+};
+
+static void cmdProfile(const char* args) {
+	if (!needCore()) {
+		return;
+	}
+	char path[1024];
+	long frames = 0;
+	if (sscanf(args, "%ld %1023s", &frames, path) != 2 || frames < 1) {
+		replyError("usage: profile <frames> <file>");
+		return;
+	}
+	const size_t size = 1u << 20;
+	struct ProfEntry* tab = calloc(size, sizeof(*tab));
+	struct mDebugger* d = &stub->d;
+	uint32_t target = core->frameCounter(core) + (uint32_t) frames;
+	d->state = DEBUGGER_RUNNING;
+	while ((int32_t) (core->frameCounter(core) - target) < 0) {
+		uint32_t pc = currentPC();
+		uint32_t t0 = mTimingCurrentTime(&((struct GBA*) core->board)->timing);
+		core->step(core);
+		uint32_t dt = mTimingCurrentTime(&((struct GBA*) core->board)->timing) - t0;
+		size_t h = (pc * 2654435761u) >> 12;
+		for (;; h++) {
+			struct ProfEntry* e = &tab[h & (size - 1)];
+			if (e->pc == pc || e->pc == 0) {
+				e->pc = pc;
+				e->cycles += dt;
+				break;
+			}
+		}
+	}
+	d->state = DEBUGGER_PAUSED;
+	FILE* f = fopen(path, "w");
+	if (!f) {
+		free(tab);
+		replyError("cannot write file");
+		return;
+	}
+	for (size_t i = 0; i < size; i++) {
+		if (tab[i].pc) {
+			fprintf(f, "%08x %llu\n", tab[i].pc, (unsigned long long) tab[i].cycles);
+		}
+	}
+	fclose(f);
+	free(tab);
+	reply("{\"ok\":true,\"path\":\"%s\"}", path);
+}
+
 static void cmdStep(const char* args) {
 	if (!needCore()) {
 		return;
@@ -689,7 +746,7 @@ static void cmdLog(void) {
 static void cmdHelp(void) {
 	reply("{\"ok\":true,\"commands\":\"load <rom> | reset | loadsav <file> | run [frames] | step [n] | regs | "
 	      "read <addr> <len> | write <addr> <hex> | keys <mask> | break <addr> | watch <addr> [w|r|rw|c] | "
-	      "delete <id> | list | screenshot <png> | savestate <file> | loadstate <file> | gdb [port] | "
+	      "profile <frames> <file> | delete <id> | list | screenshot <png> | savestate <file> | loadstate <file> | gdb [port] | "
 	      "gdbframes <n> | scale <1-4> | log | info | quit\"}");
 }
 
@@ -716,6 +773,7 @@ static bool dispatch(char* line) {
 	else if (!strcmp(line, "loadsav")) cmdLoadSav(args);
 	else if (!strcmp(line, "run")) cmdRun(args);
 	else if (!strcmp(line, "step")) cmdStep(args);
+	else if (!strcmp(line, "profile")) cmdProfile(args);
 	else if (!strcmp(line, "regs")) cmdRegs();
 	else if (!strcmp(line, "read")) cmdRead(args);
 	else if (!strcmp(line, "write")) cmdWrite(args);
