@@ -1585,7 +1585,7 @@ void AllocSpriteTileRange(u16 tag, u16 start, u16 count)
 void FreeAllSpritePalettes(void)
 {
     u8 i;
-    gTintFieldSprites = FALSE;
+    DayNight_ResetSpriteTint();
     gReservedSpritePaletteCount = 0;
     for (i = 0; i < 16; i++)
         sSpritePaletteTags[i] = TAG_NONE;

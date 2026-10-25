@@ -591,7 +591,7 @@ void TransferTilesetAnimsBuffer(void)
 }
 
 // TRUE when this frame's VBlank will DMA tile animations (call it after
-// UpdateTilesetAnimations).
+// UpdateTilesetAnimations). Day/night keeps its palette rewrite off those frames.
 bool8 AreTilesetAnimsBusy(void)
 {
     return sTilesetAnimsQueuedBytes != 0 || sTilesetDMA3TransferBufferSize != 0;

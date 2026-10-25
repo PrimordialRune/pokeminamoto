@@ -52,10 +52,8 @@ script MasaraTown_EventScript_TownSign {
             case 3: msgbox(format("It's night."))
             default: msgbox(format("The time follows the clock again."))
         }
+        // The field picks the change up by itself at the end of the frame.
         closemessage
-        getplayerxy(VAR_0x8004, VAR_0x8005)
-        warpsilent(MAP_MASARA_TOWN, VAR_0x8004, VAR_0x8005)
-        waitstate
     }
     releaseall
 }

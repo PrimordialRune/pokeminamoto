@@ -1082,6 +1082,11 @@ void SetWeatherScreenFadeOut(void)
     gWeatherPtr->palProcessingState = WEATHER_PAL_STATE_SCREEN_FADING_OUT;
 }
 
+bool8 IsWeatherPalStateIdle(void)
+{
+    return gWeatherPtr->palProcessingState == WEATHER_PAL_STATE_IDLE;
+}
+
 void SetWeatherPalStateIdle(void)
 {
     gWeatherPtr->palProcessingState = WEATHER_PAL_STATE_IDLE;
