@@ -117,8 +117,8 @@ MODERN_WARNINGS := -Wall -Wno-strict-aliasing -Wno-attribute-alias -Woverride-in
                    -Wno-pointer-sign -Wno-missing-braces -Wno-array-parameter \
                    -Werror=return-type -Werror=implicit-function-declaration -Werror=implicit-int \
                    -Werror=int-conversion -Werror=incompatible-pointer-types -Werror=parentheses
-# Stricter checks, off until the dead-code deletions land: `make STRICT_WARNINGS=1`
-STRICT_WARNINGS ?= 0
+# Stricter checks (-Wundef, array-bounds as errors), on by default; `make STRICT_WARNINGS=0` turns them off
+STRICT_WARNINGS ?= 1
 ifeq ($(STRICT_WARNINGS),1)
   MODERN_WARNINGS += -Werror=array-bounds
   CPPFLAGS += -Wundef
