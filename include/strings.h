@@ -2028,7 +2028,6 @@ extern const u8 gPCText_Scenery1[];
 extern const u8 gPCText_Scenery2[];
 extern const u8 gPCText_Scenery3[];
 extern const u8 gPCText_Etcetera[];
-extern const u8 gPCText_Friends[];
 extern const u8 gPCText_Forest[];
 extern const u8 gPCText_City[];
 extern const u8 gPCText_Desert[];
@@ -3023,6 +3022,5 @@ extern const u8 gText_MoveOkBack[];
 extern const u8 gText_YourName[];
 extern const u8 gText_BoxName[];
 extern const u8 gText_PkmnsNickname[];
-extern const u8 gText_TellHimTheWords[];
 
 #endif // GUARD_STRINGS_H
