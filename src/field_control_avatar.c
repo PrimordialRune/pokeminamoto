@@ -34,6 +34,7 @@
 #include "constants/map_types.h"
 #include "constants/songs.h"
 #include "debug_menu.h"
+#include "sleep_mode.h"
 #include "constants/trainer_hill.h"
 
 static EWRAM_DATA u8 sWildEncounterImmunitySteps = 0;
@@ -187,6 +188,11 @@ int ProcessPlayerFieldInput(struct FieldInput *input)
         return TRUE;
     }
 #endif
+    if (input->pressedSelectButton && SleepMode_ComboPressed())
+    {
+        SleepMode_Enter();
+        return FALSE;
+    }
     if (input->pressedStartButton)
     {
         PlaySE(SE_WIN_OPEN);

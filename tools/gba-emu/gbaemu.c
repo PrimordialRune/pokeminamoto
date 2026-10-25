@@ -18,6 +18,7 @@
 #include <mgba/debugger/debugger.h>
 #include <mgba/internal/arm/arm.h>
 #include <mgba/internal/debugger/gdb-stub.h>
+#include <mgba/internal/gba/gba.h>
 #include <mgba-util/png-io.h>
 #include <mgba-util/vfs.h>
 
@@ -183,6 +184,16 @@ static void hostEntered(struct mDebugger* d, enum mDebuggerEntryReason reason, s
 	}
 }
 
+/* The BIOS Stop call (SWI 3) does nothing in mGBA unless a frontend reacts to
+ * the sleep callback. Treat it like Halt: the CPU waits until an enabled
+ * interrupt (the game sets the keypad one) is pending. */
+static void onSleep(void* context) {
+	(void) context;
+	GBAHalt((struct GBA*) core->board);
+}
+
+static struct mCoreCallbacks coreCallbacks = {.sleep = onSleep};
+
 static bool gdbConnected(void) {
 	return stub && !SOCKET_FAILED(stub->connection);
 }
@@ -307,6 +318,7 @@ static void cmdLoad(const char* path) {
 	stubEntered = stub->d.entered;
 	stub->d.entered = hostEntered;
 	mDebuggerAttach(&stub->d, core);
+	core->addCoreCallbacks(core, &coreCallbacks);
 	core->reset(core);
 	stub->d.state = DEBUGGER_PAUSED;
 	heldKeys = 0;
