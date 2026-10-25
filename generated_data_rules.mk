@@ -16,3 +16,20 @@ $(SPECIESGEN_STAMP): $(SPECIES_RECORDS) $(wildcard tools/speciesgen/*.py)
 
 $(SPECIESGEN_OUT): $(SPECIESGEN_STAMP)
 	@test -f $@ || $(SPECIESGEN)
+
+# Trainers: src/data/trainers.party (Showdown-style text) -> the gTrainers entries
+TRAINERPROC := tools/trainerproc/trainerproc$(EXE)
+
+AUTO_GEN_TARGETS += src/data/trainers.h
+
+$(TRAINERPROC): tools/trainerproc/main.c
+	@$(MAKE) -C tools/trainerproc
+
+# cpp strips the /* */ comments; its "# <line>" markers keep error lines right
+src/data/trainers.h: src/data/trainers.party $(TRAINERPROC)
+	$(CPP) -traditional-cpp - < $< | $(TRAINERPROC) -o $@ -i $< -
+
+clean: clean-trainerproc
+clean-trainerproc:
+	@$(MAKE) clean -C tools/trainerproc
+.PHONY: clean-trainerproc

@@ -203,25 +203,56 @@ def scan_species_moves(ctx, check_name, path, species_re=r"SPECIES_(\w+)", move_
             ctx.err(check_name, f"{path}:{line} MOVE_{mv} is not a Gen 1 move")
 
 
+def party_constant(prefix, word):
+    """A trainers.party name as its constant, the way tools/trainerproc spells it."""
+    if word.startswith(prefix + "_"):
+        return word[len(prefix) + 1:]
+    word = word.replace("\u2642", " M").replace("\u2640", " F").replace("'", "").replace("%", "")
+    return re.sub(r"[^A-Z0-9]+", "_", word.upper()).strip("_")
+
+
 @check
 def trainer_parties(ctx):
     n = "trainer_parties"
-    path = "src/data/trainer_parties.h"
-    scan_species_moves(ctx, n, path)
-    text = read(path)
-    for m in re.finditer(r"\.lvl\s*=\s*(\d+)", text):
-        if not 1 <= int(m.group(1)) <= 100:
-            ctx.err(n, f"{path}: level {m.group(1)}")
-    # every trainer's party array exists and is non-empty
-    parties = set(re.findall(r"static const struct \w+ (sParty_\w+)\[\]", text))
-    for ref in set(re.findall(r"_MOVES\((sParty_\w+)\)|_ITEM\w*\((sParty_\w+)\)", read("src/data/trainers.h"))):
-        for r in ref:
-            if r and r not in parties:
-                ctx.err(n, f"src/data/trainers.h references missing party {r}")
-    opp = defines("include/constants/opponents.h")
-    for t in set(re.findall(r"\[(TRAINER_\w+)\]\s*=", read("src/data/trainers.h"))):
-        if t not in opp and t != "TRAINER_NONE":
-            ctx.err(n, f"src/data/trainers.h defines {t} which is not in opponents.h")
+    path = "src/data/trainers.party"
+    text = re.sub(r"/\*.*?\*/", lambda m: "\n" * m.group(0).count("\n"), read(path), flags=re.S)
+    opp = set(re.findall(r"^#define[ \t]+(TRAINER_\w+)[ \t]+\d+", read("include/constants/opponents.h"), re.M))
+    seen = set()
+    trainer = None
+    in_party = False
+    for lineno, line in enumerate(text.splitlines(), 1):
+        line = line.strip()
+        m = re.match(r"^===\s*(\w+)\s*===$", line)
+        if m:
+            trainer, in_party = m.group(1), False
+            if trainer in seen:
+                ctx.err(n, f"{path}:{lineno} {trainer} is defined twice")
+            seen.add(trainer)
+            if trainer not in opp:
+                ctx.err(n, f"{path}:{lineno} {trainer} is not in opponents.h")
+            continue
+        if not line or trainer is None:
+            in_party = in_party or (not line and trainer is not None)
+            continue
+        if line.startswith("- "):
+            mv = party_constant("MOVE", line[2:].strip())
+            if mv not in ctx.gen1_moves:
+                ctx.err(n, f"{path}:{lineno} MOVE_{mv} is not a Gen 1 move")
+            continue
+        km = re.match(r"^([A-Za-z][A-Za-z ]*):\s*(.*)$", line)
+        if km or re.match(r"^\w+ Nature$", line):
+            if km and km.group(1) == "Level" and not (km.group(2).isdigit() and 1 <= int(km.group(2)) <= 100):
+                ctx.err(n, f"{path}:{lineno} level {km.group(2)}")
+            continue
+        if in_party:   # a Pokemon header: [Nickname (]Species[)] [(M)/(F)] [@ Item]
+            head = line.split("@")[0].strip()
+            parts = re.findall(r"\(([^()]*)\)", head)
+            sp = parts[0] if parts and len(parts[0]) > 1 else re.sub(r"\s*\(.*$", "", head)
+            sp = party_constant("SPECIES", sp)
+            if not species_ok(ctx, sp) or sp in ctx.exempt_species:
+                ctx.err(n, f"{path}:{lineno} SPECIES_{sp} is not a Gen 1 species")
+    for t in sorted(opp - seen - {"TRAINER_NONE"}):
+        ctx.err(n, f"{path}: {t} has no entry")
 
 
 @check

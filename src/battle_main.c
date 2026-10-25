@@ -1974,6 +1974,76 @@ static void SpriteCB_UnusedBattleInit_Main(struct Sprite *sprite)
     }
 }
 
+// Changes the personality as little as possible to give the nature and gender
+// the party asks for. Without either it stays as Emerald made it.
+static u32 TrainerMonPersonality(const struct TrainerMon *partyMon, u32 personality)
+{
+    u8 genderRatio = gSpeciesInfo[partyMon->species].genderRatio;
+    bool32 wantNature = partyMon->nature < NUM_NATURES;
+    bool32 wantGender = partyMon->gender != TRAINER_MON_RANDOM_GENDER
+                     && genderRatio != MON_MALE && genderRatio != MON_FEMALE && genderRatio != MON_GENDERLESS;
+    u8 gender = partyMon->gender == TRAINER_MON_FEMALE ? MON_FEMALE : MON_MALE;
+    u32 i;
+
+    // Natures repeat every 25 and genders every 256 personalities, so this always ends
+    for (i = 0; i < 25 * 256 && (wantNature || wantGender); i++, personality++)
+    {
+        if (wantNature && GetNatureFromPersonality(personality) != partyMon->nature)
+            continue;
+        if (wantGender && GetGenderFromSpeciesAndPersonality(partyMon->species, personality) != gender)
+            continue;
+        break;
+    }
+    return personality;
+}
+
+// The fields of struct TrainerMon that Emerald's trainer parties did not have
+static void ApplyTrainerMonExtras(struct Pokemon *mon, const struct TrainerMon *partyMon)
+{
+    u32 i, value;
+    bool32 recalc = FALSE;
+
+    if (partyMon->nickname != NULL)
+    {
+        u8 nickname[POKEMON_NAME_LENGTH + 1];
+
+        for (i = 0; i < POKEMON_NAME_LENGTH && partyMon->nickname[i] != EOS; i++)
+            nickname[i] = partyMon->nickname[i];
+        for (; i <= POKEMON_NAME_LENGTH; i++)
+            nickname[i] = EOS;
+        SetMonData(mon, MON_DATA_NICKNAME, nickname);
+    }
+    if (partyMon->ev != NULL)
+    {
+        for (i = 0; i < NUM_STATS; i++)
+            SetMonData(mon, MON_DATA_HP_EV + i, &partyMon->ev[i]);
+        recalc = TRUE;
+    }
+    if (partyMon->ability != ABILITY_NONE)
+    {
+        for (i = 0; i < ARRAY_COUNT(gSpeciesInfo[0].abilities); i++)
+        {
+            if (gSpeciesInfo[partyMon->species].abilities[i] == partyMon->ability)
+            {
+                SetMonData(mon, MON_DATA_ABILITY_NUM, &i);
+                break;
+            }
+        }
+    }
+    if (partyMon->ball != ITEM_NONE)
+    {
+        value = partyMon->ball;
+        SetMonData(mon, MON_DATA_POKEBALL, &value);
+    }
+    if (partyMon->friendship != 0)
+    {
+        value = partyMon->friendship;
+        SetMonData(mon, MON_DATA_FRIENDSHIP, &value);
+    }
+    if (recalc)
+        CalculateMonStats(mon);
+}
+
 static u8 CreateNPCTrainerParty(struct Pokemon *party, u16 trainerNum, bool8 firstTrainer)
 {
     u32 nameHash = 0;
@@ -2006,6 +2076,9 @@ static u8 CreateNPCTrainerParty(struct Pokemon *party, u16 trainerNum, bool8 fir
 
         for (i = 0; i < monsCount; i++)
         {
+            const struct TrainerMon *partyMon = &gTrainers[trainerNum].party[i];
+            u32 otId = 0;
+            u8 otIdType = OT_ID_RANDOM_NO_SHINY;
 
             if (gTrainers[trainerNum].doubleBattle == TRUE)
                 personalityValue = 0x80;
@@ -2014,74 +2087,46 @@ static u8 CreateNPCTrainerParty(struct Pokemon *party, u16 trainerNum, bool8 fir
             else
                 personalityValue = 0x88; // Use personality more likely to result in a male Pokémon
 
+            // nameHash keeps growing from one party member to the next, as in Emerald
             for (j = 0; gTrainers[trainerNum].trainerName[j] != EOS; j++)
                 nameHash += gTrainers[trainerNum].trainerName[j];
+            for (j = 0; gSpeciesNames[partyMon->species][j] != EOS; j++)
+                nameHash += gSpeciesNames[partyMon->species][j];
 
-            switch (gTrainers[trainerNum].partyFlags)
+            personalityValue += nameHash << 8;
+            personalityValue = TrainerMonPersonality(partyMon, personalityValue);
+            if (partyMon->isShiny)
             {
-            case 0:
-            {
-                const struct TrainerMonNoItemDefaultMoves *partyData = gTrainers[trainerNum].party.NoItemDefaultMoves;
-
-                for (j = 0; gSpeciesNames[partyData[i].species][j] != EOS; j++)
-                    nameHash += gSpeciesNames[partyData[i].species][j];
-
-                personalityValue += nameHash << 8;
-                fixedIV = partyData[i].iv * MAX_PER_STAT_IVS / 255;
-                CreateMon(&party[i], partyData[i].species, partyData[i].lvl, fixedIV, TRUE, personalityValue, OT_ID_RANDOM_NO_SHINY, 0);
-                break;
+                // An OT id whose halves cancel the personality's makes the shiny value 0
+                otIdType = OT_ID_PRESET;
+                otId = (personalityValue >> 16) ^ (personalityValue & 0xFFFF);
             }
-            case F_TRAINER_PARTY_CUSTOM_MOVESET:
+
+            // Equal IVs go through CreateMon as Emerald's single IV did
+            fixedIV = TRAINER_PARTY_IV(partyMon->iv, 0);
+            CreateMon(&party[i], partyMon->species, partyMon->lvl, fixedIV, TRUE, personalityValue, otIdType, otId);
+            if (partyMon->iv != TRAINER_PARTY_IVS(fixedIV, fixedIV, fixedIV, fixedIV, fixedIV, fixedIV))
             {
-                const struct TrainerMonNoItemCustomMoves *partyData = gTrainers[trainerNum].party.NoItemCustomMoves;
+                for (j = 0; j < NUM_STATS; j++)
+                {
+                    u8 iv = TRAINER_PARTY_IV(partyMon->iv, j);
+                    SetMonData(&party[i], MON_DATA_HP_IV + j, &iv);
+                }
+                CalculateMonStats(&party[i]);
+            }
 
-                for (j = 0; gSpeciesNames[partyData[i].species][j] != EOS; j++)
-                    nameHash += gSpeciesNames[partyData[i].species][j];
+            if (partyMon->heldItem != ITEM_NONE)
+                SetMonData(&party[i], MON_DATA_HELD_ITEM, &partyMon->heldItem);
 
-                personalityValue += nameHash << 8;
-                fixedIV = partyData[i].iv * MAX_PER_STAT_IVS / 255;
-                CreateMon(&party[i], partyData[i].species, partyData[i].lvl, fixedIV, TRUE, personalityValue, OT_ID_RANDOM_NO_SHINY, 0);
-
+            if (partyMon->moves[0] != MOVE_NONE)
+            {
                 for (j = 0; j < MAX_MON_MOVES; j++)
                 {
-                    SetMonData(&party[i], MON_DATA_MOVE1 + j, &partyData[i].moves[j]);
+                    SetMonData(&party[i], MON_DATA_MOVE1 + j, &partyMon->moves[j]);
                 }
-                break;
             }
-            case F_TRAINER_PARTY_HELD_ITEM:
-            {
-                const struct TrainerMonItemDefaultMoves *partyData = gTrainers[trainerNum].party.ItemDefaultMoves;
 
-                for (j = 0; gSpeciesNames[partyData[i].species][j] != EOS; j++)
-                    nameHash += gSpeciesNames[partyData[i].species][j];
-
-                personalityValue += nameHash << 8;
-                fixedIV = partyData[i].iv * MAX_PER_STAT_IVS / 255;
-                CreateMon(&party[i], partyData[i].species, partyData[i].lvl, fixedIV, TRUE, personalityValue, OT_ID_RANDOM_NO_SHINY, 0);
-
-                SetMonData(&party[i], MON_DATA_HELD_ITEM, &partyData[i].heldItem);
-                break;
-            }
-            case F_TRAINER_PARTY_CUSTOM_MOVESET | F_TRAINER_PARTY_HELD_ITEM:
-            {
-                const struct TrainerMonItemCustomMoves *partyData = gTrainers[trainerNum].party.ItemCustomMoves;
-
-                for (j = 0; gSpeciesNames[partyData[i].species][j] != EOS; j++)
-                    nameHash += gSpeciesNames[partyData[i].species][j];
-
-                personalityValue += nameHash << 8;
-                fixedIV = partyData[i].iv * MAX_PER_STAT_IVS / 255;
-                CreateMon(&party[i], partyData[i].species, partyData[i].lvl, fixedIV, TRUE, personalityValue, OT_ID_RANDOM_NO_SHINY, 0);
-
-                SetMonData(&party[i], MON_DATA_HELD_ITEM, &partyData[i].heldItem);
-
-                for (j = 0; j < MAX_MON_MOVES; j++)
-                {
-                    SetMonData(&party[i], MON_DATA_MOVE1 + j, &partyData[i].moves[j]);
-                }
-                break;
-            }
-            }
+            ApplyTrainerMonExtras(&party[i], partyMon);
         }
 
         gBattleTypeFlags |= gTrainers[trainerNum].doubleBattle;

@@ -5,7 +5,9 @@
 #include "graphics.h"
 #include "constants/items.h"
 #include "constants/moves.h"
+#include "constants/pokemon.h"
 #include "constants/trainers.h"
+#include "constants/abilities.h"
 #include "constants/battle_ai.h"
 
 const u16 gMinigameDigits_Pal[] = INCBIN_U16("graphics/link/minigame_digits.gbapal");
@@ -321,7 +323,11 @@ const union AnimCmd *const gAnims_MonPic[] =
 #include "data/pokemon_graphics/front_pic_anims.h"
 #include "data/pokemon_graphics/front_pic_table.h"
 
-#include "data/trainer_parties.h"
 #include "data/text/trainer_class_names.h"
+
+// Generated from src/data/trainers.party by tools/trainerproc
+const struct Trainer gTrainers[TRAINERS_COUNT] =
+{
 #include "data/trainers.h"
+};
 #include "data/text/species_names.h"
