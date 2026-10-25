@@ -3401,7 +3401,7 @@ static bool8 ShouldGetTypeBadgeBoost(u8 type, u8 battler)
 {
     u32 i;
 
-    if (gBattleTypeFlags & (BATTLE_TYPE_LINK | BATTLE_TYPE_EREADER_TRAINER | BATTLE_TYPE_RECORDED_LINK | BATTLE_TYPE_FRONTIER))
+    if (gBattleTypeFlags & (BATTLE_TYPE_LINK | BATTLE_TYPE_RECORDED_LINK | BATTLE_TYPE_FRONTIER))
         return FALSE;
     if (GetBattlerSide(battler) != B_SIDE_PLAYER)
         return FALSE;

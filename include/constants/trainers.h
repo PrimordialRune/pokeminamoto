@@ -8,7 +8,6 @@
 //      0-299 are frontier trainers
 #define TRAINER_RECORD_MIXING_FRIEND        FRONTIER_TRAINERS_COUNT
 #define TRAINER_RECORD_MIXING_APPRENTICE    400
-#define TRAINER_EREADER                     500
 #define TRAINER_FRONTIER_BRAIN              1022
 #define TRAINER_PLAYER                      1023
 #define TRAINER_SECRET_BASE                 1024

@@ -865,7 +865,6 @@ u8 GetSpecialBattleTransition(s32 id)
         {
         case B_TRANSITION_GROUP_TRAINER_HILL:
         case B_TRANSITION_GROUP_SECRET_BASE:
-        case B_TRANSITION_GROUP_E_READER:
             return B_TRANSITION_POKEBALLS_TRAIL;
         case B_TRANSITION_GROUP_B_PYRAMID:
             return RANDOM_TRANSITION(sBattleTransitionTable_BattlePyramid);
@@ -882,7 +881,6 @@ u8 GetSpecialBattleTransition(s32 id)
         {
         case B_TRANSITION_GROUP_TRAINER_HILL:
         case B_TRANSITION_GROUP_SECRET_BASE:
-        case B_TRANSITION_GROUP_E_READER:
             return B_TRANSITION_BIG_POKEBALL;
         case B_TRANSITION_GROUP_B_PYRAMID:
             return RANDOM_TRANSITION(sBattleTransitionTable_BattlePyramid);
