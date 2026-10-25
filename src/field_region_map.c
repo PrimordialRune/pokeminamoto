@@ -163,10 +163,11 @@ static void FieldUpdateRegionMap(void)
             SetGpuRegBits(REG_OFFSET_DISPCNT, DISPCNT_OBJ_1D_MAP | DISPCNT_OBJ_ON);
             ShowBg(0);
             ShowBg(2);
+            StartRegionMapOpenZoom();
             sFieldRegionMapHandler->state++;
             break;
         case 3:
-            if (!gPaletteFade.active)
+            if (!UpdateRegionMapOpenZoom() && !gPaletteFade.active)
             {
                 sFieldRegionMapHandler->state++;
             }

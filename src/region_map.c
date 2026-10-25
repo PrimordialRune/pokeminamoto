@@ -921,6 +921,73 @@ static void CalcZoomScrollParams(s16 scrollX, s16 scrollY, s16 c, s16 d, u16 e, 
     sRegionMap->needUpdateVideoRegs = TRUE;
 }
 
+//------------------------------------------------------------------------------
+// Opening zoom (wall Town Map and Fly map)
+//
+// The map grows out of the player's position while it turns upright, like a
+// camera dropping onto the map. BG2 is already an affine BG (BG mode 1, 8bpp
+// tiles), so this only animates its matrix (BG2PA-PD) and reference point
+// (BG2X/Y) through CalcZoomScrollParams; it costs no VRAM and a few hundred
+// cycles a frame. The player's spot on the map is the fixed point of the
+// transform, so it stays where the player icon will appear. The sprites are
+// laid out for the 1:1 map, so the OBJ layer is off until the zoom ends.
+//
+// To swap in the Kanto art, replace in graphics/pokenav/region_map/:
+// map.png, the tile sheet (built to map.8bpp: at most 256 unique 8x8 tiles,
+// as an affine tilemap entry is one byte with no flip or palette bits);
+// map.bin, the tilemap (64x64 one-byte entries, a 512x512 BG); and map.pal
+// (48 colours, loaded at BG palettes 7-9). Then sRegionMap_MapSectionLayout
+// (src/data/region_map/region_map_layout.h, the cursor grid) and the
+// section positions in src/data/region_map/region_map_sections.json.
+// Nothing here depends on the art.
+//------------------------------------------------------------------------------
+
+#define OPEN_ZOOM_FRAMES     32
+#define OPEN_ZOOM_START_INV  0x400 // inverse scale on the first frame: the map at 1/4 size
+#define OPEN_ZOOM_START_TURN 24    // rotation on the first frame (256 = a full turn), counter-clockwise
+
+static void SetOpenZoomFrame(u32 framesLeft)
+{
+    // Cubic ease-out: fast at first, settling into place
+    u32 k = (framesLeft * framesLeft * framesLeft << 8) / (OPEN_ZOOM_FRAMES * OPEN_ZOOM_FRAMES * OPEN_ZOOM_FRAMES);
+    u16 inv = 0x100 + (((OPEN_ZOOM_START_INV - 0x100) * k) >> 8);
+    u8 turn = (OPEN_ZOOM_START_TURN * k) >> 8;
+    s16 x = sRegionMap->cursorPosX * 8 + 4;
+    s16 y = sRegionMap->cursorPosY * 8 + 4;
+
+    if (sRegionMap->playerIconSprite != NULL)
+    {
+        x = sRegionMap->playerIconSpritePosX * 8 + 4;
+        y = sRegionMap->playerIconSpritePosY * 8 + 4;
+    }
+    CalcZoomScrollParams(0, 0, x, y, inv, inv, -turn);
+    UpdateRegionMapVideoRegs();
+}
+
+// Call once the map is loaded (full view, not zoomed) and BG2 is shown.
+void StartRegionMapOpenZoom(void)
+{
+    if (sRegionMap->zoomed)
+        return;
+    sRegionMap->openZoomFrame = OPEN_ZOOM_FRAMES;
+    ClearGpuRegBits(REG_OFFSET_DISPCNT, DISPCNT_OBJ_ON);
+    SetOpenZoomFrame(OPEN_ZOOM_FRAMES);
+}
+
+// Call every frame; returns TRUE while the zoom runs.
+bool8 UpdateRegionMapOpenZoom(void)
+{
+    if (sRegionMap->openZoomFrame == 0)
+        return FALSE;
+    SetOpenZoomFrame(--sRegionMap->openZoomFrame);
+    if (sRegionMap->openZoomFrame == 0)
+    {
+        SetGpuRegBits(REG_OFFSET_DISPCNT, DISPCNT_OBJ_ON);
+        return FALSE;
+    }
+    return TRUE;
+}
+
 static void RegionMap_SetBG2XAndBG2Y(s16 x, s16 y)
 {
     sRegionMap->bg2x = (x << 8) + 0x1c00;
@@ -1934,14 +2001,18 @@ static void SpriteCB_FlyDestIcon(struct Sprite *sprite)
 
 static void CB_FadeInFlyMap(void)
 {
+    bool8 zooming;
+
     switch (sFlyMap->state)
     {
     case 0:
         BeginNormalPaletteFade(PALETTES_ALL, 0, 16, 0, RGB_BLACK);
+        StartRegionMapOpenZoom();
         sFlyMap->state++;
         break;
     case 1:
-        if (!UpdatePaletteFade())
+        zooming = UpdateRegionMapOpenZoom();
+        if (!UpdatePaletteFade() && !zooming)
         {
             SetFlyMapCallback(CB_HandleFlyMapInput);
         }
