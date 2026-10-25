@@ -37,7 +37,7 @@
 #include "constants/metatile_labels.h"
 #include "constants/moves.h"
 #include "constants/trainers.h"
-#include "constants/removed_maps.h"
+#include "constants/parked_maps.h"
 
 #define NUM_LAYOUT_OFFSETS 8
 

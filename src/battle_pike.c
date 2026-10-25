@@ -23,7 +23,7 @@
 #include "constants/moves.h"
 #include "constants/party_menu.h"
 #include "constants/battle_pike.h"
-#include "constants/removed_maps.h"
+#include "constants/parked_maps.h"
 
 struct PikeRoomNPC
 {

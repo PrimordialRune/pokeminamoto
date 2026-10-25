@@ -17,7 +17,6 @@
 #include "load_save.h"
 #include "main.h"
 #include "menu.h"
-#include "mirage_tower.h"
 #include "metatile_behavior.h"
 #include "palette.h"
 #include "overworld.h"
@@ -522,14 +521,6 @@ void DoMossdeepGymWarp(void)
     gFieldCallback = FieldCB_MossdeepGymWarpExit;
 }
 
-void DoPortholeWarp(void)
-{
-    LockPlayerFieldControls();
-    WarpFadeOutScreen();
-    CreateTask(Task_WarpAndLoadMap, 10);
-    gFieldCallback = FieldCB_ShowPortholeView;
-}
-
 static void Task_DoCableClubWarp(u8 taskId)
 {
     struct Task *task = &gTasks[taskId];
@@ -611,11 +602,6 @@ static void Task_WarpAndLoadMap(u8 taskId)
     case 1:
         if (!PaletteFadeActive())
         {
-            if (task->data[1] == 0)
-            {
-                ClearMirageTowerPulseBlendEffect();
-                task->data[1] = 1;
-            }
             if (BGMusicStopped())
                 task->tState++;
         }

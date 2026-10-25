@@ -1,37 +1,24 @@
 raw `
-@ Labels that only belonged to deleted Hoenn maps. Unreachable Emerald systems
-@ (Battle Frontier, Battle Pyramid, Trainer Hill, match calls, Hoenn-only field
-@ events) still name them, so they are kept here as empty stand-ins until those
-@ systems are deleted. Remove a label when nothing names it any more, and this
-@ file once it is empty. See include/constants/removed_maps.h for the matching
-@ map, layout and object constants.
+@ Labels that the parked Battle Frontier code, Battle Pyramid, Trainer Hill
+@ and the Game Corner roulette still name, though their maps are gone. Empty
+@ stand-ins so the ROM links. Remove a label when nothing names it, and this
+@ file once it is empty. Map and layout ids: include/constants/parked_maps.h.
 
 	.align 2
 @ Scripts
 BattleFrontier_BattlePike_EventScript_CloseCurtain::
 BattleFrontier_BattlePyramid_EventScript_WarpToLobbyLost::
-BattleFrontier_OutsideEast_EventScript_WaterSudowoodo::
 BattlePyramid_FindItemBall::
 BattlePyramid_Retire::
 BattlePyramid_TrainerBattle::
 BattlePyramid_WarpToNextFloor::
-EventScript_ClosedSootopolisDoor::
 FarawayIsland_Interior_EventScript_HideMewWhenGrassCut::
 IslandCave_EventScript_OpenRegiEntrance::
-MauvilleCity_EventScript_RegisterWallyCall::
 MauvilleCity_GameCorner_EventScript_NoCoinCase::
-MossdeepCity_SpaceCenter_2F_EventScript_MaxieTrainer::
-MossdeepCity_SpaceCenter_2F_EventScript_RivalRayquazaCall::
-MossdeepCity_SpaceCenter_2F_EventScript_TabithaTrainer::
-Route110_TrickHousePuzzle_EventScript_Door::
-Route119_EventScript_ScottWonAtFortreeGymCall::
-RustboroCity_Gym_EventScript_RegisterRoxanne::
 SSTidalCorridor_EventScript_ReachedStepCount::
-SkyPillar_Outside_EventScript_ClosedDoor::
 	end
 
 @ Texts
-BattleFacility_TrainerBattle_PlaceholderText::
 BattleFrontier_BattlePike_Text_PathBlockedNoTurningBack::
 BattleFrontier_BattleTowerBattleRoom_Text_RecordCouldntBeSaved::
 BattleFrontier_BattleTowerMultiPartnerRoom_Text_AromaLadyAccept::
@@ -528,7 +515,6 @@ BattlePyramid_Text_ZeroTrainersRemaining3::
 BattlePyramid_Text_ZeroTrainersRemaining4::
 BattlePyramid_Text_ZeroTrainersRemaining5::
 BattlePyramid_Text_ZeroTrainersRemaining6::
-TrainerHill_Entrance_Text_ChallengeTime::
 gText_BattlePyramidConfirmRest::
 gText_BattlePyramidConfirmRetire::
 gText_YourPartnerHasRetired::

@@ -34,7 +34,6 @@
 #include "match_call.h"
 #include "menu.h"
 #include "metatile_behavior.h"
-#include "mirage_tower.h"
 #include "money.h"
 #include "new_game.h"
 #include "palette.h"
@@ -64,7 +63,7 @@
 #include "constants/region_map_sections.h"
 #include "constants/songs.h"
 #include "constants/weather.h"
-#include "constants/removed_maps.h"
+#include "constants/parked_maps.h"
 
 struct CableClubPlayer
 {
@@ -112,7 +111,7 @@ static void InitObjectEventsLocal(void);
 static void InitOverworldGraphicsRegisters(void);
 static u8 GetSpriteForLinkedPlayer(u8);
 static u16 KeyInterCB_SendNothing(u32);
-static void ResetMirageTowerAndSaveBlockPtrs(void);
+static void ResetSaveBlockPtrs(void);
 static void ResetScreenForMapLoad(void);
 static void OffsetCameraFocusByLinkPlayerId(void);
 static void SpawnLinkPlayers(void);
@@ -403,13 +402,6 @@ static void Overworld_ResetStateAfterWhiteOut(void)
     FlagClear(FLAG_SYS_SAFARI_MODE);
     FlagClear(FLAG_SYS_USE_STRENGTH);
     FlagClear(FLAG_SYS_USE_FLASH);
-    // If you were defeated by Kyogre/Groudon and the step counter has
-    // maxed out, end the abnormal weather.
-    if (VarGet(VAR_SHOULD_END_ABNORMAL_WEATHER) == 1)
-    {
-        VarSet(VAR_SHOULD_END_ABNORMAL_WEATHER, 0);
-        VarSet(VAR_ABNORMAL_WEATHER_LOCATION, ABNORMAL_WEATHER_NONE);
-    }
 }
 
 static void UpdateMiscOverworldStates(void)
@@ -1009,41 +1001,13 @@ u16 GetCurrLocationDefaultMusic(void)
 {
     u16 music;
 
-    // Play the desert music only when the sandstorm is active on Route 111.
-    if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(MAP_ROUTE111)
-     && gSaveBlock1Ptr->location.mapNum == MAP_NUM(MAP_ROUTE111)
-     && GetSavedWeather() == WEATHER_SANDSTORM)
-        return MUS_DESERT;
-
     music = GetLocationMusic(&gSaveBlock1Ptr->location);
-    if (music != MUS_ROUTE118)
-    {
-        return music;
-    }
-    else
-    {
-        if (gSaveBlock1Ptr->pos.x < 24)
-            return MUS_ROUTE110;
-        else
-            return MUS_ROUTE119;
-    }
+    return music;
 }
 
 u16 GetWarpDestinationMusic(void)
 {
-    u16 music = GetLocationMusic(&sWarpDestination);
-    if (music != MUS_ROUTE118)
-    {
-        return music;
-    }
-    else
-    {
-        if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(MAP_MAUVILLE_CITY)
-         && gSaveBlock1Ptr->location.mapNum == MAP_NUM(MAP_MAUVILLE_CITY))
-            return MUS_ROUTE110;
-        else
-            return MUS_ROUTE119;
-    }
+    return GetLocationMusic(&sWarpDestination);
 }
 
 void Overworld_ResetMapMusic(void)
@@ -1131,15 +1095,6 @@ void TryFadeOutOldMapMusic(void)
     u16 warpMusic = GetWarpDestinationMusic();
     if (FlagGet(FLAG_DONT_TRANSITION_MUSIC) != TRUE && warpMusic != GetCurrentMapMusic())
     {
-        if (currentMusic == MUS_SURF
-            && VarGet(VAR_SKY_PILLAR_STATE) == 2
-            && gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(MAP_SOOTOPOLIS_CITY)
-            && gSaveBlock1Ptr->location.mapNum == MAP_NUM(MAP_SOOTOPOLIS_CITY)
-            && sWarpDestination.mapGroup == MAP_GROUP(MAP_SOOTOPOLIS_CITY)
-            && sWarpDestination.mapNum == MAP_NUM(MAP_SOOTOPOLIS_CITY)
-            && sWarpDestination.x == 29
-            && sWarpDestination.y == 53)
-            return;
         FadeOutMapMusic(GetMapMusicFadeoutSpeed());
     }
 }
@@ -1228,19 +1183,7 @@ void UpdateAmbientCry(s16 *state, u16 *delayCounter)
 
 static void ChooseAmbientCrySpecies(void)
 {
-    if ((gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(MAP_ROUTE130)
-     && gSaveBlock1Ptr->location.mapNum == MAP_NUM(MAP_ROUTE130))
-     && !IsMirageIslandPresent())
-    {
-        // Only play water Pokémon cries on this route
-        // when Mirage Island is not present
-        sIsAmbientCryWaterMon = TRUE;
-        sAmbientCrySpecies = GetLocalWaterMon();
-    }
-    else
-    {
-        sAmbientCrySpecies = GetLocalWildMon(&sIsAmbientCryWaterMon);
-    }
+    sAmbientCrySpecies = GetLocalWildMon(&sIsAmbientCryWaterMon);
 }
 
 u8 GetMapTypeByGroupAndId(s8 mapGroup, s8 mapNum)
@@ -1327,7 +1270,6 @@ static void InitOverworldBgs(void)
 
 void CleanupOverworldWindowsAndTilemaps(void)
 {
-    ClearMirageTowerPulseBlendEffect();
     FreeAllOverworldWindowBuffers();
     TRY_FREE_AND_SET_NULL(gOverworldTilemapBuffer_Bg3);
     TRY_FREE_AND_SET_NULL(gOverworldTilemapBuffer_Bg2);
@@ -1691,7 +1633,7 @@ static bool32 LoadMapInStepsLink(u8 *state)
         InitOverworldBgs();
         ScriptContext_Init();
         UnlockPlayerFieldControls();
-        ResetMirageTowerAndSaveBlockPtrs();
+        ResetSaveBlockPtrs();
         ResetScreenForMapLoad();
         (*state)++;
         break;
@@ -1767,7 +1709,7 @@ static bool32 LoadMapInStepsLocal(u8 *state, bool32 a2)
         (*state)++;
         break;
     case 1:
-        ResetMirageTowerAndSaveBlockPtrs();
+        ResetSaveBlockPtrs();
         ResetScreenForMapLoad();
         (*state)++;
         break;
@@ -1834,7 +1776,7 @@ static bool32 ReturnToFieldLocal(u8 *state)
     switch (*state)
     {
     case 0:
-        ResetMirageTowerAndSaveBlockPtrs();
+        ResetSaveBlockPtrs();
         ResetScreenForMapLoad();
         ResumeMap(FALSE);
         InitObjectEventsReturnToField();
@@ -1862,7 +1804,7 @@ static bool32 ReturnToFieldLink(u8 *state)
     {
     case 0:
         FieldClearVBlankHBlankCallbacks();
-        ResetMirageTowerAndSaveBlockPtrs();
+        ResetSaveBlockPtrs();
         ResetScreenForMapLoad();
         (*state)++;
         break;
@@ -1933,9 +1875,8 @@ static void DoMapLoadLoop(u8 *state)
     while (!LoadMapInStepsLocal(state, FALSE));
 }
 
-static void ResetMirageTowerAndSaveBlockPtrs(void)
+static void ResetSaveBlockPtrs(void)
 {
-    ClearMirageTowerPulseBlend();
     MoveSaveBlocks_ResetHeap();
 }
 
@@ -2013,7 +1954,6 @@ static void ResumeMap(bool32 a1)
     if (!a1)
         SetUpFieldTasks();
     RunOnResumeMapScript();
-    TryStartMirageTowerPulseBlendEffect();
 }
 
 static void InitObjectEventsLink(void)

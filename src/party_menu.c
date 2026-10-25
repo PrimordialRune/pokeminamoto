@@ -68,7 +68,7 @@
 #include "constants/party_menu.h"
 #include "constants/rgb.h"
 #include "constants/songs.h"
-#include "constants/removed_maps.h"
+#include "constants/parked_maps.h"
 
 enum {
     MENU_SUMMARY,

@@ -35,7 +35,7 @@
 #include "constants/lilycove_lady.h"
 #include "constants/map_scripts.h"
 #include "constants/maps.h"
-#include "constants/removed_maps.h"
+#include "constants/parked_maps.h"
 #include "constants/metatile_labels.h"
 #include "constants/moves.h"
 #include "constants/party_menu.h"
@@ -243,10 +243,6 @@ Common_EventScript_NoRoomForDecor::
 	msgbox gText_NoRoomLeftForAnother, MSGBOX_DEFAULT
 	return
 
-Common_EventScript_SetAbnormalWeather::
-	setweather WEATHER_ABNORMAL
-	return
-
 Common_EventScript_PlayGymBadgeFanfare::
 	playfanfare MUS_OBTAIN_BADGE
 	waitfanfare
@@ -308,15 +304,6 @@ EventScript_HideMrBriney::
 	setflag FLAG_HIDE_BRINEYS_HOUSE_MR_BRINEY
 	setflag FLAG_HIDE_BRINEYS_HOUSE_PEEKO
 	setvar VAR_BRINEY_LOCATION, 0
-	return
-
-RusturfTunnel_EventScript_SetRusturfTunnelOpen::
-	removeobject LOCALID_RUSTURF_TUNNEL_WANDAS_BF
-	removeobject LOCALID_RUSTURF_TUNNEL_WANDA
-	clearflag FLAG_HIDE_VERDANTURF_TOWN_WANDAS_HOUSE_WANDAS_BOYFRIEND
-	clearflag FLAG_HIDE_VERDANTURF_TOWN_WANDAS_HOUSE_WANDA
-	setvar VAR_RUSTURF_TUNNEL_STATE, 6
-	setflag FLAG_RUSTURF_TUNNEL_OPENED
 	return
 
 EventScript_UnusedBoardFerry::
@@ -465,7 +452,6 @@ gText_LegendaryFlewAway::
 	.string "The {STR_VAR_1} flew away!$"
 
 	.include "data/text/pc_transfer.inc"
-	.include "data/text/abnormal_weather.inc"
 
 EventScript_SelectWithoutRegisteredItem::
 	msgbox gText_SelectWithoutRegisteredItem, MSGBOX_SIGN
@@ -502,7 +488,6 @@ Common_EventScript_LegendaryFlewAway::
 	end
 
 	.include "data/scripts/pc_transfer.inc"
-	.include "data/scripts/abnormal_weather.inc"
 	.include "data/scripts/trainer_script.inc"
 	.include "data/scripts/berry_tree.inc"
 	.include "data/scripts/secret_base.inc"
@@ -531,11 +516,11 @@ Common_EventScript_LegendaryFlewAway::
 	.include "data/text/match_call.inc"
 	.include "data/text/battle_dome.inc"
 	.include "data/scripts/battle_pike.inc"
+	.include "data/scripts/parked_frontier.inc"
 	.include "data/text/battle_tent.inc"
 	.include "data/text/event_ticket_2.inc"
 	.include "data/text/move_tutors.inc"
 	.include "data/scripts/test_signpost.inc"
-	.include "data/scripts/removed_maps.inc"
 #ifndef RELEASE
 	.include "data/scripts/debug.inc"
 #endif

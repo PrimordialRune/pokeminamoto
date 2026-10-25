@@ -42,7 +42,6 @@
 #include "constants/moves.h"
 #include "constants/songs.h"
 #include "constants/trainers.h"
-#include "constants/removed_maps.h"
 
 #define DAY_EVO_HOUR_BEGIN       12
 #define DAY_EVO_HOUR_END         HOURS_PER_DAY
@@ -2104,19 +2103,6 @@ static const u16 sHMMoves[] =
 {
     MOVE_CUT, MOVE_FLY, MOVE_SURF, MOVE_STRENGTH, MOVE_FLASH,
     MOVE_ROCK_SMASH, MOVE_WATERFALL, MOVE_DIVE, HM_MOVES_END
-};
-
-static const struct SpeciesItem sAlteringCaveWildMonHeldItems[] =
-{
-    {SPECIES_NONE,      ITEM_NONE},
-    {SPECIES_MAREEP,    ITEM_GANLON_BERRY},
-    {SPECIES_PINECO,    ITEM_APICOT_BERRY},
-    {SPECIES_HOUNDOUR,  ITEM_BIG_MUSHROOM},
-    {SPECIES_TEDDIURSA, ITEM_PETAYA_BERRY},
-    {SPECIES_AIPOM,     ITEM_BERRY_JUICE},
-    {SPECIES_SHUCKLE,   ITEM_BERRY_JUICE},
-    {SPECIES_STANTLER,  ITEM_PETAYA_BERRY},
-    {SPECIES_SMEARGLE,  ITEM_SALAC_BERRY},
 };
 
 static const struct OamData sOamData_64x64 =
@@ -6573,15 +6559,6 @@ void SetMonPreventsSwitchingString(void)
     BattleStringExpandPlaceholders(gText_PkmnsXPreventsSwitching, gStringVar4);
 }
 
-static s32 GetWildMonTableIdInAlteringCave(u16 species)
-{
-    s32 i;
-    for (i = 0; i < (s32) ARRAY_COUNT(sAlteringCaveWildMonHeldItems); i++)
-        if (sAlteringCaveWildMonHeldItems[i].species == species)
-            return i;
-    return 0;
-}
-
 void SetWildMonHeldItem(void)
 {
     if (!(gBattleTypeFlags & (BATTLE_TYPE_LEGENDARY | BATTLE_TYPE_TRAINER | BATTLE_TYPE_PYRAMID | BATTLE_TYPE_PIKE)))
@@ -6596,43 +6573,19 @@ void SetWildMonHeldItem(void)
             chanceNoItem = 20;
             chanceNotRare = 80;
         }
-        if (gMapHeader.mapLayoutId == LAYOUT_ALTERING_CAVE)
+        if (gSpeciesInfo[species].itemCommon == gSpeciesInfo[species].itemRare && gSpeciesInfo[species].itemCommon != ITEM_NONE)
         {
-            s32 alteringCaveId = GetWildMonTableIdInAlteringCave(species);
-            if (alteringCaveId != 0)
-            {
-                // In active Altering Cave, use special item list
-                if (rnd < chanceNotRare)
-                    return;
-                SetMonData(&gEnemyParty[0], MON_DATA_HELD_ITEM, &sAlteringCaveWildMonHeldItems[alteringCaveId].item);
-            }
-            else
-            {
-                // In inactive Altering Cave, use normal items
-                if (rnd < chanceNoItem)
-                    return;
-                if (rnd < chanceNotRare)
-                    SetMonData(&gEnemyParty[0], MON_DATA_HELD_ITEM, &gSpeciesInfo[species].itemCommon);
-                else
-                    SetMonData(&gEnemyParty[0], MON_DATA_HELD_ITEM, &gSpeciesInfo[species].itemRare);
-            }
+            // Both held items are the same, 100% chance to hold item
+            SetMonData(&gEnemyParty[0], MON_DATA_HELD_ITEM, &gSpeciesInfo[species].itemCommon);
         }
         else
         {
-            if (gSpeciesInfo[species].itemCommon == gSpeciesInfo[species].itemRare && gSpeciesInfo[species].itemCommon != ITEM_NONE)
-            {
-                // Both held items are the same, 100% chance to hold item
+            if (rnd < chanceNoItem)
+                return;
+            if (rnd < chanceNotRare)
                 SetMonData(&gEnemyParty[0], MON_DATA_HELD_ITEM, &gSpeciesInfo[species].itemCommon);
-            }
             else
-            {
-                if (rnd < chanceNoItem)
-                    return;
-                if (rnd < chanceNotRare)
-                    SetMonData(&gEnemyParty[0], MON_DATA_HELD_ITEM, &gSpeciesInfo[species].itemCommon);
-                else
-                    SetMonData(&gEnemyParty[0], MON_DATA_HELD_ITEM, &gSpeciesInfo[species].itemRare);
-            }
+                SetMonData(&gEnemyParty[0], MON_DATA_HELD_ITEM, &gSpeciesInfo[species].itemRare);
         }
     }
 }

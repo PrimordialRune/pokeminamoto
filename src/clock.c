@@ -43,7 +43,6 @@ static void UpdatePerDay(struct Time *localTime)
         ClearDailyFlags();
         UpdateWeatherPerDay(daysSince);
         UpdatePartyPokerusTime(daysSince);
-        UpdateMirageRnd(daysSince);
         UpdateBirchState(daysSince);
         UpdateFrontierManiac(daysSince);
         UpdateFrontierGambler(daysSince);

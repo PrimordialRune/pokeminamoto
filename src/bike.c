@@ -225,9 +225,7 @@ static void MachBikeTransition_TrySpeedUp(u8 direction)
             {
                 // we hit a solid object that is not a ledge, so perform the collision.
                 Bike_SetBikeStill();
-                if (collision == COLLISION_OBJECT_EVENT && IsPlayerCollidingWithFarawayIslandMew(direction))
-                    PlayerOnBikeCollideWithFarawayIslandMew(direction);
-                else if (collision < COLLISION_STOP_SURFING || collision > COLLISION_ROTATING_GATE)
+                if (collision < COLLISION_STOP_SURFING || collision > COLLISION_ROTATING_GATE)
                     PlayerOnBikeCollide(direction);
             }
         }
@@ -260,9 +258,7 @@ static void MachBikeTransition_TrySlowDown(u8 direction)
         else
         {
             Bike_SetBikeStill();
-            if (collision == COLLISION_OBJECT_EVENT && IsPlayerCollidingWithFarawayIslandMew(direction))
-                PlayerOnBikeCollideWithFarawayIslandMew(direction);
-            else if (collision < COLLISION_STOP_SURFING || collision > COLLISION_ROTATING_GATE)
+            if (collision < COLLISION_STOP_SURFING || collision > COLLISION_ROTATING_GATE)
                 PlayerOnBikeCollide(direction);
         }
     }
@@ -558,8 +554,6 @@ static void AcroBikeTransition_Moving(u8 direction)
     {
         if (collision == COLLISION_LEDGE_JUMP)
             PlayerJumpLedge(direction);
-        else if (collision == COLLISION_OBJECT_EVENT && IsPlayerCollidingWithFarawayIslandMew(direction))
-            PlayerOnBikeCollideWithFarawayIslandMew(direction);
         else if (collision < COLLISION_STOP_SURFING || collision > COLLISION_ROTATING_GATE)
             PlayerOnBikeCollide(direction);
     }

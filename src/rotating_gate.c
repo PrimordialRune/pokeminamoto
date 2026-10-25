@@ -7,7 +7,6 @@
 #include "sound.h"
 #include "sprite.h"
 #include "constants/songs.h"
-#include "constants/removed_maps.h"
 
 #define ROTATING_GATE_TILE_TAG 0x1300
 #define ROTATING_GATE_PUZZLE_MAX 12
@@ -625,18 +624,8 @@ static EWRAM_DATA u8 sRotatingGate_PuzzleCount = 0;
 
 static s32 GetCurrentMapRotatingGatePuzzleType(void)
 {
-    if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(MAP_FORTREE_CITY_GYM) &&
-        gSaveBlock1Ptr->location.mapNum == MAP_NUM(MAP_FORTREE_CITY_GYM))
-    {
-        return PUZZLE_FORTREE_CITY_GYM;
-    }
-
-    if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(MAP_ROUTE110_TRICK_HOUSE_PUZZLE6) &&
-        gSaveBlock1Ptr->location.mapNum == MAP_NUM(MAP_ROUTE110_TRICK_HOUSE_PUZZLE6))
-    {
-        return PUZZLE_ROUTE110_TRICK_HOUSE_PUZZLE6;
-    }
-
+    // No map uses a rotating gate puzzle yet. Add the map checks here when
+    // a Kanto gym or hideout brings one back.
     return PUZZLE_NONE;
 }
 

@@ -6,7 +6,6 @@
 #include "fldeff_misc.h"
 #include "frontier_util.h"
 #include "menu.h"
-#include "mirage_tower.h"
 #include "overworld.h"
 #include "palette.h"
 #include "pokenav.h"
@@ -654,7 +653,6 @@ bool8 CameraMove(int x, int y)
     else
     {
         SaveMapView();
-        ClearMirageTowerPulseBlendEffect();
         old_x = gSaveBlock1Ptr->pos.x;
         old_y = gSaveBlock1Ptr->pos.y;
         connection = GetIncomingConnection(direction, gSaveBlock1Ptr->pos.x, gSaveBlock1Ptr->pos.y);
