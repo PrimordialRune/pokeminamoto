@@ -952,9 +952,6 @@ struct SaveBlock1
 #ifndef FREE_POKEBLOCKS
     /*0x848*/ struct Pokeblock pokeblocks[POKEBLOCKS_COUNT];
 #endif
-#ifndef FREE_EXTRA_SEEN_FLAGS
-    /*0x988*/ u8 seen1[NUM_DEX_FLAG_BYTES];
-#endif
 #ifndef FREE_POKEBLOCKS
     /*0x9BC*/ u16 berryBlenderRecords[3];
 #endif
@@ -1017,9 +1014,6 @@ struct SaveBlock1
 #endif
 #ifndef FREE_MYSTERY_EVENT_BUFFERS
     /*0x3B14*/ struct RecordMixingGift recordMixingGift;
-#endif
-#ifndef FREE_EXTRA_SEEN_FLAGS
-    /*0x3B24*/ u8 seen2[NUM_DEX_FLAG_BYTES];
 #endif
 #ifndef FREE_LILYCOVE_LADY
     /*0x3B58*/ LilycoveLady lilycoveLady;
