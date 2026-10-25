@@ -23,6 +23,7 @@
 #include "random.h"
 #include "sprite.h"
 #include "script.h"
+#include "sound.h"
 #include "script_pokemon_util.h"
 #include "event_scripts.h"
 #include "string_util.h"
@@ -652,6 +653,9 @@ void Regress_OverworldTick(void)
     case REGRESS_CMD_WILD:
         Regress_Reseed();
         StartWild();
+        break;
+    case REGRESS_CMD_MUSIC:
+        PlayNewMapMusic(gRegress.song);
         break;
     case REGRESS_CMD_TRAINER:
         Regress_Reseed();

@@ -19,6 +19,7 @@ enum
     REGRESS_CMD_TV,      // run the TV script as if the player checked a TV
     REGRESS_CMD_CABLE_CLUB, // warp in front of the Cable Club attendant in Oldale's Pokémon Center 2F
     REGRESS_CMD_SCENE,   // open the screen gRegress.arg names (REGRESS_SCENE_*)
+    REGRESS_CMD_MUSIC,   // play song gRegress.song as the map music
 };
 
 // Screens the main run doesn't reach, for measuring heap use
@@ -93,6 +94,7 @@ struct RegressState
     u8 saveCutHalf;       // TRUE: that write gets half of its bytes programmed first
     u8 saveCutDone;       // set when the power was "cut"
     u8 battleTransition; // nonzero: wild and trainer battles use B_TRANSITION_* (value - 1)
+    u16 song;            // song for REGRESS_CMD_MUSIC
 };
 
 enum
