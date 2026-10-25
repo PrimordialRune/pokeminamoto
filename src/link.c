@@ -106,7 +106,6 @@ COMMON_DATA u16 gLinkSavedIme = 0;
 
 static EWRAM_DATA u8 sLinkTestDebugValuesEnabled = 0;
 static EWRAM_DATA u8 sDummyFlag = FALSE;
-EWRAM_DATA u32 gBerryBlenderKeySendAttempts = 0;
 EWRAM_DATA u16 gBlockRecvBuffer[MAX_RFU_PLAYERS][BLOCK_BUFFER_SIZE / 2] = {};
 EWRAM_DATA u8 gBlockSendBuffer[BLOCK_BUFFER_SIZE] = {};
 static EWRAM_DATA bool8 sLinkOpen = FALSE;
@@ -552,9 +551,6 @@ static void ProcessRecvCmds(u8 unused)
                 InitBlockSend(block, sizeof(*block));
                 break;
             }
-            case LINKCMD_BLENDER_SEND_KEYS:
-                gLinkPartnersHeldKeys[i] = gRecvCmds[i][1];
-                break;
             case LINKCMD_DUMMY_1:
                 gLinkDummy2 = TRUE;
                 break;
@@ -639,9 +635,6 @@ static void ProcessRecvCmds(u8 unused)
             case LINKCMD_READY_EXIT_STANDBY:
                 gReadyToExitStandby[i] = TRUE;
                 break;
-            case LINKCMD_BLENDER_NO_PBLOCK_SPACE:
-                SetBerryBlenderLinkCallback();
-                break;
             case LINKCMD_SEND_BLOCK_REQ:
                 if (gRecvCmds[i][1] < ARRAY_COUNT(sBlockRequests))
                     SendBlock(0, sBlockRequests[gRecvCmds[i][1]].address, sBlockRequests[gRecvCmds[i][1]].size);
@@ -664,10 +657,6 @@ static void BuildSendCmd(u16 command)
         case LINKCMD_READY_EXIT_STANDBY:
             gSendCmd[0] = LINKCMD_READY_EXIT_STANDBY;
             break;
-        case LINKCMD_BLENDER_SEND_KEYS:
-            gSendCmd[0] = LINKCMD_BLENDER_SEND_KEYS;
-            gSendCmd[1] = gMain.heldKeys;
-            break;
         case LINKCMD_DUMMY_1:
             gSendCmd[0] = LINKCMD_DUMMY_1;
             break;
@@ -687,9 +676,6 @@ static void BuildSendCmd(u16 command)
             gSendCmd[0] = LINKCMD_INIT_BLOCK;
             gSendCmd[1] = sBlockSend.size;
             gSendCmd[2] = sBlockSend.multiplayerId + 0x80;
-            break;
-        case LINKCMD_BLENDER_NO_PBLOCK_SPACE:
-            gSendCmd[0] = LINKCMD_BLENDER_NO_PBLOCK_SPACE;
             break;
         case LINKCMD_SEND_ITEM:
             gSendCmd[0] = LINKCMD_SEND_ITEM;
@@ -999,32 +985,6 @@ static void LinkCB_BlockSend(void)
 static void LinkCB_BlockSendEnd(void)
 {
     gLinkCallback = NULL;
-}
-
-static void LinkCB_BerryBlenderSendHeldKeys(void)
-{
-    GetMultiplayerId();
-    BuildSendCmd(LINKCMD_BLENDER_SEND_KEYS);
-    gBerryBlenderKeySendAttempts++;
-}
-
-void SetBerryBlenderLinkCallback(void)
-{
-    gBerryBlenderKeySendAttempts = 0;
-    if (gWirelessCommType)
-        Rfu_SetBerryBlenderLinkCallback();
-    else
-        gLinkCallback = LinkCB_BerryBlenderSendHeldKeys;
-}
-
-static u32 UNUSED GetBerryBlenderKeySendAttempts(void)
-{
-    return gBerryBlenderKeySendAttempts;
-}
-
-static void UNUSED SendBerryBlenderNoSpaceForPokeblocks(void)
-{
-    BuildSendCmd(LINKCMD_BLENDER_NO_PBLOCK_SPACE);
 }
 
 u8 GetMultiplayerId(void)

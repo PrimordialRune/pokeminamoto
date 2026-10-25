@@ -67,7 +67,6 @@ struct TrainerCardData
     u8 textNumTrades[140];
     u8 textBerryCrushPts[140];
     u8 textUnionRoomStats[70];
-    u8 textNumLinkPokeblocks[70];
     u8 textNumLinkContests[70];
     u8 textBattleFacilityStat[70];
     u16 monIconPal[16 * PARTY_SIZE];
@@ -137,7 +136,6 @@ static void PrintHofDebutTimeOnCard(void);
 static void PrintLinkBattleResultsOnCard(void);
 static void PrintTradesStringOnCard(void);
 static void PrintBerryCrushStringOnCard(void);
-static void PrintPokeblockStringOnCard(void);
 static void PrintUnionStringOnCard(void);
 static void PrintContestStringOnCard(void);
 static void PrintPokemonIconsOnCard(void);
@@ -150,7 +148,6 @@ static void BufferLinkBattleResults(void);
 static void BufferNumTrades(void);
 static void BufferBerryCrushPoints(void);
 static void BufferUnionRoomStats(void);
-static void BufferLinkPokeblocksNum(void);
 static void BufferLinkContestNum(void);
 static void BufferBattleFacilityStats(void);
 static void PrintStatOnBackOfCard(u8 top, const u8 *str1, u8 *str2, const u8 *color);
@@ -740,7 +737,6 @@ static void SetPlayerCardData(struct TrainerCard *trainerCard, u8 cardType)
     // Seems like GF got CARD_TYPE_FRLG and CARD_TYPE_RS wrong.
     case CARD_TYPE_FRLG:
         trainerCard->contestsWithFriends = GetCappedGameStat(GAME_STAT_WON_LINK_CONTEST, 999);
-        trainerCard->pokeblocksWithFriends = GetCappedGameStat(GAME_STAT_POKEBLOCKS_WITH_FRIENDS, 0xFFFF);
         if (CountPlayerMuseumPaintings() >= CONTEST_CATEGORIES_COUNT)
             trainerCard->hasAllPaintings = TRUE;
         trainerCard->stars = GetRubyTrainerStars(trainerCard);
@@ -749,7 +745,6 @@ static void SetPlayerCardData(struct TrainerCard *trainerCard, u8 cardType)
         trainerCard->battleTowerWins = 0;
         trainerCard->battleTowerStraightWins = 0;
         trainerCard->contestsWithFriends = 0;
-        trainerCard->pokeblocksWithFriends = 0;
         trainerCard->hasAllPaintings = 0;
         trainerCard->stars = 0;
         break;
@@ -965,7 +960,6 @@ static bool8 PrintAllOnCardBack(void)
         break;
     case 4:
         PrintBerryCrushStringOnCard();
-        PrintPokeblockStringOnCard();
         break;
     case 5:
         PrintUnionStringOnCard();
@@ -994,7 +988,6 @@ static void BufferTextsVarsForCardPage2(void)
     BufferNumTrades();
     BufferBerryCrushPoints();
     BufferUnionRoomStats();
-    BufferLinkPokeblocksNum();
     BufferLinkContestNum();
     BufferBattleFacilityStats();
 }
@@ -1269,21 +1262,6 @@ static void PrintUnionStringOnCard(void)
 {
     if (sData->cardType == CARD_TYPE_FRLG && sData->trainerCard.unionRoomNum)
         PrintStatOnBackOfCard(3, gText_UnionTradesAndBattles, sData->textUnionRoomStats, sTrainerCardStatColors);
-}
-
-static void BufferLinkPokeblocksNum(void)
-{
-    if (sData->cardType != CARD_TYPE_FRLG && sData->trainerCard.pokeblocksWithFriends)
-    {
-        ConvertIntToDecimalStringN(gStringVar1, sData->trainerCard.pokeblocksWithFriends, STR_CONV_MODE_RIGHT_ALIGN, 5);
-        StringExpandPlaceholders(sData->textNumLinkPokeblocks, gText_NumPokeblocks);
-    }
-}
-
-static void PrintPokeblockStringOnCard(void)
-{
-    if (sData->cardType != CARD_TYPE_FRLG && sData->trainerCard.pokeblocksWithFriends)
-        PrintStatOnBackOfCard(3, gText_PokeblocksWithFriends, sData->textNumLinkPokeblocks, sTrainerCardStatColors);
 }
 
 static void BufferLinkContestNum(void)

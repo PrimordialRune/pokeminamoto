@@ -370,10 +370,6 @@ static const u8 sText_PlayerDefeatedLinkTrainerTrainer1[] = _("Player defeated\n
 static const u8 sText_CreptCloser[] = _("{B_PLAYER_NAME} crept closer to\n{B_OPPONENT_MON1_NAME}!");
 static const u8 sText_CantGetCloser[] = _("{B_PLAYER_NAME} can't get any closer!");
 static const u8 sText_PkmnWatchingCarefully[] = _("{B_OPPONENT_MON1_NAME} is watching\ncarefully!");
-static const u8 sText_PkmnCuriousAboutX[] = _("{B_OPPONENT_MON1_NAME} is curious about\nthe {B_BUFF1}!");
-static const u8 sText_PkmnEnthralledByX[] = _("{B_OPPONENT_MON1_NAME} is enthralled by\nthe {B_BUFF1}!");
-static const u8 sText_PkmnIgnoredX[] = _("{B_OPPONENT_MON1_NAME} completely ignored\nthe {B_BUFF1}!");
-static const u8 sText_ThrewPokeblockAtPkmn[] = _("{B_PLAYER_NAME} threw a {POKEBLOCK}\nat the {B_OPPONENT_MON1_NAME}!");
 static const u8 sText_OutOfSafariBalls[] = _("{PLAY_SE SE_DING_DONG}ANNOUNCER: You're out of\nSAFARI BALLS! Game over!\p");
 static const u8 sText_OpponentMon1Appeared[] = _("{B_OPPONENT_MON1_NAME} appeared!\p");
 static const u8 sText_WildPkmnAppeared[] = _("Wild {B_OPPONENT_MON1_NAME} appeared!\p");
@@ -441,19 +437,19 @@ const u8 *const gStatNamesTable[NUM_BATTLE_STATS] =
     [STAT_EVASION] = sText_Evasiveness,
 };
 
-static const u8 sText_PokeblockWasTooSpicy[] = _("was too spicy!");
-static const u8 sText_PokeblockWasTooDry[] = _("was too dry!");
-static const u8 sText_PokeblockWasTooSweet[] = _("was too sweet!");
-static const u8 sText_PokeblockWasTooBitter[] = _("was too bitter!");
-static const u8 sText_PokeblockWasTooSour[] = _("was too sour!");
+static const u8 sText_WasTooSpicy[] = _("was too spicy!");
+static const u8 sText_WasTooDry[] = _("was too dry!");
+static const u8 sText_WasTooSweet[] = _("was too sweet!");
+static const u8 sText_WasTooBitter[] = _("was too bitter!");
+static const u8 sText_WasTooSour[] = _("was too sour!");
 
-const u8 *const gPokeblockWasTooXStringTable[FLAVOR_COUNT] =
+const u8 *const gWasTooXStringTable[FLAVOR_COUNT] =
 {
-    [FLAVOR_SPICY]  = sText_PokeblockWasTooSpicy,
-    [FLAVOR_DRY]    = sText_PokeblockWasTooDry,
-    [FLAVOR_SWEET]  = sText_PokeblockWasTooSweet,
-    [FLAVOR_BITTER] = sText_PokeblockWasTooBitter,
-    [FLAVOR_SOUR]   = sText_PokeblockWasTooSour
+    [FLAVOR_SPICY]  = sText_WasTooSpicy,
+    [FLAVOR_DRY]    = sText_WasTooDry,
+    [FLAVOR_SWEET]  = sText_WasTooSweet,
+    [FLAVOR_BITTER] = sText_WasTooBitter,
+    [FLAVOR_SOUR]   = sText_WasTooSour
 };
 
 static const u8 sText_PlayerUsedItem[] = _("{B_PLAYER_NAME} used\n{B_LAST_ITEM}!");
@@ -787,10 +783,6 @@ const u8 *const gBattleStringsTable[BATTLESTRINGS_COUNT - BATTLESTRINGS_TABLE_ST
     [STRINGID_CREPTCLOSER - BATTLESTRINGS_TABLE_START] = sText_CreptCloser,
     [STRINGID_CANTGETCLOSER - BATTLESTRINGS_TABLE_START] = sText_CantGetCloser,
     [STRINGID_PKMNWATCHINGCAREFULLY - BATTLESTRINGS_TABLE_START] = sText_PkmnWatchingCarefully,
-    [STRINGID_PKMNCURIOUSABOUTX - BATTLESTRINGS_TABLE_START] = sText_PkmnCuriousAboutX,
-    [STRINGID_PKMNENTHRALLEDBYX - BATTLESTRINGS_TABLE_START] = sText_PkmnEnthralledByX,
-    [STRINGID_PKMNIGNOREDX - BATTLESTRINGS_TABLE_START] = sText_PkmnIgnoredX,
-    [STRINGID_THREWPOKEBLOCKATPKMN - BATTLESTRINGS_TABLE_START] = sText_ThrewPokeblockAtPkmn,
     [STRINGID_OUTOFSAFARIBALLS - BATTLESTRINGS_TABLE_START] = sText_OutOfSafariBalls,
     [STRINGID_PKMNSITEMCUREDPARALYSIS - BATTLESTRINGS_TABLE_START] = sText_PkmnsItemCuredParalysis,
     [STRINGID_PKMNSITEMCUREDPOISON - BATTLESTRINGS_TABLE_START] = sText_PkmnsItemCuredPoison,
@@ -1185,13 +1177,6 @@ const u16 gSafariGetNearStringIds[] =
     [B_MSG_CANT_GET_CLOSER] = STRINGID_CANTGETCLOSER
 };
 
-const u16 gSafariPokeblockResultStringIds[] =
-{
-    [B_MSG_MON_CURIOUS]    = STRINGID_PKMNCURIOUSABOUTX,
-    [B_MSG_MON_ENTHRALLED] = STRINGID_PKMNENTHRALLEDBYX,
-    [B_MSG_MON_IGNORED]    = STRINGID_PKMNIGNOREDX
-};
-
 const u16 gTrainerItemCuredStatusStringIds[] =
 {
     [AI_HEAL_CONFUSION] = STRINGID_PKMNSITEMSNAPPEDOUT,
@@ -1270,7 +1255,6 @@ const u8 gText_WhatWillPkmnDo2[] = _("What will\n{B_PLAYER_NAME} do?");
 const u8 gText_WhatWillWallyDo[] = _("What will\nWALLY do?");
 const u8 gText_LinkStandby[] = _("{PAUSE 16}Link standby…");
 const u8 gText_BattleMenu[] = _("FIGHT{CLEAR_TO 56}BAG\nPOKéMON{CLEAR_TO 56}RUN");
-const u8 gText_SafariZoneMenu[] = _("BALL{CLEAR_TO 56}{POKEBLOCK}\nGO NEAR{CLEAR_TO 56}RUN");
 // Action menu buttons, in cursor order: top left, top right, bottom left, bottom right
 // Placeholders until Talk (R) and the battle info screen (SELECT) exist
 const u8 gText_TalkStub[] = _("You call out…\nNo answer yet.");
@@ -1279,7 +1263,7 @@ const u8 gText_BattleMenuPkmn[] = _("PKMN");
 const u8 gText_BattleMenuItem[] = _("ITEM");
 const u8 gText_BattleMenuRun[] = _("RUN");
 const u8 gText_SafariMenuBall[] = _("BALL");
-const u8 gText_SafariMenuBlock[] = _("{POKEBLOCK}");
+const u8 gText_SafariMenuNone[] = _("---"); // was the Pokéblock button
 const u8 gText_SafariMenuNear[] = _("NEAR");
 const u8 gText_MoveInterfacePP[] = _("TP ");
 const u8 gText_MoveInterfaceType[] = _("TYPE/");
@@ -2743,7 +2727,7 @@ static void ExpandBattleTextBuffPlaceholders(const u8 *src, u8 *dst)
             srcID += 3;
             break;
         case B_BUFF_NEGATIVE_FLAVOR: // flavor table
-            StringAppend(dst, gPokeblockWasTooXStringTable[src[srcID + 1]]);
+            StringAppend(dst, gWasTooXStringTable[src[srcID + 1]]);
             srcID += 2;
             break;
         case B_BUFF_ABILITY: // ability names

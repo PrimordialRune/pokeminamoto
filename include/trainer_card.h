@@ -38,7 +38,7 @@ struct TrainerCard
     /*0x18*/ u16 battleTowerWins;
     /*0x1A*/ u16 battleTowerStraightWins;
     /*0x1C*/ u16 contestsWithFriends;
-    /*0x1E*/ u16 pokeblocksWithFriends;
+    /*0x1E*/ u16 unused1E; // was pokeblocksWithFriends
     /*0x20*/ u16 pokemonTrades;
     /*0x24*/ u32 money;
     /*0x28*/ u16 easyChatProfile[TRAINER_CARD_PROFILE_LENGTH];

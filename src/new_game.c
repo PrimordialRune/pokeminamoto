@@ -9,7 +9,6 @@
 #include "play_time.h"
 #include "match_call.h"
 #include "load_save.h"
-#include "pokeblock.h"
 #include "berry.h"
 #include "rtc.h"
 #include "easy_chat.h"
@@ -143,7 +142,6 @@ void ResetMenuAndMonGlobals(void)
     ZeroPlayerPartyMons();
     ZeroEnemyPartyMons();
     ResetBagScrollPositions();
-    ResetPokeblockScrollPositions();
 }
 
 void NewGameInitData(void)
@@ -182,7 +180,6 @@ void NewGameInitData(void)
     gSaveBlock1Ptr->registeredItem = ITEM_NONE;
     ClearBag();
     NewGameInitPCItems();
-    ClearPokeblocks();
     ClearDecorationInventories();
     InitEasyChatPhrases();
     ResetFanClub();

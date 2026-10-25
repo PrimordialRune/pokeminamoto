@@ -538,7 +538,6 @@ static void (*const sTurnActionsFuncsTable[])(void) =
     [B_ACTION_RUN]                    = HandleAction_Run,
     [B_ACTION_SAFARI_WATCH_CAREFULLY] = HandleAction_WatchesCarefully,
     [B_ACTION_SAFARI_BALL]            = HandleAction_SafariZoneBallThrow,
-    [B_ACTION_SAFARI_POKEBLOCK]       = HandleAction_ThrowPokeblock,
     [B_ACTION_SAFARI_GO_NEAR]         = HandleAction_GoNear,
     [B_ACTION_SAFARI_RUN]             = HandleAction_SafariZoneRun,
     [B_ACTION_WALLY_THROW]            = HandleAction_WallyBallThrow,
@@ -2595,7 +2594,6 @@ static void BattleStartClearSetData(void)
     gAbsentBattlerFlags = 0;
     gBattleStruct->runTries = 0;
     gBattleStruct->safariGoNearCounter = 0;
-    gBattleStruct->safariPkblThrowCounter = 0;
     *(&gBattleStruct->safariCatchFactor) = gSpeciesInfo[GetMonData(&gEnemyParty[0], MON_DATA_SPECIES)].catchRate * 100 / 1275;
     gBattleStruct->safariEscapeFactor = 3;
     gBattleStruct->wildVictorySong = 0;
@@ -3657,10 +3655,6 @@ static void HandleTurnActionSelectionState(void)
                         return;
                     }
                     break;
-                case B_ACTION_SAFARI_POKEBLOCK:
-                    BtlController_EmitChooseItem(B_COMM_TO_CONTROLLER, gBattleStruct->battlerPartyOrders[gActiveBattler]);
-                    MarkBattlerForControllerExec(gActiveBattler);
-                    break;
                 case B_ACTION_CANCEL_PARTNER:
                     gBattleCommunication[gActiveBattler] = STATE_WAIT_SET_BEFORE_ACTION;
                     gBattleCommunication[GetBattlerAtPosition(BATTLE_PARTNER(GetBattlerPosition(gActiveBattler)))] = STATE_BEFORE_ACTION_CHOSEN;
@@ -3790,12 +3784,6 @@ static void HandleTurnActionSelectionState(void)
                     break;
                 case B_ACTION_SAFARI_BALL:
                     gBattleCommunication[gActiveBattler]++;
-                    break;
-                case B_ACTION_SAFARI_POKEBLOCK:
-                    if ((gBattleBufferB[gActiveBattler][1] | (gBattleBufferB[gActiveBattler][2] << 8)) != 0)
-                        gBattleCommunication[gActiveBattler]++;
-                    else
-                        gBattleCommunication[gActiveBattler] = STATE_BEFORE_ACTION_CHOSEN;
                     break;
                 case B_ACTION_SAFARI_GO_NEAR:
                     gBattleCommunication[gActiveBattler]++;

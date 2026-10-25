@@ -12,7 +12,6 @@
 #include "m4a.h"
 #include "palette.h"
 #include "pokeball.h"
-#include "pokeblock.h"
 #include "pokemon.h"
 #include "reshow_battle_screen.h"
 #include "sound.h"
@@ -84,7 +83,6 @@ static void SafariCmdEnd(void);
 
 static void SafariBufferRunCommand(void);
 static void SafariBufferExecCompleted(void);
-static void CompleteWhenChosePokeblock(void);
 
 static void (*const sSafariBufferCommands[CONTROLLER_CMDS_COUNT])(void) =
 {
@@ -179,8 +177,9 @@ static void HandleInputChooseAction(void)
             BtlController_EmitTwoReturnValues(B_COMM_TO_ENGINE, B_ACTION_SAFARI_BALL, 0);
             break;
         case 1:
-            BtlController_EmitTwoReturnValues(B_COMM_TO_ENGINE, B_ACTION_SAFARI_POKEBLOCK, 0);
-            break;
+            // Empty slot (was the Pokéblock case)
+            PlaySE(SE_FAILURE);
+            return;
         case 2:
             BtlController_EmitTwoReturnValues(B_COMM_TO_ENGINE, B_ACTION_SAFARI_GO_NEAR, 0);
             break;
@@ -264,25 +263,6 @@ static void CompleteOnSpecialAnimDone(void)
 {
     if (!gDoingBattleAnim || !gBattleSpritesDataPtr->healthBoxesData[gActiveBattler].specialAnimActive)
         SafariBufferExecCompleted();
-}
-
-static void SafariOpenPokeblockCase(void)
-{
-    if (!gPaletteFade.active)
-    {
-        gBattlerControllerFuncs[gActiveBattler] = CompleteWhenChosePokeblock;
-        FreeAllWindowBuffers();
-        OpenPokeblockCaseInBattle();
-    }
-}
-
-static void CompleteWhenChosePokeblock(void)
-{
-    if (gMain.callback2 == BattleMainCB2 && !gPaletteFade.active)
-    {
-        BtlController_EmitOneReturnValue(B_COMM_TO_ENGINE, gSpecialVar_ItemId);
-        SafariBufferExecCompleted();
-    }
 }
 
 static void CompleteOnFinishedBattleAnimation(void)
@@ -467,9 +447,7 @@ static void SafariHandleChooseMove(void)
 
 static void SafariHandleChooseItem(void)
 {
-    BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 0x10, RGB_BLACK);
-    gBattlerControllerFuncs[gActiveBattler] = SafariOpenPokeblockCase;
-    gBattlerInMenuId = gActiveBattler;
+    SafariBufferExecCompleted();
 }
 
 static void SafariHandleChoosePokemon(void)

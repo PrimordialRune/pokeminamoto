@@ -1,7 +1,6 @@
 #include "global.h"
 #include "malloc.h"
 #include "battle.h"
-#include "berry_blender.h"
 #include "decompress.h"
 #include "event_data.h"
 #include "gpu_regs.h"
@@ -1059,20 +1058,6 @@ void ClearLinkRfuCallback(void)
     gRfu.callback = NULL;
 }
 
-static void Rfu_BerryBlenderSendHeldKeys(void)
-{
-    RfuPrepareSendBuffer(RFUCMD_BLENDER_SEND_KEYS);
-    if (GetMultiplayerId() == 0)
-        gSendCmd[BLENDER_COMM_ARROW_POS] = GetBlenderArrowPosition();
-    gBerryBlenderKeySendAttempts++;
-}
-
-void Rfu_SetBerryBlenderLinkCallback(void)
-{
-    if (gRfu.callback == NULL)
-        gRfu.callback = Rfu_BerryBlenderSendHeldKeys;
-}
-
 static void RfuHandleReceiveCommand(u8 unused)
 {
     u16 i;
@@ -1163,7 +1148,6 @@ static void RfuHandleReceiveCommand(u8 unused)
                 ClearSelectedLinkPlayerIds(gRecvCmds[i][1]);
             }
             break;
-        case RFUCMD_BLENDER_SEND_KEYS:
         case RFUCMD_SEND_HELD_KEYS:
             gLinkPartnersHeldKeys[i] = gRecvCmds[i][1];
             break;
@@ -1260,10 +1244,6 @@ static void RfuPrepareSendBuffer(u16 command)
     case RFUCMD_READY_EXIT_STANDBY:
     case RFUCMD_READY_CLOSE_LINK:
         gSendCmd[1] = gRfu.allReadyNum;
-        break;
-    case RFUCMD_BLENDER_SEND_KEYS:
-        gSendCmd[0] = command;
-        gSendCmd[1] = gMain.heldKeys;
         break;
     case RFUCMD_SEND_PACKET:
         for (i = 0; i < RFU_PACKET_SIZE; i++)
@@ -3092,10 +3072,6 @@ void StartSendingKeysToRfu(void)
 }
 
 void ClearLinkRfuCallback(void)
-{
-}
-
-void Rfu_SetBerryBlenderLinkCallback(void)
 {
 }
 

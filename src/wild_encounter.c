@@ -8,7 +8,6 @@
 #include "link.h"
 #include "metatile_behavior.h"
 #include "overworld.h"
-#include "pokeblock.h"
 #include "pokemon.h"
 #include "random.h"
 #include "roamer.h"
@@ -215,36 +214,6 @@ static u16 GetCurrentMapWildMonHeaderId(void)
 
 static u8 PickWildMonNature(void)
 {
-    u8 i;
-    u8 j;
-    struct Pokeblock *safariPokeblock;
-    u8 natures[NUM_NATURES];
-
-    if (GetSafariZoneFlag() == TRUE && Random() % 100 < 80)
-    {
-        safariPokeblock = SafariZoneGetActivePokeblock();
-        if (safariPokeblock != NULL)
-        {
-            for (i = 0; i < NUM_NATURES; i++)
-                natures[i] = i;
-            for (i = 0; i < NUM_NATURES - 1; i++)
-            {
-                for (j = i + 1; j < NUM_NATURES; j++)
-                {
-                    if (Random() & 1)
-                    {
-                        u8 temp;
-                        SWAP(natures[i], natures[j], temp);
-                    }
-                }
-            }
-            for (i = 0; i < NUM_NATURES; i++)
-            {
-                if (PokeblockGetGain(natures[i], safariPokeblock) > 0)
-                    return natures[i];
-            }
-        }
-    }
     // check synchronize for a Pokémon with the same ability
     if (!GetMonData(&gPlayerParty[0], MON_DATA_SANITY_IS_EGG)
         && GetMonAbility(&gPlayerParty[0]) == ABILITY_SYNCHRONIZE
@@ -625,7 +594,7 @@ bool8 DoesCurrentMapHaveFishingMons(void)
 
 void FishingWildEncounter(u8 rod)
 {
-    u16 species = GenerateFishingWildMon(gWildMonHeaders[GetCurrentMapWildMonHeaderId()].fishingMonsInfo, rod);
+    GenerateFishingWildMon(gWildMonHeaders[GetCurrentMapWildMonHeaderId()].fishingMonsInfo, rod);
 
     IncrementGameStat(GAME_STAT_FISHING_ENCOUNTERS);
     BattleSetup_StartWildBattle();

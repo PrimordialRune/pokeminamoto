@@ -25,7 +25,6 @@ extern const u8 gText_OpenLevel[];
 extern const u8 gText_Mom[];
 extern const u8 gText_Dad[];
 
-extern const u8 gText_GetsAPokeBlockQuestion[];
 extern const u8 gText_WontEatAnymore[];
 extern const u8 gText_WasEnhanced[];
 extern const u8 gText_NothingChanged[];
@@ -188,20 +187,6 @@ extern const u8 gText_Var1AteTheVar2[];
 extern const u8 gText_Var1HappilyAteVar2[];
 extern const u8 gText_Var1DisdainfullyAteVar2[];
 
-extern const u8 gText_RedPokeblock[];
-extern const u8 gText_BluePokeblock[];
-extern const u8 gText_PinkPokeblock[];
-extern const u8 gText_GreenPokeblock[];
-extern const u8 gText_YellowPokeblock[];
-extern const u8 gText_PurplePokeblock[];
-extern const u8 gText_IndigoPokeblock[];
-extern const u8 gText_BrownPokeblock[];
-extern const u8 gText_LiteBluePokeblock[];
-extern const u8 gText_OlivePokeblock[];
-extern const u8 gText_GrayPokeblock[];
-extern const u8 gText_BlackPokeblock[];
-extern const u8 gText_WhitePokeblock[];
-extern const u8 gText_GoldPokeblock[];
 
 extern const u8 gMenuText_Use[];
 extern const u8 gMenuText_Toss[];
@@ -2538,8 +2523,6 @@ extern const u8 gText_WinsLosses[];
 extern const u8 gText_PokemonTrades[];
 extern const u8 gText_BerryCrush[];
 extern const u8 gText_UnionTradesAndBattles[];
-extern const u8 gText_NumPokeblocks[];
-extern const u8 gText_PokeblocksWithFriends[];
 extern const u8 gText_WonContestsWFriends[];
 extern const u8 gText_WinsStraight[];
 extern const u8 gText_NumBP[];
@@ -2978,17 +2961,6 @@ extern const u8 gText_NoRibbonWinners[];
 extern const u8 gText_NumberIndex[];
 extern const u8 gText_RibbonsF700[];
 
-// use_pokeblock
-extern const u8 gText_Coolness[];
-extern const u8 gText_Toughness[];
-extern const u8 gText_Smartness[];
-extern const u8 gText_Cuteness[];
-extern const u8 gText_Beauty3[];
-
-// Berry Blender
-extern const u8 gText_SavingDontTurnOff2[];
-extern const u8 gText_BlenderMaxSpeedRecord[];
-extern const u8 gText_234Players[];
 
 // Battle Factory Screen
 extern const u8 gText_RentalPkmn2[];

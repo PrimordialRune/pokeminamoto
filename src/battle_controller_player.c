@@ -1863,7 +1863,7 @@ static const u8 *const sActionMenuLabels[] =
 
 static const u8 *const sSafariMenuLabels[] =
 {
-    gText_SafariMenuBall, gText_SafariMenuBlock,
+    gText_SafariMenuBall, gText_SafariMenuNone,
     gText_SafariMenuNear, gText_BattleMenuRun,
 };
 

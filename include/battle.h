@@ -30,7 +30,6 @@
 #define B_ACTION_RUN                    3
 #define B_ACTION_SAFARI_WATCH_CAREFULLY 4
 #define B_ACTION_SAFARI_BALL            5
-#define B_ACTION_SAFARI_POKEBLOCK       6
 #define B_ACTION_SAFARI_GO_NEAR         7
 #define B_ACTION_SAFARI_RUN             8
 #define B_ACTION_WALLY_THROW            9
@@ -244,7 +243,6 @@ struct BattleResults
     u8 playerMon1Name[POKEMON_NAME_LENGTH + 1];    // 0x8
     u8 battleTurnCounter;     // 0x13
     u8 playerMon2Name[POKEMON_NAME_LENGTH + 1];    // 0x14
-    u8 pokeblockThrows;       // 0x1F
     u16 lastOpponentSpecies;  // 0x20
     u16 lastUsedMovePlayer;   // 0x22
     u16 lastUsedMoveOpponent; // 0x24
@@ -295,7 +293,6 @@ struct BattleStruct
     u8 caughtMonNick[POKEMON_NAME_LENGTH + 1];
     u8 unused_2;
     u8 safariGoNearCounter;
-    u8 safariPkblThrowCounter;
     u8 safariEscapeFactor;
     u8 safariCatchFactor;
     u8 linkBattleVsSpriteId_V; // The letter "V"

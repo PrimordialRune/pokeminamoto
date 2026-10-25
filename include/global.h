@@ -576,17 +576,6 @@ struct ItemSlot
     u16 quantity;
 };
 
-struct Pokeblock
-{
-    u8 color;
-    u8 spicy;
-    u8 dry;
-    u8 sweet;
-    u8 bitter;
-    u8 sour;
-    u8 feel;
-};
-
 struct Roamer
 {
     /*0x00*/ u32 ivs;
@@ -806,12 +795,6 @@ struct SaveBlock1
     /*0x650*/ struct ItemSlot bagPocket_PokeBalls[BAG_POKEBALLS_COUNT];
     /*0x690*/ struct ItemSlot bagPocket_TMHM[BAG_TMHM_COUNT];
     /*0x790*/ struct ItemSlot bagPocket_Berries[BAG_BERRIES_COUNT];
-#ifndef FREE_POKEBLOCKS
-    /*0x848*/ struct Pokeblock pokeblocks[POKEBLOCKS_COUNT];
-#endif
-#ifndef FREE_POKEBLOCKS
-    /*0x9BC*/ u16 berryBlenderRecords[3];
-#endif
     /*0x9C8*/ u16 trainerRematchStepCounter;
     /*0x9CA*/ u8 trainerRematches[MAX_REMATCH_ENTRIES];
     /*0xA2E*/ //u8 padding3[2];

@@ -111,7 +111,6 @@ bool8 MetatileBehavior_IsRegionMap(u8 metatileBehavior);
 bool8 MetatileBehavior_IsClosedSootopolisDoor(u8 metatileBehavior);
 bool8 MetatileBehavior_IsSkyPillarClosedDoor(u8 metatileBehavior);
 bool8 MetatileBehavior_IsRoulette(u8 metatileBehavior);
-bool8 MetatileBehavior_IsPokeblockFeeder(u8 metatileBehavior);
 bool8 MetatileBehavior_IsSecretBaseJumpMat(u8 metatileBehavior);
 bool8 MetatileBehavior_IsSecretBaseSpinMat(u8 metatileBehavior);
 bool8 MetatileBehavior_IsLavaridgeB1FWarp(u8 metatileBehavior);

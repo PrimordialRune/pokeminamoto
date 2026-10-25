@@ -20,7 +20,6 @@
 #include "m4a.h"
 #include "party_menu.h"
 #include "pokedex.h"
-#include "pokeblock.h"
 #include "pokemon.h"
 #include "pokemon_animation.h"
 #include "pokemon_summary_screen.h"
@@ -6499,16 +6498,47 @@ bool8 IsMonSpriteNotFlipped(u16 species)
     return gSpeciesInfo[species].noFlip;
 }
 
+// How much a nature likes (+1) or dislikes (-1) each berry flavor.
+static const s8 sFlavorRelationTable[NUM_NATURES * FLAVOR_COUNT] =
+{
+     // Spicy,  Dry, Sweet, Bitter, Sour
+          0,      0,    0,     0,     0, // Hardy
+          1,      0,    0,     0,    -1, // Lonely
+          1,      0,   -1,     0,     0, // Brave
+          1,     -1,    0,     0,     0, // Adamant
+          1,      0,    0,    -1,     0, // Naughty
+         -1,      0,    0,     0,     1, // Bold
+          0,      0,    0,     0,     0, // Docile
+          0,      0,   -1,     0,     1, // Relaxed
+          0,     -1,    0,     0,     1, // Impish
+          0,      0,    0,    -1,     1, // Lax
+         -1,      0,    1,     0,     0, // Timid
+          0,      0,    1,     0,    -1, // Hasty
+          0,      0,    0,     0,     0, // Serious
+          0,     -1,    1,     0,     0, // Jolly
+          0,      0,    1,    -1,     0, // Naive
+         -1,      1,    0,     0,     0, // Modest
+          0,      1,    0,     0,    -1, // Mild
+          0,      1,   -1,     0,     0, // Quiet
+          0,      0,    0,     0,     0, // Bashful
+          0,      1,    0,    -1,     0, // Rash
+         -1,      0,    0,     1,     0, // Calm
+          0,      0,    0,     1,    -1, // Gentle
+          0,      0,   -1,     1,     0, // Sassy
+          0,     -1,    0,     1,     0, // Careful
+          0,      0,    0,     0,     0  // Quirky
+};
+
 s8 GetMonFlavorRelation(struct Pokemon *mon, u8 flavor)
 {
     u8 nature = GetNature(mon);
-    return gPokeblockFlavorCompatibilityTable[nature * FLAVOR_COUNT + flavor];
+    return sFlavorRelationTable[nature * FLAVOR_COUNT + flavor];
 }
 
 s8 GetFlavorRelationByPersonality(u32 personality, u8 flavor)
 {
     u8 nature = GetNatureFromPersonality(personality);
-    return gPokeblockFlavorCompatibilityTable[nature * FLAVOR_COUNT + flavor];
+    return sFlavorRelationTable[nature * FLAVOR_COUNT + flavor];
 }
 
 bool8 IsTradedMon(struct Pokemon *mon)

@@ -399,9 +399,6 @@ gText_PokemonTrainerSchoolEmail::
 gText_PlayerHouseBootPC::
 	.string "{PLAYER} booted up the PC.$"
 
-gText_PokeblockLinkCanceled::
-	.string "The link was canceled.$"
-
 gText_UnusedNicknameReceivedPokemon::
 	.string "Want to give a nickname to\n"
 	.string "the {STR_VAR_2} you received?$"
@@ -559,7 +556,6 @@ Common_EventScript_LegendaryFlewAway::
 	.include "data/text/apprentice.inc"
 	.include "data/text/battle_dome.inc"
 	.include "data/scripts/battle_pike.inc"
-	.include "data/text/blend_master.inc"
 	.include "data/text/battle_tent.inc"
 	.include "data/text/event_ticket_2.inc"
 	.include "data/text/move_tutors.inc"
