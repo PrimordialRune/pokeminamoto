@@ -21,7 +21,6 @@
 #include "main.h"
 #include "event_scripts.h"
 #include "shop.h"
-#include "lilycove_lady.h"
 #include "pokedex.h"
 #include "event_object_movement.h"
 #include "text.h"

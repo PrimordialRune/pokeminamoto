@@ -11,7 +11,6 @@
 #include "image_processing_effects.h"
 #include "international_string_util.h"
 #include "main.h"
-#include "lilycove_lady.h"
 #include "palette.h"
 #include "random.h"
 #include "scanline_effect.h"

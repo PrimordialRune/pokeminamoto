@@ -1740,14 +1740,6 @@
 	formatwarp \map, \a, \b, \c
 	.endm
 
-	@ Buffers the name of the contest category to the buffer.
-	@ For example a category of CONTEST_CATEGORY_COOL will buffer the string "COOLNESS CONTEST".
-	.macro buffercontestname stringVarId:req, category:req
-	.byte SCR_OP_BUFFERCONTESTNAME
-	stringvar \stringVarId
-	.2byte \category
-	.endm
-
 	@ Writes the name of the specified item to the specified buffer. If 'item' is a Berry or ITEM_POKE_BALL
 	@ and if the quantity is 2 or more, the buffered string will be pluralized ("IES" or "S" appended).
 	@ If the specified item is >= ITEMS_COUNT then the name of ITEM_NONE ("????????") is buffered instead.

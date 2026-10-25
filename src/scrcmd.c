@@ -23,7 +23,6 @@
 #include "field_weather.h"
 #include "fieldmap.h"
 #include "item.h"
-#include "lilycove_lady.h"
 #include "main.h"
 #include "malloc.h"
 #include "menu.h"
@@ -1742,15 +1741,6 @@ bool8 ScrCmd_bufferstdstring(struct ScriptContext *ctx)
     u16 index = VarGet(ScriptReadHalfword(ctx));
 
     StringCopy(sScriptStringVars[stringVarIndex], gStdStrings[index]);
-    return FALSE;
-}
-
-bool8 ScrCmd_buffercontestname(struct ScriptContext *ctx)
-{
-    u8 stringVarIndex = ScriptReadByte(ctx);
-    u16 category = VarGet(ScriptReadHalfword(ctx));
-
-    BufferContestName(sScriptStringVars[stringVarIndex], category);
     return FALSE;
 }
 

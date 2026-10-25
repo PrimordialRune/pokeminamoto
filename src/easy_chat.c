@@ -1,6 +1,5 @@
 #include "global.h"
 #include "malloc.h"
-#include "bard_music.h"
 #include "bg.h"
 #include "data.h"
 #include "decompress.h"
@@ -28,16 +27,11 @@
 #include "window.h"
 #include "constants/event_objects.h"
 #include "constants/lilycove_lady.h"
-#include "constants/mauville_old_man.h"
 #include "constants/songs.h"
 #include "constants/rgb.h"
 
-#ifdef FREE_LILYCOVE_LADY
 // No Lilycove Lady save data: her quiz screens edit a scratch copy that is dropped.
 #define QUIZ_LADY_QUIZ ((struct LilycoveLadyQuiz *)gStringVar3)
-#else
-#define QUIZ_LADY_QUIZ (&gSaveBlock1Ptr->lilycoveLady.quiz)
-#endif
 
 static EWRAM_DATA struct EasyChatScreen *sEasyChatScreen = NULL;
 static EWRAM_DATA struct EasyChatScreenControl *sScreenControl = NULL;
@@ -1419,9 +1413,6 @@ void ShowEasyChatScreen(void)
 {
     int i;
     u16 *words;
-#ifndef FREE_MAUVILLE_OLD_MAN
-    struct MauvilleManBard *bard;
-#endif
     u8 displayedPersonType = EASY_CHAT_PERSON_DISPLAY_NONE;
     switch (gSpecialVar_0x8004)
     {
@@ -1429,17 +1420,9 @@ void ShowEasyChatScreen(void)
         words = gSaveBlock1Ptr->mail[gSpecialVar_0x8005].words;
         break;
     case EASY_CHAT_TYPE_BARD_SONG:
-#ifdef FREE_MAUVILLE_OLD_MAN
         // No saved bard song: edit a scratch copy and drop it.
         words = (u16 *)gStringVar3;
         InitializeEasyChatWordArray(words, NUM_BARD_SONG_WORDS);
-#else
-        bard = &gSaveBlock1Ptr->oldMan.bard;
-        for (i = 0; i < NUM_BARD_SONG_WORDS; i ++)
-            bard->newSongLyrics[i] = bard->songLyrics[i];
-
-        words = bard->newSongLyrics;
-#endif
         break;
 #ifndef FREE_TV
     case EASY_CHAT_TYPE_INTERVIEW:
@@ -5124,35 +5107,6 @@ static bool8 IsEasyChatWordInvalid(u16 easyChatWord)
     }
 
     if (index >= numWords)
-        return TRUE;
-    else
-        return FALSE;
-}
-
-bool8 IsBardWordInvalid(u16 easyChatWord)
-{
-    int numWordsInGroup;
-    u8 groupId = EC_GROUP(easyChatWord);
-    u32 index = EC_INDEX(easyChatWord);
-    if (groupId >= EC_NUM_GROUPS)
-        return TRUE;
-
-    switch (groupId)
-    {
-    case EC_GROUP_POKEMON:
-    case EC_GROUP_POKEMON_NATIONAL:
-        numWordsInGroup = gNumBardWords_Species;
-        break;
-    case EC_GROUP_MOVE_1:
-    case EC_GROUP_MOVE_2:
-        numWordsInGroup = gNumBardWords_Moves;
-        break;
-    default:
-        numWordsInGroup = gEasyChatGroups[groupId].numWords;
-        break;
-    }
-
-    if (numWordsInGroup <= index)
         return TRUE;
     else
         return FALSE;

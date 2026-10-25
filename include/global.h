@@ -623,75 +623,6 @@ struct RamScript
 
 /*size = 0x8*/
 
-struct MauvilleManCommon
-{
-    u8 id;
-};
-
-struct MauvilleManBard
-{
-    /*0x00*/ u8 id;
-    /*0x01*/ //u8 padding1;
-    /*0x02*/ u16 songLyrics[NUM_BARD_SONG_WORDS];
-    /*0x0E*/ u16 newSongLyrics[NUM_BARD_SONG_WORDS];
-    /*0x1A*/ u8 playerName[PLAYER_NAME_LENGTH + 1];
-    /*0x22*/ u8 filler_2DB6[0x3];
-    /*0x25*/ u8 playerTrainerId[TRAINER_ID_LENGTH];
-    /*0x29*/ bool8 hasChangedSong;
-    /*0x2A*/ u8 language;
-    /*0x2B*/ //u8 padding2;
-}; /*size = 0x2C*/
-
-struct MauvilleManStoryteller
-{
-    u8 id;
-    bool8 alreadyRecorded;
-    u8 filler2[2];
-    u8 gameStatIDs[NUM_STORYTELLER_TALES];
-    u8 trainerNames[NUM_STORYTELLER_TALES][PLAYER_NAME_LENGTH];
-    u8 statValues[NUM_STORYTELLER_TALES][4];
-    u8 language[NUM_STORYTELLER_TALES];
-};
-
-struct MauvilleManGiddy
-{
-    /*0x00*/ u8 id;
-    /*0x01*/ u8 taleCounter;
-    /*0x02*/ u8 questionNum;
-    /*0x03*/ //u8 padding1;
-    /*0x04*/ u16 randomWords[GIDDY_MAX_TALES];
-    /*0x18*/ u8 questionList[GIDDY_MAX_QUESTIONS];
-    /*0x20*/ u8 language;
-    /*0x21*/ //u8 padding2;
-}; /*size = 0x2C*/
-
-struct MauvilleManHipster
-{
-    u8 id;
-    bool8 taughtWord;
-    u8 language;
-};
-
-struct MauvilleOldManTrader
-{
-    u8 id;
-    u8 decorations[NUM_TRADER_ITEMS];
-    u8 playerNames[NUM_TRADER_ITEMS][11];
-    u8 alreadyTraded;
-    u8 language[NUM_TRADER_ITEMS];
-};
-
-typedef union OldMan
-{
-    struct MauvilleManCommon common;
-    struct MauvilleManBard bard;
-    struct MauvilleManGiddy giddy;
-    struct MauvilleManHipster hipster;
-    struct MauvilleOldManTrader trader;
-    struct MauvilleManStoryteller storyteller;
-    u8 filler[0x40];
-} OldMan;
-
 #define LINK_B_RECORDS_COUNT 5
 
 struct LinkBattleRecord
@@ -784,42 +715,6 @@ struct LilycoveLadyQuiz
     /*0x02C*/ u8 prevQuestionId;
     /*0x02D*/ u8 language;
 };
-
-struct LilycoveLadyFavor
-{
-    /*0x000*/ u8 id;
-    /*0x001*/ u8 state;
-    /*0x002*/ bool8 likedItem;
-    /*0x003*/ u8 numItemsGiven;
-    /*0x004*/ u8 playerName[PLAYER_NAME_LENGTH + 1];
-    /*0x00C*/ u8 favorId;
-    /*0x00D*/ //u8 padding1;
-    /*0x00E*/ u16 itemId;
-    /*0x010*/ u16 bestItem;
-    /*0x012*/ u8 language;
-    /*0x013*/ //u8 padding2;
-};
-
-struct LilycoveLadyContest
-{
-    /*0x000*/ u8 id;
-    /*0x001*/ bool8 givenPokeblock;
-    /*0x002*/ u8 numGoodPokeblocksGiven;
-    /*0x003*/ u8 numOtherPokeblocksGiven;
-    /*0x004*/ u8 playerName[PLAYER_NAME_LENGTH + 1];
-    /*0x00C*/ u8 maxSheen;
-    /*0x00D*/ u8 category;
-    /*0x00E*/ u8 language;
-};
-
-typedef union // 3b58
-{
-    struct LilycoveLadyQuiz quiz;
-    struct LilycoveLadyFavor favor;
-    struct LilycoveLadyContest contest;
-    u8 id;
-    u8 filler[0x40];
-} LilycoveLady;
 
 struct TrainerNameRecord
 {
@@ -957,9 +852,6 @@ struct SaveBlock1
     /*0x2BE0*/ struct Mail mail[MAIL_COUNT];
     /*0x2E20*/ u8 unlockedTrendySayings[NUM_TRENDY_SAYING_BYTES]; // Bitfield for unlockable Easy Chat words in EC_GROUP_TRENDY_SAYING
     /*0x2E25*/ //u8 padding5[3];
-#ifndef FREE_MAUVILLE_OLD_MAN
-    /*0x2E28*/ OldMan oldMan;
-#endif
 #ifndef FREE_CONTEST_WINNERS
     /*0x2e90*/ struct ContestWinner contestWinners[NUM_CONTEST_WINNERS]; // see CONTEST_WINNER_*
 #endif
@@ -974,9 +866,6 @@ struct SaveBlock1
 #endif
 #ifndef FREE_MYSTERY_EVENT_BUFFERS
     /*0x3B14*/ struct RecordMixingGift recordMixingGift;
-#endif
-#ifndef FREE_LILYCOVE_LADY
-    /*0x3B58*/ LilycoveLady lilycoveLady;
 #endif
 #ifndef FREE_WIRELESS
     /*0x3B98*/ struct TrainerNameRecord trainerNameRecords[20];
