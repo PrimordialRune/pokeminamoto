@@ -27,8 +27,6 @@
   "gMapGroup_IndoorDynamic": [
     "BattleColosseum_2P",
     "TradeCenter",
-    "BattleColosseum_4P",
-    "InsideOfTruck",
-    "UnionRoom"
+    "InsideOfTruck"
   ]
 }

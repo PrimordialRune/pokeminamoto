@@ -1533,7 +1533,7 @@ static void OpenContextMenu(u8 taskId)
     case ITEMMENULOCATION_BERRY_TREE:
     case ITEMMENULOCATION_ITEMPC:
     default:
-        if (MenuHelpers_IsLinkActive() == TRUE || InUnionRoom() == TRUE)
+        if (MenuHelpers_IsLinkActive() == TRUE)
         {
             if (gBagPosition.pocket == KEYITEMS_POCKET)
             {
@@ -1974,7 +1974,7 @@ bool8 UseRegisteredKeyItemOnField(void)
 {
     u8 taskId;
 
-    if (InUnionRoom() == TRUE || CurrentBattlePyramidLocation() != PYRAMID_LOCATION_NONE || InBattlePike() || InMultiPartnerRoom() == TRUE)
+    if (CurrentBattlePyramidLocation() != PYRAMID_LOCATION_NONE || InBattlePike() || InMultiPartnerRoom() == TRUE)
         return FALSE;
     HideMapNamePopUpWindow();
     ChangeBgY_ScreenOff(0, 0, BG_COORD_SET);

@@ -152,16 +152,6 @@
       "blockdata_filepath": "data/layouts/TradeCenter/map.bin"
     },
     {
-      "id": "LAYOUT_BATTLE_COLOSSEUM_4P",
-      "name": "BattleColosseum_4P_Layout",
-      "width": 14,
-      "height": 9,
-      "primary_tileset": "gTileset_Building",
-      "secondary_tileset": "gTileset_CableClub",
-      "border_filepath": "data/layouts/BattleColosseum_4P/border.bin",
-      "blockdata_filepath": "data/layouts/BattleColosseum_4P/map.bin"
-    },
-    {
       "id": "LAYOUT_INSIDE_OF_TRUCK",
       "name": "InsideOfTruck_Layout",
       "width": 5,
@@ -170,16 +160,6 @@
       "secondary_tileset": "gTileset_InsideOfTruck",
       "border_filepath": "data/layouts/InsideOfTruck/border.bin",
       "blockdata_filepath": "data/layouts/InsideOfTruck/map.bin"
-    },
-    {
-      "id": "LAYOUT_UNION_ROOM",
-      "name": "UnionRoom_Layout",
-      "width": 15,
-      "height": 12,
-      "primary_tileset": "gTileset_Building",
-      "secondary_tileset": "gTileset_UnionRoom",
-      "border_filepath": "data/layouts/UnionRoom/border.bin",
-      "blockdata_filepath": "data/layouts/UnionRoom/map.bin"
     },
     {
       "id": "LAYOUT_LITTLEROOT_TOWN_PROFESSOR_BIRCHS_LAB_WITH_TABLE",

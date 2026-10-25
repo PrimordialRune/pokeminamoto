@@ -6,7 +6,6 @@
 #include "battle_message.h"
 #include "cable_club.h"
 #include "link.h"
-#include "link_rfu.h"
 #include "party_menu.h"
 #include "task.h"
 #include "util.h"
@@ -29,8 +28,6 @@ void HandleLinkBattleSetup(void)
 {
     if (gBattleTypeFlags & BATTLE_TYPE_LINK)
     {
-        if (gWirelessCommType)
-            SetWirelessCommType1();
         if (!gReceivedRemoteLinkPlayers)
             OpenLink();
         CreateTask(Task_WaitForLinkPlayerConnection, 0);
@@ -566,28 +563,21 @@ static void Task_HandleSendLinkBuffersData(u8 taskId)
             gTasks[taskId].tState++;
         break;
     case SENDTASK_STATE_COUNT_PLAYERS:
-        if (gWirelessCommType)
-        {
-            gTasks[taskId].tState++;
-        }
+        if (gBattleTypeFlags & BATTLE_TYPE_BATTLE_TOWER)
+            numPlayers = 2;
         else
-        {
-            if (gBattleTypeFlags & BATTLE_TYPE_BATTLE_TOWER)
-                numPlayers = 2;
-            else
-                numPlayers = (gBattleTypeFlags & BATTLE_TYPE_MULTI) ? 4 : 2;
+            numPlayers = (gBattleTypeFlags & BATTLE_TYPE_MULTI) ? 4 : 2;
 
-            if (GetLinkPlayerCount_2() >= numPlayers)
+        if (GetLinkPlayerCount_2() >= numPlayers)
+        {
+            if (IsLinkMaster())
             {
-                if (IsLinkMaster())
-                {
-                    CheckShouldAdvanceLinkState();
-                    gTasks[taskId].tState++;
-                }
-                else
-                {
-                    gTasks[taskId].tState++;
-                }
+                CheckShouldAdvanceLinkState();
+                gTasks[taskId].tState++;
+            }
+            else
+            {
+                gTasks[taskId].tState++;
             }
         }
         break;
@@ -650,7 +640,6 @@ void TryReceiveLinkBattleData(void)
 
     if (gReceivedRemoteLinkPlayers && (gBattleTypeFlags & BATTLE_TYPE_LINK_IN_BATTLE))
     {
-        DestroyTask_RfuIdle();
         for (i = 0; i < GetLinkPlayerCount(); i++)
         {
             if (GetBlockReceivedStatus() & gBitTable[i])

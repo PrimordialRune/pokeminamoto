@@ -217,31 +217,6 @@ struct Pokedex
     /*0x29*/ u8 seen[NUM_DEX_FLAG_BYTES];
 };
 
-struct PokemonJumpRecords
-{
-    u16 jumpsInRow;
-    u16 unused1; // Set to 0, never read
-    u16 excellentsInRow;
-    u16 gamesWithMaxPlayers;
-    u32 unused2; // Set to 0, never read
-    u32 bestJumpScore;
-};
-
-struct BerryPickingResults
-{
-    u32 bestScore;
-    u16 berriesPicked;
-    u16 berriesPickedInRow;
-    u8 field_8;
-    u8 field_9;
-    u8 field_A;
-    u8 field_B;
-    u8 field_C;
-    u8 field_D;
-    u8 field_E;
-    u8 field_F;
-};
-
 struct PyramidBag
 {
     u16 itemId[FRONTIER_LVL_MODE_COUNT][PYRAMID_BAG_ITEMS_COUNT];
@@ -250,9 +225,7 @@ struct PyramidBag
 
 struct BerryCrush
 {
-    u16 pressingSpeeds[4]; // For the record with each possible group size, 2-5 players
     u32 berryPowderAmount;
-    u32 unk;
 };
 
 struct ApprenticeMon
@@ -519,8 +492,6 @@ struct SaveBlock2
     /*0xDC*/ struct Apprentice apprentices[APPRENTICE_COUNT];
 #endif
     /*0x1EC*/ struct BerryCrush berryCrush;
-    /*0x1FC*/ struct PokemonJumpRecords pokeJump;
-    /*0x20C*/ struct BerryPickingResults berryPick;
     /*0x64C*/ struct BattleFrontier frontier;
 }; // sizeof=0xF2C
 
@@ -661,14 +632,6 @@ struct LilycoveLadyQuiz
     /*0x02D*/ u8 language;
 };
 
-struct TrainerNameRecord
-{
-    u32 trainerId;
-    u8 ALIGNED(2) trainerName[PLAYER_NAME_LENGTH + 1];
-};
-
-
-
 struct SaveBlock1
 {
     /*0x00*/ struct Coords16 pos;
@@ -723,9 +686,6 @@ struct SaveBlock1
     /*0x3030*/ struct DayCare daycare;
     /*0x3150*/ struct LinkBattleRecords linkBattleRecords;
     /*0x31DC*/ struct Roamer roamer;
-#ifndef FREE_WIRELESS
-    /*0x3B98*/ struct TrainerNameRecord trainerNameRecords[20];
-#endif
     // sizeof: 0x3D88 in vanilla; smaller with the FREE_* options in config.h
 };
 

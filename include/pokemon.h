@@ -388,7 +388,11 @@ extern const u8 gPPUpGetMask[];
 extern const u8 gPPUpClearMask[];
 extern const u8 gPPUpAddValues[];
 extern const u8 gStatStageRatios[MAX_STAT_STAGE + 1][2];
-extern const u16 gUnionRoomFacilityClasses[];
+// The number of possible trainer classes the opponent of a link battle can show as, per gender.
+// A power of 2 because of the way it's used in GetLinkOpponentTrainerPic / GetLinkOpponentTrainerClass.
+#define NUM_LINK_TRAINER_CLASSES (1 << 3) // 8
+
+extern const u16 gLinkTrainerFacilityClasses[];
 extern const struct SpriteTemplate gBattlerSpriteTemplates[];
 extern const s8 gNatureStatTable[][5];
 
@@ -411,8 +415,8 @@ void CreateMonWithEVSpreadNatureOTID(struct Pokemon *mon, u16 species, u8 level,
 void ConvertPokemonToBattleTowerPokemon(struct Pokemon *mon, struct BattleTowerPokemon *dest);
 bool8 ShouldIgnoreDeoxysForm(u8 caseId, u8 battler);
 void SetDeoxysStats(void);
-u16 GetUnionRoomTrainerPic(void);
-u16 GetUnionRoomTrainerClass(void);
+u16 GetLinkOpponentTrainerPic(void);
+u16 GetLinkOpponentTrainerClass(void);
 void CreateEnemyEventMon(void);
 void CalculateMonStats(struct Pokemon *mon);
 void BoxMonToMon(const struct BoxPokemon *src, struct Pokemon *dest);

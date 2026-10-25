@@ -277,7 +277,7 @@ u8 GetLRKeysPressedAndHeld(void)
 
 bool8 IsWritingMailAllowed(u16 itemId)
 {
-    if ((IsOverworldLinkActive() == TRUE || InUnionRoom() == TRUE) && ItemIsMail(itemId) == TRUE)
+    if (IsOverworldLinkActive() == TRUE && ItemIsMail(itemId) == TRUE)
         return FALSE;
     else
         return TRUE;

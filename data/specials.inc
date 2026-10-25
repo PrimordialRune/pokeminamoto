@@ -276,25 +276,11 @@ gSpecials::
 	def_special SetMirageTowerVisibility
 	def_special StartPlayerDescendMirageTower
 	def_special BufferTMHMMoveName
-	def_special IsWirelessAdapterConnected
-	def_special TryBecomeLinkLeader
-	def_special TryJoinLinkGroup
-	def_special RunUnionRoom
-	def_special ShowWirelessCommunicationScreen
-	def_special InitUnionRoom
-	def_special BufferUnionRoomPlayerName
-	def_special ChooseMonForWirelessMinigame
-	def_special Script_ResetUnionRoomTrade
 	def_special IsBadEggInParty
 	def_special HasAtLeastOneBerry
-	def_special IsPokemonJumpSpeciesInParty
-	def_special ShowPokemonJumpRecords
-	def_special IsDodrioInParty
-	def_special ShowDodrioBerryPickingRecords
 	def_special OffsetCameraForBattle
 	def_special GetDeptStoreDefaultFloorChoice
 	def_special BufferVarsForIVRater
-	def_special GetWirelessCommType
 	def_special ShowRankingHallRecordsWindow
 	def_special ScrollRankingHallRecordsWindow
 	def_special ShowFrontierManiacMessage
@@ -360,7 +346,6 @@ gSpecials::
 	def_special Script_DoRayquazaScene @ Listed twice
 	def_special LoopWingFlapSE
 	def_special DestroyMewEmergingGrassSprite
-	def_special ShowBerryCrushRankings
 	def_special GetBattlePyramidHint
 	def_special PlayerFaceTrainerAfterBattle
 	def_special IsLastMonThatKnowsSurf

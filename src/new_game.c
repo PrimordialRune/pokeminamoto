@@ -26,17 +26,14 @@
 #include "frontier_util.h"
 #include "pokedex.h"
 #include "save.h"
-#include "link_rfu.h"
 #include "main.h"
 #include "item_menu.h"
 #include "pokemon_storage_system.h"
-#include "pokemon_jump.h"
 #include "decoration_inventory.h"
 #include "secret_base.h"
 #include "player_pc.h"
 #include "field_specials.h"
 #include "berry_powder.h"
-#include "union_room_chat.h"
 #include "constants/items.h"
 
 extern const u8 EventScript_ResetAllMapFlags[];
@@ -162,16 +159,12 @@ void NewGameInitData(void)
     WarpToTruck();
     RunScriptImmediately(EventScript_ResetAllMapFlags);
     ResetMiniGamesRecords();
-    InitUnionRoomChatRegisteredTexts();
     ResetAllApprenticeData();
     InitMatchCallCounters();
-    WipeTrainerNameRecords();
 }
 
 static void ResetMiniGamesRecords(void)
 {
     CpuFill16(0, &gSaveBlock2Ptr->berryCrush, sizeof(struct BerryCrush));
     SetBerryPowder(&gSaveBlock2Ptr->berryCrush.berryPowderAmount, 0);
-    ResetPokemonJumpRecords();
-    CpuFill16(0, &gSaveBlock2Ptr->berryPick, sizeof(struct BerryPickingResults));
 }

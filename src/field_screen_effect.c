@@ -14,7 +14,6 @@
 #include "gpu_regs.h"
 #include "io_reg.h"
 #include "link.h"
-#include "link_rfu.h"
 #include "load_save.h"
 #include "main.h"
 #include "menu.h"
@@ -114,20 +113,6 @@ static void SetPlayerVisibility(bool8 visible)
     SetPlayerInvisibility(!visible);
 }
 
-static void Task_WaitForUnionRoomFade(u8 taskId)
-{
-    if (WaitForWeatherFadeIn() == TRUE)
-        DestroyTask(taskId);
-}
-
-void FieldCB_ContinueScriptUnionRoom(void)
-{
-    LockPlayerFieldControls();
-    Overworld_PlaySpecialMapMusic();
-    FadeInFromBlack();
-    CreateTask(Task_WaitForUnionRoomFade, 10);
-}
-
 static void Task_WaitForFadeAndEnableScriptCtx(u8 taskID)
 {
     if (WaitForWeatherFadeIn() == TRUE)
@@ -187,7 +172,7 @@ void FieldCB_ReturnToFieldCableLink(void)
     CreateTask(Task_ReturnToFieldCableLink, 10);
 }
 
-static void Task_ReturnToFieldWirelessLink(u8 taskId)
+static void Task_ReturnToFieldStandbyLink(u8 taskId)
 {
     struct Task *task = &gTasks[taskId];
 
@@ -198,12 +183,7 @@ static void Task_ReturnToFieldWirelessLink(u8 taskId)
         task->tState++;
         break;
     case 1:
-        if (!IsLinkTaskFinished())
-        {
-            if (++task->data[1] > 1800)
-                RfuSetErrorParams(F_RFU_ERROR_6 | F_RFU_ERROR_7);
-        }
-        else
+        if (IsLinkTaskFinished())
         {
             WarpFadeInScreen();
             task->tState++;
@@ -220,35 +200,12 @@ static void Task_ReturnToFieldWirelessLink(u8 taskId)
     }
 }
 
-void Task_ReturnToFieldRecordMixing(u8 taskId)
-{
-    struct Task *task = &gTasks[taskId];
-
-    switch (task->tState)
-    {
-    case 0:
-        SetLinkStandbyCallback();
-        task->tState++;
-        break;
-    case 1:
-        if (IsLinkTaskFinished())
-            task->tState++;
-        break;
-    case 2:
-        StartSendingKeysToLink();
-        ResetAllMultiplayerState();
-        UnlockPlayerFieldControls();
-        DestroyTask(taskId);
-        break;
-    }
-}
-
-void FieldCB_ReturnToFieldWirelessLink(void)
+void FieldCB_ReturnToFieldStandbyLink(void)
 {
     LockPlayerFieldControls();
     Overworld_PlaySpecialMapMusic();
     FillPalBufferBlack();
-    CreateTask(Task_ReturnToFieldWirelessLink, 10);
+    CreateTask(Task_ReturnToFieldStandbyLink, 10);
 }
 
 static void SetUpWarpExitTask(void)

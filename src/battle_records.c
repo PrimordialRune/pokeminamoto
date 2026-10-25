@@ -210,16 +210,13 @@ static void UpdateTrainerCardWinsLosses(s32 battler)
 
 void UpdatePlayerLinkBattleRecords(s32 battler)
 {
-    if (InUnionRoom() != TRUE)
-    {
-        UpdateTrainerCardWinsLosses(battler);
-        UpdateLinkBattleRecords(
-            &gSaveBlock1Ptr->linkBattleRecords,
-            gTrainerCards[battler].playerName,
-            gTrainerCards[battler].trainerId,
-            gBattleOutcome,
-            battler);
-    }
+    UpdateTrainerCardWinsLosses(battler);
+    UpdateLinkBattleRecords(
+        &gSaveBlock1Ptr->linkBattleRecords,
+        gTrainerCards[battler].playerName,
+        gTrainerCards[battler].trainerId,
+        gBattleOutcome,
+        battler);
 }
 
 static void PrintLinkBattleWinsLossesDraws(struct LinkBattleRecord *records)

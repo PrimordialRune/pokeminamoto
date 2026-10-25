@@ -29,7 +29,6 @@
 #include "constants/battle_frontier.h"
 #include "constants/rgb.h"
 #include "constants/trainers.h"
-#include "constants/union_room.h"
 
 enum {
     WIN_MSG,
@@ -406,11 +405,6 @@ static void Task_TrainerCard(u8 taskId)
         break;
     // Fade in
     case 7:
-        if (gWirelessCommType == 1 && gReceivedRemoteLinkPlayers == TRUE)
-        {
-            LoadWirelessStatusIndicatorSpriteGfx();
-            CreateWirelessStatusIndicatorSprite(DISPLAY_WIDTH - 10, DISPLAY_HEIGHT - 10);
-        }
         BlendPalettes(PALETTES_ALL, 16, sData->blendColor);
         BeginNormalPaletteFade(PALETTES_ALL, 0, 16, 0, sData->blendColor);
         SetVBlankCallback(VblankCb_TrainerCard);
@@ -443,15 +437,8 @@ static void Task_TrainerCard(u8 taskId)
         }
         else if (JOY_NEW(B_BUTTON))
         {
-            if (gReceivedRemoteLinkPlayers && sData->isLink && InUnionRoom() == TRUE)
-            {
-                sData->mainState = STATE_WAIT_LINK_PARTNER;
-            }
-            else
-            {
-                BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 16, sData->blendColor);
-                sData->mainState = STATE_CLOSE_CARD;
-            }
+            BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 16, sData->blendColor);
+            sData->mainState = STATE_CLOSE_CARD;
         }
         break;
     case STATE_WAIT_FLIP_TO_BACK:
@@ -464,11 +451,7 @@ static void Task_TrainerCard(u8 taskId)
     case STATE_HANDLE_INPUT_BACK:
         if (JOY_NEW(B_BUTTON))
         {
-            if (gReceivedRemoteLinkPlayers && sData->isLink && InUnionRoom() == TRUE)
-            {
-                sData->mainState = STATE_WAIT_LINK_PARTNER;
-            }
-            else if (gReceivedRemoteLinkPlayers)
+            if (gReceivedRemoteLinkPlayers)
             {
                 BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 16, sData->blendColor);
                 sData->mainState = STATE_CLOSE_CARD;
@@ -482,15 +465,8 @@ static void Task_TrainerCard(u8 taskId)
         }
         else if (JOY_NEW(A_BUTTON))
         {
-           if (gReceivedRemoteLinkPlayers && sData->isLink && InUnionRoom() == TRUE)
-           {
-               sData->mainState = STATE_WAIT_LINK_PARTNER;
-           }
-           else
-           {
-               BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 16, sData->blendColor);
-               sData->mainState = STATE_CLOSE_CARD;
-           }
+           BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 16, sData->blendColor);
+           sData->mainState = STATE_CLOSE_CARD;
         }
         break;
     case STATE_WAIT_LINK_PARTNER:
@@ -749,9 +725,9 @@ static void TrainerCard_GenerateCardForPlayer(struct TrainerCard *trainerCard)
         trainerCard->stars++;
 
     if (trainerCard->gender == FEMALE)
-        trainerCard->unionRoomClass = gUnionRoomFacilityClasses[(trainerCard->trainerId % NUM_UNION_ROOM_CLASSES) + NUM_UNION_ROOM_CLASSES];
+        trainerCard->unionRoomClass = gLinkTrainerFacilityClasses[(trainerCard->trainerId % NUM_LINK_TRAINER_CLASSES) + NUM_LINK_TRAINER_CLASSES];
     else
-        trainerCard->unionRoomClass = gUnionRoomFacilityClasses[trainerCard->trainerId % NUM_UNION_ROOM_CLASSES];
+        trainerCard->unionRoomClass = gLinkTrainerFacilityClasses[trainerCard->trainerId % NUM_LINK_TRAINER_CLASSES];
 }
 
 void TrainerCard_GenerateCardForLinkPlayer(struct TrainerCard *trainerCard)
@@ -765,9 +741,9 @@ void TrainerCard_GenerateCardForLinkPlayer(struct TrainerCard *trainerCard)
         trainerCard->stars++;
 
     if (trainerCard->gender == FEMALE)
-        trainerCard->unionRoomClass = gUnionRoomFacilityClasses[(trainerCard->trainerId % NUM_UNION_ROOM_CLASSES) + NUM_UNION_ROOM_CLASSES];
+        trainerCard->unionRoomClass = gLinkTrainerFacilityClasses[(trainerCard->trainerId % NUM_LINK_TRAINER_CLASSES) + NUM_LINK_TRAINER_CLASSES];
     else
-        trainerCard->unionRoomClass = gUnionRoomFacilityClasses[trainerCard->trainerId % NUM_UNION_ROOM_CLASSES];
+        trainerCard->unionRoomClass = gLinkTrainerFacilityClasses[trainerCard->trainerId % NUM_LINK_TRAINER_CLASSES];
 }
 
 void CopyTrainerCardData(struct TrainerCard *dst, struct TrainerCard *src, u8 gameVersion)
@@ -1746,10 +1722,7 @@ void ShowPlayerTrainerCard(void (*callback)(void))
     sData->callback2 = callback;
     sData->blendColor = RGB_BLACK;
 
-    if (InUnionRoom() == TRUE)
-        sData->isLink = TRUE;
-    else
-        sData->isLink = FALSE;
+    sData->isLink = FALSE;
 
     sData->language = GAME_LANGUAGE;
     TrainerCard_GenerateCardForPlayer(&sData->trainerCard);
@@ -1823,22 +1796,10 @@ static u8 VersionToCardType(u8 version)
 
 static void CreateTrainerCardTrainerPic(void)
 {
-    if (InUnionRoom() == TRUE && gReceivedRemoteLinkPlayers == 1)
-    {
-        CreateTrainerCardTrainerPicSprite(FacilityClassToPicIndex(sData->trainerCard.unionRoomClass),
-                    TRUE,
-                    sTrainerPicOffset[sData->isHoenn][sData->trainerCard.gender][0],
-                    sTrainerPicOffset[sData->isHoenn][sData->trainerCard.gender][1],
-                    8,
-                    WIN_TRAINER_PIC);
-    }
-    else
-    {
-        CreateTrainerCardTrainerPicSprite(FacilityClassToPicIndex(sTrainerPicFacilityClass[sData->cardType][sData->trainerCard.gender]),
-                    TRUE,
-                    sTrainerPicOffset[sData->isHoenn][sData->trainerCard.gender][0],
-                    sTrainerPicOffset[sData->isHoenn][sData->trainerCard.gender][1],
-                    8,
-                    WIN_TRAINER_PIC);
-    }
+    CreateTrainerCardTrainerPicSprite(FacilityClassToPicIndex(sTrainerPicFacilityClass[sData->cardType][sData->trainerCard.gender]),
+                TRUE,
+                sTrainerPicOffset[sData->isHoenn][sData->trainerCard.gender][0],
+                sTrainerPicOffset[sData->isHoenn][sData->trainerCard.gender][1],
+                8,
+                WIN_TRAINER_PIC);
 }

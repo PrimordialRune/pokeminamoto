@@ -3,8 +3,6 @@
 #include "crt0.h"
 #include "malloc.h"
 #include "link.h"
-#include "link_rfu.h"
-#include "librfu.h"
 #include "m4a.h"
 #include "bg.h"
 #include "rtc.h"
@@ -100,7 +98,6 @@ void AgbMain(void)
     InitIntrHandlers();
     m4aSoundInit();
     EnableVCountIntrAtLine150();
-    InitRFU();
     RtcInit();
     CheckForFlashMemory();
     InitMainCallbacks();
@@ -136,8 +133,6 @@ void AgbMain(void)
          && JOY_HELD_RAW(A_BUTTON)
          && JOY_HELD_RAW(B_START_SELECT) == B_START_SELECT)
         {
-            rfu_REQ_stopMode();
-            rfu_waitREQComplete();
             DoSoftReset();
         }
 
@@ -338,9 +333,7 @@ void SetSerialCallback(IntrCallback callback)
 
 static void VBlankIntr(void)
 {
-    if (gWirelessCommType != 0)
-        RfuVSync();
-    else if (gLinkVSyncDisabled == FALSE)
+    if (gLinkVSyncDisabled == FALSE)
         LinkVSync();
 
     gMain.vblankCounter1++;
@@ -360,8 +353,6 @@ static void VBlankIntr(void)
 
     if (!gMain.inBattle || !(gBattleTypeFlags & (BATTLE_TYPE_LINK | BATTLE_TYPE_FRONTIER)))
         Random();
-
-    UpdateWirelessStatusIndicatorSprite();
 
     INTR_CHECK |= INTR_FLAG_VBLANK;
     gMain.intrCheck |= INTR_FLAG_VBLANK;

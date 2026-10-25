@@ -1102,28 +1102,6 @@ bool8 ScrCmd_setobjectmovementtype(struct ScriptContext *ctx)
     return FALSE;
 }
 
-bool8 ScrCmd_createvobject(struct ScriptContext *ctx)
-{
-    u8 graphicsId = ScriptReadByte(ctx);
-    u8 virtualObjId = ScriptReadByte(ctx);
-    u16 x = VarGet(ScriptReadHalfword(ctx));
-    u32 y = VarGet(ScriptReadHalfword(ctx));
-    u8 elevation = ScriptReadByte(ctx);
-    u8 direction = ScriptReadByte(ctx);
-
-    CreateVirtualObject(graphicsId, virtualObjId, x, y, elevation, direction);
-    return FALSE;
-}
-
-bool8 ScrCmd_turnvobject(struct ScriptContext *ctx)
-{
-    u8 virtualObjId = ScriptReadByte(ctx);
-    u8 direction = ScriptReadByte(ctx);
-
-    TurnVirtualObject(virtualObjId, direction);
-    return FALSE;
-}
-
 // lockall freezes all object events except the player immediately.
 // The player is frozen after waiting for their current movement to finish.
 bool8 ScrCmd_lockall(struct ScriptContext *ctx)

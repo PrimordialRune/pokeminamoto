@@ -185,8 +185,8 @@ gScriptCmdTable::
 	script_cmd_table_entry SCR_OP_SETMAPLAYOUTINDEX             ScrCmd_setmaplayoutindex              @ 0xa7
 	script_cmd_table_entry SCR_OP_SETOBJECTSUBPRIORITY          ScrCmd_setobjectsubpriority           @ 0xa8
 	script_cmd_table_entry SCR_OP_RESETOBJECTSUBPRIORITY        ScrCmd_resetobjectsubpriority         @ 0xa9
-	script_cmd_table_entry SCR_OP_CREATEVOBJECT                 ScrCmd_createvobject                  @ 0xaa
-	script_cmd_table_entry SCR_OP_TURNVOBJECT                   ScrCmd_turnvobject                    @ 0xab
+	script_cmd_table_entry SCR_OP_CREATEVOBJECT                 ScrCmd_nop                  @ 0xaa
+	script_cmd_table_entry SCR_OP_TURNVOBJECT                   ScrCmd_nop                    @ 0xab
 	script_cmd_table_entry SCR_OP_OPENDOOR                      ScrCmd_opendoor                       @ 0xac
 	script_cmd_table_entry SCR_OP_CLOSEDOOR                     ScrCmd_closedoor                      @ 0xad
 	script_cmd_table_entry SCR_OP_WAITDOORANIM                  ScrCmd_waitdooranim                   @ 0xae

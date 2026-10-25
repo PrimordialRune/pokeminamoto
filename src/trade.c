@@ -13,9 +13,7 @@
 #include "gpu_regs.h"
 #include "graphics.h"
 #include "international_string_util.h"
-#include "librfu.h"
 #include "link.h"
-#include "link_rfu.h"
 #include "load_save.h"
 #include "mail.h"
 #include "main.h"
@@ -38,7 +36,6 @@
 #include "text_window.h"
 #include "trainer_card.h"
 #include "trade.h"
-#include "union_room.h"
 #include "util.h"
 #include "window.h"
 #include "constants/contest.h"
@@ -47,7 +44,6 @@
 #include "constants/region_map_sections.h"
 #include "constants/rgb.h"
 #include "constants/songs.h"
-#include "constants/union_room.h"
 
 // IDs for RunTradeMenuCallback
 enum {
@@ -67,7 +63,6 @@ enum {
     CB_START_LINK_TRADE,
     CB_INIT_CONFIRM_TRADE_PROMPT,
     CB_UNUSED_CLOSE_MSG,
-    CB_WAIT_TO_START_RFU_TRADE,
     CB_PARTNER_MON_INVALID,
     CB_IDLE = 100,
 };
@@ -316,14 +311,6 @@ static void CB2_SaveAndEndWirelessTrade(void);
 
 static bool8 SendLinkData(const void *linkData, u32 size)
 {
-#ifndef FREE_WIRELESS
-    if (gPlayerCurrActivity == ACTIVITY_29)
-    {
-        rfu_NI_setSendData(lman.acceptSlot_flag, 84, linkData, size);
-        return TRUE;
-    }
-    else
-#endif
     {
         return SendBlock(0, linkData, size);
     }
@@ -336,16 +323,6 @@ static void RequestLinkData(u8 type)
 
 static bool32 IsLinkTradeTaskFinished(void)
 {
-#ifndef FREE_WIRELESS
-    if (gPlayerCurrActivity == ACTIVITY_29)
-    {
-        if (gRfuSlotStatusNI[Rfu_GetIndexOfNewestChild(lman.acceptSlot_flag)]->send.state == 0)
-            return TRUE;
-        else
-            return FALSE;
-    }
-    else
-#endif
     {
         return IsLinkTaskFinished();
     }
@@ -358,30 +335,17 @@ static u32 _GetBlockReceivedStatus(void)
 
 static void TradeResetReceivedFlags(void)
 {
-#ifndef FREE_WIRELESS
-    if (IsWirelessTrade())
-        rfu_clearSlot(12, lman.acceptSlot_flag);
-    else
-#endif
         ResetBlockReceivedFlags();
 }
 
 static void TradeResetReceivedFlag(u32 who)
 {
-#ifndef FREE_WIRELESS
-    if (IsWirelessTrade())
-        rfu_clearSlot(12, lman.acceptSlot_flag);
-    else
-#endif
         ResetBlockReceivedFlag(who);
 }
 
 static bool32 IsWirelessTrade(void)
 {
-    if (gWirelessCommType && gPlayerCurrActivity == ACTIVITY_29)
-        return TRUE;
-    else
-        return FALSE;
+    return FALSE;
 }
 
 static void SetTradeLinkStandbyCallback(u8 unused)
@@ -477,18 +441,9 @@ static void CB2_CreateTradeMenu(void)
             gLinkType = LINKTYPE_TRADE_CONNECTING;
             sTradeMenu->timer = 0;
 
-            if (gWirelessCommType)
-            {
-                SetWirelessCommType1();
-                OpenLink();
-                CreateTask_RfuIdle();
-            }
-            else
-            {
-                OpenLink();
-                gMain.state++;
-                CreateTask(Task_WaitForLinkPlayerConnection, 1);
-            }
+            OpenLink();
+            gMain.state++;
+            CreateTask(Task_WaitForLinkPlayerConnection, 1);
         }
         else
         {
@@ -523,31 +478,13 @@ static void CB2_CreateTradeMenu(void)
     case 4:
         if (gReceivedRemoteLinkPlayers == TRUE && IsLinkPlayerDataExchangeComplete() == TRUE)
         {
-            DestroyTask_RfuIdle();
             CalculatePlayerPartyCount();
             gMain.state++;
             sTradeMenu->timer = 0;
-            if (gWirelessCommType)
-            {
-                Rfu_SetLinkRecovery(TRUE);
-                SetLinkStandbyCallback();
-            }
         }
         break;
     case 5:
-        if (gWirelessCommType)
-        {
-            if (IsLinkRfuTaskFinished())
-            {
-                gMain.state++;
-                LoadWirelessStatusIndicatorSpriteGfx();
-                CreateWirelessStatusIndicatorSprite(0, 0);
-            }
-        }
-        else
-        {
-            gMain.state++;
-        }
+        gMain.state++;
         break;
     case 6:
         if (BufferTradeParties())
@@ -735,11 +672,6 @@ static void CB2_ReturnToTradeMenu(void)
         gMain.state++;
         break;
     case 5:
-        if (gWirelessCommType)
-        {
-            LoadWirelessStatusIndicatorSpriteGfx();
-            CreateWirelessStatusIndicatorSprite(0, 0);
-        }
         gMain.state++;
         break;
     case 6:
@@ -911,15 +843,8 @@ static void CB_WaitToStartTrade(void)
         gSelectedTradeMonPositions[TRADE_PLAYER] = sTradeMenu->cursorPosition;
         gSelectedTradeMonPositions[TRADE_PARTNER] = sTradeMenu->partnerCursorPosition;
 
-        if (gWirelessCommType)
-        {
-            sTradeMenu->callbackId = CB_WAIT_TO_START_RFU_TRADE;
-        }
-        else
-        {
-            SetCloseLinkCallbackAndType(32);
-            sTradeMenu->callbackId = CB_START_LINK_TRADE;
-        }
+        SetCloseLinkCallbackAndType(32);
+        sTradeMenu->callbackId = CB_START_LINK_TRADE;
     }
 }
 
@@ -927,30 +852,14 @@ static void CB_StartLinkTrade(void)
 {
     gMain.savedCallback = CB2_StartCreateTradeMenu;
 
-    if (gWirelessCommType)
+    // Cable Link Trade
+    if (!gReceivedRemoteLinkPlayers)
     {
-        // Wireless Link Trade
-        if (IsLinkRfuTaskFinished())
-        {
-            Free(sMenuTextTileBuffer);
-            FreeAllWindowBuffers();
-            Free(sTradeMenu);
-            gMain.callback1 = NULL;
-            DestroyWirelessStatusIndicatorSprite();
-            SetMainCallback2(CB2_LinkTrade);
-        }
-    }
-    else
-    {
-        // Cable Link Trade
-        if (!gReceivedRemoteLinkPlayers)
-        {
-            Free(sMenuTextTileBuffer);
-            FreeAllWindowBuffers();
-            Free(sTradeMenu);
-            gMain.callback1 = NULL;
-            SetMainCallback2(CB2_LinkTrade);
-        }
+        Free(sMenuTextTileBuffer);
+        FreeAllWindowBuffers();
+        Free(sTradeMenu);
+        gMain.callback1 = NULL;
+        SetMainCallback2(CB2_LinkTrade);
     }
 }
 
@@ -1719,10 +1628,7 @@ static void CB_InitExitCanceledTrade(void)
 {
     if (!gPaletteFade.active)
     {
-        if (gWirelessCommType)
-            SetLinkStandbyCallback();
-        else
-            SetCloseLinkCallbackAndType(12);
+        SetCloseLinkCallbackAndType(12);
 
         sTradeMenu->callbackId = CB_EXIT_CANCELED_TRADE;
     }
@@ -1730,35 +1636,12 @@ static void CB_InitExitCanceledTrade(void)
 
 static void CB_ExitCanceledTrade(void)
 {
-    if (gWirelessCommType)
+    if (!gReceivedRemoteLinkPlayers)
     {
-        if (IsLinkTradeTaskFinished() && GetNumQueuedActions() == 0)
-        {
-            Free(sMenuTextTileBuffer);
-            Free(sTradeMenu);
-            FreeAllWindowBuffers();
-            DestroyWirelessStatusIndicatorSprite();
-            SetMainCallback2(CB2_ReturnToFieldFromMultiplayer);
-        }
-    }
-    else
-    {
-        if (!gReceivedRemoteLinkPlayers)
-        {
-            Free(sMenuTextTileBuffer);
-            Free(sTradeMenu);
-            FreeAllWindowBuffers();
-            SetMainCallback2(CB2_ReturnToFieldFromMultiplayer);
-        }
-    }
-}
-
-static void CB_WaitToStartRfuTrade(void)
-{
-    if (!Rfu_SetLinkRecovery(FALSE) && GetNumQueuedActions() == 0)
-    {
-        SetLinkStandbyCallback();
-        sTradeMenu->callbackId = CB_START_LINK_TRADE;
+        Free(sMenuTextTileBuffer);
+        Free(sTradeMenu);
+        FreeAllWindowBuffers();
+        SetMainCallback2(CB2_ReturnToFieldFromMultiplayer);
     }
 }
 
@@ -1819,9 +1702,6 @@ static void RunTradeMenuCallback(void)
         break;
     case CB_UNUSED_CLOSE_MSG:
         CB_ChooseMonAfterButtonPress();
-        break;
-    case CB_WAIT_TO_START_RFU_TRADE:
-        CB_WaitToStartRfuTrade();
         break;
     case CB_PARTNER_MON_INVALID:
         CB_PartnersMonWasInvalid();
@@ -2470,88 +2350,6 @@ static bool32 IsDeoxysOrMewUntradable(u16 species, bool8 isModernFatefulEncounte
     return FALSE;
 }
 
-int GetUnionRoomTradeMessageId(struct RfuGameCompatibilityData player, struct RfuGameCompatibilityData partner, u16 playerSpecies2, u16 partnerSpecies, u8 requestedType, u16 playerSpecies, bool8 isModernFatefulEncounter)
-{
-    bool8 playerHasNationalDex = player.hasNationalDex;
-    bool8 playerCanLinkNationally = player.canLinkNationally;
-    bool8 partnerHasNationalDex = partner.hasNationalDex;
-    bool8 partnerCanLinkNationally = partner.canLinkNationally;
-    u8 partnerVersion = partner.version;
-
-    // If partner is not using Emerald, both players must have progressed the story
-    // to a certain point (becoming champion in RSE, finishing the Sevii islands in FRLG)
-    if (partnerVersion != VERSION_EMERALD)
-    {
-        if (!playerCanLinkNationally)
-            return UR_TRADE_MSG_CANT_TRADE_WITH_PARTNER_1;
-        else if (!partnerCanLinkNationally)
-            return UR_TRADE_MSG_CANT_TRADE_WITH_PARTNER_2;
-    }
-
-    // Cannot trade illegitimate Deoxys/Mew
-    if (IsDeoxysOrMewUntradable(playerSpecies, isModernFatefulEncounter))
-        return UR_TRADE_MSG_MON_CANT_BE_TRADED_2;
-
-    if (partnerSpecies == SPECIES_EGG)
-    {
-        // If partner is trading an Egg then the player must also be trading an Egg
-        if (playerSpecies2 != partnerSpecies)
-            return UR_TRADE_MSG_NOT_EGG;
-    }
-    else
-    {
-        // Player's Pokémon must be of the type the partner requested
-        if (gSpeciesInfo[playerSpecies2].types[0] != requestedType
-         && gSpeciesInfo[playerSpecies2].types[1] != requestedType)
-            return UR_TRADE_MSG_NOT_MON_PARTNER_WANTS;
-    }
-
-    // If the player is trading an Egg then the partner must also be trading an Egg
-    // Odd that this wasn't checked earlier, as by this point we know either the partner doesn't have an Egg or that both do.
-    if (playerSpecies2 == SPECIES_EGG && playerSpecies2 != partnerSpecies)
-        return UR_TRADE_MSG_MON_CANT_BE_TRADED_1;
-
-    // If the player doesn't have the National Dex then Eggs and non-Hoenn Pokémon can't be traded
-    if (!playerHasNationalDex)
-    {
-        if (playerSpecies2 == SPECIES_EGG)
-            return UR_TRADE_MSG_EGG_CANT_BE_TRADED;
-
-        if (!IsSpeciesInHoennDex(playerSpecies2))
-            return UR_TRADE_MSG_MON_CANT_BE_TRADED_2;
-
-        if (!IsSpeciesInHoennDex(partnerSpecies))
-            return UR_TRADE_MSG_PARTNERS_MON_CANT_BE_TRADED;
-    }
-
-    // If the partner doesn't have the National Dex then the player's offer has to be a Hoenn Pokémon
-    if (!partnerHasNationalDex && !IsSpeciesInHoennDex(playerSpecies2))
-        return UR_TRADE_MSG_PARTNER_CANT_ACCEPT_MON;
-
-    // Trade is allowed
-    return UR_TRADE_MSG_NONE;
-}
-
-int CanRegisterMonForTradingBoard(struct RfuGameCompatibilityData player, u16 species2, u16 species, bool8 isModernFatefulEncounter)
-{
-    bool8 hasNationalDex = player.hasNationalDex;
-
-    if (IsDeoxysOrMewUntradable(species, isModernFatefulEncounter))
-        return CANT_REGISTER_MON;
-
-    if (hasNationalDex)
-        return CAN_REGISTER_MON;
-
-    // Eggs can only be traded if the player has the National Dex
-    if (species2 == SPECIES_EGG)
-        return CANT_REGISTER_EGG;
-
-    if (IsSpeciesInHoennDex(species2))
-        return CAN_REGISTER_MON;
-
-    return CANT_REGISTER_MON;
-}
-
 // Spin Trade wasnt fully implemented, but this checks if a mon would be valid to Spin Trade
 // Unlike later generations, this version of Spin Trade isnt only for Eggs
 int CanSpinTradeMon(struct Pokemon *mon, u16 monIdx)
@@ -2909,11 +2707,6 @@ void CB2_LinkTrade(void)
     case 12:
         if (!gPaletteFade.active)
         {
-            if (gWirelessCommType)
-            {
-                LoadWirelessStatusIndicatorSpriteGfx();
-                CreateWirelessStatusIndicatorSprite(0, 0);
-            }
             SetMainCallback2(CB2_UpdateLinkTrade);
         }
         break;
@@ -4669,8 +4462,7 @@ static void CB2_SaveAndEndTrade(void)
         DrawTextOnTradeWindow(0, gStringVar4, 0);
         break;
     case 50:
-        if (!InUnionRoom())
-            IncrementGameStat(GAME_STAT_POKEMON_TRADES);
+        IncrementGameStat(GAME_STAT_POKEMON_TRADES);
 
         SetContinueGameWarpStatusToDynamicWarp();
         LinkFullSave_Init();
@@ -4751,23 +4543,12 @@ static void CB2_SaveAndEndTrade(void)
     case 8:
         if (IsBGMStopped() == TRUE)
         {
-            if (gWirelessCommType && gMain.savedCallback == CB2_StartCreateTradeMenu)
-                SetTradeLinkStandbyCallback(3);
-            else
-                SetCloseLinkCallback();
+            SetCloseLinkCallback();
             gMain.state++;
         }
         break;
     case 9:
-        if (gWirelessCommType && gMain.savedCallback == CB2_StartCreateTradeMenu)
-        {
-            if (_IsLinkTaskFinished())
-            {
-                gSoftResetDisabled = FALSE;
-                SetMainCallback2(CB2_FreeTradeAnim);
-            }
-        }
-        else if (!gReceivedRemoteLinkPlayers)
+        if (!gReceivedRemoteLinkPlayers)
         {
             gSoftResetDisabled = FALSE;
             SetMainCallback2(CB2_FreeTradeAnim);
@@ -4793,8 +4574,6 @@ static void CB2_FreeTradeAnim(void)
         Free(GetBgTilemapBuffer(0));
         FreeMonSpritesGfx();
         FREE_AND_SET_NULL(sTradeAnim);
-        if (gWirelessCommType)
-            DestroyWirelessStatusIndicatorSprite();
         SetMainCallback2(gMain.savedCallback);
     }
     RunTasks();

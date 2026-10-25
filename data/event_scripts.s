@@ -50,7 +50,6 @@
 #include "constants/trade.h"
 #include "constants/trainers.h"
 #include "constants/tv.h"
-#include "constants/union_room.h"
 #include "constants/vars.h"
 #include "constants/weather.h"
 	.include "asm/macros.inc"
@@ -118,9 +117,7 @@ gStdScripts_End::
 	.include "data/scripts/shared_secret_base.inc"
 	.include "data/maps/BattleColosseum_2P/scripts.inc"
 	.include "data/maps/TradeCenter/scripts.inc"
-	.include "data/maps/BattleColosseum_4P/scripts.inc"
 	.include "data/maps/InsideOfTruck/scripts.inc"
-	.include "data/maps/UnionRoom/scripts.inc"
 
 	.include "data/scripts/std_msgbox.inc"
 	.include "data/scripts/trainer_battle.inc"
@@ -488,18 +485,6 @@ EventScript_CableClub_SetVarResult1::
 EventScript_CableClub_SetVarResult0::
 	setvar VAR_RESULT, 0
 	return
-
-Common_EventScript_UnionRoomAttendant::
-	call CableClub_EventScript_UnionRoomAttendant
-	end
-
-Common_EventScript_WirelessClubAttendant::
-	call CableClub_EventScript_WirelessClubAttendant
-	end
-
-Common_EventScript_DirectCornerAttendant::
-	call CableClub_EventScript_DirectCornerAttendant
-	end
 
 Common_EventScript_RemoveStaticPokemon::
 	fadescreenswapbuffers FADE_TO_BLACK

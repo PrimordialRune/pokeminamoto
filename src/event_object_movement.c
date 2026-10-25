@@ -26,7 +26,6 @@
 #include "constants/field_effects.h"
 #include "constants/items.h"
 #include "constants/trainer_types.h"
-#include "constants/union_room.h"
 
 #define SPECIAL_LOCALIDS_START (min(LOCALID_CAMERA, \
                                 min(LOCALID_PLAYER, \
@@ -128,7 +127,6 @@ static void DoRippleFieldEffect(struct ObjectEvent *, struct Sprite *);
 static void DoGroundEffects_OnSpawn(struct ObjectEvent *, struct Sprite *);
 static void DoGroundEffects_OnBeginStep(struct ObjectEvent *, struct Sprite *);
 static void DoGroundEffects_OnFinishStep(struct ObjectEvent *, struct Sprite *);
-static void VirtualObject_UpdateAnim(struct Sprite *);
 static void ApplyLevitateMovement(u8);
 static bool8 MovementType_Disguise_Callback(struct ObjectEvent *, struct Sprite *);
 static bool8 MovementType_Buried_Callback(struct ObjectEvent *, struct Sprite *);
@@ -162,7 +160,6 @@ static void ObjectEventSetSingleMovement(struct ObjectEvent *, struct Sprite *, 
 static void SetSpriteDataForNormalStep(struct Sprite *, u8, u8);
 static void InitSpriteForFigure8Anim(struct Sprite *);
 static bool8 AnimateSpriteInFigure8(struct Sprite *);
-static void SpriteCB_VirtualObject(struct Sprite *);
 static void DoShadowFieldEffect(struct ObjectEvent *);
 static void SetJumpSpriteData(struct Sprite *, u8, u8, u8);
 static void SetWalkSlowSpriteData(struct Sprite *, u8);
@@ -1580,59 +1577,6 @@ u8 CreateObjectGraphicsSprite(u16 graphicsId, void (*callback)(struct Sprite *),
         sprite = &gSprites[spriteId];
         SetSubspriteTables(sprite, subspriteTables);
         sprite->subspriteMode = SUBSPRITES_IGNORE_PRIORITY;
-    }
-    return spriteId;
-}
-
-#define sVirtualObjId   data[0]
-#define sVirtualObjElev data[1]
-
-// "Virtual Objects" are a class of sprites used instead of a full object event.
-// Used when more objects are needed than the object event limit (for Contest / Battle Dome audiences and group members in Union Room).
-// A unique id is given as an argument and stored in the sprite data to allow referring back to the same virtual object.
-// They can be turned (and, in the case of the Union Room, animated teleporting in and out) but do not have movement types
-// or any of the other data normally associated with object events.
-u8 CreateVirtualObject(u8 graphicsId, u8 virtualObjId, s16 x, s16 y, u8 elevation, u8 direction)
-{
-    u8 spriteId;
-    struct Sprite *sprite;
-    struct SpriteTemplate spriteTemplate;
-    const struct SubspriteTable *subspriteTables;
-    const struct ObjectEventGraphicsInfo *graphicsInfo;
-
-    graphicsInfo = GetObjectEventGraphicsInfo(graphicsId);
-    CopyObjectGraphicsInfoToSpriteTemplate(graphicsId, SpriteCB_VirtualObject, &spriteTemplate, &subspriteTables);
-    *(u16 *)&spriteTemplate.paletteTag = TAG_NONE;
-    x += MAP_OFFSET;
-    y += MAP_OFFSET;
-    SetSpritePosToOffsetMapCoords(&x, &y, 8, 16);
-    spriteId = CreateSpriteAtEnd(&spriteTemplate, x, y, 0);
-    if (spriteId != MAX_SPRITES)
-    {
-        sprite = &gSprites[spriteId];
-        sprite->centerToCornerVecX = -(graphicsInfo->width >> 1);
-        sprite->centerToCornerVecY = -(graphicsInfo->height >> 1);
-        sprite->y += sprite->centerToCornerVecY;
-        sprite->oam.paletteNum = graphicsInfo->paletteSlot;
-        if (sprite->oam.paletteNum >= 16)
-            sprite->oam.paletteNum -= 16;
-
-        sprite->coordOffsetEnabled = TRUE;
-        sprite->sVirtualObjId = virtualObjId;
-        sprite->sVirtualObjElev = elevation;
-        if (graphicsInfo->paletteSlot == PALSLOT_NPC_SPECIAL)
-            LoadSpecialObjectReflectionPalette(graphicsInfo->paletteTag, graphicsInfo->paletteSlot);
-        else if (graphicsInfo->paletteSlot >= 16)
-            _PatchObjectPalette(graphicsInfo->paletteTag, graphicsInfo->paletteSlot | 0xf0);
-
-        if (subspriteTables != NULL)
-        {
-            SetSubspriteTables(sprite, subspriteTables);
-            sprite->subspriteMode = SUBSPRITES_IGNORE_PRIORITY;
-        }
-        InitObjectPriorityByElevation(sprite, elevation);
-        SetObjectSubpriorityByElevation(elevation, sprite, 1);
-        StartSpriteAnim(sprite, GetFaceDirectionAnimNum(direction));
     }
     return spriteId;
 }
@@ -8573,181 +8517,6 @@ void UpdateObjectEventSpriteInvisibility(struct Sprite *sprite, bool8 invisible)
         sprite->invisible = TRUE;
     if ((s16)y >= DISPLAY_HEIGHT + 16 || y2 < -16)
         sprite->invisible = TRUE;
-}
-
-#define sInvisible     data[2]
-#define sAnimNum       data[3]
-#define sAnimState     data[4]
-
-static void SpriteCB_VirtualObject(struct Sprite *sprite)
-{
-    VirtualObject_UpdateAnim(sprite);
-    SetObjectSubpriorityByElevation(sprite->sVirtualObjElev, sprite, 1);
-    UpdateObjectEventSpriteInvisibility(sprite, sprite->sInvisible);
-}
-
-static void UNUSED DestroyVirtualObjects(void)
-{
-    int i;
-
-    for (i = 0; i < MAX_SPRITES; i++)
-    {
-        struct Sprite *sprite = &gSprites[i];
-        if(sprite->inUse && sprite->callback == SpriteCB_VirtualObject)
-            DestroySprite(sprite);
-    }
-}
-
-static int GetVirtualObjectSpriteId(u8 virtualObjId)
-{
-    int i;
-
-    for (i = 0; i < MAX_SPRITES; i++)
-    {
-        struct Sprite *sprite = &gSprites[i];
-        if (sprite->inUse && sprite->callback == SpriteCB_VirtualObject && (u8)sprite->sVirtualObjId == virtualObjId)
-            return i;
-    }
-    return MAX_SPRITES;
-}
-
-void TurnVirtualObject(u8 virtualObjId, u8 direction)
-{
-    u8 spriteId = GetVirtualObjectSpriteId(virtualObjId);
-
-    if (spriteId != MAX_SPRITES)
-        StartSpriteAnim(&gSprites[spriteId], GetFaceDirectionAnimNum(direction));
-}
-
-void SetVirtualObjectGraphics(u8 virtualObjId, u8 graphicsId)
-{
-    int spriteId = GetVirtualObjectSpriteId(virtualObjId);
-
-    if (spriteId != MAX_SPRITES)
-    {
-        struct Sprite *sprite = &gSprites[spriteId];
-        const struct ObjectEventGraphicsInfo *graphicsInfo = GetObjectEventGraphicsInfo(graphicsId);
-        u16 tileNum = sprite->oam.tileNum;
-
-        sprite->oam = *graphicsInfo->oam;
-        sprite->oam.tileNum = tileNum;
-        sprite->oam.paletteNum = graphicsInfo->paletteSlot;
-        sprite->images = graphicsInfo->images;
-
-        if (graphicsInfo->subspriteTables == NULL)
-        {
-            sprite->subspriteTables = NULL;
-            sprite->subspriteTableNum = 0;
-            sprite->subspriteMode = SUBSPRITES_OFF;
-        }
-        else
-        {
-            SetSubspriteTables(sprite, graphicsInfo->subspriteTables);
-            sprite->subspriteMode = SUBSPRITES_IGNORE_PRIORITY;
-        }
-        StartSpriteAnim(sprite, 0);
-    }
-}
-
-void SetVirtualObjectInvisibility(u8 virtualObjId, bool32 invisible)
-{
-    u8 spriteId = GetVirtualObjectSpriteId(virtualObjId);
-
-    if (spriteId == MAX_SPRITES)
-        return;
-
-    if (invisible)
-        gSprites[spriteId].sInvisible = TRUE;
-    else
-        gSprites[spriteId].sInvisible = FALSE;
-}
-
-bool32 IsVirtualObjectInvisible(u8 virtualObjId)
-{
-    u8 spriteId = GetVirtualObjectSpriteId(virtualObjId);
-
-    if (spriteId == MAX_SPRITES)
-        return FALSE;
-
-    return (gSprites[spriteId].sInvisible == TRUE);
-}
-
-void SetVirtualObjectSpriteAnim(u8 virtualObjId, u8 animNum)
-{
-    u8 spriteId = GetVirtualObjectSpriteId(virtualObjId);
-
-    if (spriteId != MAX_SPRITES)
-    {
-        gSprites[spriteId].sAnimNum = animNum;
-        gSprites[spriteId].sAnimState = 0;
-    }
-}
-
-static void MoveUnionRoomObjectUp(struct Sprite *sprite)
-{
-    switch(sprite->sAnimState)
-    {
-    case 0:
-        sprite->y2 = 0;
-        sprite->sAnimState++;
-    case 1:
-        sprite->y2 -= 8;
-        if (sprite->y2 == -DISPLAY_HEIGHT)
-        {
-            sprite->y2 = 0;
-            sprite->sInvisible = TRUE;
-            sprite->sAnimNum = 0;
-            sprite->sAnimState = 0;
-        }
-    }
-}
-
-static void MoveUnionRoomObjectDown(struct Sprite *sprite)
-{
-    switch(sprite->sAnimState)
-    {
-    case 0:
-        sprite->y2 = -DISPLAY_HEIGHT;
-        sprite->sAnimState++;
-    case 1:
-        sprite->y2 += 8;
-        if(sprite->y2 == 0)
-        {
-            sprite->sAnimNum = 0;
-            sprite->sAnimState = 0;
-        }
-    }
-}
-
-static void VirtualObject_UpdateAnim(struct Sprite *sprite)
-{
-    switch(sprite->sAnimNum)
-    {
-    case UNION_ROOM_SPAWN_IN:
-        MoveUnionRoomObjectDown(sprite);
-        break;
-    case UNION_ROOM_SPAWN_OUT:
-        MoveUnionRoomObjectUp(sprite);
-        break;
-    case 0:
-        break;
-    default:
-        sprite->sAnimNum = 0;
-        break;
-    }
-}
-
-bool32 IsVirtualObjectAnimating(u8 virtualObjId)
-{
-    u8 spriteId = GetVirtualObjectSpriteId(virtualObjId);
-
-    if (spriteId == MAX_SPRITES)
-        return FALSE;
-
-    if (gSprites[spriteId].sAnimNum != 0)
-        return TRUE;
-
-    return FALSE;
 }
 
 u32 StartFieldEffectForObjectEvent(u8 fieldEffectId, struct ObjectEvent *objectEvent)

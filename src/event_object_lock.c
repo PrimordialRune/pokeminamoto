@@ -104,18 +104,6 @@ void ScriptUnfreezeObjectEvents(void)
     UnfreezeObjectEvents();
 }
 
-void UnionRoom_UnlockPlayerAndChatPartner(void)
-{
-    u8 playerObjectId;
-
-    if (gObjectEvents[gSelectedObjectEvent].active)
-        ObjectEventClearHeldMovementIfFinished(&gObjectEvents[gSelectedObjectEvent]);
-    playerObjectId = GetObjectEventIdByLocalIdAndMap(LOCALID_PLAYER, 0, 0);
-    ObjectEventClearHeldMovementIfFinished(&gObjectEvents[playerObjectId]);
-    ScriptMovement_UnfreezeObjectEvents();
-    UnfreezeObjectEvents();
-}
-
 void Script_FacePlayer(void)
 {
     ObjectEventFaceOppositeDirection(&gObjectEvents[gSelectedObjectEvent], gSpecialVar_Facing);

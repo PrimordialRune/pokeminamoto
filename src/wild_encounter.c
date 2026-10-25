@@ -656,8 +656,6 @@ bool8 UpdateRepelCounter(void)
 
     if (InBattlePike() || CurrentBattlePyramidLocation() != PYRAMID_LOCATION_NONE)
         return FALSE;
-    if (InUnionRoom() == TRUE)
-        return FALSE;
 
     steps = VarGet(VAR_REPEL_STEP_COUNT);
 

@@ -43,7 +43,6 @@
 #include "constants/moves.h"
 #include "constants/songs.h"
 #include "constants/trainers.h"
-#include "constants/union_room.h"
 #include "constants/removed_maps.h"
 
 #define DAY_EVO_HOUR_BEGIN       12
@@ -1890,9 +1889,8 @@ static const u16 sDeoxysBaseStats[] =
     [STAT_SPDEF] = 90,
 };
 
-// The classes used by other players in the Union Room.
-// These should correspond with the overworld graphics in sUnionRoomObjGfxIds
-const u16 gUnionRoomFacilityClasses[NUM_UNION_ROOM_CLASSES * GENDER_COUNT] =
+// The classes shown for the other player in a link battle.
+const u16 gLinkTrainerFacilityClasses[NUM_LINK_TRAINER_CLASSES * GENDER_COUNT] =
 {
     // Male classes
     FACILITY_CLASS_COOLTRAINER_M,
@@ -2736,28 +2734,28 @@ void SetDeoxysStats(void)
     }
 }
 
-u16 GetUnionRoomTrainerPic(void)
+u16 GetLinkOpponentTrainerPic(void)
 {
     u8 linkId;
     u32 arrId;
 
     linkId = GetMultiplayerId() ^ 1;
 
-    arrId = gLinkPlayers[linkId].trainerId % NUM_UNION_ROOM_CLASSES;
-    arrId |= gLinkPlayers[linkId].gender * NUM_UNION_ROOM_CLASSES;
-    return FacilityClassToPicIndex(gUnionRoomFacilityClasses[arrId]);
+    arrId = gLinkPlayers[linkId].trainerId % NUM_LINK_TRAINER_CLASSES;
+    arrId |= gLinkPlayers[linkId].gender * NUM_LINK_TRAINER_CLASSES;
+    return FacilityClassToPicIndex(gLinkTrainerFacilityClasses[arrId]);
 }
 
-u16 GetUnionRoomTrainerClass(void)
+u16 GetLinkOpponentTrainerClass(void)
 {
     u8 linkId;
     u32 arrId;
 
     linkId = GetMultiplayerId() ^ 1;
 
-    arrId = gLinkPlayers[linkId].trainerId % NUM_UNION_ROOM_CLASSES;
-    arrId |= gLinkPlayers[linkId].gender * NUM_UNION_ROOM_CLASSES;
-    return gFacilityClassToTrainerClass[gUnionRoomFacilityClasses[arrId]];
+    arrId = gLinkPlayers[linkId].trainerId % NUM_LINK_TRAINER_CLASSES;
+    arrId |= gLinkPlayers[linkId].gender * NUM_LINK_TRAINER_CLASSES;
+    return gFacilityClassToTrainerClass[gLinkTrainerFacilityClasses[arrId]];
 }
 
 void CreateEnemyEventMon(void)

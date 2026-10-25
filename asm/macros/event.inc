@@ -1323,26 +1323,6 @@
 	map \map
 	.endm
 
-	@ Creates a sprite with object graphics. Used when creating large groups of static NPCs that exceed
-	@ the object event limit (e.g. Contest / Battle Dome audiences and Union Room group members).
-	@ The specified id can be used to refer to the sprite again later with turnvobject.
-	.macro createvobject graphicsId:req, id:req, x:req, y:req, elevation=3, direction=DIR_SOUTH
-	.byte SCR_OP_CREATEVOBJECT
-	.byte \graphicsId
-	.byte \id
-	.2byte \x
-	.2byte \y
-	.byte \elevation
-	.byte \direction
-	.endm
-
-	@ Turns a sprite created with createvobject.
-	.macro turnvobject id:req, direction:req
-	.byte SCR_OP_TURNVOBJECT
-	.byte \id
-	.byte \direction
-	.endm
-
 	@ Opens the door metatile at (x, y) with an animation.
 	.macro opendoor x:req, y:req
 	.byte SCR_OP_OPENDOOR
