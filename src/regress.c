@@ -382,6 +382,10 @@ void Regress_OverworldTick(void)
         HideMapNamePopUpWindow(); // what pressing A on a TV does first
         ScriptContext_SetupScript(EventScript_TV);
         break;
+    case REGRESS_CMD_CABLE_CLUB:
+        SetWarpDestination(MAP_GROUP(MAP_OLDALE_TOWN_POKEMON_CENTER_2F), MAP_NUM(MAP_OLDALE_TOWN_POKEMON_CENTER_2F), WARP_ID_NONE, 10, 3);
+        DoWarp();
+        break;
     }
     gRegress.cmdDone++;
 }

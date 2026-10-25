@@ -17,6 +17,7 @@ enum
     REGRESS_CMD_DUMP,    // write the game state into gRegress.dump
     REGRESS_CMD_HEAL,
     REGRESS_CMD_TV,      // run the TV script as if the player checked a TV
+    REGRESS_CMD_CABLE_CLUB, // warp in front of the Cable Club attendant in Oldale's Pokémon Center 2F
 };
 
 #define REGRESS_MAGIC 0x53524752 // "RGRS"

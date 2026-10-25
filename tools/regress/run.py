@@ -31,7 +31,7 @@ EMU = os.path.join(ROOT, "tools", "gba-emu", "gbaemu")
 KEYS = {"A": 1, "B": 2, "SELECT": 4, "START": 8, "RIGHT": 16, "LEFT": 32,
         "UP": 64, "DOWN": 128, "R": 256, "L": 512}
 
-CMD_SETUP, CMD_WILD, CMD_TRAINER, CMD_PC, CMD_DUMP, CMD_HEAL, CMD_TV = 1, 2, 3, 4, 5, 6, 7
+CMD_SETUP, CMD_WILD, CMD_TRAINER, CMD_PC, CMD_DUMP, CMD_HEAL, CMD_TV, CMD_CABLE_CLUB = 1, 2, 3, 4, 5, 6, 7, 8
 
 # Start menu order with the Pokedex and Pokemon flags set and no PokeNav
 MENU = ["POKEDEX", "POKEMON", "BAG", "PLAYER", "SAVE", "OPTION", "EXIT"]
