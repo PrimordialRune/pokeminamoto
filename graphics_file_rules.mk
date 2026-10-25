@@ -17,7 +17,6 @@ PKNAVOPTIONSGFXDIR := graphics/pokenav/options
 WALLPAPERGFXDIR := graphics/pokemon_storage/wallpapers
 OBJEVENTGFXDIR := graphics/object_events
 MISCGFXDIR := graphics/misc
-JPCONTESTGFXDIR := graphics/contest/japanese
 POKEDEXGFXDIR := graphics/pokedex
 STARTERGFXDIR := graphics/starter_choose
 NAMINGGFXDIR := graphics/naming_screen
@@ -306,9 +305,6 @@ $(TITLESCREENGFXDIR)/pokemon_logo.gbapal: %.gbapal: %.pal
 $(TITLESCREENGFXDIR)/emerald_version.8bpp: %.8bpp: %.png
 	$(GFX) $< $@ -mwidth 8 -mheight 4
 
-graphics/pokemon_jump/bg.4bpp: %.4bpp: %.png
-	$(GFX) $< $@ -num_tiles 63 -Wnum_tiles
-
 graphics/pokenav/region_map/map.8bpp: %.8bpp: %.png
 	$(GFX) $< $@ -num_tiles 233 -Wnum_tiles
 
@@ -365,21 +361,6 @@ $(UNUSEDGFXDIR)/color_frames.4bpp: %.4bpp: %.png
 $(BATINTGFXDIR)/unused_window2bar.4bpp: %.4bpp: %.png
 	$(GFX) $< $@ -num_tiles 5 -Wnum_tiles
 
-$(JPCONTESTGFXDIR)/composite_1.4bpp: $(JPCONTESTGFXDIR)/frame_1.4bpp \
-                                     $(JPCONTESTGFXDIR)/floor.4bpp \
-                                     $(JPCONTESTGFXDIR)/frame_2.4bpp \
-                                     $(JPCONTESTGFXDIR)/symbols.4bpp \
-                                     $(JPCONTESTGFXDIR)/meter.4bpp \
-                                     $(JPCONTESTGFXDIR)/letters.4bpp \
-                                     $(JPCONTESTGFXDIR)/numbers.4bpp
-	@cat $^ >$@
-
-$(JPCONTESTGFXDIR)/composite_2.4bpp: $(JPCONTESTGFXDIR)/interface.4bpp \
-                                     $(JPCONTESTGFXDIR)/audience.4bpp
-	@cat $^ >$@
-
-$(JPCONTESTGFXDIR)/voltage.4bpp: %.4bpp: %.png
-	$(GFX) $< $@ -num_tiles 36 -Wnum_tiles
 
 $(BTLANMSPRGFXDIR)/ice_crystals.4bpp: $(BTLANMSPRGFXDIR)/ice_crystals_0.4bpp \
                                       $(BTLANMSPRGFXDIR)/ice_crystals_1.4bpp \
@@ -438,9 +419,6 @@ $(RAYQUAZAGFXDIR)/scene_4/streaks.4bpp: %.4bpp: %.png
 
 $(RAYQUAZAGFXDIR)/scene_4/rayquaza.4bpp: %.4bpp: %.png
 	$(GFX) $< $@ -num_tiles 155 -Wnum_tiles
-
-graphics/picture_frame/lobby.4bpp: %.4bpp: %.png
-	$(GFX) $< $@ -num_tiles 86 -Wnum_tiles
 
 $(ROULETTEGFXDIR)/roulette_tilt.4bpp: $(ROULETTEGFXDIR)/shroomish.4bpp \
                                       $(ROULETTEGFXDIR)/tailow.4bpp
