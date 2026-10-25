@@ -11,6 +11,7 @@
 #include "gpu_regs.h"
 #include "main.h"
 #include "malloc.h"
+#include "menu.h"
 #include "overworld.h"
 #include "palette.h"
 #include "random.h"
@@ -129,6 +130,14 @@ static void Task_FrontierLogoWave(u8);
 static void Task_FrontierSquares(u8);
 static void Task_FrontierSquaresScroll(u8);
 static void Task_FrontierSquaresSpiral(u8);
+static void Task_Gen1DoubleCircle(u8);
+static void Task_Gen1Circle(u8);
+static void Task_Gen1SpiralIn(u8);
+static void Task_Gen1SpiralOut(u8);
+static void Task_Gen1HorizontalStripes(u8);
+static void Task_Gen1VerticalStripes(u8);
+static void Task_Gen1Shrink(u8);
+static void Task_Gen1Split(u8);
 static void VBlankCB_BattleTransition(void);
 static void VBlankCB_Swirl(void);
 static void HBlankCB_Swirl(void);
@@ -336,10 +345,11 @@ static const u32 sFrontierSquares_Shrink1_Tileset[] = INCBIN_U32("graphics/battl
 static const u32 sFrontierSquares_Shrink2_Tileset[] = INCBIN_U32("graphics/battle_transitions/frontier_square_4.4bpp.lz");
 static const u32 sFrontierSquares_Tilemap[] = INCBIN_U32("graphics/battle_transitions/frontier_squares.bin");
 
-// All battle transitions use the same intro
+// All of Emerald's battle transitions use the same intro. The Gen 1 ones
+// have none (the circles flash the screen themselves).
 static const TaskFunc sTasks_Intro[B_TRANSITION_COUNT] =
 {
-    [0 ... B_TRANSITION_COUNT - 1] = &Task_Intro
+    [0 ... B_TRANSITION_GEN1_DOUBLE_CIRCLE - 1] = &Task_Intro
 };
 
 // After the intro each transition has a unique main task.
@@ -388,6 +398,14 @@ static const TaskFunc sTasks_Main[B_TRANSITION_COUNT] =
     [B_TRANSITION_FRONTIER_CIRCLES_CROSS_IN_SEQ] = Task_FrontierCirclesCrossInSeq,
     [B_TRANSITION_FRONTIER_CIRCLES_ASYMMETRIC_SPIRAL_IN_SEQ] = Task_FrontierCirclesAsymmetricSpiralInSeq,
     [B_TRANSITION_FRONTIER_CIRCLES_SYMMETRIC_SPIRAL_IN_SEQ] = Task_FrontierCirclesSymmetricSpiralInSeq,
+    [B_TRANSITION_GEN1_DOUBLE_CIRCLE] = Task_Gen1DoubleCircle,
+    [B_TRANSITION_GEN1_CIRCLE] = Task_Gen1Circle,
+    [B_TRANSITION_GEN1_SPIRAL_IN] = Task_Gen1SpiralIn,
+    [B_TRANSITION_GEN1_SPIRAL_OUT] = Task_Gen1SpiralOut,
+    [B_TRANSITION_GEN1_HORIZONTAL_STRIPES] = Task_Gen1HorizontalStripes,
+    [B_TRANSITION_GEN1_VERTICAL_STRIPES] = Task_Gen1VerticalStripes,
+    [B_TRANSITION_GEN1_SHRINK] = Task_Gen1Shrink,
+    [B_TRANSITION_GEN1_SPLIT] = Task_Gen1Split,
 };
 
 static const TransitionStateFunc sTaskHandlers[] =
@@ -4774,3 +4792,464 @@ static bool8 FrontierSquaresScroll_End(struct Task *task)
 #undef tScrollYDir
 #undef tScrollUpdateFlag
 #undef tSquareNum
+
+//-----------------------------------------------------------------
+// Gen 1 transitions (B_TRANSITION_GEN1_*)
+//
+// Rebuilt from pret/pokered engine/battle/battle_transitions.asm. Red and
+// Green wipe the screen by turning its 8x8 tiles black a few at a time. Here
+// that is one black tile on BG0, which has priority 0 in the field, so it
+// covers the map and the sprites. The tiles go into BG0's tilemap buffer and
+// reach VRAM in VBlank with the field's other tilemap copies, so a step never
+// tears. The GBA screen is 30x20 tiles instead of 20x18: the counts below are
+// scaled so that every wipe takes as long as it did on the Game Boy.
+//
+//   wild, outdoors      flash x3, then DOUBLE_CIRCLE (weaker) / CIRCLE (stronger)
+//   trainer, outdoors   SPIRAL_IN (weaker) / SPIRAL_OUT (stronger)
+//   wild, dungeon       HORIZONTAL_STRIPES / VERTICAL_STRIPES
+//   trainer, dungeon    SHRINK / SPLIT (the map itself slides, see below)
+//
+// "Stronger" is Gen 1's rule: the foe is at least 3 levels above the
+// player's first healthy Pokémon (see GetWildBattleTransition).
+//-----------------------------------------------------------------
+
+#include "data/battle_transition_gen1.h"
+
+#define GEN1_SCREEN_W   (DISPLAY_WIDTH / 8)
+#define GEN1_SCREEN_H   (DISPLAY_HEIGHT / 8)
+#define GEN1_BLACK_TILE (1 | (15 << 12)) // tile 1 of BG0, palette 15
+
+enum {
+    GEN1_DOUBLE_CIRCLE,
+    GEN1_CIRCLE,
+    GEN1_SPIRAL_IN,
+    GEN1_SPIRAL_OUT,
+    GEN1_HORIZONTAL_STRIPES,
+    GEN1_VERTICAL_STRIPES,
+    GEN1_SHRINK,
+    GEN1_SPLIT,
+};
+
+enum {
+    GEN1_STATE_INIT,
+    GEN1_STATE_FLASH,
+    GEN1_STATE_MASK,
+    GEN1_STATE_WIPE,
+    GEN1_STATE_END,
+};
+
+#define tStyle data[1]
+#define tTimer data[2]
+#define tStep  data[3]
+#define tSlideBg data[4] // Shrink/Split: map BGs moved so far in this step
+
+// Frames per step and number of steps of each wipe
+static const u8 sGen1StepFrames[] = {
+    [GEN1_DOUBLE_CIRCLE]      = 3,
+    [GEN1_CIRCLE]             = 3,
+    [GEN1_SPIRAL_IN]          = 3,
+    [GEN1_SPIRAL_OUT]         = 1,
+    [GEN1_HORIZONTAL_STRIPES] = 2,
+    [GEN1_VERTICAL_STRIPES]   = 3,
+    [GEN1_SHRINK]             = 6,
+    [GEN1_SPLIT]              = 6,
+};
+
+#define GEN1_SPIRAL_IN_TILES  12 // tiles per step: 600 tiles in 150 frames, as Red's 360 in ~154
+#define GEN1_SPIRAL_OUT_TILES  5 // 600 tiles in 120 frames, as Red's 360 in 120
+#define GEN1_SLIDE_STEPS      10
+
+static const u16 sGen1StepCount[] = {
+    [GEN1_DOUBLE_CIRCLE]      = 10,
+    [GEN1_CIRCLE]             = 20,
+    [GEN1_SPIRAL_IN]          = GEN1_SCREEN_W * GEN1_SCREEN_H / GEN1_SPIRAL_IN_TILES,
+    [GEN1_SPIRAL_OUT]         = GEN1_SCREEN_W * GEN1_SCREEN_H / GEN1_SPIRAL_OUT_TILES,
+    [GEN1_HORIZONTAL_STRIPES] = GEN1_SCREEN_W,
+    [GEN1_VERTICAL_STRIPES]   = GEN1_SCREEN_H,
+    [GEN1_SHRINK]             = GEN1_SLIDE_STEPS,
+    [GEN1_SPLIT]              = GEN1_SLIDE_STEPS,
+};
+
+// Red's flash cycles BGP through these shade shifts, 2 frames each, 3 times:
+// darker by 1, 2, 3 (black), back, lighter by 1, 2, 3 (white), back.
+// Positive is towards black, negative towards white. Only the BG palettes
+// flash, as only BGP did on the Game Boy; the sprites keep their colors.
+static const s8 sGen1FlashShifts[] = {1, 2, 3, 2, 1, 0, -1, -2, -3, -2, -1, 0};
+static const u8 sGen1ShiftToBlend[] = {0, 5, 11, 16};
+#define GEN1_FLASH_FRAMES  2
+#define GEN1_FLASH_REPEATS 3
+
+static u16 *Gen1_MaskTilemap(void)
+{
+    u16 *tilemap = GetBgTilemapBuffer(0);
+    u16 *tileset;
+
+    if (tilemap == NULL)
+        GetBg0TilesDst(&tilemap, &tileset);
+    return tilemap;
+}
+
+static void Gen1_CommitMask(void)
+{
+    if (GetBgTilemapBuffer(0) != NULL)
+        ScheduleBgCopyTilemapToVram(0);
+}
+
+static inline void Gen1_BlackTile(u16 *tilemap, u32 x, u32 y)
+{
+    if (x < GEN1_SCREEN_W && y < GEN1_SCREEN_H)
+        tilemap[y * 32 + x] = GEN1_BLACK_TILE;
+}
+
+static void Gen1_BlackRect(u16 *tilemap, u32 left, u32 top, u32 right, u32 bottom)
+{
+    u32 x, y;
+
+    for (y = top; y < bottom; y++)
+        for (x = left; x < right; x++)
+            Gen1_BlackTile(tilemap, x, y);
+}
+
+// Load a clear tile 0 and a black tile 1 into BG0's charblock and clear its
+// tilemap (this also removes any text box still on screen).
+static void Gen1_InitMask(void)
+{
+    static const u16 sBlack = RGB_BLACK;
+    u16 *tilemap, *tileset;
+
+    GetBg0TilesDst(&tilemap, &tileset);
+    CpuFill32(0, tileset, TILE_SIZE_4BPP);
+    CpuFill32(0x11111111, tileset + TILE_SIZE_4BPP / 2, TILE_SIZE_4BPP);
+    LoadPalette(&sBlack, BG_PLTT_ID(15) + 1, PLTT_SIZEOF(1));
+    CpuFill16(0, tilemap, BG_SCREEN_SIZE);
+    if (GetBgTilemapBuffer(0) != NULL)
+        CpuFill16(0, GetBgTilemapBuffer(0), BG_SCREEN_SIZE);
+    SetGpuReg(REG_OFFSET_BG0HOFS, 0);
+    SetGpuReg(REG_OFFSET_BG0VOFS, 0);
+    SetGpuRegBits(REG_OFFSET_DISPCNT, DISPCNT_BG0_ON);
+}
+
+// Tile k (0 = first) of a spiral that runs down the left edge, right along
+// the bottom, up the right edge and left along the top, then the next ring in.
+static void Gen1_SpiralTile(u32 k, u32 *x, u32 *y)
+{
+    u32 ring, w, h, len;
+
+    for (ring = 0; ; ring++)
+    {
+        w = GEN1_SCREEN_W - 2 * ring;
+        h = GEN1_SCREEN_H - 2 * ring;
+        len = (w == 1 || h == 1) ? w * h : 2 * w + 2 * h - 4;
+        if (k < len)
+            break;
+        k -= len;
+    }
+    if (h == 1)
+    {
+        *x = ring + k;
+        *y = ring;
+    }
+    else if (w == 1 || k < h)
+    {
+        *x = ring;
+        *y = ring + k;
+    }
+    else if ((k -= h) < w - 1)
+    {
+        *x = ring + 1 + k;
+        *y = ring + h - 1;
+    }
+    else if ((k -= w - 1) < h - 1)
+    {
+        *x = ring + w - 1;
+        *y = ring + h - 2 - k;
+    }
+    else
+    {
+        k -= h - 1;
+        *x = ring + w - 2 - k;
+        *y = ring;
+    }
+}
+
+// Shrink and Split move the picture itself, as Red copies its tilemap rows
+// and columns towards (or away from) the centre. The field's three map BGs
+// share one scroll, so the same tile shift is applied to each BG's tilemap
+// buffer; one BG per frame, then all are copied to VRAM together.
+#define MAP_ENTRY(map, ox, oy, sx, sy) (map)[(((oy) + (sy)) & 31) * 32 + (((ox) + (sx)) & 31)]
+
+static void Gen1_SlideBg(u8 bg, bool32 outward, u32 dx)
+{
+    u16 *map = GetBgTilemapBuffer(bg);
+    u32 ox, oy;
+    s32 sx, sy;
+
+    if (map == NULL)
+        return;
+    ox = GetGpuReg(REG_OFFSET_BG0HOFS + bg * 4) >> 3;
+    oy = GetGpuReg(REG_OFFSET_BG0VOFS + bg * 4) >> 3;
+
+    // The screen shows 31x21 tilemap entries when the scroll isn't tile aligned.
+    if (!outward)
+    {
+        // Top half down one row, bottom half up one row
+        for (sy = GEN1_SCREEN_H / 2 - 1; sy > 0; sy--)
+            for (sx = 0; sx <= GEN1_SCREEN_W; sx++)
+                MAP_ENTRY(map, ox, oy, sx, sy) = MAP_ENTRY(map, ox, oy, sx, sy - 1);
+        for (sy = GEN1_SCREEN_H / 2; sy < GEN1_SCREEN_H; sy++)
+            for (sx = 0; sx <= GEN1_SCREEN_W; sx++)
+                MAP_ENTRY(map, ox, oy, sx, sy) = MAP_ENTRY(map, ox, oy, sx, sy + 1);
+        // Left half right by dx columns, right half left by dx
+        for (sy = 0; sy <= GEN1_SCREEN_H; sy++)
+        {
+            for (sx = GEN1_SCREEN_W / 2 - 1; sx >= (s32)dx; sx--)
+                MAP_ENTRY(map, ox, oy, sx, sy) = MAP_ENTRY(map, ox, oy, sx - dx, sy);
+            for (sx = GEN1_SCREEN_W / 2; sx + dx <= GEN1_SCREEN_W; sx++)
+                MAP_ENTRY(map, ox, oy, sx, sy) = MAP_ENTRY(map, ox, oy, sx + dx, sy);
+        }
+    }
+    else
+    {
+        // Top half up one row, bottom half down one row
+        for (sy = 0; sy < GEN1_SCREEN_H / 2 - 1; sy++)
+            for (sx = 0; sx <= GEN1_SCREEN_W; sx++)
+                MAP_ENTRY(map, ox, oy, sx, sy) = MAP_ENTRY(map, ox, oy, sx, sy + 1);
+        for (sy = GEN1_SCREEN_H; sy > GEN1_SCREEN_H / 2; sy--)
+            for (sx = 0; sx <= GEN1_SCREEN_W; sx++)
+                MAP_ENTRY(map, ox, oy, sx, sy) = MAP_ENTRY(map, ox, oy, sx, sy - 1);
+        // Left half left by dx columns, right half right by dx
+        for (sy = 0; sy <= GEN1_SCREEN_H; sy++)
+        {
+            for (sx = 0; sx + dx < GEN1_SCREEN_W / 2; sx++)
+                MAP_ENTRY(map, ox, oy, sx, sy) = MAP_ENTRY(map, ox, oy, sx + dx, sy);
+            for (sx = GEN1_SCREEN_W; sx >= GEN1_SCREEN_W / 2 + (s32)dx; sx--)
+                MAP_ENTRY(map, ox, oy, sx, sy) = MAP_ENTRY(map, ox, oy, sx - dx, sy);
+        }
+    }
+}
+
+#undef MAP_ENTRY
+
+// Columns the picture has moved after `step` slide steps: 1, 2, 1, 2, ...,
+// 15 after 10 steps, so the 30 columns close at the same time as the 20 rows.
+static u32 Gen1_SlideColumns(u32 step)
+{
+    return step + step / 2;
+}
+
+// Returns TRUE when the wipe has covered the screen.
+static bool32 Gen1_WipeStep(struct Task *task)
+{
+    u16 *tilemap = Gen1_MaskTilemap();
+    u32 step = task->tStep;
+    u32 i, x, y, limit;
+
+    switch (task->tStyle)
+    {
+    case GEN1_DOUBLE_CIRCLE:
+        // Two hands sweep counter-clockwise from 3 and 9 o'clock at once
+        limit = (step + 1) * 128 / 10;
+        for (y = 0; y < GEN1_SCREEN_H; y++)
+            for (x = 0; x < GEN1_SCREEN_W; x++)
+                if ((sGen1CircleTileAngles[y][x] & 0x7F) < limit)
+                    Gen1_BlackTile(tilemap, x, y);
+        break;
+    case GEN1_CIRCLE:
+        // One hand sweeps a full turn counter-clockwise from 3 o'clock
+        limit = (step + 1) * 256 / 20;
+        for (y = 0; y < GEN1_SCREEN_H; y++)
+            for (x = 0; x < GEN1_SCREEN_W; x++)
+                if (sGen1CircleTileAngles[y][x] < limit)
+                    Gen1_BlackTile(tilemap, x, y);
+        break;
+    case GEN1_SPIRAL_IN:
+        for (i = 0; i < GEN1_SPIRAL_IN_TILES; i++)
+        {
+            Gen1_SpiralTile(step * GEN1_SPIRAL_IN_TILES + i, &x, &y);
+            Gen1_BlackTile(tilemap, x, y);
+        }
+        break;
+    case GEN1_SPIRAL_OUT:
+        // The inward spiral backwards: it starts in the middle
+        for (i = 0; i < GEN1_SPIRAL_OUT_TILES; i++)
+        {
+            Gen1_SpiralTile(GEN1_SCREEN_W * GEN1_SCREEN_H - 1 - (step * GEN1_SPIRAL_OUT_TILES + i), &x, &y);
+            Gen1_BlackTile(tilemap, x, y);
+        }
+        break;
+    case GEN1_HORIZONTAL_STRIPES:
+        // Even rows fill left to right, odd rows right to left
+        for (y = 0; y < GEN1_SCREEN_H; y++)
+            Gen1_BlackTile(tilemap, (y & 1) ? GEN1_SCREEN_W - 1 - step : step, y);
+        break;
+    case GEN1_VERTICAL_STRIPES:
+        // Even columns fill top to bottom, odd columns bottom to top
+        for (x = 0; x < GEN1_SCREEN_W; x++)
+            Gen1_BlackTile(tilemap, x, (x & 1) ? GEN1_SCREEN_H - 1 - step : step);
+        break;
+    case GEN1_SHRINK:
+    case GEN1_SPLIT:
+    {
+        // Called on the step's third frame, after Gen1_SlideBg has moved the
+        // three map BGs one per frame. The mask and the copies go out together.
+        u32 rows = step + 1;
+        u32 cols = Gen1_SlideColumns(step + 1);
+
+        if (task->tStyle == GEN1_SHRINK)
+        {
+            Gen1_BlackRect(tilemap, 0, 0, GEN1_SCREEN_W, rows);
+            Gen1_BlackRect(tilemap, 0, GEN1_SCREEN_H - rows, GEN1_SCREEN_W, GEN1_SCREEN_H);
+            Gen1_BlackRect(tilemap, 0, 0, cols, GEN1_SCREEN_H);
+            Gen1_BlackRect(tilemap, GEN1_SCREEN_W - cols, 0, GEN1_SCREEN_W, GEN1_SCREEN_H);
+        }
+        else
+        {
+            Gen1_BlackRect(tilemap, 0, GEN1_SCREEN_H / 2 - rows, GEN1_SCREEN_W, GEN1_SCREEN_H / 2 + rows);
+            Gen1_BlackRect(tilemap, GEN1_SCREEN_W / 2 - cols, 0, GEN1_SCREEN_W / 2 + cols, GEN1_SCREEN_H);
+        }
+        ScheduleBgCopyTilemapToVram(1);
+        ScheduleBgCopyTilemapToVram(2);
+        ScheduleBgCopyTilemapToVram(3);
+        break;
+    }
+    }
+    Gen1_CommitMask();
+    task->tStep++;
+    return task->tStep >= sGen1StepCount[task->tStyle];
+}
+
+static void Gen1_RunTransition(u8 taskId)
+{
+    struct Task *task = &gTasks[taskId];
+
+    switch (task->tState)
+    {
+    case GEN1_STATE_INIT:
+        task->tTimer = 0;
+        task->tStep = 0;
+        if (task->tStyle == GEN1_DOUBLE_CIRCLE || task->tStyle == GEN1_CIRCLE)
+            task->tState = GEN1_STATE_FLASH;
+        else
+            task->tState = GEN1_STATE_MASK;
+        break;
+    case GEN1_STATE_FLASH:
+        if (task->tTimer == 0)
+        {
+            s32 shift;
+
+            if (task->tStep >= (s32)ARRAY_COUNT(sGen1FlashShifts) * GEN1_FLASH_REPEATS)
+            {
+                BlendPalettes(PALETTES_BG, 0, RGB_BLACK);
+                task->tStep = 0;
+                task->tState = GEN1_STATE_MASK;
+                break;
+            }
+            shift = sGen1FlashShifts[task->tStep % ARRAY_COUNT(sGen1FlashShifts)];
+            if (shift >= 0)
+                BlendPalettes(PALETTES_BG, sGen1ShiftToBlend[shift], RGB_BLACK);
+            else
+                BlendPalettes(PALETTES_BG, sGen1ShiftToBlend[-shift], RGB_WHITE);
+            task->tStep++;
+            task->tTimer = GEN1_FLASH_FRAMES;
+        }
+        task->tTimer--;
+        break;
+    case GEN1_STATE_MASK:
+        Gen1_InitMask();
+        task->tTimer = 0;
+        task->tState = GEN1_STATE_WIPE;
+        break;
+    case GEN1_STATE_WIPE:
+        if (task->tSlideBg != 0)
+        {
+            // Shrink/Split: the step's 2nd and 3rd frames move BG2 and BG3
+            Gen1_SlideBg(1 + task->tSlideBg, task->tStyle == GEN1_SPLIT,
+                         Gen1_SlideColumns(task->tStep + 1) - Gen1_SlideColumns(task->tStep));
+            if (++task->tSlideBg < 3)
+                break;
+            task->tSlideBg = 0;
+        }
+        else if (task->tTimer == 0 || --task->tTimer == 0)
+        {
+            task->tTimer = sGen1StepFrames[task->tStyle];
+            if (task->tStyle >= GEN1_SHRINK)
+            {
+                Gen1_SlideBg(1, task->tStyle == GEN1_SPLIT,
+                             Gen1_SlideColumns(task->tStep + 1) - Gen1_SlideColumns(task->tStep));
+                task->tSlideBg = 1;
+                task->tTimer -= 2;
+                break;
+            }
+        }
+        else
+        {
+            break;
+        }
+        if (Gen1_WipeStep(task))
+        {
+            // Shrink and Split hold the black screen for 10 frames
+            task->tTimer = (task->tStyle >= GEN1_SHRINK) ? 10 : 1;
+            task->tState = GEN1_STATE_END;
+        }
+        break;
+    case GEN1_STATE_END:
+        // Red's BattleTransition_BlackScreen: BG and sprite palettes all black
+        FadeScreenBlack();
+        if (--task->tTimer <= 0)
+            DestroyTask(taskId);
+        break;
+    }
+}
+
+static void Task_Gen1DoubleCircle(u8 taskId)
+{
+    gTasks[taskId].tStyle = GEN1_DOUBLE_CIRCLE;
+    Gen1_RunTransition(taskId);
+}
+
+static void Task_Gen1Circle(u8 taskId)
+{
+    gTasks[taskId].tStyle = GEN1_CIRCLE;
+    Gen1_RunTransition(taskId);
+}
+
+static void Task_Gen1SpiralIn(u8 taskId)
+{
+    gTasks[taskId].tStyle = GEN1_SPIRAL_IN;
+    Gen1_RunTransition(taskId);
+}
+
+static void Task_Gen1SpiralOut(u8 taskId)
+{
+    gTasks[taskId].tStyle = GEN1_SPIRAL_OUT;
+    Gen1_RunTransition(taskId);
+}
+
+static void Task_Gen1HorizontalStripes(u8 taskId)
+{
+    gTasks[taskId].tStyle = GEN1_HORIZONTAL_STRIPES;
+    Gen1_RunTransition(taskId);
+}
+
+static void Task_Gen1VerticalStripes(u8 taskId)
+{
+    gTasks[taskId].tStyle = GEN1_VERTICAL_STRIPES;
+    Gen1_RunTransition(taskId);
+}
+
+static void Task_Gen1Shrink(u8 taskId)
+{
+    gTasks[taskId].tStyle = GEN1_SHRINK;
+    Gen1_RunTransition(taskId);
+}
+
+static void Task_Gen1Split(u8 taskId)
+{
+    gTasks[taskId].tStyle = GEN1_SPLIT;
+    Gen1_RunTransition(taskId);
+}
+
+#undef tStyle
+#undef tTimer
+#undef tStep
+#undef tSlideBg

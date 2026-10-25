@@ -28,6 +28,7 @@
 #include "overworld.h"
 #include "field_weather.h"
 #include "battle_tower.h"
+#include "regress.h"
 #include "gym_leader_rematch.h"
 #include "battle_pike.h"
 #include "battle_pyramid.h"
@@ -112,22 +113,27 @@ EWRAM_DATA static u8 *sTrainerBBattleScriptRetAddr = NULL;
 EWRAM_DATA static bool8 sShouldCheckTrainerBScript = FALSE;
 EWRAM_DATA static u8 sNoOfPossibleTrainerRetScripts = 0;
 
-// The first transition is used if the enemy Pokémon are lower level than our Pokémon.
-// Otherwise, the second transition is used.
+// Gen 1's battle transitions (pret/pokered engine/battle/battle_transitions.asm).
+// The first is used for a weaker foe, the second when the foe is at least
+// GEN1_STRONGER_LEVELS levels above the player's first healthy Pokémon.
+// Caves (and dark caves) are Gen 1's "dungeon" maps; surfing outdoors uses
+// the outdoor ones.
+#define GEN1_STRONGER_LEVELS 3
+
 static const u8 sBattleTransitionTable_Wild[][2] =
 {
-    [TRANSITION_TYPE_NORMAL] = {B_TRANSITION_SLICE,          B_TRANSITION_WHITE_BARS_FADE},
-    [TRANSITION_TYPE_CAVE]   = {B_TRANSITION_CLOCKWISE_WIPE, B_TRANSITION_GRID_SQUARES},
-    [TRANSITION_TYPE_FLASH]  = {B_TRANSITION_BLUR,           B_TRANSITION_GRID_SQUARES},
-    [TRANSITION_TYPE_WATER]  = {B_TRANSITION_WAVE,           B_TRANSITION_RIPPLE},
+    [TRANSITION_TYPE_NORMAL] = {B_TRANSITION_GEN1_DOUBLE_CIRCLE,      B_TRANSITION_GEN1_CIRCLE},
+    [TRANSITION_TYPE_CAVE]   = {B_TRANSITION_GEN1_HORIZONTAL_STRIPES, B_TRANSITION_GEN1_VERTICAL_STRIPES},
+    [TRANSITION_TYPE_FLASH]  = {B_TRANSITION_GEN1_HORIZONTAL_STRIPES, B_TRANSITION_GEN1_VERTICAL_STRIPES},
+    [TRANSITION_TYPE_WATER]  = {B_TRANSITION_GEN1_DOUBLE_CIRCLE,      B_TRANSITION_GEN1_CIRCLE},
 };
 
 static const u8 sBattleTransitionTable_Trainer[][2] =
 {
-    [TRANSITION_TYPE_NORMAL] = {B_TRANSITION_POKEBALLS_TRAIL, B_TRANSITION_ANGLED_WIPES},
-    [TRANSITION_TYPE_CAVE]   = {B_TRANSITION_SHUFFLE,         B_TRANSITION_BIG_POKEBALL},
-    [TRANSITION_TYPE_FLASH]  = {B_TRANSITION_BLUR,            B_TRANSITION_GRID_SQUARES},
-    [TRANSITION_TYPE_WATER]  = {B_TRANSITION_SWIRL,           B_TRANSITION_RIPPLE},
+    [TRANSITION_TYPE_NORMAL] = {B_TRANSITION_GEN1_SPIRAL_IN, B_TRANSITION_GEN1_SPIRAL_OUT},
+    [TRANSITION_TYPE_CAVE]   = {B_TRANSITION_GEN1_SHRINK,    B_TRANSITION_GEN1_SPLIT},
+    [TRANSITION_TYPE_FLASH]  = {B_TRANSITION_GEN1_SHRINK,    B_TRANSITION_GEN1_SPLIT},
+    [TRANSITION_TYPE_WATER]  = {B_TRANSITION_GEN1_SPIRAL_IN, B_TRANSITION_GEN1_SPIRAL_OUT},
 };
 
 // Battle Frontier (excluding Pyramid and Dome, which have their own tables below)
@@ -696,18 +702,17 @@ static u8 GetBattleTransitionTypeByMap(void)
     if (GetFlashLevel())
         return TRANSITION_TYPE_FLASH;
 
+    // A cave is a dungeon even when the player surfs in it (Seafoam)
+    if (gMapHeader.mapType == MAP_TYPE_UNDERGROUND)
+        return TRANSITION_TYPE_CAVE;
+
     if (MetatileBehavior_IsSurfableWaterOrUnderwater(tileBehavior))
         return TRANSITION_TYPE_WATER;
 
-    switch (gMapHeader.mapType)
-    {
-    case MAP_TYPE_UNDERGROUND:
-        return TRANSITION_TYPE_CAVE;
-    case MAP_TYPE_UNDERWATER:
+    if (gMapHeader.mapType == MAP_TYPE_UNDERWATER)
         return TRANSITION_TYPE_WATER;
-    default:
-        return TRANSITION_TYPE_NORMAL;
-    }
+
+    return TRANSITION_TYPE_NORMAL;
 }
 
 static u16 GetSumOfPlayerPartyLevel(u8 numMons)
@@ -785,7 +790,12 @@ static u8 GetWildBattleTransition(void)
     u8 enemyLevel = GetMonData(&gEnemyParty[0], MON_DATA_LEVEL);
     u8 playerLevel = GetSumOfPlayerPartyLevel(1);
 
-    if (enemyLevel < playerLevel)
+#ifdef REGRESS_HOOKS
+    if (gRegress.battleTransition)
+        return gRegress.battleTransition - 1;
+#endif
+
+    if (enemyLevel < playerLevel + GEN1_STRONGER_LEVELS)
     {
         if (CurrentBattlePyramidLocation() != PYRAMID_LOCATION_NONE)
             return B_TRANSITION_BLUR;
@@ -807,6 +817,11 @@ static u8 GetTrainerBattleTransition(void)
     u8 transitionType;
     u8 enemyLevel;
     u8 playerLevel;
+
+#ifdef REGRESS_HOOKS
+    if (gRegress.battleTransition)
+        return gRegress.battleTransition - 1;
+#endif
 
     if (gTrainerBattleOpponent_A == TRAINER_SECRET_BASE)
         return B_TRANSITION_CHAMPION;
@@ -846,7 +861,7 @@ static u8 GetTrainerBattleTransition(void)
     enemyLevel = GetSumOfEnemyPartyLevel(gTrainerBattleOpponent_A, minPartyCount);
     playerLevel = GetSumOfPlayerPartyLevel(minPartyCount);
 
-    if (enemyLevel < playerLevel)
+    if (enemyLevel < playerLevel + GEN1_STRONGER_LEVELS * minPartyCount)
         return sBattleTransitionTable_Trainer[transitionType][0];
     else
         return sBattleTransitionTable_Trainer[transitionType][1];
