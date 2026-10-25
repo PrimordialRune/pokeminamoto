@@ -462,6 +462,10 @@ def main():
     saved, reloaded = report["dumps"]["saved"], report["dumps"]["reloaded"]
     report["checks"]["saveRoundTrip"] = saved == reloaded
     report["checks"]["partyHealedAfterBattles"] = None
+    # Stack depth: Regress.stackLowest sits after dump[] (offset 40 + 2 * 1024).
+    # The system stack top is IWRAM_END - 0x1c0 (src/crt0.s).
+    low = emu.u32(emu.rs + 40 + 2 * 1024)
+    report["checks"]["stackDepthBytes"] = (0x3008000 - 0x1c0 - low) if low else None
     with open(os.path.join(args.out, "report.json"), "w") as f:
         json.dump(report, f, indent=1)
 
@@ -473,6 +477,7 @@ def main():
         shutil.rmtree(emu.video_dir)
     emu.cmd("quit")
     print("save round trip:", report["checks"]["saveRoundTrip"])
+    print("stack depth (bytes):", report["checks"]["stackDepthBytes"])
     return 0 if report["checks"]["saveRoundTrip"] else 1
 
 

@@ -89,6 +89,7 @@ void EnableVCountIntrAtLine150(void);
 
 void AgbMain(void)
 {
+    REGRESS_STACK_INIT();
     // Modern compilers are liberal with the stack on entry to this function,
     // so RegisterRamReset may crash if it resets IWRAM.
 #if !MODERN

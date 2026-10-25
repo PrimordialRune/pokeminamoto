@@ -60,6 +60,8 @@ struct RegressState
     u16 dumpWords;
     u32 lastVblank;
     u16 dump[REGRESS_DUMP_WORDS];
+    // Appended after dump[]; run.py reads it by offset.
+    u32 stackLowest; // lowest IWRAM address the system stack has touched (0 until measured)
 };
 
 extern struct RegressState gRegress;
@@ -71,6 +73,7 @@ void Regress_FrameEnd(void);
 void Regress_OverworldTick(void);
 bool8 Regress_ScriptIdle(void);
 void Regress_Reseed(void);
+void Regress_StackInit(void);
 
 #define REGRESS_NOTE_ALLOC(start, ptr, size) Regress_NoteAlloc(start, ptr, size)
 #define REGRESS_NOTE_DMA_QUEUE(pending) Regress_NoteDmaQueue(pending)
@@ -78,6 +81,7 @@ void Regress_Reseed(void);
 #define REGRESS_FRAME_END() Regress_FrameEnd()
 #define REGRESS_OVERWORLD_TICK() Regress_OverworldTick()
 #define REGRESS_RESEED() Regress_Reseed()
+#define REGRESS_STACK_INIT() Regress_StackInit()
 
 #else
 
@@ -87,6 +91,7 @@ void Regress_Reseed(void);
 #define REGRESS_FRAME_END()
 #define REGRESS_OVERWORLD_TICK()
 #define REGRESS_RESEED()
+#define REGRESS_STACK_INIT()
 
 #endif // REGRESS_HOOKS
 

@@ -100,6 +100,34 @@ void Regress_NoteDmaFull(void)
     gRegress.dmaFull++;
 }
 
+#define STACK_FILL 0xA5A5A5A5
+#define STACK_SCAN_INTERVAL 16 // frames
+
+extern u32 gIwramEnd[]; // end of the IWRAM data, from the linker script
+static u32 *sStackFillEnd;
+
+// Paints the free IWRAM below the current stack pointer so Regress_FrameEnd can
+// see how deep the stack has been. Call it first thing in AgbMain.
+void Regress_StackInit(void)
+{
+    u32 *p;
+
+    sStackFillEnd = (u32 *)((u32)__builtin_frame_address(0) - 0x80);
+    for (p = gIwramEnd; p < sStackFillEnd; p++)
+        *p = STACK_FILL;
+}
+
+static void NoteStack(void)
+{
+    u32 *p = gIwramEnd;
+
+    if (sStackFillEnd == NULL)
+        return;
+    while (p < sStackFillEnd && *p == STACK_FILL)
+        p++;
+    gRegress.stackLowest = (u32)p;
+}
+
 void Regress_FrameEnd(void)
 {
     u32 busy = (REG_VCOUNT + 228 - 160) % 228;
@@ -113,6 +141,8 @@ void Regress_FrameEnd(void)
     if (gRegress.lastVblank != 0 && vbl - gRegress.lastVblank > 1)
         gRegress.lagFrames += vbl - gRegress.lastVblank - 1;
     gRegress.lastVblank = vbl;
+    if (gRegress.frames % STACK_SCAN_INTERVAL == 0)
+        NoteStack();
 }
 
 static void Setup(void)
