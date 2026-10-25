@@ -43,6 +43,7 @@
 #include "field_specials.h"
 #include "berry_powder.h"
 #include "mystery_gift.h"
+#include "palette_tone.h"
 #include "union_room_chat.h"
 #include "constants/items.h"
 
@@ -98,6 +99,7 @@ static void SetDefaultOptions(void)
     gSaveBlock2Ptr->optionsBattleStyle = OPTIONS_BATTLE_STYLE_SHIFT;
     gSaveBlock2Ptr->optionsBattleSceneOff = FALSE;
     gSaveBlock2Ptr->regionMapZoom = FALSE;
+    gSaveBlock2Ptr->optionsLcdProfile = LCD_PROFILE_IPS;
 }
 
 static void ClearPokedexFlags(void)

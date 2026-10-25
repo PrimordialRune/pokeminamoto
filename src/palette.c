@@ -1,5 +1,6 @@
 #include "global.h"
 #include "palette.h"
+#include "palette_tone.h"
 #include "util.h"
 #include "decompress.h"
 #include "gpu_regs.h"
@@ -103,9 +104,7 @@ void TransferPlttBuffer(void)
 {
     if (!gPaletteFade.bufferTransferDisabled)
     {
-        void *src = gPlttBufferFaded;
-        void *dest = (void *)PLTT;
-        DmaCopy16(3, src, dest, PLTT_SIZE);
+        TransferPlttBufferToPltt();
         sPlttBufferTransferPending = FALSE;
         if (gPaletteFade.mode == HARDWARE_FADE && gPaletteFade.active)
             UpdateBlendRegisters();
@@ -191,7 +190,10 @@ bool8 BeginNormalPaletteFade(u32 selectedPalettes, s8 delay, u8 startY, u8 targe
 
         temp = gPaletteFade.bufferTransferDisabled;
         gPaletteFade.bufferTransferDisabled = FALSE;
-        CpuCopy32(gPlttBufferFaded, (void *)PLTT, PLTT_SIZE);
+        if (GetLcdProfile() == LCD_PROFILE_IPS)
+            CpuCopy32(gPlttBufferFaded, (void *)PLTT, PLTT_SIZE);
+        else
+            TransferPlttBufferToPltt();
         sPlttBufferTransferPending = FALSE;
         if (gPaletteFade.mode == HARDWARE_FADE && gPaletteFade.active)
             UpdateBlendRegisters();

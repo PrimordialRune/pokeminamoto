@@ -2,7 +2,8 @@
 #define GUARD_PALETTE_TONE_H
 
 // A tone table remaps each 5-bit channel of a color through its own curve.
-// Day/night (day_night.c) applies one in place when palettes load.
+// Day/night (day_night.c) applies one in place when palettes load; the LCD
+// profile applies one on the way to palette RAM (TransferPlttBuffer).
 struct ToneTable
 {
     u8 r[32];
@@ -25,5 +26,20 @@ static inline u16 ToneColor(const struct ToneTable *tone, u16 color)
          | (tone->g[(color >> 5) & 0x1F] << 5)
          | (tone->b[(color >> 10) & 0x1F] << 10);
 }
+
+// Screen the player uses (Options > SCREEN), stored in SaveBlock2.
+enum
+{
+    LCD_PROFILE_IPS,  // backlit IPS screens, emulators, Analogue Pocket: colors as drawn
+    LCD_PROFILE_SP,   // GBA SP (front- or backlit): a light gamma lift
+    LCD_PROFILE_AGB,  // original GBA, no light: a strong gamma lift
+    LCD_PROFILE_COUNT
+};
+
+// Called from TransferPlttBuffer: copies gPlttBufferFaded to palette RAM,
+// through the LCD curve when one is selected.
+void TransferPlttBufferToPltt(void);
+u8 GetLcdProfile(void);
+u16 ApplyLcdProfile(u16 color);
 
 #endif // GUARD_PALETTE_TONE_H

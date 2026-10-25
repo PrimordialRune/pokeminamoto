@@ -6,6 +6,7 @@
 #include "main.h"
 #include "menu.h"
 #include "palette.h"
+#include "palette_tone.h"
 #include "scanline_effect.h"
 #include "sprite.h"
 #include "strings.h"
@@ -23,6 +24,7 @@
 #define tSound data[4]
 #define tButtonMode data[5]
 #define tWindowFrameType data[6]
+#define tLcdProfile data[7]
 
 enum
 {
@@ -32,6 +34,7 @@ enum
     MENUITEM_SOUND,
     MENUITEM_BUTTONMODE,
     MENUITEM_FRAMETYPE,
+    MENUITEM_LCDPROFILE,
     MENUITEM_CANCEL,
     MENUITEM_COUNT,
 };
@@ -42,12 +45,15 @@ enum
     WIN_OPTIONS
 };
 
-#define YPOS_TEXTSPEED    (MENUITEM_TEXTSPEED * 16)
-#define YPOS_BATTLESCENE  (MENUITEM_BATTLESCENE * 16)
-#define YPOS_BATTLESTYLE  (MENUITEM_BATTLESTYLE * 16)
-#define YPOS_SOUND        (MENUITEM_SOUND * 16)
-#define YPOS_BUTTONMODE   (MENUITEM_BUTTONMODE * 16)
-#define YPOS_FRAMETYPE    (MENUITEM_FRAMETYPE * 16)
+// Rows are 14 px (Emerald: 16) so the SCREEN row fits in the same window.
+#define ITEM_HEIGHT 14
+#define YPOS_TEXTSPEED    (MENUITEM_TEXTSPEED * ITEM_HEIGHT)
+#define YPOS_BATTLESCENE  (MENUITEM_BATTLESCENE * ITEM_HEIGHT)
+#define YPOS_BATTLESTYLE  (MENUITEM_BATTLESTYLE * ITEM_HEIGHT)
+#define YPOS_SOUND        (MENUITEM_SOUND * ITEM_HEIGHT)
+#define YPOS_BUTTONMODE   (MENUITEM_BUTTONMODE * ITEM_HEIGHT)
+#define YPOS_FRAMETYPE    (MENUITEM_FRAMETYPE * ITEM_HEIGHT)
+#define YPOS_LCDPROFILE   (MENUITEM_LCDPROFILE * ITEM_HEIGHT)
 
 static void Task_OptionMenuFadeIn(u8 taskId);
 static void Task_OptionMenuProcessInput(u8 taskId);
@@ -66,6 +72,8 @@ static u8 FrameType_ProcessInput(u8 selection);
 static void FrameType_DrawChoices(u8 selection);
 static u8 ButtonMode_ProcessInput(u8 selection);
 static void ButtonMode_DrawChoices(u8 selection);
+static u8 LcdProfile_ProcessInput(u8 selection);
+static void LcdProfile_DrawChoices(u8 selection);
 static void DrawHeaderText(void);
 static void DrawOptionMenuTexts(void);
 static void DrawBgWindowFrames(void);
@@ -76,6 +84,13 @@ static const u16 sOptionMenuText_Pal[] = INCBIN_U16("graphics/interface/option_m
 // note: this is only used in the Japanese release
 static const u8 sEqualSignGfx[] = INCBIN_U8("graphics/interface/option_menu_equals_sign.4bpp");
 
+// The screen the game is played on, see palette_tone.c. The choices change the
+// colors at once, so the player can compare them right here.
+static const u8 sText_Screen[] = _("SCREEN");
+static const u8 sText_ScreenAGB[] = _("{COLOR GREEN}{SHADOW LIGHT_GREEN}GBA");
+static const u8 sText_ScreenSP[] = _("{COLOR GREEN}{SHADOW LIGHT_GREEN}SP");
+static const u8 sText_ScreenIPS[] = _("{COLOR GREEN}{SHADOW LIGHT_GREEN}IPS");
+
 static const u8 *const sOptionMenuItemsNames[MENUITEM_COUNT] =
 {
     [MENUITEM_TEXTSPEED]   = gText_TextSpeed,
@@ -84,6 +99,7 @@ static const u8 *const sOptionMenuItemsNames[MENUITEM_COUNT] =
     [MENUITEM_SOUND]       = gText_Sound,
     [MENUITEM_BUTTONMODE]  = gText_ButtonMode,
     [MENUITEM_FRAMETYPE]   = gText_Frame,
+    [MENUITEM_LCDPROFILE]  = sText_Screen,
     [MENUITEM_CANCEL]      = gText_OptionMenuCancel,
 };
 
@@ -234,6 +250,7 @@ void CB2_InitOptionMenu(void)
         gTasks[taskId].tSound = gSaveBlock2Ptr->optionsSound;
         gTasks[taskId].tButtonMode = gSaveBlock2Ptr->optionsButtonMode;
         gTasks[taskId].tWindowFrameType = gSaveBlock2Ptr->optionsWindowFrameType;
+        gTasks[taskId].tLcdProfile = GetLcdProfile();
 
         TextSpeed_DrawChoices(gTasks[taskId].tTextSpeed);
         BattleScene_DrawChoices(gTasks[taskId].tBattleSceneOff);
@@ -241,6 +258,7 @@ void CB2_InitOptionMenu(void)
         Sound_DrawChoices(gTasks[taskId].tSound);
         ButtonMode_DrawChoices(gTasks[taskId].tButtonMode);
         FrameType_DrawChoices(gTasks[taskId].tWindowFrameType);
+        LcdProfile_DrawChoices(gTasks[taskId].tLcdProfile);
         HighlightOptionMenuItem(gTasks[taskId].tMenuSelection);
 
         CopyWindowToVram(WIN_OPTIONS, COPYWIN_FULL);
@@ -336,6 +354,17 @@ static void Task_OptionMenuProcessInput(u8 taskId)
             if (previousOption != gTasks[taskId].tWindowFrameType)
                 FrameType_DrawChoices(gTasks[taskId].tWindowFrameType);
             break;
+        case MENUITEM_LCDPROFILE:
+            previousOption = gTasks[taskId].tLcdProfile;
+            gTasks[taskId].tLcdProfile = LcdProfile_ProcessInput(gTasks[taskId].tLcdProfile);
+
+            if (previousOption != gTasks[taskId].tLcdProfile)
+            {
+                // Takes effect on the next VBlank, so the player sees it at once.
+                gSaveBlock2Ptr->optionsLcdProfile = gTasks[taskId].tLcdProfile;
+                LcdProfile_DrawChoices(gTasks[taskId].tLcdProfile);
+            }
+            break;
         default:
             return;
         }
@@ -356,6 +385,7 @@ static void Task_OptionMenuSave(u8 taskId)
     gSaveBlock2Ptr->optionsSound = gTasks[taskId].tSound;
     gSaveBlock2Ptr->optionsButtonMode = gTasks[taskId].tButtonMode;
     gSaveBlock2Ptr->optionsWindowFrameType = gTasks[taskId].tWindowFrameType;
+    gSaveBlock2Ptr->optionsLcdProfile = gTasks[taskId].tLcdProfile;
 
     BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 16, RGB_BLACK);
     gTasks[taskId].func = Task_OptionMenuFadeOut;
@@ -374,7 +404,7 @@ static void Task_OptionMenuFadeOut(u8 taskId)
 static void HighlightOptionMenuItem(u8 index)
 {
     SetGpuReg(REG_OFFSET_WIN0H, WIN_RANGE(16, DISPLAY_WIDTH - 16));
-    SetGpuReg(REG_OFFSET_WIN0V, WIN_RANGE(index * 16 + 40, index * 16 + 56));
+    SetGpuReg(REG_OFFSET_WIN0V, WIN_RANGE(index * ITEM_HEIGHT + 40, index * ITEM_HEIGHT + 40 + ITEM_HEIGHT));
 }
 
 static void DrawOptionMenuChoice(const u8 *text, u8 x, u8 y, u8 style)
@@ -615,6 +645,42 @@ static void ButtonMode_DrawChoices(u8 selection)
     DrawOptionMenuChoice(gText_ButtonTypeLEqualsA, GetStringRightAlignXOffset(FONT_NORMAL, gText_ButtonTypeLEqualsA, 198), YPOS_BUTTONMODE, styles[2]);
 }
 
+// Left to right from the darkest screen to the brightest, like the curves.
+static const u8 sLcdProfileOrder[LCD_PROFILE_COUNT] = {LCD_PROFILE_AGB, LCD_PROFILE_SP, LCD_PROFILE_IPS};
+
+static u8 LcdProfile_ProcessInput(u8 selection)
+{
+    u8 pos;
+
+    for (pos = 0; pos < LCD_PROFILE_COUNT - 1 && sLcdProfileOrder[pos] != selection; pos++)
+        ;
+    if (JOY_NEW(DPAD_RIGHT))
+    {
+        pos = (pos + 1) % LCD_PROFILE_COUNT;
+        sArrowPressed = TRUE;
+    }
+    if (JOY_NEW(DPAD_LEFT))
+    {
+        pos = (pos + LCD_PROFILE_COUNT - 1) % LCD_PROFILE_COUNT;
+        sArrowPressed = TRUE;
+    }
+    return sLcdProfileOrder[pos];
+}
+
+static void LcdProfile_DrawChoices(u8 selection)
+{
+    s32 widthAGB, widthSP, widthIPS, xSP;
+
+    widthAGB = GetStringWidth(FONT_NORMAL, sText_ScreenAGB, 0);
+    widthSP = GetStringWidth(FONT_NORMAL, sText_ScreenSP, 0);
+    widthIPS = GetStringWidth(FONT_NORMAL, sText_ScreenIPS, 0);
+    xSP = (widthAGB - (widthSP - 94) - widthIPS) / 2 + 104;
+
+    DrawOptionMenuChoice(sText_ScreenAGB, 104, YPOS_LCDPROFILE, selection == LCD_PROFILE_AGB);
+    DrawOptionMenuChoice(sText_ScreenSP, xSP, YPOS_LCDPROFILE, selection == LCD_PROFILE_SP);
+    DrawOptionMenuChoice(sText_ScreenIPS, GetStringRightAlignXOffset(FONT_NORMAL, sText_ScreenIPS, 198), YPOS_LCDPROFILE, selection == LCD_PROFILE_IPS);
+}
+
 static void DrawHeaderText(void)
 {
     FillWindowPixelBuffer(WIN_HEADER, PIXEL_FILL(1));
@@ -628,7 +694,7 @@ static void DrawOptionMenuTexts(void)
 
     FillWindowPixelBuffer(WIN_OPTIONS, PIXEL_FILL(1));
     for (i = 0; i < MENUITEM_COUNT; i++)
-        AddTextPrinterParameterized(WIN_OPTIONS, FONT_NORMAL, sOptionMenuItemsNames[i], 8, (i * 16) + 1, TEXT_SKIP_DRAW, NULL);
+        AddTextPrinterParameterized(WIN_OPTIONS, FONT_NORMAL, sOptionMenuItemsNames[i], 8, (i * ITEM_HEIGHT) + 1, TEXT_SKIP_DRAW, NULL);
     CopyWindowToVram(WIN_OPTIONS, COPYWIN_FULL);
 }
 
