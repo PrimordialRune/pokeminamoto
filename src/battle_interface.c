@@ -1078,12 +1078,14 @@ static u32 GetPartyPipsState(u8 battler)
     {
         u32 pip;
 
-        if (GetMonData(&party[i], MON_DATA_SPECIES_OR_EGG) == SPECIES_NONE
-         || GetMonData(&party[i], MON_DATA_SPECIES_OR_EGG) == SPECIES_EGG)
+        // Runs every frame for both boxes, so read the plain-text copies of what the encrypted
+        // data holds (hasSpecies, isEgg, isBadEgg are kept in step by SetBoxMonData and by the
+        // checksum test) instead of decrypting each mon twice through GetMonData.
+        if (!party[i].box.hasSpecies || party[i].box.isEgg || party[i].box.isBadEgg)
             pip = PIP_EMPTY;
-        else if (GetMonData(&party[i], MON_DATA_HP) == 0)
+        else if (party[i].hp == 0)
             pip = PIP_FAINTED;
-        else if (GetMonData(&party[i], MON_DATA_STATUS) != 0)
+        else if (party[i].status != 0)
             pip = PIP_STATUS;
         else
             pip = PIP_HEALTHY;
