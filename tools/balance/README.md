@@ -6,7 +6,7 @@ on top of the ROM's own data, and adds the Minamoto rules: TP, crit stages, the 
 the flat +2, type badge boosts and the gym leader Focus Sash.
 
 Nothing is copied by hand. `gamedata.py` parses the decomp sources each run, so a change to
-`src/data/battle_moves.h` (a TP cost), a learnset or a base stat shows up in the model immediately.
+`src/data/moves_info.h` (a TP cost), a learnset or a base stat shows up in the model immediately.
 
 Needs Python 3 and PyYAML (`python3 -m pip install pyyaml`). Runs in a couple of seconds.
 
@@ -55,7 +55,7 @@ of its level-up learnset, like a wild or trainer mon in Emerald.
 | `tp_curve`, `curve_base`, `curve_k` | off, 1, 0.13 | continuous cost `round(base + k x value)` from power, accuracy and effects (`costcurve.py`, FINDINGS section 10) |
 | `special_power`, `special_cost`, `special_level`, `special_habit` | off, 30, 25, greedy | a STAB Special for player mons (`trainers` keeps it for trainer battles) |
 | `tp_persist` | false | TP carries over between battles and refills only on a heal (not in the ROM yet) |
-| `tp_formula` | ROM `tpCost` | any Python expression of `power`, `acc`, `status`, `rank`, `pp` (the move's PP); `round5()` available |
+| `tp_formula` | ROM `tpCost` | any Python expression of `power`, `acc`, `status`, `rank`, `pp` (the move's old PP, from `move_pp.csv`); `round5()` available |
 | `rank_costs`, `rank_status_costs` | off | cost by move rank, e.g. `5,15,40` and `10,20,30` (rank: Notion stars for family moves, else a power tier) |
 | `crit_table` | 16,8,4,2,1 | `sCriticalHitChance[]` (1 in N per stage) |
 | `flat_plus2` | true | `CalculateBaseDamage` (PR #9 removed it, Omar restored it) |

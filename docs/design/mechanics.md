@@ -4,7 +4,7 @@ Sources: GDD v1 (formulas quoted exactly, in LaTeX, Italian text translated), ar
 
 "Engine impact" lines are **(inferred)** by the summariser from general knowledge of pret/pokeemerald; they are not in the source documents. Budget notes: EWRAM is ~95% full and IWRAM ~93-94% in this project, so every new persistent or battle-time variable needs a RAM plan.
 
-Quick map of pokeemerald areas referred to: `src/battle_main.c`, `src/battle_script_commands.c`, `src/battle_util.c`, `src/battle_ai_*.c`, `src/battle_controller_player.c`, `src/pokemon.c`, `include/pokemon.h` (struct `BoxPokemon`/`Pokemon`/`BattlePokemon`), `include/global.h` (SaveBlock1/2), `include/constants/battle*.h`, `src/data/pokemon/*` (base stats, learnsets, evolutions), `src/data/battle_moves.h`, `src/battle_interface.c`, `src/pokemon_summary_screen.c`, `src/party_menu.c`, `src/data/text/*`.
+Quick map of pokeemerald areas referred to: `src/battle_main.c`, `src/battle_script_commands.c`, `src/battle_util.c`, `src/battle_ai_*.c`, `src/battle_controller_player.c`, `src/pokemon.c`, `include/pokemon.h` (struct `BoxPokemon`/`Pokemon`/`BattlePokemon`), `include/global.h` (SaveBlock1/2), `include/constants/battle*.h`, `src/data/pokemon/*` (base stats, learnsets, evolutions), `src/data/moves_info.h` (the move table), `src/battle_interface.c`, `src/pokemon_summary_screen.c`, `src/party_menu.c`, `src/data/text/*`.
 
 ## 1. Stats
 

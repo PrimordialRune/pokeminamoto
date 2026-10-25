@@ -2450,7 +2450,7 @@ static void GetPotentialPartnerMoveAndSpecies(u16 trainerId, u16 monId)
         }
     }
 
-    StringCopy(gStringVar1, gMoveNames[move]);
+    StringCopy(gStringVar1, gMovesInfo[move].name);
     StringCopy(gStringVar2, gSpeciesNames[species]);
 }
 

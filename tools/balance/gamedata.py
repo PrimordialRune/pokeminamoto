@@ -1,7 +1,7 @@
 """Read battle data straight from the decomp sources so the model never drifts from the ROM.
 
 Parsed: base stats, types, growth rates, EXP yield and abilities (species_info.h), moves with
-tpCost (battle_moves.h), level-up learnsets, level evolutions, the type chart (battle_main.c)
+tpCost (moves_info.h), level-up learnsets, level evolutions, the type chart (battle_main.c)
 and Minamoto species names (docs/design/data/species.csv).
 """
 import csv
@@ -114,7 +114,10 @@ class GameData:
             }
 
     def _load_moves(self):
-        for name, body in _blocks(_read("src/data/battle_moves.h"), "MOVE"):
+        # PP left the ROM (TP replaced it); the Gen 1/3 PP values the TP formulas can
+        # use are kept in tools/balance/move_pp.csv.
+        legacy_pp = dict(line.split(",") for line in _read("tools/balance/move_pp.csv").split()[1:])
+        for name, body in _blocks(_read("src/data/moves_info.h"), "MOVE"):
             if _field(body, "effect") is None:
                 continue
             self.moves[name] = {
@@ -124,7 +127,7 @@ class GameData:
                 "type": _field(body, "type").replace("TYPE_", ""),
                 "acc": int(_field(body, "accuracy", "0")),
                 "tp": int(_field(body, "tpCost", "0")),
-                "pp": int(_field(body, "pp", "0")),
+                "pp": int(legacy_pp.get(name, "0")),
                 "chance": int(_field(body, "secondaryEffectChance", "0")),
                 "priority": int(_field(body, "priority", "0")),
             }

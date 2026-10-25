@@ -318,17 +318,26 @@ struct SpeciesInfo
             u8 noFlip : 1;
 };
 
-struct BattleMove
+// Move ranks were dropped from the design on 2026-10-22 (one Special per species
+// instead, see docs/design/mechanics.md); MoveInfo.rank stays as a placeholder.
+#define MOVE_RANK_NONE 0
+
+// One entry per move in gMovesInfo (src/data/moves_info.h).
+struct MoveInfo
 {
-    u8 effect;
-    u8 power;
-    u8 type;
-    u8 accuracy;
-    u8 tpCost; // Technical Points spent in battle each time the move is used (replaces PP in battle)
-    u8 secondaryEffectChance;
-    u8 target;
-    s8 priority;
-    u8 flags;
+ /* 0x00 */ u8 name[MOVE_NAME_LENGTH + 1];
+ /* 0x0D */ u8 effect;
+ /* 0x0E */ u8 power;
+ /* 0x0F */ u8 type;
+ /* 0x10 */ u8 accuracy;
+ /* 0x11 */ u8 tpCost; // Technical Points spent in battle each time the move is used (TP replaced PP)
+ /* 0x12 */ u8 secondaryEffectChance;
+ /* 0x13 */ u8 target;
+ /* 0x14 */ s8 priority;
+ /* 0x15 */ u8 flags;
+ /* 0x16 */ u8 rank;              // placeholder: MOVE_RANK_NONE for every move, nothing reads it
+ /* 0x18 */ u16 signatureSpecies; // placeholder: species whose Special (signature) move this is, else SPECIES_NONE
+ /* 0x1C */ const u8 *description;
 };
 
 #define SPINDA_SPOT_WIDTH 16
@@ -370,7 +379,7 @@ extern u8 gEnemyPartyCount;
 extern struct Pokemon gEnemyParty[PARTY_SIZE];
 extern struct SpriteTemplate gMultiuseSpriteTemplate;
 
-extern const struct BattleMove gBattleMoves[];
+extern const struct MoveInfo gMovesInfo[];
 extern const u8 gFacilityClassToPicIndex[];
 extern const u8 gFacilityClassToTrainerClass[];
 extern const struct SpeciesInfo gSpeciesInfo[];

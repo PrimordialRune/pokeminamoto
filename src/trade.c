@@ -1989,7 +1989,7 @@ static void BufferMovesString(u8 *str, u8 whichParty, u8 partyIdx)
         for (i = 0; i < MAX_MON_MOVES; i++)
         {
             if (moves[i] != MOVE_NONE)
-                StringAppend(str, gMoveNames[moves[i]]);
+                StringAppend(str, gMovesInfo[moves[i]].name);
 
             StringAppend(str, sText_NewLine);
         }

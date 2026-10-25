@@ -1640,7 +1640,7 @@ bool8 BufferTMHMMoveName(void)
 {
     if (gSpecialVar_0x8004 >= ITEM_TM01 && gSpecialVar_0x8004 <= ITEM_HM08)
     {
-        StringCopy(gStringVar2, gMoveNames[ItemIdToBattleMoveId(gSpecialVar_0x8004)]);
+        StringCopy(gStringVar2, gMovesInfo[ItemIdToBattleMoveId(gSpecialVar_0x8004)].name);
         return TRUE;
     }
 
@@ -3091,9 +3091,9 @@ static const u16 sBattleFrontier_TutorMoves2[] =
 void BufferBattleFrontierTutorMoveName(void)
 {
     if (gSpecialVar_0x8005 != 0)
-        StringCopy(gStringVar1, gMoveNames[sBattleFrontier_TutorMoves2[gSpecialVar_0x8004]]);
+        StringCopy(gStringVar1, gMovesInfo[sBattleFrontier_TutorMoves2[gSpecialVar_0x8004]].name);
     else
-        StringCopy(gStringVar1, gMoveNames[sBattleFrontier_TutorMoves1[gSpecialVar_0x8004]]);
+        StringCopy(gStringVar1, gMovesInfo[sBattleFrontier_TutorMoves1[gSpecialVar_0x8004]].name);
 }
 
 static void ShowBattleFrontierTutorWindow(u8 menu, u16 selection)

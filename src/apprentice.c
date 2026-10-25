@@ -628,8 +628,8 @@ static void CreateApprenticeMenu(u8 menu)
     case APPRENTICE_ASK_MOVES:
         left = 17;
         top = 8;
-        strings[0] = gMoveNames[gApprenticeQuestionData->move1];
-        strings[1] = gMoveNames[gApprenticeQuestionData->move2];
+        strings[0] = gMovesInfo[gApprenticeQuestionData->move1].name;
+        strings[1] = gMovesInfo[gApprenticeQuestionData->move2].name;
         break;
     case APPRENTICE_ASK_GIVE:
         left = 18;
@@ -1085,10 +1085,10 @@ static void ApprenticeBufferString(void)
         StringCopy(stringDst, gSpeciesNames[gApprenticeQuestionData->speciesId]);
         break;
     case APPRENTICE_BUFF_MOVE1:
-        StringCopy(stringDst, gMoveNames[gApprenticeQuestionData->move1]);
+        StringCopy(stringDst, gMovesInfo[gApprenticeQuestionData->move1].name);
         break;
     case APPRENTICE_BUFF_MOVE2:
-        StringCopy(stringDst, gMoveNames[gApprenticeQuestionData->move2]);
+        StringCopy(stringDst, gMovesInfo[gApprenticeQuestionData->move2].name);
         break;
     case APPRENTICE_BUFF_ITEM:
         StringCopy(stringDst, GetItemName(PLAYER_APPRENTICE.questions[CURRENT_QUESTION_NUM].data));

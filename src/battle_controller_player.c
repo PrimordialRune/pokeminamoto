@@ -480,7 +480,7 @@ static void HandleInputChooseTarget(void)
             case B_POSITION_PLAYER_RIGHT:
                 if (gActiveBattler != gMultiUsePlayerCursor)
                     i++;
-                else if (gBattleMoves[GetMonData(&gPlayerParty[gBattlerPartyIndexes[gActiveBattler]], MON_DATA_MOVE1 + gMoveSelectionCursor[gActiveBattler])].target & MOVE_TARGET_USER_OR_SELECTED)
+                else if (gMovesInfo[GetMonData(&gPlayerParty[gBattlerPartyIndexes[gActiveBattler]], MON_DATA_MOVE1 + gMoveSelectionCursor[gActiveBattler])].target & MOVE_TARGET_USER_OR_SELECTED)
                     i++;
                 break;
             case B_POSITION_OPPONENT_LEFT:
@@ -522,7 +522,7 @@ static void HandleInputChooseTarget(void)
             case B_POSITION_PLAYER_RIGHT:
                 if (gActiveBattler != gMultiUsePlayerCursor)
                     i++;
-                else if (gBattleMoves[GetMonData(&gPlayerParty[gBattlerPartyIndexes[gActiveBattler]], MON_DATA_MOVE1 + gMoveSelectionCursor[gActiveBattler])].target & MOVE_TARGET_USER_OR_SELECTED)
+                else if (gMovesInfo[GetMonData(&gPlayerParty[gBattlerPartyIndexes[gActiveBattler]], MON_DATA_MOVE1 + gMoveSelectionCursor[gActiveBattler])].target & MOVE_TARGET_USER_OR_SELECTED)
                     i++;
                 break;
             case B_POSITION_OPPONENT_LEFT:
@@ -562,7 +562,7 @@ static void HandleInputChooseMove(void)
         }
         else
         {
-            moveTarget = gBattleMoves[moveInfo->moves[gMoveSelectionCursor[gActiveBattler]]].target;
+            moveTarget = gMovesInfo[moveInfo->moves[gMoveSelectionCursor[gActiveBattler]]].target;
         }
 
         if (moveTarget & MOVE_TARGET_USER)
@@ -1600,7 +1600,7 @@ static const u16 sTypeTextColors[NUMBER_OF_MON_TYPES] =
 static void MoveSelectionDisplayMoveType(void)
 {
     struct ChooseMoveStruct *moveInfo = (struct ChooseMoveStruct *)(&gBattleBufferA[gActiveBattler][4]);
-    u8 type = gBattleMoves[moveInfo->moves[gMoveSelectionCursor[gActiveBattler]]].type;
+    u8 type = gMovesInfo[moveInfo->moves[gMoveSelectionCursor[gActiveBattler]]].type;
     u8 colors[3] = {TEXT_COLOR_TRANSPARENT, B_UI_PAL_TYPE, TEXT_COLOR_TRANSPARENT};
     u8 fontId = FONT_SMALL;
 
@@ -1651,11 +1651,11 @@ static u8 GetMoveEffectivenessIcon(u16 move, u8 defender)
 {
     s32 i;
     u16 multiplier = TYPE_MUL_NORMAL;
-    u8 moveType = gBattleMoves[move].type;
+    u8 moveType = gMovesInfo[move].type;
     u8 type1 = gBattleMons[defender].types[0];
     u8 type2 = gBattleMons[defender].types[1];
 
-    if (move == MOVE_NONE || gBattleMoves[move].power == 0)
+    if (move == MOVE_NONE || gMovesInfo[move].power == 0)
         return EFFECT_ICON_HIDDEN;
 
     for (i = 0; TYPE_EFFECT_ATK_TYPE(i) != TYPE_ENDTABLE; i += 3)
@@ -1713,7 +1713,7 @@ static void MoveSelectionPrintMoveName(u8 position)
     u8 *line2 = NULL;
     u8 *c;
 
-    StringCopy(gDisplayedStringBattle, gMoveNames[moveInfo->moves[position]]);
+    StringCopy(gDisplayedStringBattle, gMovesInfo[moveInfo->moves[position]].name);
     if (GetStringWidth(fontId, gDisplayedStringBattle, 0) > MOVE_NAME_MAX_WIDTH)
     {
         for (c = gDisplayedStringBattle; *c != EOS; c++)

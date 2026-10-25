@@ -73,7 +73,7 @@ struct GFRomHeader
     const u8 (*abilityNames)[];
     const u8 *const *abilityDescriptions;
     const struct Item *items;
-    const struct BattleMove *moves;
+    const struct MoveInfo *moves;
     const struct CompressedSpriteSheet *ballGfx;
     const struct CompressedSpritePalette *ballPalettes;
     u32 gcnLinkFlagsOffset;
@@ -108,7 +108,7 @@ static const struct GFRomHeader sGFRomHeader = {
     .monIconPaletteIds = gMonIconPaletteIndices,
     .monIconPalettes = gMonIconPaletteTable,
     .monSpeciesNames = gSpeciesNames,
-    .moveNames = gMoveNames,
+    .moveNames = NULL, // move names now live in gMovesInfo[].name
     .decorations = gDecorations,
     .flagsOffset = offsetof(struct SaveBlock1, flags),
     .varsOffset = offsetof(struct SaveBlock1, vars),
@@ -158,7 +158,7 @@ static const struct GFRomHeader sGFRomHeader = {
     .abilityNames = gAbilityNames,
     .abilityDescriptions = gAbilityDescriptionPointers,
     .items = gItems,
-    .moves = gBattleMoves,
+    .moves = gMovesInfo,
     .ballGfx = gBallSpriteSheets,
     .ballPalettes = gBallSpritePalettes,
 #ifndef FREE_GCN_LINK
