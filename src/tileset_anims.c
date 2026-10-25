@@ -13,7 +13,15 @@ static EWRAM_DATA struct {
     u16 size;
 } sTilesetDMA3TransferBuffer[20] = {0};
 
+// Tile animations are DMA'd straight from ROM in VBlank (TransferTilesetAnimsBuffer),
+// outside the DMA3 queue and its VBlank budget, so they get a budget of their own.
+// Masara queues 4.3 KB every 16 frames (about 5 scanlines of VBlank); whatever
+// goes over the cap waits for the next VBlank instead of running past VBlank.
+#define TILESET_ANIM_DMA_MAX_BYTES 0x1800
+
 static u8 sTilesetDMA3TransferBufferSize;
+static bool8 sTilesetAnimsTransferred;
+static u16 sTilesetAnimsQueuedBytes;
 static u16 sPrimaryTilesetAnimCounter;
 static u16 sPrimaryTilesetAnimCounterMax;
 static u16 sSecondaryTilesetAnimCounter;
@@ -554,6 +562,7 @@ static void AppendTilesetAnimToBuffer(const u16 *src, u16 *dest, u16 size)
 {
     if (sTilesetDMA3TransferBufferSize < 20)
     {
+        sTilesetAnimsQueuedBytes += size;
         sTilesetDMA3TransferBuffer[sTilesetDMA3TransferBufferSize].src = src;
         sTilesetDMA3TransferBuffer[sTilesetDMA3TransferBufferSize].dest = dest;
         sTilesetDMA3TransferBuffer[sTilesetDMA3TransferBufferSize].size = size;
@@ -563,12 +572,29 @@ static void AppendTilesetAnimToBuffer(const u16 *src, u16 *dest, u16 size)
 
 void TransferTilesetAnimsBuffer(void)
 {
-    int i;
+    int i, j;
+    u32 bytes = 0;
 
     for (i = 0; i < sTilesetDMA3TransferBufferSize; i ++)
+    {
+        if (i != 0 && bytes + sTilesetDMA3TransferBuffer[i].size > TILESET_ANIM_DMA_MAX_BYTES)
+            break;
         DmaCopy16(3, sTilesetDMA3TransferBuffer[i].src, sTilesetDMA3TransferBuffer[i].dest, sTilesetDMA3TransferBuffer[i].size);
+        bytes += sTilesetDMA3TransferBuffer[i].size;
+    }
 
-    sTilesetDMA3TransferBufferSize = 0;
+    // Over the cap: the rest goes first in the next VBlank.
+    for (j = 0; i < sTilesetDMA3TransferBufferSize; i++, j++)
+        sTilesetDMA3TransferBuffer[j] = sTilesetDMA3TransferBuffer[i];
+    sTilesetDMA3TransferBufferSize = j;
+    sTilesetAnimsTransferred = TRUE;
+}
+
+// TRUE when this frame's VBlank will DMA tile animations (call it after
+// UpdateTilesetAnimations).
+bool8 AreTilesetAnimsBusy(void)
+{
+    return sTilesetAnimsQueuedBytes != 0 || sTilesetDMA3TransferBufferSize != 0;
 }
 
 void InitTilesetAnimations(void)
@@ -585,7 +611,12 @@ void InitSecondaryTilesetAnimation(void)
 
 void UpdateTilesetAnimations(void)
 {
-    ResetTilesetAnimBuffer();
+    // A queue no VBlank took (the field VBlank callback is off during fades) is
+    // dropped, as before; what the DMA cap left over is kept.
+    if (!sTilesetAnimsTransferred)
+        ResetTilesetAnimBuffer();
+    sTilesetAnimsTransferred = FALSE;
+    sTilesetAnimsQueuedBytes = 0;
     if (++sPrimaryTilesetAnimCounter >= sPrimaryTilesetAnimCounterMax)
         sPrimaryTilesetAnimCounter = 0;
     if (++sSecondaryTilesetAnimCounter >= sSecondaryTilesetAnimCounterMax)
