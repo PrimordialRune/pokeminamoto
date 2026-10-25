@@ -866,7 +866,7 @@ void ResetLinkPlayers(void)
 {
     int i;
 
-    for (i = 0; i <= MAX_LINK_PLAYERS; i++)
+    for (i = 0; i < MAX_LINK_PLAYERS; i++)
         gLinkPlayers[i] = (struct LinkPlayer){};
 }
 

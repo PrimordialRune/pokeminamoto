@@ -117,7 +117,6 @@ static void GetGroundEffectFlags_Seaweed(struct ObjectEvent *, u32 *);
 static void GetGroundEffectFlags_JumpLanding(struct ObjectEvent *, u32 *);
 static u8 ObjectEventGetNearbyReflectionType(struct ObjectEvent *);
 static u8 GetReflectionTypeByMetatileBehavior(u32);
-static void InitObjectPriorityByElevation(struct Sprite *, u8);
 static void ObjectEventUpdateSubpriority(struct ObjectEvent *, struct Sprite *);
 static void DoTracksGroundEffect_None(struct ObjectEvent *, struct Sprite *, u8);
 static void DoTracksGroundEffect_Footprints(struct ObjectEvent *, struct Sprite *, u8);
@@ -7658,12 +7657,6 @@ static void UpdateObjectEventElevationAndPriority(struct ObjectEvent *objEvent, 
 
     sprite->subspriteTableNum = sElevationToSubspriteTableNum[objEvent->previousElevation];
     sprite->oam.priority = sElevationToPriority[objEvent->previousElevation];
-}
-
-static void InitObjectPriorityByElevation(struct Sprite *sprite, u8 elevation)
-{
-    sprite->subspriteTableNum = sElevationToSubspriteTableNum[elevation];
-    sprite->oam.priority = sElevationToPriority[elevation];
 }
 
 u8 ElevationToPriority(u8 elevation)
