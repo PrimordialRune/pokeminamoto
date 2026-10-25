@@ -2,7 +2,7 @@
     "species": "HAUNTER",
     "name": "HAUNTER",
     "nationalDex": 93,
-    "hoennDex": 263,
+    "dex": 93,
     "baseStats": {"hp": 45, "attack": 50, "defense": 45, "speed": 95, "spAttack": 115, "spDefense": 55},
     "types": ["GHOST", "POISON"],
     "catchRate": 90,
@@ -16,6 +16,7 @@
     "abilities": ["LEVITATE", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "PURPLE",
+    "cry": "sound/direct_sound_samples/cries/haunter.bin",
     "evolutions": [{"method": "TRADE", "param": 0, "into": "GENGAR"}],
     "levelUpMoves": [
         [1, "HYPNOSIS"],

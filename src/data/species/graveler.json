@@ -2,7 +2,7 @@
     "species": "GRAVELER",
     "name": "GRAVELER",
     "nationalDex": 75,
-    "hoennDex": 58,
+    "dex": 75,
     "baseStats": {"hp": 55, "attack": 95, "defense": 115, "speed": 35, "spAttack": 45, "spDefense": 45},
     "types": ["ROCK", "GROUND"],
     "catchRate": 120,
@@ -17,6 +17,7 @@
     "abilities": ["ROCK_HEAD", "STURDY"],
     "safariZoneFleeRate": 0,
     "bodyColor": "BROWN",
+    "cry": "sound/direct_sound_samples/cries/graveler.bin",
     "evolutions": [{"method": "TRADE", "param": 0, "into": "GOLEM"}],
     "levelUpMoves": [
         [1, "TACKLE"],

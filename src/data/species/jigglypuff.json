@@ -2,7 +2,7 @@
     "species": "JIGGLYPUFF",
     "name": "JIGGLYPUFF",
     "nationalDex": 39,
-    "hoennDex": 138,
+    "dex": 39,
     "baseStats": {"hp": 115, "attack": 45, "defense": 20, "speed": 20, "spAttack": 45, "spDefense": 25},
     "types": ["NORMAL", "NORMAL"],
     "catchRate": 170,
@@ -16,6 +16,7 @@
     "abilities": ["CUTE_CHARM", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "PINK",
+    "cry": "sound/direct_sound_samples/cries/jigglypuff.bin",
     "evolutions": [{"method": "ITEM", "param": "MOON_STONE", "into": "WIGGLYTUFF"}],
     "levelUpMoves": [
         [1, "SING"],

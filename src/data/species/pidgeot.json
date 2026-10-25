@@ -2,7 +2,7 @@
     "species": "PIDGEOT",
     "name": "PIDGEOT",
     "nationalDex": 18,
-    "hoennDex": 220,
+    "dex": 18,
     "baseStats": {"hp": 83, "attack": 80, "defense": 75, "speed": 91, "spAttack": 70, "spDefense": 70},
     "types": ["NORMAL", "FLYING"],
     "catchRate": 45,
@@ -16,6 +16,7 @@
     "abilities": ["KEEN_EYE", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "BROWN",
+    "cry": "sound/direct_sound_samples/cries/pidgeot.bin",
     "levelUpMoves": [
         [1, "TACKLE"],
         [1, "SAND_ATTACK"],

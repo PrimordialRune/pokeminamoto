@@ -2,7 +2,7 @@
     "species": "MANKEY",
     "name": "MANKEY",
     "nationalDex": 56,
-    "hoennDex": 243,
+    "dex": 56,
     "baseStats": {"hp": 40, "attack": 80, "defense": 35, "speed": 70, "spAttack": 35, "spDefense": 45},
     "types": ["FIGHTING", "FIGHTING"],
     "catchRate": 190,
@@ -16,6 +16,7 @@
     "abilities": ["VITAL_SPIRIT", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "BROWN",
+    "cry": "sound/direct_sound_samples/cries/mankey.bin",
     "evolutions": [{"method": "LEVEL", "param": 28, "into": "PRIMEAPE"}],
     "levelUpMoves": [
         [1, "SCRATCH"],

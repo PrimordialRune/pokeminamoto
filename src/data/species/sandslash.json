@@ -2,7 +2,7 @@
     "species": "SANDSLASH",
     "name": "SANDSLASH",
     "nationalDex": 28,
-    "hoennDex": 113,
+    "dex": 28,
     "baseStats": {"hp": 75, "attack": 100, "defense": 110, "speed": 65, "spAttack": 45, "spDefense": 55},
     "types": ["GROUND", "GROUND"],
     "catchRate": 90,
@@ -17,6 +17,7 @@
     "abilities": ["SAND_VEIL", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "YELLOW",
+    "cry": "sound/direct_sound_samples/cries/sandslash.bin",
     "levelUpMoves": [
         [1, "SCRATCH"],
         [1, "DEFENSE_CURL"],

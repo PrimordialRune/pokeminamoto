@@ -2,7 +2,7 @@
     "species": "GOLDUCK",
     "name": "GOLDUCK",
     "nationalDex": 55,
-    "hoennDex": 159,
+    "dex": 55,
     "baseStats": {"hp": 80, "attack": 82, "defense": 78, "speed": 85, "spAttack": 95, "spDefense": 80},
     "types": ["WATER", "WATER"],
     "catchRate": 75,
@@ -16,6 +16,7 @@
     "abilities": ["DAMP", "CLOUD_NINE"],
     "safariZoneFleeRate": 8,
     "bodyColor": "BLUE",
+    "cry": "sound/direct_sound_samples/cries/golduck.bin",
     "levelUpMoves": [
         [1, "WATER_GUN"],
         [1, "SCRATCH"],

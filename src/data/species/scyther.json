@@ -2,7 +2,7 @@
     "species": "SCYTHER",
     "name": "SCYTHER",
     "nationalDex": 123,
-    "hoennDex": 281,
+    "dex": 123,
     "baseStats": {"hp": 70, "attack": 110, "defense": 80, "speed": 105, "spAttack": 55, "spDefense": 80},
     "types": ["BUG", "FLYING"],
     "catchRate": 45,
@@ -16,6 +16,7 @@
     "abilities": ["SWARM", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "GREEN",
+    "cry": "sound/direct_sound_samples/cries/scyther.bin",
     "levelUpMoves": [
         [1, "QUICK_ATTACK"],
         [1, "LEER"],

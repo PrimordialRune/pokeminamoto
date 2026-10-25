@@ -2,7 +2,7 @@
     "species": "PSYDUCK",
     "name": "PSYDUCK",
     "nationalDex": 54,
-    "hoennDex": 158,
+    "dex": 54,
     "baseStats": {"hp": 50, "attack": 52, "defense": 48, "speed": 55, "spAttack": 65, "spDefense": 50},
     "types": ["WATER", "WATER"],
     "catchRate": 190,
@@ -16,6 +16,7 @@
     "abilities": ["DAMP", "CLOUD_NINE"],
     "safariZoneFleeRate": 6,
     "bodyColor": "YELLOW",
+    "cry": "sound/direct_sound_samples/cries/psyduck.bin",
     "evolutions": [{"method": "LEVEL", "param": 33, "into": "GOLDUCK"}],
     "levelUpMoves": [
         [1, "WATER_GUN"],

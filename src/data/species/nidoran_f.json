@@ -2,7 +2,7 @@
     "species": "NIDORAN_F",
     "name": "NIDORAN♀",
     "nationalDex": 29,
-    "hoennDex": 227,
+    "dex": 29,
     "baseStats": {"hp": 55, "attack": 47, "defense": 52, "speed": 41, "spAttack": 40, "spDefense": 40},
     "types": ["POISON", "POISON"],
     "catchRate": 235,
@@ -16,6 +16,7 @@
     "abilities": ["POISON_POINT", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "BLUE",
+    "cry": "sound/direct_sound_samples/cries/nidoran_f.bin",
     "evolutions": [{"method": "LEVEL", "param": 16, "into": "NIDORINA"}],
     "levelUpMoves": [
         [1, "GROWL"],

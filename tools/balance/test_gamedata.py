@@ -56,7 +56,7 @@ class GameDataParses(unittest.TestCase):
             self.assertTrue(ls.get(sp), sp)
         self.assertIn((1, "SCRATCH"), ls["CHARMANDER"])
         self.assertEqual(self.d.evolutions["CHARMANDER"], (16, "CHARMELEON"))
-        self.assertGreaterEqual(len(self.d.evolutions), 60)
+        self.assertEqual(len(self.d.evolutions), 52)  # the Gen 1 species that evolve by level
 
     def test_type_chart(self):
         c = self.d.type_chart

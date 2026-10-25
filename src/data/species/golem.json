@@ -2,7 +2,7 @@
     "species": "GOLEM",
     "name": "GOLEM",
     "nationalDex": 76,
-    "hoennDex": 59,
+    "dex": 76,
     "baseStats": {"hp": 80, "attack": 110, "defense": 130, "speed": 45, "spAttack": 55, "spDefense": 65},
     "types": ["ROCK", "GROUND"],
     "catchRate": 45,
@@ -17,6 +17,7 @@
     "abilities": ["ROCK_HEAD", "STURDY"],
     "safariZoneFleeRate": 0,
     "bodyColor": "BROWN",
+    "cry": "sound/direct_sound_samples/cries/golem.bin",
     "levelUpMoves": [
         [1, "TACKLE"],
         [1, "DEFENSE_CURL"],

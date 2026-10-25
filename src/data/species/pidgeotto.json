@@ -2,7 +2,7 @@
     "species": "PIDGEOTTO",
     "name": "PIDGEOTTO",
     "nationalDex": 17,
-    "hoennDex": 219,
+    "dex": 17,
     "baseStats": {"hp": 63, "attack": 60, "defense": 55, "speed": 71, "spAttack": 50, "spDefense": 50},
     "types": ["NORMAL", "FLYING"],
     "catchRate": 120,
@@ -16,6 +16,7 @@
     "abilities": ["KEEN_EYE", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "BROWN",
+    "cry": "sound/direct_sound_samples/cries/pidgeotto.bin",
     "evolutions": [{"method": "LEVEL", "param": 36, "into": "PIDGEOT"}],
     "levelUpMoves": [
         [1, "TACKLE"],

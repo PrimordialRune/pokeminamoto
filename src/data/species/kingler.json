@@ -2,7 +2,7 @@
     "species": "KINGLER",
     "name": "KINGLER",
     "nationalDex": 99,
-    "hoennDex": 269,
+    "dex": 99,
     "baseStats": {"hp": 55, "attack": 130, "defense": 115, "speed": 75, "spAttack": 50, "spDefense": 50},
     "types": ["WATER", "WATER"],
     "catchRate": 60,
@@ -17,6 +17,7 @@
     "safariZoneFleeRate": 0,
     "bodyColor": "RED",
     "noFlip": true,
+    "cry": "sound/direct_sound_samples/cries/kingler.bin",
     "levelUpMoves": [
         [1, "BUBBLE"],
         [1, "LEER"],

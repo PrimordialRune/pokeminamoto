@@ -2,7 +2,7 @@
     "species": "TENTACOOL",
     "name": "TENTACOOL",
     "nationalDex": 72,
-    "hoennDex": 66,
+    "dex": 72,
     "baseStats": {"hp": 40, "attack": 40, "defense": 35, "speed": 70, "spAttack": 50, "spDefense": 100},
     "types": ["WATER", "POISON"],
     "catchRate": 190,
@@ -16,6 +16,7 @@
     "abilities": ["CLEAR_BODY", "LIQUID_OOZE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "BLUE",
+    "cry": "sound/direct_sound_samples/cries/tentacool.bin",
     "evolutions": [{"method": "LEVEL", "param": 30, "into": "TENTACRUEL"}],
     "levelUpMoves": [
         [1, "POISON_STING"],

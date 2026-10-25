@@ -2,7 +2,7 @@
     "species": "ALAKAZAM",
     "name": "ALAKAZAM",
     "nationalDex": 65,
-    "hoennDex": 41,
+    "dex": 65,
     "baseStats": {"hp": 55, "attack": 50, "defense": 45, "speed": 120, "spAttack": 135, "spDefense": 85},
     "types": ["PSYCHIC", "PSYCHIC"],
     "catchRate": 50,
@@ -17,6 +17,7 @@
     "abilities": ["SYNCHRONIZE", "INNER_FOCUS"],
     "safariZoneFleeRate": 0,
     "bodyColor": "BROWN",
+    "cry": "sound/direct_sound_samples/cries/alakazam.bin",
     "levelUpMoves": [
         [1, "TELEPORT"],
         [1, "KINESIS"],

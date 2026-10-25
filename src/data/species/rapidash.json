@@ -2,7 +2,7 @@
     "species": "RAPIDASH",
     "name": "RAPIDASH",
     "nationalDex": 78,
-    "hoennDex": 254,
+    "dex": 78,
     "baseStats": {"hp": 65, "attack": 100, "defense": 70, "speed": 105, "spAttack": 80, "spDefense": 80},
     "types": ["FIRE", "FIRE"],
     "catchRate": 60,
@@ -16,6 +16,7 @@
     "abilities": ["RUN_AWAY", "FLASH_FIRE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "YELLOW",
+    "cry": "sound/direct_sound_samples/cries/rapidash.bin",
     "levelUpMoves": [
         [1, "TACKLE"],
         [1, "GROWL"],

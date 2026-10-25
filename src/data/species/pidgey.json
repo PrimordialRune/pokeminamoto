@@ -2,7 +2,7 @@
     "species": "PIDGEY",
     "name": "PIDGEY",
     "nationalDex": 16,
-    "hoennDex": 218,
+    "dex": 16,
     "baseStats": {"hp": 40, "attack": 45, "defense": 40, "speed": 56, "spAttack": 35, "spDefense": 35},
     "types": ["NORMAL", "FLYING"],
     "catchRate": 255,
@@ -16,6 +16,7 @@
     "abilities": ["KEEN_EYE", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "BROWN",
+    "cry": "sound/direct_sound_samples/cries/pidgey.bin",
     "evolutions": [{"method": "LEVEL", "param": 18, "into": "PIDGEOTTO"}],
     "levelUpMoves": [
         [1, "TACKLE"],

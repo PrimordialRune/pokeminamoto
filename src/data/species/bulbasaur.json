@@ -2,7 +2,7 @@
     "species": "BULBASAUR",
     "name": "BULBASAUR",
     "nationalDex": 1,
-    "hoennDex": 203,
+    "dex": 1,
     "baseStats": {"hp": 45, "attack": 49, "defense": 49, "speed": 45, "spAttack": 65, "spDefense": 65},
     "types": ["GRASS", "POISON"],
     "catchRate": 45,
@@ -16,6 +16,7 @@
     "abilities": ["OVERGROW", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "GREEN",
+    "cry": "sound/direct_sound_samples/cries/bulbasaur.bin",
     "evolutions": [{"method": "LEVEL", "param": 16, "into": "IVYSAUR"}],
     "levelUpMoves": [
         [1, "TACKLE"],

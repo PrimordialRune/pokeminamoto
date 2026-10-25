@@ -2,7 +2,7 @@
     "species": "OMASTAR",
     "name": "OMASTAR",
     "nationalDex": 139,
-    "hoennDex": 294,
+    "dex": 139,
     "baseStats": {"hp": 70, "attack": 60, "defense": 125, "speed": 55, "spAttack": 115, "spDefense": 70},
     "types": ["ROCK", "WATER"],
     "catchRate": 45,
@@ -16,6 +16,7 @@
     "abilities": ["SWIFT_SWIM", "SHELL_ARMOR"],
     "safariZoneFleeRate": 0,
     "bodyColor": "BLUE",
+    "cry": "sound/direct_sound_samples/cries/omastar.bin",
     "levelUpMoves": [
         [1, "CONSTRICT"],
         [1, "WITHDRAW"],

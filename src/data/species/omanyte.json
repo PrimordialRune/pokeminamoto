@@ -2,7 +2,7 @@
     "species": "OMANYTE",
     "name": "OMANYTE",
     "nationalDex": 138,
-    "hoennDex": 293,
+    "dex": 138,
     "baseStats": {"hp": 35, "attack": 40, "defense": 100, "speed": 35, "spAttack": 90, "spDefense": 55},
     "types": ["ROCK", "WATER"],
     "catchRate": 45,
@@ -16,6 +16,7 @@
     "abilities": ["SWIFT_SWIM", "SHELL_ARMOR"],
     "safariZoneFleeRate": 0,
     "bodyColor": "BLUE",
+    "cry": "sound/direct_sound_samples/cries/omanyte.bin",
     "evolutions": [{"method": "LEVEL", "param": 40, "into": "OMASTAR"}],
     "levelUpMoves": [
         [1, "CONSTRICT"],

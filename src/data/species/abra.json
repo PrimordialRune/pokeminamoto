@@ -2,7 +2,7 @@
     "species": "ABRA",
     "name": "ABRA",
     "nationalDex": 63,
-    "hoennDex": 39,
+    "dex": 63,
     "baseStats": {"hp": 25, "attack": 20, "defense": 15, "speed": 90, "spAttack": 105, "spDefense": 55},
     "types": ["PSYCHIC", "PSYCHIC"],
     "catchRate": 200,
@@ -17,6 +17,7 @@
     "abilities": ["SYNCHRONIZE", "INNER_FOCUS"],
     "safariZoneFleeRate": 0,
     "bodyColor": "BROWN",
+    "cry": "sound/direct_sound_samples/cries/abra.bin",
     "evolutions": [{"method": "LEVEL", "param": 16, "into": "KADABRA"}],
     "levelUpMoves": [[1, "TELEPORT"]],
     "tmhm": [

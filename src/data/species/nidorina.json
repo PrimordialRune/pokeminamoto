@@ -2,7 +2,7 @@
     "species": "NIDORINA",
     "name": "NIDORINA",
     "nationalDex": 30,
-    "hoennDex": 228,
+    "dex": 30,
     "baseStats": {"hp": 70, "attack": 62, "defense": 67, "speed": 56, "spAttack": 55, "spDefense": 55},
     "types": ["POISON", "POISON"],
     "catchRate": 120,
@@ -16,6 +16,7 @@
     "abilities": ["POISON_POINT", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "BLUE",
+    "cry": "sound/direct_sound_samples/cries/nidorina.bin",
     "evolutions": [{"method": "ITEM", "param": "MOON_STONE", "into": "NIDOQUEEN"}],
     "levelUpMoves": [
         [1, "GROWL"],

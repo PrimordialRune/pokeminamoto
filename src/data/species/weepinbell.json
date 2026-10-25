@@ -2,7 +2,7 @@
     "species": "WEEPINBELL",
     "name": "WEEPINBELL",
     "nationalDex": 70,
-    "hoennDex": 251,
+    "dex": 70,
     "baseStats": {"hp": 65, "attack": 90, "defense": 50, "speed": 55, "spAttack": 85, "spDefense": 45},
     "types": ["GRASS", "POISON"],
     "catchRate": 120,
@@ -16,6 +16,7 @@
     "abilities": ["CHLOROPHYLL", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "GREEN",
+    "cry": "sound/direct_sound_samples/cries/weepinbell.bin",
     "evolutions": [{"method": "ITEM", "param": "LEAF_STONE", "into": "VICTREEBEL"}],
     "levelUpMoves": [
         [1, "VINE_WHIP"],

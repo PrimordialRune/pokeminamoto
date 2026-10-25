@@ -2,7 +2,7 @@
     "species": "PORYGON",
     "name": "PORYGON",
     "nationalDex": 137,
-    "hoennDex": 292,
+    "dex": 137,
     "baseStats": {"hp": 65, "attack": 60, "defense": 70, "speed": 40, "spAttack": 85, "spDefense": 75},
     "types": ["NORMAL", "NORMAL"],
     "catchRate": 45,
@@ -16,6 +16,7 @@
     "abilities": ["TRACE", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "PINK",
+    "cry": "sound/direct_sound_samples/cries/porygon.bin",
     "levelUpMoves": [
         [1, "CONVERSION"],
         [1, "TACKLE"],

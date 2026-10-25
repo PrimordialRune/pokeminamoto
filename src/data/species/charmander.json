@@ -2,7 +2,7 @@
     "species": "CHARMANDER",
     "name": "CHARMANDER",
     "nationalDex": 4,
-    "hoennDex": 206,
+    "dex": 4,
     "baseStats": {"hp": 39, "attack": 52, "defense": 43, "speed": 65, "spAttack": 60, "spDefense": 50},
     "types": ["FIRE", "FIRE"],
     "catchRate": 45,
@@ -16,6 +16,7 @@
     "abilities": ["BLAZE", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "RED",
+    "cry": "sound/direct_sound_samples/cries/charmander.bin",
     "evolutions": [{"method": "LEVEL", "param": 16, "into": "CHARMELEON"}],
     "levelUpMoves": [
         [1, "SCRATCH"],

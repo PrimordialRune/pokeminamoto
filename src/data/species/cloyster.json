@@ -2,7 +2,7 @@
     "species": "CLOYSTER",
     "name": "CLOYSTER",
     "nationalDex": 91,
-    "hoennDex": 261,
+    "dex": 91,
     "baseStats": {"hp": 50, "attack": 95, "defense": 180, "speed": 70, "spAttack": 85, "spDefense": 45},
     "types": ["WATER", "ICE"],
     "catchRate": 60,
@@ -17,6 +17,7 @@
     "abilities": ["SHELL_ARMOR", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "PURPLE",
+    "cry": "sound/direct_sound_samples/cries/cloyster.bin",
     "levelUpMoves": [
         [1, "WITHDRAW"],
         [1, "SUPERSONIC"],

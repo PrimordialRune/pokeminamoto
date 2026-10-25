@@ -152,10 +152,9 @@ def substitute_and_party():
 def dex_area():
     R.menu_to(emu, "POKEDEX")
     emu.run(150)
-    for _ in range(148):              # scroll down the list
-        emu.press("DOWN", hold=2, after=4)
-    emu.run(30)
-    emu.press("UP", after=30); snap("dex_list")   # lands on No.074 Machoke, seen
+    for _ in range(66):               # scroll down the list, one entry per press
+        emu.press("DOWN", hold=2, after=12)
+    emu.run(30); snap("dex_list")     # lands on No.067 Machoke, seen
     emu.press("A", after=150)
     snap("dex_entry")
     emu.press("A", after=150); snap("dex_area")       # AREA is the first tab

@@ -2,7 +2,7 @@
     "species": "WARTORTLE",
     "name": "WARTORTLE",
     "nationalDex": 8,
-    "hoennDex": 210,
+    "dex": 8,
     "baseStats": {"hp": 59, "attack": 63, "defense": 80, "speed": 58, "spAttack": 65, "spDefense": 80},
     "types": ["WATER", "WATER"],
     "catchRate": 45,
@@ -16,6 +16,7 @@
     "abilities": ["TORRENT", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "BLUE",
+    "cry": "sound/direct_sound_samples/cries/wartortle.bin",
     "evolutions": [{"method": "LEVEL", "param": 36, "into": "BLASTOISE"}],
     "levelUpMoves": [
         [1, "TACKLE"],

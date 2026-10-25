@@ -2,7 +2,7 @@
     "species": "GLOOM",
     "name": "GLOOM",
     "nationalDex": 44,
-    "hoennDex": 89,
+    "dex": 44,
     "baseStats": {"hp": 60, "attack": 65, "defense": 70, "speed": 40, "spAttack": 85, "spDefense": 75},
     "types": ["GRASS", "POISON"],
     "catchRate": 120,
@@ -16,6 +16,7 @@
     "abilities": ["CHLOROPHYLL", "NONE"],
     "safariZoneFleeRate": 6,
     "bodyColor": "BLUE",
+    "cry": "sound/direct_sound_samples/cries/gloom.bin",
     "evolutions": [{"method": "ITEM", "param": "LEAF_STONE", "into": "VILEPLUME"}],
     "levelUpMoves": [
         [1, "ABSORB"],

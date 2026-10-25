@@ -2,7 +2,7 @@
     "species": "NIDORINO",
     "name": "NIDORINO",
     "nationalDex": 33,
-    "hoennDex": 231,
+    "dex": 33,
     "baseStats": {"hp": 61, "attack": 72, "defense": 57, "speed": 65, "spAttack": 55, "spDefense": 55},
     "types": ["POISON", "POISON"],
     "catchRate": 120,
@@ -16,6 +16,7 @@
     "abilities": ["POISON_POINT", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "PURPLE",
+    "cry": "sound/direct_sound_samples/cries/nidorino.bin",
     "evolutions": [{"method": "ITEM", "param": "MOON_STONE", "into": "NIDOKING"}],
     "levelUpMoves": [
         [1, "LEER"],

@@ -2,7 +2,7 @@
     "species": "ARTICUNO",
     "name": "ARTICUNO",
     "nationalDex": 144,
-    "hoennDex": 299,
+    "dex": 144,
     "baseStats": {"hp": 90, "attack": 85, "defense": 100, "speed": 85, "spAttack": 95, "spDefense": 125},
     "types": ["ICE", "FLYING"],
     "catchRate": 3,
@@ -16,6 +16,7 @@
     "abilities": ["PRESSURE", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "BLUE",
+    "cry": "sound/direct_sound_samples/cries/articuno.bin",
     "levelUpMoves": [
         [1, "GUST"],
         [1, "ICE_BEAM"],

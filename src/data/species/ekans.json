@@ -2,7 +2,7 @@
     "species": "EKANS",
     "name": "EKANS",
     "nationalDex": 23,
-    "hoennDex": 225,
+    "dex": 23,
     "baseStats": {"hp": 35, "attack": 60, "defense": 44, "speed": 55, "spAttack": 40, "spDefense": 54},
     "types": ["POISON", "POISON"],
     "catchRate": 255,
@@ -16,6 +16,7 @@
     "abilities": ["INTIMIDATE", "SHED_SKIN"],
     "safariZoneFleeRate": 0,
     "bodyColor": "PURPLE",
+    "cry": "sound/direct_sound_samples/cries/ekans.bin",
     "evolutions": [{"method": "LEVEL", "param": 22, "into": "ARBOK"}],
     "levelUpMoves": [
         [1, "WRAP"],

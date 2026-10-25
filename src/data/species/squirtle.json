@@ -2,7 +2,7 @@
     "species": "SQUIRTLE",
     "name": "SQUIRTLE",
     "nationalDex": 7,
-    "hoennDex": 209,
+    "dex": 7,
     "baseStats": {"hp": 44, "attack": 48, "defense": 65, "speed": 43, "spAttack": 50, "spDefense": 64},
     "types": ["WATER", "WATER"],
     "catchRate": 45,
@@ -16,6 +16,7 @@
     "abilities": ["TORRENT", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "BLUE",
+    "cry": "sound/direct_sound_samples/cries/squirtle.bin",
     "evolutions": [{"method": "LEVEL", "param": 16, "into": "WARTORTLE"}],
     "levelUpMoves": [
         [1, "TACKLE"],

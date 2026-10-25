@@ -2,7 +2,7 @@
     "species": "KRABBY",
     "name": "KRABBY",
     "nationalDex": 98,
-    "hoennDex": 268,
+    "dex": 98,
     "baseStats": {"hp": 30, "attack": 105, "defense": 90, "speed": 50, "spAttack": 25, "spDefense": 25},
     "types": ["WATER", "WATER"],
     "catchRate": 225,
@@ -16,6 +16,7 @@
     "abilities": ["HYPER_CUTTER", "SHELL_ARMOR"],
     "safariZoneFleeRate": 0,
     "bodyColor": "RED",
+    "cry": "sound/direct_sound_samples/cries/krabby.bin",
     "evolutions": [{"method": "LEVEL", "param": 28, "into": "KINGLER"}],
     "levelUpMoves": [
         [1, "BUBBLE"],

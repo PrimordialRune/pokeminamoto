@@ -2,7 +2,7 @@
     "species": "DRAGONITE",
     "name": "DRAGONITE",
     "nationalDex": 149,
-    "hoennDex": 304,
+    "dex": 149,
     "baseStats": {"hp": 91, "attack": 134, "defense": 95, "speed": 80, "spAttack": 100, "spDefense": 100},
     "types": ["DRAGON", "FLYING"],
     "catchRate": 45,
@@ -17,6 +17,7 @@
     "abilities": ["INNER_FOCUS", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "BROWN",
+    "cry": "sound/direct_sound_samples/cries/dragonite.bin",
     "levelUpMoves": [
         [1, "WRAP"],
         [1, "LEER"],

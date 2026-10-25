@@ -2,7 +2,7 @@
     "species": "VILEPLUME",
     "name": "VILEPLUME",
     "nationalDex": 45,
-    "hoennDex": 90,
+    "dex": 45,
     "baseStats": {"hp": 75, "attack": 80, "defense": 85, "speed": 50, "spAttack": 100, "spDefense": 90},
     "types": ["GRASS", "POISON"],
     "catchRate": 45,
@@ -16,6 +16,7 @@
     "abilities": ["CHLOROPHYLL", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "RED",
+    "cry": "sound/direct_sound_samples/cries/vileplume.bin",
     "levelUpMoves": [[1, "ABSORB"], [1, "RECOVER"], [1, "STUN_SPORE"], [1, "MEGA_DRAIN"], [44, "PETAL_DANCE"]],
     "tmhm": [
         "SWORDS_DANCE",

@@ -2,7 +2,7 @@
     "species": "KABUTOPS",
     "name": "KABUTOPS",
     "nationalDex": 141,
-    "hoennDex": 296,
+    "dex": 141,
     "baseStats": {"hp": 60, "attack": 115, "defense": 105, "speed": 80, "spAttack": 65, "spDefense": 70},
     "types": ["ROCK", "WATER"],
     "catchRate": 45,
@@ -16,6 +16,7 @@
     "abilities": ["SWIFT_SWIM", "BATTLE_ARMOR"],
     "safariZoneFleeRate": 0,
     "bodyColor": "BROWN",
+    "cry": "sound/direct_sound_samples/cries/kabutops.bin",
     "levelUpMoves": [
         [1, "SCRATCH"],
         [1, "HARDEN"],

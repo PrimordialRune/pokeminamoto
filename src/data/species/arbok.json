@@ -2,7 +2,7 @@
     "species": "ARBOK",
     "name": "ARBOK",
     "nationalDex": 24,
-    "hoennDex": 226,
+    "dex": 24,
     "baseStats": {"hp": 60, "attack": 85, "defense": 69, "speed": 80, "spAttack": 65, "spDefense": 79},
     "types": ["POISON", "POISON"],
     "catchRate": 90,
@@ -16,6 +16,7 @@
     "abilities": ["INTIMIDATE", "SHED_SKIN"],
     "safariZoneFleeRate": 0,
     "bodyColor": "PURPLE",
+    "cry": "sound/direct_sound_samples/cries/arbok.bin",
     "levelUpMoves": [
         [1, "WRAP"],
         [1, "LEER"],

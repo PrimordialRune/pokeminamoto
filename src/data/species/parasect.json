@@ -2,7 +2,7 @@
     "species": "PARASECT",
     "name": "PARASECT",
     "nationalDex": 47,
-    "hoennDex": 236,
+    "dex": 47,
     "baseStats": {"hp": 60, "attack": 95, "defense": 80, "speed": 30, "spAttack": 60, "spDefense": 80},
     "types": ["BUG", "GRASS"],
     "catchRate": 75,
@@ -17,6 +17,7 @@
     "abilities": ["EFFECT_SPORE", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "RED",
+    "cry": "sound/direct_sound_samples/cries/parasect.bin",
     "levelUpMoves": [
         [1, "SCRATCH"],
         [1, "STUN_SPORE"],

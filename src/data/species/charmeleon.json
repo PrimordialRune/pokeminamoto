@@ -2,7 +2,7 @@
     "species": "CHARMELEON",
     "name": "CHARMELEON",
     "nationalDex": 5,
-    "hoennDex": 207,
+    "dex": 5,
     "baseStats": {"hp": 58, "attack": 64, "defense": 58, "speed": 80, "spAttack": 80, "spDefense": 65},
     "types": ["FIRE", "FIRE"],
     "catchRate": 45,
@@ -16,6 +16,7 @@
     "abilities": ["BLAZE", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "RED",
+    "cry": "sound/direct_sound_samples/cries/charmeleon.bin",
     "evolutions": [{"method": "LEVEL", "param": 36, "into": "CHARIZARD"}],
     "levelUpMoves": [
         [1, "SCRATCH"],

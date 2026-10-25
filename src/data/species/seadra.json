@@ -2,7 +2,7 @@
     "species": "SEADRA",
     "name": "SEADRA",
     "nationalDex": 117,
-    "hoennDex": 185,
+    "dex": 117,
     "baseStats": {"hp": 55, "attack": 65, "defense": 95, "speed": 85, "spAttack": 95, "spDefense": 45},
     "types": ["WATER", "WATER"],
     "catchRate": 75,
@@ -17,6 +17,7 @@
     "abilities": ["POISON_POINT", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "BLUE",
+    "cry": "sound/direct_sound_samples/cries/seadra.bin",
     "levelUpMoves": [
         [1, "BUBBLE"],
         [1, "SMOKESCREEN"],

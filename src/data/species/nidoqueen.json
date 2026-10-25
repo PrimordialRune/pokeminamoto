@@ -2,7 +2,7 @@
     "species": "NIDOQUEEN",
     "name": "NIDOQUEEN",
     "nationalDex": 31,
-    "hoennDex": 229,
+    "dex": 31,
     "baseStats": {"hp": 90, "attack": 82, "defense": 87, "speed": 76, "spAttack": 75, "spDefense": 85},
     "types": ["POISON", "GROUND"],
     "catchRate": 45,
@@ -16,6 +16,7 @@
     "abilities": ["POISON_POINT", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "BLUE",
+    "cry": "sound/direct_sound_samples/cries/nidoqueen.bin",
     "levelUpMoves": [[1, "SCRATCH"], [1, "TAIL_WHIP"], [1, "DOUBLE_KICK"], [1, "POISON_STING"], [23, "BODY_SLAM"]],
     "tmhm": [
         "MEGA_PUNCH",

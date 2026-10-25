@@ -2,7 +2,7 @@
     "species": "TENTACRUEL",
     "name": "TENTACRUEL",
     "nationalDex": 73,
-    "hoennDex": 67,
+    "dex": 73,
     "baseStats": {"hp": 80, "attack": 70, "defense": 65, "speed": 100, "spAttack": 80, "spDefense": 120},
     "types": ["WATER", "POISON"],
     "catchRate": 60,
@@ -16,6 +16,7 @@
     "abilities": ["CLEAR_BODY", "LIQUID_OOZE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "BLUE",
+    "cry": "sound/direct_sound_samples/cries/tentacruel.bin",
     "levelUpMoves": [
         [1, "POISON_STING"],
         [1, "SUPERSONIC"],

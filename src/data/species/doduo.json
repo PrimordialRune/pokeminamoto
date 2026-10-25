@@ -2,7 +2,7 @@
     "species": "DODUO",
     "name": "DODUO",
     "nationalDex": 84,
-    "hoennDex": 92,
+    "dex": 84,
     "baseStats": {"hp": 35, "attack": 85, "defense": 45, "speed": 75, "spAttack": 35, "spDefense": 35},
     "types": ["NORMAL", "FLYING"],
     "catchRate": 190,
@@ -17,6 +17,7 @@
     "abilities": ["RUN_AWAY", "EARLY_BIRD"],
     "safariZoneFleeRate": 8,
     "bodyColor": "BROWN",
+    "cry": "sound/direct_sound_samples/cries/doduo.bin",
     "evolutions": [{"method": "LEVEL", "param": 31, "into": "DODRIO"}],
     "levelUpMoves": [
         [1, "PECK"],

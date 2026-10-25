@@ -2,7 +2,7 @@
     "species": "JOLTEON",
     "name": "JOLTEON",
     "nationalDex": 135,
-    "hoennDex": 290,
+    "dex": 135,
     "baseStats": {"hp": 65, "attack": 65, "defense": 60, "speed": 130, "spAttack": 110, "spDefense": 95},
     "types": ["ELECTRIC", "ELECTRIC"],
     "catchRate": 45,
@@ -16,6 +16,7 @@
     "abilities": ["VOLT_ABSORB", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "YELLOW",
+    "cry": "sound/direct_sound_samples/cries/jolteon.bin",
     "levelUpMoves": [
         [1, "TACKLE"],
         [1, "TAIL_WHIP"],

@@ -2,7 +2,7 @@
     "species": "DROWZEE",
     "name": "DROWZEE",
     "nationalDex": 96,
-    "hoennDex": 266,
+    "dex": 96,
     "baseStats": {"hp": 60, "attack": 48, "defense": 45, "speed": 42, "spAttack": 43, "spDefense": 90},
     "types": ["PSYCHIC", "PSYCHIC"],
     "catchRate": 190,
@@ -16,6 +16,7 @@
     "abilities": ["INSOMNIA", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "YELLOW",
+    "cry": "sound/direct_sound_samples/cries/drowzee.bin",
     "evolutions": [{"method": "LEVEL", "param": 26, "into": "HYPNO"}],
     "levelUpMoves": [
         [1, "POUND"],

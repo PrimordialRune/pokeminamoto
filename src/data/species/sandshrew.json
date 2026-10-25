@@ -2,7 +2,7 @@
     "species": "SANDSHREW",
     "name": "SANDSHREW",
     "nationalDex": 27,
-    "hoennDex": 112,
+    "dex": 27,
     "baseStats": {"hp": 50, "attack": 75, "defense": 85, "speed": 40, "spAttack": 20, "spDefense": 30},
     "types": ["GROUND", "GROUND"],
     "catchRate": 255,
@@ -17,6 +17,7 @@
     "abilities": ["SAND_VEIL", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "YELLOW",
+    "cry": "sound/direct_sound_samples/cries/sandshrew.bin",
     "evolutions": [{"method": "LEVEL", "param": 22, "into": "SANDSLASH"}],
     "levelUpMoves": [
         [1, "SCRATCH"],

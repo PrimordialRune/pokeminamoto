@@ -2,7 +2,7 @@
     "species": "STARYU",
     "name": "STARYU",
     "nationalDex": 120,
-    "hoennDex": 143,
+    "dex": 120,
     "baseStats": {"hp": 30, "attack": 45, "defense": 55, "speed": 85, "spAttack": 70, "spDefense": 55},
     "types": ["WATER", "WATER"],
     "catchRate": 225,
@@ -17,6 +17,7 @@
     "abilities": ["ILLUMINATE", "NATURAL_CURE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "BROWN",
+    "cry": "sound/direct_sound_samples/cries/staryu.bin",
     "evolutions": [{"method": "ITEM", "param": "WATER_STONE", "into": "STARMIE"}],
     "levelUpMoves": [
         [1, "TACKLE"],

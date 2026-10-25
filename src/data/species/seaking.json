@@ -2,7 +2,7 @@
     "species": "SEAKING",
     "name": "SEAKING",
     "nationalDex": 119,
-    "hoennDex": 51,
+    "dex": 119,
     "baseStats": {"hp": 80, "attack": 92, "defense": 65, "speed": 68, "spAttack": 65, "spDefense": 80},
     "types": ["WATER", "WATER"],
     "catchRate": 60,
@@ -16,6 +16,7 @@
     "abilities": ["SWIFT_SWIM", "WATER_VEIL"],
     "safariZoneFleeRate": 6,
     "bodyColor": "RED",
+    "cry": "sound/direct_sound_samples/cries/seaking.bin",
     "levelUpMoves": [
         [1, "PECK"],
         [1, "TAIL_WHIP"],

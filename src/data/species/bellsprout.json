@@ -2,7 +2,7 @@
     "species": "BELLSPROUT",
     "name": "BELLSPROUT",
     "nationalDex": 69,
-    "hoennDex": 250,
+    "dex": 69,
     "baseStats": {"hp": 50, "attack": 75, "defense": 35, "speed": 40, "spAttack": 70, "spDefense": 30},
     "types": ["GRASS", "POISON"],
     "catchRate": 255,
@@ -16,6 +16,7 @@
     "abilities": ["CHLOROPHYLL", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "GREEN",
+    "cry": "sound/direct_sound_samples/cries/bellsprout.bin",
     "evolutions": [{"method": "LEVEL", "param": 21, "into": "WEEPINBELL"}],
     "levelUpMoves": [
         [1, "VINE_WHIP"],

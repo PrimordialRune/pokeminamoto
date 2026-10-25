@@ -2,7 +2,7 @@
     "species": "GENGAR",
     "name": "GENGAR",
     "nationalDex": 94,
-    "hoennDex": 264,
+    "dex": 94,
     "baseStats": {"hp": 60, "attack": 65, "defense": 60, "speed": 110, "spAttack": 130, "spDefense": 75},
     "types": ["GHOST", "POISON"],
     "catchRate": 45,
@@ -16,6 +16,7 @@
     "abilities": ["LEVITATE", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "PURPLE",
+    "cry": "sound/direct_sound_samples/cries/gengar.bin",
     "levelUpMoves": [
         [1, "HYPNOSIS"],
         [1, "LICK"],

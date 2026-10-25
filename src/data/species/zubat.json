@@ -2,7 +2,7 @@
     "species": "ZUBAT",
     "name": "ZUBAT",
     "nationalDex": 41,
-    "hoennDex": 63,
+    "dex": 41,
     "baseStats": {"hp": 40, "attack": 45, "defense": 35, "speed": 55, "spAttack": 30, "spDefense": 40},
     "types": ["POISON", "FLYING"],
     "catchRate": 255,
@@ -16,6 +16,7 @@
     "abilities": ["INNER_FOCUS", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "PURPLE",
+    "cry": "sound/direct_sound_samples/cries/zubat.bin",
     "evolutions": [{"method": "LEVEL", "param": 22, "into": "GOLBAT"}],
     "levelUpMoves": [
         [1, "LEECH_LIFE"],

@@ -2,7 +2,7 @@
     "species": "POLIWAG",
     "name": "POLIWAG",
     "nationalDex": 60,
-    "hoennDex": 247,
+    "dex": 60,
     "baseStats": {"hp": 40, "attack": 50, "defense": 40, "speed": 90, "spAttack": 40, "spDefense": 40},
     "types": ["WATER", "WATER"],
     "catchRate": 255,
@@ -17,6 +17,7 @@
     "safariZoneFleeRate": 0,
     "bodyColor": "BLUE",
     "noFlip": true,
+    "cry": "sound/direct_sound_samples/cries/poliwag.bin",
     "evolutions": [{"method": "LEVEL", "param": 25, "into": "POLIWHIRL"}],
     "levelUpMoves": [
         [1, "BUBBLE"],

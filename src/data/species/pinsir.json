@@ -2,7 +2,7 @@
     "species": "PINSIR",
     "name": "PINSIR",
     "nationalDex": 127,
-    "hoennDex": 167,
+    "dex": 127,
     "baseStats": {"hp": 65, "attack": 125, "defense": 100, "speed": 85, "spAttack": 55, "spDefense": 70},
     "types": ["BUG", "BUG"],
     "catchRate": 45,
@@ -16,6 +16,7 @@
     "abilities": ["HYPER_CUTTER", "NONE"],
     "safariZoneFleeRate": 8,
     "bodyColor": "BROWN",
+    "cry": "sound/direct_sound_samples/cries/pinsir.bin",
     "levelUpMoves": [
         [1, "VICE_GRIP"],
         [1, "FOCUS_ENERGY"],

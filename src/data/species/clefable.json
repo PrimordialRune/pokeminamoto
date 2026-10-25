@@ -2,7 +2,7 @@
     "species": "CLEFABLE",
     "name": "CLEFABLE",
     "nationalDex": 36,
-    "hoennDex": 234,
+    "dex": 36,
     "baseStats": {"hp": 95, "attack": 70, "defense": 73, "speed": 60, "spAttack": 85, "spDefense": 90},
     "types": ["NORMAL", "NORMAL"],
     "catchRate": 25,
@@ -17,6 +17,7 @@
     "abilities": ["CUTE_CHARM", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "PINK",
+    "cry": "sound/direct_sound_samples/cries/clefable.bin",
     "levelUpMoves": [[1, "SING"], [1, "DOUBLE_SLAP"], [1, "MINIMIZE"], [1, "METRONOME"]],
     "tmhm": [
         "MEGA_PUNCH",

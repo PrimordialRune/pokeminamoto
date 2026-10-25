@@ -2,7 +2,7 @@
     "species": "RATTATA",
     "name": "RATTATA",
     "nationalDex": 19,
-    "hoennDex": 221,
+    "dex": 19,
     "baseStats": {"hp": 30, "attack": 56, "defense": 35, "speed": 72, "spAttack": 25, "spDefense": 35},
     "types": ["NORMAL", "NORMAL"],
     "catchRate": 255,
@@ -16,6 +16,7 @@
     "abilities": ["RUN_AWAY", "GUTS"],
     "safariZoneFleeRate": 0,
     "bodyColor": "PURPLE",
+    "cry": "sound/direct_sound_samples/cries/rattata.bin",
     "evolutions": [{"method": "LEVEL", "param": 20, "into": "RATICATE"}],
     "levelUpMoves": [
         [1, "TACKLE"],

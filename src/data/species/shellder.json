@@ -2,7 +2,7 @@
     "species": "SHELLDER",
     "name": "SHELLDER",
     "nationalDex": 90,
-    "hoennDex": 260,
+    "dex": 90,
     "baseStats": {"hp": 30, "attack": 65, "defense": 100, "speed": 40, "spAttack": 45, "spDefense": 25},
     "types": ["WATER", "WATER"],
     "catchRate": 190,
@@ -17,6 +17,7 @@
     "abilities": ["SHELL_ARMOR", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "PURPLE",
+    "cry": "sound/direct_sound_samples/cries/shellder.bin",
     "evolutions": [{"method": "ITEM", "param": "WATER_STONE", "into": "CLOYSTER"}],
     "levelUpMoves": [
         [1, "TACKLE"],

@@ -2,7 +2,7 @@
     "species": "MAGNEMITE",
     "name": "MAGNEMITE",
     "nationalDex": 81,
-    "hoennDex": 82,
+    "dex": 81,
     "baseStats": {"hp": 25, "attack": 35, "defense": 70, "speed": 45, "spAttack": 95, "spDefense": 55},
     "types": ["ELECTRIC", "STEEL"],
     "catchRate": 190,
@@ -17,6 +17,7 @@
     "abilities": ["MAGNET_PULL", "STURDY"],
     "safariZoneFleeRate": 0,
     "bodyColor": "GRAY",
+    "cry": "sound/direct_sound_samples/cries/magnemite.bin",
     "evolutions": [{"method": "LEVEL", "param": 30, "into": "MAGNETON"}],
     "levelUpMoves": [
         [1, "SCREECH"],

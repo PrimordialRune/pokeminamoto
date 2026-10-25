@@ -2,7 +2,7 @@
     "species": "ZAPDOS",
     "name": "ZAPDOS",
     "nationalDex": 145,
-    "hoennDex": 300,
+    "dex": 145,
     "baseStats": {"hp": 90, "attack": 90, "defense": 85, "speed": 100, "spAttack": 125, "spDefense": 90},
     "types": ["ELECTRIC", "FLYING"],
     "catchRate": 3,
@@ -16,6 +16,7 @@
     "abilities": ["PRESSURE", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "YELLOW",
+    "cry": "sound/direct_sound_samples/cries/zapdos.bin",
     "levelUpMoves": [
         [1, "PECK"],
         [1, "THUNDER_SHOCK"],

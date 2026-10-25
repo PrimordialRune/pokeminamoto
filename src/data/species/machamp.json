@@ -2,7 +2,7 @@
     "species": "MACHAMP",
     "name": "MACHAMP",
     "nationalDex": 68,
-    "hoennDex": 75,
+    "dex": 68,
     "baseStats": {"hp": 90, "attack": 130, "defense": 80, "speed": 55, "spAttack": 65, "spDefense": 85},
     "types": ["FIGHTING", "FIGHTING"],
     "catchRate": 45,
@@ -16,6 +16,7 @@
     "abilities": ["GUTS", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "GRAY",
+    "cry": "sound/direct_sound_samples/cries/machamp.bin",
     "levelUpMoves": [
         [1, "LOW_KICK"],
         [1, "LEER"],

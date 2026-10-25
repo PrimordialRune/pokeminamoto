@@ -2,7 +2,7 @@
     "species": "POLIWHIRL",
     "name": "POLIWHIRL",
     "nationalDex": 61,
-    "hoennDex": 248,
+    "dex": 61,
     "baseStats": {"hp": 65, "attack": 65, "defense": 65, "speed": 90, "spAttack": 50, "spDefense": 50},
     "types": ["WATER", "WATER"],
     "catchRate": 120,
@@ -18,6 +18,7 @@
     "safariZoneFleeRate": 0,
     "bodyColor": "BLUE",
     "noFlip": true,
+    "cry": "sound/direct_sound_samples/cries/poliwhirl.bin",
     "evolutions": [{"method": "ITEM", "param": "WATER_STONE", "into": "POLIWRATH"}],
     "levelUpMoves": [
         [1, "BUBBLE"],

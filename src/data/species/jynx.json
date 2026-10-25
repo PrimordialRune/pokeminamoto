@@ -2,7 +2,7 @@
     "species": "JYNX",
     "name": "JYNX",
     "nationalDex": 124,
-    "hoennDex": 282,
+    "dex": 124,
     "baseStats": {"hp": 65, "attack": 50, "defense": 35, "speed": 95, "spAttack": 115, "spDefense": 95},
     "types": ["ICE", "PSYCHIC"],
     "catchRate": 45,
@@ -17,6 +17,7 @@
     "abilities": ["OBLIVIOUS", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "RED",
+    "cry": "sound/direct_sound_samples/cries/jynx.bin",
     "levelUpMoves": [
         [1, "POUND"],
         [1, "LICK"],

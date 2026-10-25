@@ -2,7 +2,7 @@
     "species": "NIDOKING",
     "name": "NIDOKING",
     "nationalDex": 34,
-    "hoennDex": 232,
+    "dex": 34,
     "baseStats": {"hp": 81, "attack": 92, "defense": 77, "speed": 85, "spAttack": 85, "spDefense": 75},
     "types": ["POISON", "GROUND"],
     "catchRate": 45,
@@ -16,6 +16,7 @@
     "abilities": ["POISON_POINT", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "PURPLE",
+    "cry": "sound/direct_sound_samples/cries/nidoking.bin",
     "levelUpMoves": [[1, "PECK"], [1, "FOCUS_ENERGY"], [1, "DOUBLE_KICK"], [1, "POISON_STING"], [23, "THRASH"]],
     "tmhm": [
         "MEGA_PUNCH",

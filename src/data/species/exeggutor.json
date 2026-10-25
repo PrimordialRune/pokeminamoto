@@ -2,7 +2,7 @@
     "species": "EXEGGUTOR",
     "name": "EXEGGUTOR",
     "nationalDex": 103,
-    "hoennDex": 271,
+    "dex": 103,
     "baseStats": {"hp": 95, "attack": 95, "defense": 85, "speed": 55, "spAttack": 125, "spDefense": 65},
     "types": ["GRASS", "PSYCHIC"],
     "catchRate": 45,
@@ -16,6 +16,7 @@
     "abilities": ["CHLOROPHYLL", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "YELLOW",
+    "cry": "sound/direct_sound_samples/cries/exeggutor.bin",
     "levelUpMoves": [[1, "BARRAGE"], [1, "HYPNOSIS"], [1, "CONFUSION"], [19, "STOMP"], [31, "EGG_BOMB"]],
     "tmhm": [
         "TOXIC",

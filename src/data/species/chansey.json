@@ -2,7 +2,7 @@
     "species": "CHANSEY",
     "name": "CHANSEY",
     "nationalDex": 113,
-    "hoennDex": 277,
+    "dex": 113,
     "baseStats": {"hp": 250, "attack": 5, "defense": 5, "speed": 50, "spAttack": 35, "spDefense": 105},
     "types": ["NORMAL", "NORMAL"],
     "catchRate": 30,
@@ -17,6 +17,7 @@
     "abilities": ["NATURAL_CURE", "SERENE_GRACE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "PINK",
+    "cry": "sound/direct_sound_samples/cries/chansey.bin",
     "levelUpMoves": [
         [1, "POUND"],
         [1, "GROWL"],

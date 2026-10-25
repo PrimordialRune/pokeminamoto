@@ -2,7 +2,7 @@
     "species": "TANGELA",
     "name": "TANGELA",
     "nationalDex": 114,
-    "hoennDex": 278,
+    "dex": 114,
     "baseStats": {"hp": 65, "attack": 55, "defense": 115, "speed": 60, "spAttack": 100, "spDefense": 40},
     "types": ["GRASS", "GRASS"],
     "catchRate": 45,
@@ -16,6 +16,7 @@
     "abilities": ["CHLOROPHYLL", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "BLUE",
+    "cry": "sound/direct_sound_samples/cries/tangela.bin",
     "levelUpMoves": [
         [1, "LEECH_SEED"],
         [1, "CONSTRICT"],

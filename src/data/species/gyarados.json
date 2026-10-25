@@ -2,7 +2,7 @@
     "species": "GYARADOS",
     "name": "GYARADOS",
     "nationalDex": 130,
-    "hoennDex": 53,
+    "dex": 130,
     "baseStats": {"hp": 95, "attack": 125, "defense": 79, "speed": 81, "spAttack": 60, "spDefense": 100},
     "types": ["WATER", "FLYING"],
     "catchRate": 45,
@@ -16,6 +16,7 @@
     "abilities": ["INTIMIDATE", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "BLUE",
+    "cry": "sound/direct_sound_samples/cries/gyarados.bin",
     "levelUpMoves": [
         [1, "THRASH"],
         [20, "BITE"],

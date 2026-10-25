@@ -2,7 +2,7 @@
     "species": "EXEGGCUTE",
     "name": "EXEGGCUTE",
     "nationalDex": 102,
-    "hoennDex": 270,
+    "dex": 102,
     "baseStats": {"hp": 60, "attack": 40, "defense": 80, "speed": 40, "spAttack": 60, "spDefense": 45},
     "types": ["GRASS", "PSYCHIC"],
     "catchRate": 90,
@@ -16,6 +16,7 @@
     "abilities": ["CHLOROPHYLL", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "PINK",
+    "cry": "sound/direct_sound_samples/cries/exeggcute.bin",
     "evolutions": [{"method": "ITEM", "param": "LEAF_STONE", "into": "EXEGGUTOR"}],
     "levelUpMoves": [
         [1, "BARRAGE"],

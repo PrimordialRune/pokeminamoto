@@ -2,7 +2,7 @@
     "species": "HITMONLEE",
     "name": "HITMONLEE",
     "nationalDex": 106,
-    "hoennDex": 274,
+    "dex": 106,
     "baseStats": {"hp": 50, "attack": 120, "defense": 53, "speed": 87, "spAttack": 35, "spDefense": 110},
     "types": ["FIGHTING", "FIGHTING"],
     "catchRate": 45,
@@ -16,6 +16,7 @@
     "abilities": ["LIMBER", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "BROWN",
+    "cry": "sound/direct_sound_samples/cries/hitmonlee.bin",
     "levelUpMoves": [
         [1, "COUNTER"],
         [1, "DOUBLE_KICK"],

@@ -2,7 +2,7 @@
     "species": "HITMONCHAN",
     "name": "HITMONCHAN",
     "nationalDex": 107,
-    "hoennDex": 275,
+    "dex": 107,
     "baseStats": {"hp": 50, "attack": 105, "defense": 79, "speed": 76, "spAttack": 35, "spDefense": 110},
     "types": ["FIGHTING", "FIGHTING"],
     "catchRate": 45,
@@ -16,6 +16,7 @@
     "abilities": ["KEEN_EYE", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "BROWN",
+    "cry": "sound/direct_sound_samples/cries/hitmonchan.bin",
     "levelUpMoves": [
         [1, "COUNTER"],
         [1, "COMET_PUNCH"],

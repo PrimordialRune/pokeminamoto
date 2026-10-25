@@ -2,7 +2,7 @@
     "species": "VULPIX",
     "name": "VULPIX",
     "nationalDex": 37,
-    "hoennDex": 153,
+    "dex": 37,
     "baseStats": {"hp": 38, "attack": 41, "defense": 40, "speed": 65, "spAttack": 50, "spDefense": 65},
     "types": ["FIRE", "FIRE"],
     "catchRate": 190,
@@ -17,6 +17,7 @@
     "abilities": ["FLASH_FIRE", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "BROWN",
+    "cry": "sound/direct_sound_samples/cries/vulpix.bin",
     "evolutions": [{"method": "ITEM", "param": "FIRE_STONE", "into": "NINETALES"}],
     "levelUpMoves": [
         [1, "EMBER"],

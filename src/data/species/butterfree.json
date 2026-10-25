@@ -2,7 +2,7 @@
     "species": "BUTTERFREE",
     "name": "BUTTERFREE",
     "nationalDex": 12,
-    "hoennDex": 214,
+    "dex": 12,
     "baseStats": {"hp": 60, "attack": 45, "defense": 50, "speed": 70, "spAttack": 80, "spDefense": 80},
     "types": ["BUG", "FLYING"],
     "catchRate": 45,
@@ -17,6 +17,7 @@
     "abilities": ["COMPOUND_EYES", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "WHITE",
+    "cry": "sound/direct_sound_samples/cries/butterfree.bin",
     "levelUpMoves": [
         [1, "CONFUSION"],
         [10, "CONFUSION"],

@@ -2,7 +2,7 @@
     "species": "RHYDON",
     "name": "RHYDON",
     "nationalDex": 112,
-    "hoennDex": 170,
+    "dex": 112,
     "baseStats": {"hp": 105, "attack": 130, "defense": 120, "speed": 40, "spAttack": 45, "spDefense": 45},
     "types": ["GROUND", "ROCK"],
     "catchRate": 60,
@@ -16,6 +16,7 @@
     "abilities": ["LIGHTNING_ROD", "ROCK_HEAD"],
     "safariZoneFleeRate": 0,
     "bodyColor": "GRAY",
+    "cry": "sound/direct_sound_samples/cries/rhydon.bin",
     "levelUpMoves": [
         [1, "HORN_ATTACK"],
         [1, "TAIL_WHIP"],

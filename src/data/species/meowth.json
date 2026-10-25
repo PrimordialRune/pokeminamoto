@@ -2,7 +2,7 @@
     "species": "MEOWTH",
     "name": "MEOWTH",
     "nationalDex": 52,
-    "hoennDex": 241,
+    "dex": 52,
     "baseStats": {"hp": 40, "attack": 45, "defense": 35, "speed": 90, "spAttack": 40, "spDefense": 40},
     "types": ["NORMAL", "NORMAL"],
     "catchRate": 255,
@@ -16,6 +16,7 @@
     "abilities": ["PICKUP", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "YELLOW",
+    "cry": "sound/direct_sound_samples/cries/meowth.bin",
     "evolutions": [{"method": "LEVEL", "param": 28, "into": "PERSIAN"}],
     "levelUpMoves": [
         [1, "SCRATCH"],

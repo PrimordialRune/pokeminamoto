@@ -2,7 +2,7 @@
     "species": "HYPNO",
     "name": "HYPNO",
     "nationalDex": 97,
-    "hoennDex": 267,
+    "dex": 97,
     "baseStats": {"hp": 85, "attack": 73, "defense": 70, "speed": 67, "spAttack": 73, "spDefense": 115},
     "types": ["PSYCHIC", "PSYCHIC"],
     "catchRate": 75,
@@ -16,6 +16,7 @@
     "abilities": ["INSOMNIA", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "YELLOW",
+    "cry": "sound/direct_sound_samples/cries/hypno.bin",
     "levelUpMoves": [
         [1, "POUND"],
         [1, "HYPNOSIS"],

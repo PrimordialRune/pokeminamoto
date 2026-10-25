@@ -2,7 +2,7 @@
     "species": "MAROWAK",
     "name": "MAROWAK",
     "nationalDex": 105,
-    "hoennDex": 273,
+    "dex": 105,
     "baseStats": {"hp": 60, "attack": 80, "defense": 110, "speed": 45, "spAttack": 50, "spDefense": 80},
     "types": ["GROUND", "GROUND"],
     "catchRate": 75,
@@ -17,6 +17,7 @@
     "abilities": ["ROCK_HEAD", "LIGHTNING_ROD"],
     "safariZoneFleeRate": 0,
     "bodyColor": "BROWN",
+    "cry": "sound/direct_sound_samples/cries/marowak.bin",
     "levelUpMoves": [
         [1, "GROWL"],
         [1, "TAIL_WHIP"],

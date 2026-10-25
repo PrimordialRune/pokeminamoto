@@ -2,7 +2,7 @@
     "species": "FLAREON",
     "name": "FLAREON",
     "nationalDex": 136,
-    "hoennDex": 291,
+    "dex": 136,
     "baseStats": {"hp": 65, "attack": 130, "defense": 60, "speed": 65, "spAttack": 95, "spDefense": 110},
     "types": ["FIRE", "FIRE"],
     "catchRate": 45,
@@ -16,6 +16,7 @@
     "abilities": ["FLASH_FIRE", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "RED",
+    "cry": "sound/direct_sound_samples/cries/flareon.bin",
     "levelUpMoves": [
         [1, "TACKLE"],
         [1, "TAIL_WHIP"],

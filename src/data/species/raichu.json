@@ -2,7 +2,7 @@
     "species": "RAICHU",
     "name": "RAICHU",
     "nationalDex": 26,
-    "hoennDex": 157,
+    "dex": 26,
     "baseStats": {"hp": 60, "attack": 90, "defense": 55, "speed": 100, "spAttack": 90, "spDefense": 80},
     "types": ["ELECTRIC", "ELECTRIC"],
     "catchRate": 75,
@@ -17,6 +17,7 @@
     "abilities": ["STATIC", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "YELLOW",
+    "cry": "sound/direct_sound_samples/cries/raichu.bin",
     "levelUpMoves": [[1, "THUNDER_SHOCK"], [1, "TAIL_WHIP"], [1, "QUICK_ATTACK"], [1, "THUNDERBOLT"]],
     "tmhm": [
         "MEGA_PUNCH",

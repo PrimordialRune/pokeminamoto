@@ -29,7 +29,7 @@
         "backPic": {"symbol": "gMonBackPic_CircledQuestionMark", "data": "graphics/pokemon/question_mark/circled/back.4bpp.lz"},
         "palette": {"symbol": "gMonPalette_CircledQuestionMark", "data": "graphics/pokemon/question_mark/circled/normal.gbapal.lz"},
         "shinyPalette": {"symbol": "gMonShinyPalette_CircledQuestionMark", "data": "graphics/pokemon/question_mark/circled/shiny.gbapal.lz"},
-        "icon": "@BULBASAUR",
+        "icon": {"symbol": "gMonIcon_QuestionMark", "data": "graphics/pokemon/question_mark/icon.4bpp"},
         "iconPalette": 0,
         "footprint": "@BULBASAUR",
         "frontCoords": [64, 64, 0],

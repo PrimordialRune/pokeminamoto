@@ -52,6 +52,12 @@ class Ctx:
                            if k.startswith("SPECIES_") and v.isdigit()}
         mv = defines("include/constants/moves.h")
         self.move_id = {k[len("MOVE_"):]: int(v) for k, v in mv.items() if k.startswith("MOVE_") and v.isdigit()}
+        # The deleted Gen 2/3 species (constants/removed_species.h) still count as non-Gen 1 names
+        removed = "include/constants/removed_species.h"
+        if os.path.exists(os.path.join(ROOT, removed)):
+            for k in defines(removed):
+                if k.startswith("SPECIES_") and k != "SPECIES_REMOVED_START":
+                    self.species_id.setdefault(k[len("SPECIES_"):], 0xF000)
         self.gen1_species = {n for n, i in self.species_id.items() if 1 <= i <= 151}
         self.gen1_moves = {n for n, i in self.move_id.items() if 1 <= i <= 164}
         self.gen1_moves.add("STRUGGLE")

@@ -2,7 +2,7 @@
     "species": "PERSIAN",
     "name": "PERSIAN",
     "nationalDex": 53,
-    "hoennDex": 242,
+    "dex": 53,
     "baseStats": {"hp": 65, "attack": 70, "defense": 60, "speed": 115, "spAttack": 65, "spDefense": 65},
     "types": ["NORMAL", "NORMAL"],
     "catchRate": 90,
@@ -16,6 +16,7 @@
     "abilities": ["LIMBER", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "YELLOW",
+    "cry": "sound/direct_sound_samples/cries/persian.bin",
     "levelUpMoves": [
         [1, "SCRATCH"],
         [1, "GROWL"],

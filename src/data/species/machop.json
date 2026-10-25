@@ -2,7 +2,7 @@
     "species": "MACHOP",
     "name": "MACHOP",
     "nationalDex": 66,
-    "hoennDex": 73,
+    "dex": 66,
     "baseStats": {"hp": 70, "attack": 80, "defense": 50, "speed": 35, "spAttack": 35, "spDefense": 35},
     "types": ["FIGHTING", "FIGHTING"],
     "catchRate": 180,
@@ -16,6 +16,7 @@
     "abilities": ["GUTS", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "GRAY",
+    "cry": "sound/direct_sound_samples/cries/machop.bin",
     "evolutions": [{"method": "LEVEL", "param": 28, "into": "MACHOKE"}],
     "levelUpMoves": [
         [1, "LOW_KICK"],

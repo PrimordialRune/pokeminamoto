@@ -2,7 +2,7 @@
     "species": "MOLTRES",
     "name": "MOLTRES",
     "nationalDex": 146,
-    "hoennDex": 301,
+    "dex": 146,
     "baseStats": {"hp": 90, "attack": 100, "defense": 90, "speed": 90, "spAttack": 125, "spDefense": 85},
     "types": ["FIRE", "FLYING"],
     "catchRate": 3,
@@ -16,6 +16,7 @@
     "abilities": ["PRESSURE", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "YELLOW",
+    "cry": "sound/direct_sound_samples/cries/moltres.bin",
     "levelUpMoves": [
         [1, "WING_ATTACK"],
         [1, "EMBER"],

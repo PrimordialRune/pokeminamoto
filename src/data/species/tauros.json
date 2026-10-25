@@ -2,7 +2,7 @@
     "species": "TAUROS",
     "name": "TAUROS",
     "nationalDex": 128,
-    "hoennDex": 285,
+    "dex": 128,
     "baseStats": {"hp": 75, "attack": 100, "defense": 95, "speed": 110, "spAttack": 40, "spDefense": 70},
     "types": ["NORMAL", "NORMAL"],
     "catchRate": 45,
@@ -16,6 +16,7 @@
     "abilities": ["INTIMIDATE", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "BROWN",
+    "cry": "sound/direct_sound_samples/cries/tauros.bin",
     "levelUpMoves": [
         [1, "TACKLE"],
         [4, "TAIL_WHIP"],

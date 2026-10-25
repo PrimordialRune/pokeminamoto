@@ -6,7 +6,7 @@
 #include "sprite.h"
 #include "constants/pokemon_icon.h"
 
-#define INVALID_ICON_SPECIES SPECIES_OLD_UNOWN_J // Oddly specific, used when an icon should be a ?. Any of the 'old unown' would work
+#define INVALID_ICON_SPECIES SPECIES_NONE // its icon is the ?, used for unknown species
 
 struct MonIconSpriteTemplate
 {
@@ -299,14 +299,10 @@ void SpriteCB_MonIcon(struct Sprite *sprite)
     UpdateMonIconFrame(sprite);
 }
 
+// handleDeoxys picked a Deoxys form icon; Deoxys is gone, so it does nothing
 const u8 *GetMonIconTiles(u16 species, bool32 handleDeoxys)
 {
-    const u8 *iconSprite = gMonIconTable[species];
-    if (species == SPECIES_DEOXYS && handleDeoxys == TRUE)
-    {
-        iconSprite = (const u8 *)(0x400 + (u32)iconSprite); // use the specific Deoxys form icon (Speed in this case)
-    }
-    return iconSprite;
+    return gMonIconTable[species];
 }
 
 void TryLoadAllMonIconPalettesAtOffset(u16 offset)

@@ -2,7 +2,7 @@
     "species": "VENUSAUR",
     "name": "VENUSAUR",
     "nationalDex": 3,
-    "hoennDex": 205,
+    "dex": 3,
     "baseStats": {"hp": 80, "attack": 82, "defense": 83, "speed": 80, "spAttack": 100, "spDefense": 100},
     "types": ["GRASS", "POISON"],
     "catchRate": 45,
@@ -16,6 +16,7 @@
     "abilities": ["OVERGROW", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "GREEN",
+    "cry": "sound/direct_sound_samples/cries/venusaur.bin",
     "levelUpMoves": [
         [1, "TACKLE"],
         [1, "GROWL"],

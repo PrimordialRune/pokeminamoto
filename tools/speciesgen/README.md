@@ -18,7 +18,13 @@ tools/speciesgen/extract.py      the one-time converter from the old C tables (h
 python3 tools/speciesgen/speciesgen.py          # write the outputs (make does this)
 python3 tools/speciesgen/speciesgen.py --check  # exit 1 if an output is stale
 python3 tools/speciesgen/speciesgen.py --list   # the output paths
+python3 tools/speciesgen/speciesgen.py --format # rewrite the records in canonical form
 ```
+
+Outputs: `include/constants/{species,pokedex}.h`, the species tables in
+`src/data/pokemon/`, `src/data/pokemon_graphics/` and `src/data/graphics/pokemon*.h`,
+`src/data/text/species_names.h`, and the cry tables `sound/cry_tables.inc`,
+`sound/cry_samples.inc` (`--list` has them all).
 
 ## Why JSON, one file per species
 
@@ -34,11 +40,25 @@ python3 tools/speciesgen/speciesgen.py --list   # the output paths
 ## species.txt
 
 One lowercase name per line; the line number (from 0, comments and blank
-lines skipped) is the species id, `SPECIES_<NAME>`. `none` must be first. The
-entry `egg` is `NUM_SPECIES`; entries after it are alternate forms (the
-Unown letters) that have graphics but no stats. Moving a line renumbers
-species, and species ids are stored in save files, so append new species
-before `egg` and expect old saves' eggs to break when you do.
+lines skipped) is the species id, `SPECIES_<NAME>`. `none` must be first and
+`egg` last: `egg` is `NUM_SPECIES`. Today that is `none`, the 151 Gen 1
+species and `egg` (`NUM_SPECIES` = 152). Moving a line renumbers species, and
+species ids are stored in save files, so add new species just before `egg`.
+That moves `SPECIES_EGG`, so eggs in old saves turn into the new species; a
+save made before the change is not worth keeping anyway at this stage.
+
+The cap is about 200 species. The save has Pokédex seen/owned flags for
+national numbers 1..`POKEDEX_FLAG_COUNT` (200, `include/global.h`); the
+generator stops with an error past that. Raising it changes the save layout.
+
+### Removed species
+
+The Gen 2/3 species are gone. Code in dead Emerald systems (Battle Frontier,
+contests, TV, special cases for Castform, Deoxys, Shedinja, ...) still names
+them, so `include/constants/removed_species.h` defines each old name as its own
+value from `0xF000`: past `NUM_SPECIES`, so comparisons with them are never
+true and range checks treat them as unknown. Never use them in data. Delete
+names from it as those systems go.
 
 ## Record fields
 
@@ -50,7 +70,8 @@ matching table, which is zero/empty in C.
 | `species` (required) | constant name without `SPECIES_` | `include/constants/species.h` |
 | `name` | in-game name, at most 10 characters, game charset escapes allowed | `gSpeciesNames` |
 | `symbol` | stem of the C names (`s<symbol>LevelUpLearnset`, `gMonFrontPic_<symbol>`, ...); default is the species name in CamelCase | |
-| `nationalDex`, `hoennDex` | Pokédex numbers; each must run 1..n without gaps | `include/constants/pokedex.h`, `dex_numbers.h` |
+| `nationalDex` | National Pokédex number; the numbers must run 1..n without gaps | `include/constants/pokedex.h`, `dex_numbers.h` |
+| `dex` | Minamoto (regional) Pokédex number, the order of the in-game dex; 1..n without gaps, `0` or missing = not in it. Today it equals `nationalDex` | `REGIONAL_DEX_COUNT`, `dex_numbers.h`, `pokedex_orders.h` |
 | `baseStats` | `hp attack defense speed spAttack spDefense` | `gSpeciesInfo` |
 | `types`, `abilities`, `eggGroups` | two names each, without the `TYPE_`/`ABILITY_`/`EGG_GROUP_` prefix | `gSpeciesInfo` |
 | `catchRate`, `expYield`, `eggCycles`, `friendship`, `safariZoneFleeRate` | numbers | `gSpeciesInfo` |
@@ -60,7 +81,7 @@ matching table, which is zero/empty in C.
 | `growthRate`, `bodyColor` | names without `GROWTH_`/`BODY_COLOR_` | `gSpeciesInfo` |
 | `noFlip` | `true` if the front pic must not be mirrored | `gSpeciesInfo` |
 | `info: null` | an all-zero `gSpeciesInfo` entry (`none` only) | |
-| `cryId` | cry table index, only for species from TREECKO on (see `SpeciesToCryId`) | `gSpeciesIdToCryId` |
+| `cry` | the cry sample, `sound/direct_sound_samples/cries/<name>.bin` (built from the `.wav`); cries are numbered in species order (cry = species - 1) | `sound/cry_samples.inc`, `gCryTable`, `gCryTable_Reverse` |
 | `evolutions` | `[{"method": "LEVEL", "param": 16, "into": "IVYSAUR"}]`; method without `EVO_`, a string param is an item without `ITEM_` | `gEvolutionTable` |
 | `levelUpMoves` | `[[level, "MOVE"], ...]` in learn order | `level_up_learnsets.h` |
 | `tmhm` | TM/HM move names (the `FOREACH_TMHM` names) | `gTMHMLearnsets` |
@@ -95,11 +116,12 @@ matching table, which is zero/empty in C.
 
 1. Add its line to `species.txt` before `egg`.
 2. Copy a similar record to `<name>.json` and edit it; give it the next free
-   `nationalDex` (and `hoennDex`) number.
+   `nationalDex` number and its place in the Minamoto dex (`dex`; renumber
+   the others if it goes in the middle).
 3. Put its graphics in `graphics/pokemon/<name>/` and point the `graphics`
    paths at them.
-4. Add its cry to `sound/cry_tables.inc` and `sound/direct_sound_data.inc`.
-5. `make`.
+4. Put its cry `.wav` in `sound/direct_sound_samples/cries/` and set `cry`.
+5. `make`. Run `speciesgen.py --format` to keep the record in canonical form.
 
 Tables that list species for other reasons (wild encounters, trainer parties,
 easy chat words, Battle Frontier pools) are edited where they are.
@@ -113,3 +135,6 @@ bytes as before even when the data moved. The switch from the hand-written
 tables was checked this way: every table was identical, and the only symbols
 gone were unused leftovers (Deoxys form icons, `sEmpty`, `gMonUnusedGarbage`,
 `unknown_table.h`, `unused_anims.h`).
+
+The regional dex and the removal of the Gen 2/3 species changed the data on
+purpose, so that step was checked with the regression run instead.

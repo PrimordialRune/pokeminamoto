@@ -2,7 +2,7 @@
     "species": "RHYHORN",
     "name": "RHYHORN",
     "nationalDex": 111,
-    "hoennDex": 169,
+    "dex": 111,
     "baseStats": {"hp": 80, "attack": 85, "defense": 95, "speed": 25, "spAttack": 30, "spDefense": 30},
     "types": ["GROUND", "ROCK"],
     "catchRate": 120,
@@ -16,6 +16,7 @@
     "abilities": ["LIGHTNING_ROD", "ROCK_HEAD"],
     "safariZoneFleeRate": 4,
     "bodyColor": "GRAY",
+    "cry": "sound/direct_sound_samples/cries/rhyhorn.bin",
     "evolutions": [{"method": "LEVEL", "param": 42, "into": "RHYDON"}],
     "levelUpMoves": [
         [1, "HORN_ATTACK"],

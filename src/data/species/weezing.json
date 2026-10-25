@@ -2,7 +2,7 @@
     "species": "WEEZING",
     "name": "WEEZING",
     "nationalDex": 110,
-    "hoennDex": 109,
+    "dex": 110,
     "baseStats": {"hp": 65, "attack": 90, "defense": 120, "speed": 60, "spAttack": 85, "spDefense": 70},
     "types": ["POISON", "POISON"],
     "catchRate": 60,
@@ -17,6 +17,7 @@
     "abilities": ["LEVITATE", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "PURPLE",
+    "cry": "sound/direct_sound_samples/cries/weezing.bin",
     "levelUpMoves": [
         [1, "POISON_GAS"],
         [1, "TACKLE"],

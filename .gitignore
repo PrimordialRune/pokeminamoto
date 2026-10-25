@@ -74,7 +74,9 @@ __pycache__/
 /src/data/pokemon/pokedex_text.h
 /src/data/pokemon/pokedex_entries.h
 /src/data/pokemon/dex_numbers.h
-/src/data/pokemon/cry_ids.h
+/src/data/pokemon/pokedex_orders.h
+/sound/cry_tables.inc
+/sound/cry_samples.inc
 /src/data/pokemon_graphics/front_anim_ids.h
 /src/data/pokemon_graphics/back_anim_ids.h
 /src/data/pokemon_graphics/front_pic_anims.h

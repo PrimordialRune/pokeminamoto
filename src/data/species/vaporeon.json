@@ -2,7 +2,7 @@
     "species": "VAPOREON",
     "name": "VAPOREON",
     "nationalDex": 134,
-    "hoennDex": 289,
+    "dex": 134,
     "baseStats": {"hp": 130, "attack": 65, "defense": 60, "speed": 65, "spAttack": 110, "spDefense": 95},
     "types": ["WATER", "WATER"],
     "catchRate": 45,
@@ -16,6 +16,7 @@
     "abilities": ["WATER_ABSORB", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "BLUE",
+    "cry": "sound/direct_sound_samples/cries/vaporeon.bin",
     "levelUpMoves": [
         [1, "TACKLE"],
         [1, "TAIL_WHIP"],

@@ -2,7 +2,7 @@
     "species": "ARCANINE",
     "name": "ARCANINE",
     "nationalDex": 59,
-    "hoennDex": 246,
+    "dex": 59,
     "baseStats": {"hp": 90, "attack": 110, "defense": 80, "speed": 95, "spAttack": 100, "spDefense": 80},
     "types": ["FIRE", "FIRE"],
     "catchRate": 75,
@@ -17,6 +17,7 @@
     "abilities": ["INTIMIDATE", "FLASH_FIRE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "BROWN",
+    "cry": "sound/direct_sound_samples/cries/arcanine.bin",
     "levelUpMoves": [[1, "BITE"], [1, "ROAR"], [1, "EMBER"], [1, "LEER"], [49, "QUICK_ATTACK"]],
     "tmhm": [
         "TOXIC",

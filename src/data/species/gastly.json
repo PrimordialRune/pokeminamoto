@@ -2,7 +2,7 @@
     "species": "GASTLY",
     "name": "GASTLY",
     "nationalDex": 92,
-    "hoennDex": 262,
+    "dex": 92,
     "baseStats": {"hp": 30, "attack": 35, "defense": 30, "speed": 80, "spAttack": 100, "spDefense": 35},
     "types": ["GHOST", "POISON"],
     "catchRate": 190,
@@ -16,6 +16,7 @@
     "abilities": ["LEVITATE", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "PURPLE",
+    "cry": "sound/direct_sound_samples/cries/gastly.bin",
     "evolutions": [{"method": "LEVEL", "param": 25, "into": "HAUNTER"}],
     "levelUpMoves": [
         [1, "HYPNOSIS"],

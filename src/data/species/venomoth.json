@@ -2,7 +2,7 @@
     "species": "VENOMOTH",
     "name": "VENOMOTH",
     "nationalDex": 49,
-    "hoennDex": 238,
+    "dex": 49,
     "baseStats": {"hp": 70, "attack": 65, "defense": 60, "speed": 90, "spAttack": 90, "spDefense": 75},
     "types": ["BUG", "POISON"],
     "catchRate": 75,
@@ -16,6 +16,7 @@
     "abilities": ["SHIELD_DUST", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "PURPLE",
+    "cry": "sound/direct_sound_samples/cries/venomoth.bin",
     "levelUpMoves": [
         [1, "GUST"],
         [1, "TACKLE"],

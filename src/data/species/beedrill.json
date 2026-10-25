@@ -2,7 +2,7 @@
     "species": "BEEDRILL",
     "name": "BEEDRILL",
     "nationalDex": 15,
-    "hoennDex": 217,
+    "dex": 15,
     "baseStats": {"hp": 65, "attack": 80, "defense": 40, "speed": 75, "spAttack": 45, "spDefense": 80},
     "types": ["BUG", "POISON"],
     "catchRate": 45,
@@ -17,6 +17,7 @@
     "abilities": ["SWARM", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "YELLOW",
+    "cry": "sound/direct_sound_samples/cries/beedrill.bin",
     "levelUpMoves": [
         [1, "FURY_ATTACK"],
         [10, "FURY_ATTACK"],

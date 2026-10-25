@@ -2,7 +2,7 @@
     "species": "BLASTOISE",
     "name": "BLASTOISE",
     "nationalDex": 9,
-    "hoennDex": 211,
+    "dex": 9,
     "baseStats": {"hp": 79, "attack": 83, "defense": 100, "speed": 78, "spAttack": 85, "spDefense": 105},
     "types": ["WATER", "WATER"],
     "catchRate": 45,
@@ -16,6 +16,7 @@
     "abilities": ["TORRENT", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "BLUE",
+    "cry": "sound/direct_sound_samples/cries/blastoise.bin",
     "levelUpMoves": [
         [1, "TACKLE"],
         [1, "TAIL_WHIP"],

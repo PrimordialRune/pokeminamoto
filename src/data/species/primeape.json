@@ -2,7 +2,7 @@
     "species": "PRIMEAPE",
     "name": "PRIMEAPE",
     "nationalDex": 57,
-    "hoennDex": 244,
+    "dex": 57,
     "baseStats": {"hp": 65, "attack": 105, "defense": 60, "speed": 95, "spAttack": 60, "spDefense": 70},
     "types": ["FIGHTING", "FIGHTING"],
     "catchRate": 75,
@@ -16,6 +16,7 @@
     "abilities": ["VITAL_SPIRIT", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "BROWN",
+    "cry": "sound/direct_sound_samples/cries/primeape.bin",
     "levelUpMoves": [
         [1, "SCRATCH"],
         [1, "LEER"],

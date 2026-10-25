@@ -2,7 +2,7 @@
     "species": "ELECTABUZZ",
     "name": "ELECTABUZZ",
     "nationalDex": 125,
-    "hoennDex": 283,
+    "dex": 125,
     "baseStats": {"hp": 65, "attack": 83, "defense": 57, "speed": 105, "spAttack": 95, "spDefense": 85},
     "types": ["ELECTRIC", "ELECTRIC"],
     "catchRate": 45,
@@ -17,6 +17,7 @@
     "safariZoneFleeRate": 0,
     "bodyColor": "YELLOW",
     "noFlip": true,
+    "cry": "sound/direct_sound_samples/cries/electabuzz.bin",
     "levelUpMoves": [
         [1, "QUICK_ATTACK"],
         [1, "LEER"],

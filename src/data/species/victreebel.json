@@ -2,7 +2,7 @@
     "species": "VICTREEBEL",
     "name": "VICTREEBEL",
     "nationalDex": 71,
-    "hoennDex": 252,
+    "dex": 71,
     "baseStats": {"hp": 80, "attack": 105, "defense": 65, "speed": 70, "spAttack": 100, "spDefense": 60},
     "types": ["GRASS", "POISON"],
     "catchRate": 45,
@@ -16,6 +16,7 @@
     "abilities": ["CHLOROPHYLL", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "GREEN",
+    "cry": "sound/direct_sound_samples/cries/victreebel.bin",
     "levelUpMoves": [[1, "VINE_WHIP"], [1, "SLEEP_POWDER"], [1, "GROWL"], [1, "RAZOR_LEAF"]],
     "tmhm": [
         "SWORDS_DANCE",

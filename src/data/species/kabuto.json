@@ -2,7 +2,7 @@
     "species": "KABUTO",
     "name": "KABUTO",
     "nationalDex": 140,
-    "hoennDex": 295,
+    "dex": 140,
     "baseStats": {"hp": 30, "attack": 80, "defense": 90, "speed": 55, "spAttack": 55, "spDefense": 45},
     "types": ["ROCK", "WATER"],
     "catchRate": 45,
@@ -16,6 +16,7 @@
     "abilities": ["SWIFT_SWIM", "BATTLE_ARMOR"],
     "safariZoneFleeRate": 0,
     "bodyColor": "BROWN",
+    "cry": "sound/direct_sound_samples/cries/kabuto.bin",
     "evolutions": [{"method": "LEVEL", "param": 40, "into": "KABUTOPS"}],
     "levelUpMoves": [
         [1, "SCRATCH"],

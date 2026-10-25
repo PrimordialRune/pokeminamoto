@@ -2,7 +2,7 @@
     "species": "NINETALES",
     "name": "NINETALES",
     "nationalDex": 38,
-    "hoennDex": 154,
+    "dex": 38,
     "baseStats": {"hp": 73, "attack": 76, "defense": 75, "speed": 100, "spAttack": 81, "spDefense": 100},
     "types": ["FIRE", "FIRE"],
     "catchRate": 75,
@@ -17,6 +17,7 @@
     "abilities": ["FLASH_FIRE", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "YELLOW",
+    "cry": "sound/direct_sound_samples/cries/ninetales.bin",
     "levelUpMoves": [[1, "EMBER"], [1, "QUICK_ATTACK"], [1, "CONFUSE_RAY"], [1, "LIGHT_SCREEN"], [45, "FIRE_SPIN"]],
     "tmhm": [
         "TOXIC",

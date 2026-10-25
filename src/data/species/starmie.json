@@ -2,7 +2,7 @@
     "species": "STARMIE",
     "name": "STARMIE",
     "nationalDex": 121,
-    "hoennDex": 144,
+    "dex": 121,
     "baseStats": {"hp": 60, "attack": 75, "defense": 85, "speed": 115, "spAttack": 100, "spDefense": 85},
     "types": ["WATER", "PSYCHIC"],
     "catchRate": 60,
@@ -17,6 +17,7 @@
     "abilities": ["ILLUMINATE", "NATURAL_CURE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "PURPLE",
+    "cry": "sound/direct_sound_samples/cries/starmie.bin",
     "levelUpMoves": [[1, "WATER_GUN"], [1, "TACKLE"], [1, "RECOVER"], [1, "SWIFT"], [33, "CONFUSE_RAY"]],
     "tmhm": [
         "TOXIC",

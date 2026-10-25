@@ -1,19 +1,23 @@
 #!/usr/bin/env python3
 """Generate every per-species C table from the species records.
 
-    python3 tools/speciesgen/speciesgen.py [--list] [--check]
+    python3 tools/speciesgen/speciesgen.py [--list] [--check] [--format]
 
 Reads src/data/species/species.txt (the species and their ids) and one
 <name>.json record per species, and writes the headers listed in OUTPUTS
 (see tools/speciesgen/README.md for the record format). The Makefile runs it;
 outputs are only rewritten when their text changes, so an unchanged record set
 rebuilds nothing. --list prints the output paths, --check exits 1 if any
-output is missing or stale.
+output is missing or stale, --format rewrites the records in the canonical
+layout (key order, indentation) that editors and tools should write.
 """
 import json
 import os
 import re
 import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from recordfmt import canonical  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 SRC = os.path.join(ROOT, 'src', 'data', 'species')
@@ -49,6 +53,14 @@ def load():
     return recs
 
 
+# What every species before EGG needs (forms after EGG only need graphics)
+REQUIRED = ['name', 'nationalDex', 'baseStats', 'types', 'catchRate', 'expYield', 'genderRatio',
+            'eggCycles', 'friendship', 'growthRate', 'eggGroups', 'abilities', 'safariZoneFleeRate',
+            'bodyColor', 'cry', 'levelUpMoves', 'tmhm', 'tutor', 'pokedex', 'graphics']
+REQUIRED_GFX = ['frontPic', 'stillFrontPic', 'backPic', 'palette', 'shinyPalette', 'icon', 'iconPalette',
+                'footprint', 'frontCoords', 'backCoords', 'frontAnimFrames', 'frontAnim', 'backAnim']
+
+
 class DB:
     def __init__(self, recs):
         self.recs = recs
@@ -59,6 +71,11 @@ class DB:
         self.species = recs[:self.egg]              # real species (and NONE)
         for r in recs:
             r.setdefault('symbol', ''.join(w.capitalize() for w in r['species'].split('_')))
+        for r in self.species[1:]:
+            missing = [k for k in REQUIRED if k not in r]
+            missing += ['graphics.' + k for k in REQUIRED_GFX if k not in r.get('graphics', {})]
+            if missing:
+                raise RecordError('%s: missing %s' % (r['species'], ', '.join(missing)))
 
     def owner(self, rec, field, sub=None):
         """(record that owns the data, its value) following "@SPECIES" links."""
@@ -113,6 +130,7 @@ def gen_species_h(db):
     out.append('\n// Helper macro to check if a species is Gen 1\n'
                '#define IS_SPECIES_GEN1(species) ((species) >= SPECIES_BULBASAUR && (species) <= SPECIES_MEW)\n'
                '\n// Maximum Gen 1 species number\n#define SPECIES_GEN1_MAX SPECIES_MEW\n')
+    out.append('\n#include "constants/removed_species.h"\n')
     out.append('\n#endif  // GUARD_CONSTANTS_SPECIES_H\n')
     return ''.join(out)
 
@@ -127,27 +145,32 @@ def dex_list(db, field):
     return nums
 
 
-# Dex sizes. Species past a dex's count have numbers but are left out of it.
-DEX_COUNTS = {
-    'KANTO_DEX_COUNT': 'NATIONAL_DEX_MEW',
-    'JOHTO_DEX_COUNT': 'NATIONAL_DEX_CELEBI',
-    'NATIONAL_DEX_COUNT': 'NATIONAL_DEX_DEOXYS',
-    'HOENN_DEX_COUNT': 'HOENN_DEX_DEOXYS',
-}
+def pokedex_flag_count():
+    """POKEDEX_FLAG_COUNT from include/global.h: how many dex numbers the save has flags for."""
+    with open('include/global.h', encoding='utf-8') as f:
+        m = re.search(r'^#define POKEDEX_FLAG_COUNT (\d+)', f.read(), re.M)
+    return int(m.group(1)) if m else None
 
 
 def gen_pokedex_h(db):
+    nat = dex_list(db, 'nationalDex')
+    reg = dex_list(db, 'dex')
+    cap = pokedex_flag_count()
+    if cap is not None and len(nat) > cap:
+        raise RecordError('%d national dex numbers, but the save only has Pokédex flags for 1..%d '
+                          '(POKEDEX_FLAG_COUNT in include/global.h; raising it changes the save layout)'
+                          % (len(nat), cap))
     out = ['#ifndef GUARD_CONSTANTS_POKEDEX_H\n#define GUARD_CONSTANTS_POKEDEX_H\n\n', BANNER, '\n']
     out.append('// National Pokédex order\nenum {\n    NATIONAL_DEX_NONE,\n')
-    for n, c in dex_list(db, 'nationalDex'):
+    for n, c in nat:
         out.append('    NATIONAL_DEX_%s,\n' % c)
     out.append('};\n\n')
-    for k in ('KANTO_DEX_COUNT', 'JOHTO_DEX_COUNT', 'NATIONAL_DEX_COUNT'):
-        out.append('#define %s %s\n' % (k, DEX_COUNTS[k]))
-    out.append('\n// Hoenn Pokédex order\nenum {\n    HOENN_DEX_NONE,\n')
-    for n, c in dex_list(db, 'hoennDex'):
-        out.append('    HOENN_DEX_%s,\n' % c)
-    out.append('};\n\n#define HOENN_DEX_COUNT %s\n' % DEX_COUNTS['HOENN_DEX_COUNT'])
+    out.append('#define NATIONAL_DEX_COUNT %d\n' % len(nat))
+    out.append('// The original 151 (Bulbasaur to Mew). There are no Johto species: the Johto\n'
+               '// range is empty, so the Kanto/Johto/Hoenn completion checks only see Kanto.\n')
+    out.append('#define KANTO_DEX_COUNT NATIONAL_DEX_MEW\n#define JOHTO_DEX_COUNT KANTO_DEX_COUNT\n\n')
+    out.append('// The regional (Minamoto) Pokédex: the species with a "dex" number in their record\n')
+    out.append('#define REGIONAL_DEX_COUNT %d\n' % len(reg))
     out.append('\n#endif // GUARD_CONSTANTS_POKEDEX_H\n')
     return ''.join(out)
 
@@ -347,13 +370,8 @@ def gen_pokedex_entries(db):
     return ''.join(out)
 
 
-def sort_key_name(name):
-    # The game's character order: ? sorts before letters
-    return name
-
-
 def dex_orders(db):
-    """The Pokedex 'sort by' lists: every species with a national number below the count."""
+    """The Pokedex 'sort by' lists; ties go in National Pokedex order."""
     mons = [r for r in db.recs if r.get('nationalDex') and r['species'] != 'NONE']
     alpha = sorted(mons, key=lambda r: (r['name'], r['nationalDex']))
     weight = sorted((r for r in mons if 'pokedex' in r), key=lambda r: (r['pokedex']['weight'], r['nationalDex']))
@@ -373,30 +391,49 @@ def gen_pokedex_orders(db):
 
 
 def gen_dex_numbers(db):
-    out = [BANNER, '// Species -> Hoenn and National Pokédex numbers, and Hoenn -> National.\n'
+    out = [BANNER, '// Species -> regional and National Pokédex numbers, and regional -> National.\n'
            '// SPECIES_NONE is left out: index with species - 1.\n']
-    for name, field in (('sSpeciesToHoennPokedexNum', 'hoennDex'), ('sSpeciesToNationalPokedexNum', 'nationalDex')):
+    for name, field in (('sSpeciesToRegionalPokedexNum', 'dex'), ('sSpeciesToNationalPokedexNum', 'nationalDex')):
         out.append('static const u16 %s[NUM_SPECIES - 1] =\n{\n' % name)
         for r in db.species[1:]:
             if field in r:
-                out.append('    [%s - 1] = %s_DEX_%s,\n' % (C(r['species']), field[:-3].upper(), r['species']))
+                out.append('    [%s - 1] = %d,\n' % (C(r['species']), r[field]))
         out.append('};\n\n')
-    out.append('static const u16 sHoennToNationalOrder[NUM_SPECIES - 1] =\n{\n')
-    for n, c in dex_list(db, 'hoennDex'):
-        if 'nationalDex' in db.by[c]:
-            out.append('    [HOENN_DEX_%s - 1] = NATIONAL_DEX_%s,\n' % (c, c))
+    out.append('static const u16 sRegionalToNationalOrder[REGIONAL_DEX_COUNT] =\n{\n')
+    for n, c in dex_list(db, 'dex'):
+        if 'nationalDex' not in db.by[c]:
+            raise RecordError('%s: has a regional "dex" number but no "nationalDex"' % c)
+        out.append('    [%d - 1] = NATIONAL_DEX_%s,\n' % (n, c))
     out.append('};\n')
     return ''.join(out)
 
 
-def gen_cry_ids(db):
-    out = [BANNER, '// Cry table index of each species from SPECIES_TREECKO on (see SpeciesToCryId)\n'
-           'const u16 gSpeciesIdToCryId[] =\n{\n']
-    base = db.by['TREECKO']['_id']
-    for r in db.species:
-        if 'cryId' in r:
-            out.append('    [%s - %d] = %d,\n' % (C(r['species']), base, r['cryId']))
-    out.append('};\n')
+def cry_owners(db):
+    """(species, Cry_ symbol, sample path) for every species after NONE, in id order."""
+    out = []
+    for r in db.species[1:]:
+        if 'cry' not in r:
+            raise RecordError('%s: no "cry"' % r['species'])
+        out.append((r, db.symbol(r, 'cry', 'Cry_%s'), db.data(r, 'cry')))
+    return out
+
+
+def gen_cry_tables(db):
+    # Cry ids are species - 1 (SpeciesToCryId); the reversed table plays cries backwards
+    out = ['@ ' + BANNER[3:], '\t.align 2\ngCryTable::\n']
+    cries = cry_owners(db)
+    out += ['\tcry %s\n' % sym for r, sym, path in cries]
+    out.append('\n\t.align 2\ngCryTable_Reverse::\n')
+    out += ['\tcry_reverse %s\n' % sym for r, sym, path in cries]
+    return ''.join(out)
+
+
+def gen_cry_samples(db):
+    out, done = ['@ ' + BANNER[3:]], set()
+    for r, sym, path in cry_owners(db):
+        if db.owns(r, 'cry') and sym not in done:
+            done.add(sym)
+            out.append('\n\t.align 2\n%s::\n\t.incbin "%s"\n' % (sym, path))
     return ''.join(out)
 
 
@@ -595,7 +632,9 @@ OUTPUTS = [
     ('src/data/pokemon/pokedex_text.h', gen_pokedex_text),
     ('src/data/pokemon/pokedex_entries.h', gen_pokedex_entries),
     ('src/data/pokemon/dex_numbers.h', gen_dex_numbers),
-    ('src/data/pokemon/cry_ids.h', gen_cry_ids),
+    ('src/data/pokemon/pokedex_orders.h', gen_pokedex_orders),
+    ('sound/cry_tables.inc', gen_cry_tables),
+    ('sound/cry_samples.inc', gen_cry_samples),
     ('src/data/pokemon_graphics/front_anim_ids.h', gen_front_anim_ids),
     ('src/data/pokemon_graphics/back_anim_ids.h', gen_back_anim_ids),
     ('src/data/pokemon_graphics/front_pic_anims.h', gen_front_pic_anims),
@@ -620,7 +659,18 @@ def main():
         print(' '.join(p for p, _ in OUTPUTS))
         return 0
     try:
-        db = DB(load())
+        recs = load()
+        if '--format' in args:
+            for r in recs:
+                path = os.path.join(SRC, r['species'].lower() + '.json')
+                text = canonical(r)
+                with open(path, encoding='utf-8') as f:
+                    if f.read() == text:
+                        continue
+                with open(path, 'w', encoding='utf-8') as f:
+                    f.write(text)
+            return 0
+        db = DB(recs)
         texts = [(p, gen(db)) for p, gen in OUTPUTS]
     except RecordError as e:
         print('speciesgen: error: %s' % e, file=sys.stderr)

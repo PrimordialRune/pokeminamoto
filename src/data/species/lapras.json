@@ -2,7 +2,7 @@
     "species": "LAPRAS",
     "name": "LAPRAS",
     "nationalDex": 131,
-    "hoennDex": 286,
+    "dex": 131,
     "baseStats": {"hp": 130, "attack": 85, "defense": 80, "speed": 60, "spAttack": 85, "spDefense": 95},
     "types": ["WATER", "ICE"],
     "catchRate": 45,
@@ -16,6 +16,7 @@
     "abilities": ["WATER_ABSORB", "SHELL_ARMOR"],
     "safariZoneFleeRate": 0,
     "bodyColor": "BLUE",
+    "cry": "sound/direct_sound_samples/cries/lapras.bin",
     "levelUpMoves": [
         [1, "WATER_GUN"],
         [1, "GROWL"],

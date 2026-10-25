@@ -2,7 +2,7 @@
     "species": "MR_MIME",
     "name": "MR. MIME",
     "nationalDex": 122,
-    "hoennDex": 280,
+    "dex": 122,
     "baseStats": {"hp": 40, "attack": 45, "defense": 65, "speed": 90, "spAttack": 100, "spDefense": 120},
     "types": ["PSYCHIC", "PSYCHIC"],
     "catchRate": 45,
@@ -17,6 +17,7 @@
     "abilities": ["SOUNDPROOF", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "PINK",
+    "cry": "sound/direct_sound_samples/cries/mr_mime.bin",
     "levelUpMoves": [
         [1, "BARRIER"],
         [5, "CONFUSION"],

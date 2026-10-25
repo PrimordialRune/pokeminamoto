@@ -19,6 +19,7 @@ import sys
 from collections import OrderedDict
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from recordfmt import dump
 from cparse import (strip_comments, array_body, designated, split_top, fields,
                     c_string, cpp_values, enum_values, matching, eval_c)
 
@@ -423,26 +424,6 @@ os.makedirs(outdir, exist_ok=True)
 
 def filename(c):
     return c.lower() + '.json'
-
-
-def dump(obj, indent=0):
-    """JSON with short lists (moves, frames, numbers) on one line."""
-    pad = '    ' * indent
-    if isinstance(obj, dict):
-        if not obj:
-            return '{}'
-        if all(not isinstance(v, (dict, list)) for v in obj.values()) and len(obj) <= 6 and indent > 0:
-            return '{' + ', '.join('%s: %s' % (json.dumps(k), json.dumps(v, ensure_ascii=False)) for k, v in obj.items()) + '}'
-        items = ['%s    %s: %s' % (pad, json.dumps(k), dump(v, indent + 1)) for k, v in obj.items()]
-        return '{\n' + ',\n'.join(items) + '\n' + pad + '}'
-    if isinstance(obj, list):
-        if not obj:
-            return '[]'
-        flat = '[' + ', '.join(dump(v, indent + 1) for v in obj) + ']'
-        if len(flat) + len(pad) <= 100 and '\n' not in flat:
-            return flat
-        return '[\n' + ',\n'.join(pad + '    ' + dump(v, indent + 1) for v in obj) + '\n' + pad + ']'
-    return json.dumps(obj, ensure_ascii=False)
 
 
 for c, r in R.items():

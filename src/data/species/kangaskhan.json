@@ -2,7 +2,7 @@
     "species": "KANGASKHAN",
     "name": "KANGASKHAN",
     "nationalDex": 115,
-    "hoennDex": 279,
+    "dex": 115,
     "baseStats": {"hp": 105, "attack": 95, "defense": 80, "speed": 90, "spAttack": 40, "spDefense": 80},
     "types": ["NORMAL", "NORMAL"],
     "catchRate": 45,
@@ -16,6 +16,7 @@
     "abilities": ["EARLY_BIRD", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "BROWN",
+    "cry": "sound/direct_sound_samples/cries/kangaskhan.bin",
     "levelUpMoves": [
         [1, "COMET_PUNCH"],
         [1, "LEER"],

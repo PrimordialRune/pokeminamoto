@@ -2,7 +2,7 @@
     "species": "MACHOKE",
     "name": "MACHOKE",
     "nationalDex": 67,
-    "hoennDex": 74,
+    "dex": 67,
     "baseStats": {"hp": 80, "attack": 100, "defense": 70, "speed": 45, "spAttack": 50, "spDefense": 60},
     "types": ["FIGHTING", "FIGHTING"],
     "catchRate": 90,
@@ -16,6 +16,7 @@
     "abilities": ["GUTS", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "GRAY",
+    "cry": "sound/direct_sound_samples/cries/machoke.bin",
     "evolutions": [{"method": "TRADE", "param": 0, "into": "MACHAMP"}],
     "levelUpMoves": [
         [1, "LOW_KICK"],

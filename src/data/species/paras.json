@@ -2,7 +2,7 @@
     "species": "PARAS",
     "name": "PARAS",
     "nationalDex": 46,
-    "hoennDex": 235,
+    "dex": 46,
     "baseStats": {"hp": 35, "attack": 70, "defense": 55, "speed": 25, "spAttack": 45, "spDefense": 55},
     "types": ["BUG", "GRASS"],
     "catchRate": 190,
@@ -17,6 +17,7 @@
     "abilities": ["EFFECT_SPORE", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "RED",
+    "cry": "sound/direct_sound_samples/cries/paras.bin",
     "evolutions": [{"method": "LEVEL", "param": 24, "into": "PARASECT"}],
     "levelUpMoves": [
         [1, "SCRATCH"],

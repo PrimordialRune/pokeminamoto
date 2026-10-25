@@ -2,7 +2,7 @@
     "species": "GOLDEEN",
     "name": "GOLDEEN",
     "nationalDex": 118,
-    "hoennDex": 50,
+    "dex": 118,
     "baseStats": {"hp": 45, "attack": 67, "defense": 60, "speed": 63, "spAttack": 35, "spDefense": 50},
     "types": ["WATER", "WATER"],
     "catchRate": 225,
@@ -16,6 +16,7 @@
     "abilities": ["SWIFT_SWIM", "WATER_VEIL"],
     "safariZoneFleeRate": 4,
     "bodyColor": "RED",
+    "cry": "sound/direct_sound_samples/cries/goldeen.bin",
     "evolutions": [{"method": "LEVEL", "param": 33, "into": "SEAKING"}],
     "levelUpMoves": [
         [1, "PECK"],

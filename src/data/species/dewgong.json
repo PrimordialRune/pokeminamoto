@@ -2,7 +2,7 @@
     "species": "DEWGONG",
     "name": "DEWGONG",
     "nationalDex": 87,
-    "hoennDex": 259,
+    "dex": 87,
     "baseStats": {"hp": 90, "attack": 70, "defense": 80, "speed": 70, "spAttack": 70, "spDefense": 95},
     "types": ["WATER", "ICE"],
     "catchRate": 75,
@@ -16,6 +16,7 @@
     "abilities": ["THICK_FAT", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "WHITE",
+    "cry": "sound/direct_sound_samples/cries/dewgong.bin",
     "levelUpMoves": [
         [1, "HEADBUTT"],
         [1, "GROWL"],

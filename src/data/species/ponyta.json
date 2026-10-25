@@ -2,7 +2,7 @@
     "species": "PONYTA",
     "name": "PONYTA",
     "nationalDex": 77,
-    "hoennDex": 253,
+    "dex": 77,
     "baseStats": {"hp": 50, "attack": 85, "defense": 55, "speed": 90, "spAttack": 65, "spDefense": 65},
     "types": ["FIRE", "FIRE"],
     "catchRate": 190,
@@ -16,6 +16,7 @@
     "abilities": ["RUN_AWAY", "FLASH_FIRE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "YELLOW",
+    "cry": "sound/direct_sound_samples/cries/ponyta.bin",
     "evolutions": [{"method": "LEVEL", "param": 40, "into": "RAPIDASH"}],
     "levelUpMoves": [
         [1, "TACKLE"],

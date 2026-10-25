@@ -2,7 +2,7 @@
     "species": "SNORLAX",
     "name": "SNORLAX",
     "nationalDex": 143,
-    "hoennDex": 298,
+    "dex": 143,
     "baseStats": {"hp": 160, "attack": 110, "defense": 65, "speed": 30, "spAttack": 65, "spDefense": 110},
     "types": ["NORMAL", "NORMAL"],
     "catchRate": 25,
@@ -17,6 +17,7 @@
     "abilities": ["IMMUNITY", "THICK_FAT"],
     "safariZoneFleeRate": 0,
     "bodyColor": "BLACK",
+    "cry": "sound/direct_sound_samples/cries/snorlax.bin",
     "levelUpMoves": [
         [1, "TACKLE"],
         [6, "AMNESIA"],

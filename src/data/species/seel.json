@@ -2,7 +2,7 @@
     "species": "SEEL",
     "name": "SEEL",
     "nationalDex": 86,
-    "hoennDex": 258,
+    "dex": 86,
     "baseStats": {"hp": 65, "attack": 45, "defense": 55, "speed": 45, "spAttack": 45, "spDefense": 70},
     "types": ["WATER", "WATER"],
     "catchRate": 190,
@@ -16,6 +16,7 @@
     "abilities": ["THICK_FAT", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "WHITE",
+    "cry": "sound/direct_sound_samples/cries/seel.bin",
     "evolutions": [{"method": "LEVEL", "param": 34, "into": "DEWGONG"}],
     "levelUpMoves": [
         [1, "HEADBUTT"],

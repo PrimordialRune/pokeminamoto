@@ -2,7 +2,7 @@
     "species": "PIKACHU",
     "name": "PIKACHU",
     "nationalDex": 25,
-    "hoennDex": 156,
+    "dex": 25,
     "baseStats": {"hp": 35, "attack": 55, "defense": 30, "speed": 90, "spAttack": 50, "spDefense": 40},
     "types": ["ELECTRIC", "ELECTRIC"],
     "catchRate": 190,
@@ -17,6 +17,7 @@
     "abilities": ["STATIC", "NONE"],
     "safariZoneFleeRate": 6,
     "bodyColor": "YELLOW",
+    "cry": "sound/direct_sound_samples/cries/pikachu.bin",
     "evolutions": [{"method": "ITEM", "param": "THUNDER_STONE", "into": "RAICHU"}],
     "levelUpMoves": [
         [1, "THUNDER_SHOCK"],

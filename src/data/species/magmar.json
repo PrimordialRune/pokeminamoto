@@ -2,7 +2,7 @@
     "species": "MAGMAR",
     "name": "MAGMAR",
     "nationalDex": 126,
-    "hoennDex": 284,
+    "dex": 126,
     "baseStats": {"hp": 65, "attack": 95, "defense": 57, "speed": 93, "spAttack": 100, "spDefense": 85},
     "types": ["FIRE", "FIRE"],
     "catchRate": 45,
@@ -17,6 +17,7 @@
     "abilities": ["FLAME_BODY", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "RED",
+    "cry": "sound/direct_sound_samples/cries/magmar.bin",
     "levelUpMoves": [
         [1, "EMBER"],
         [1, "LEER"],

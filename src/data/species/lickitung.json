@@ -2,7 +2,7 @@
     "species": "LICKITUNG",
     "name": "LICKITUNG",
     "nationalDex": 108,
-    "hoennDex": 276,
+    "dex": 108,
     "baseStats": {"hp": 90, "attack": 55, "defense": 75, "speed": 30, "spAttack": 60, "spDefense": 75},
     "types": ["NORMAL", "NORMAL"],
     "catchRate": 45,
@@ -16,6 +16,7 @@
     "abilities": ["OWN_TEMPO", "OBLIVIOUS"],
     "safariZoneFleeRate": 0,
     "bodyColor": "PINK",
+    "cry": "sound/direct_sound_samples/cries/lickitung.bin",
     "levelUpMoves": [
         [1, "LICK"],
         [7, "SUPERSONIC"],

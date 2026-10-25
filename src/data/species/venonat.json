@@ -2,7 +2,7 @@
     "species": "VENONAT",
     "name": "VENONAT",
     "nationalDex": 48,
-    "hoennDex": 237,
+    "dex": 48,
     "baseStats": {"hp": 60, "attack": 55, "defense": 50, "speed": 45, "spAttack": 40, "spDefense": 55},
     "types": ["BUG", "POISON"],
     "catchRate": 190,
@@ -16,6 +16,7 @@
     "abilities": ["COMPOUND_EYES", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "PURPLE",
+    "cry": "sound/direct_sound_samples/cries/venonat.bin",
     "evolutions": [{"method": "LEVEL", "param": 31, "into": "VENOMOTH"}],
     "levelUpMoves": [
         [1, "TACKLE"],

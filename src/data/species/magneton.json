@@ -2,7 +2,7 @@
     "species": "MAGNETON",
     "name": "MAGNETON",
     "nationalDex": 82,
-    "hoennDex": 83,
+    "dex": 82,
     "baseStats": {"hp": 50, "attack": 60, "defense": 95, "speed": 70, "spAttack": 120, "spDefense": 70},
     "types": ["ELECTRIC", "STEEL"],
     "catchRate": 60,
@@ -17,6 +17,7 @@
     "abilities": ["MAGNET_PULL", "STURDY"],
     "safariZoneFleeRate": 0,
     "bodyColor": "GRAY",
+    "cry": "sound/direct_sound_samples/cries/magneton.bin",
     "levelUpMoves": [
         [1, "SCREECH"],
         [1, "TACKLE"],

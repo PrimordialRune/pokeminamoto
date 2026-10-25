@@ -2,7 +2,7 @@
     "species": "GOLBAT",
     "name": "GOLBAT",
     "nationalDex": 42,
-    "hoennDex": 64,
+    "dex": 42,
     "baseStats": {"hp": 75, "attack": 80, "defense": 70, "speed": 90, "spAttack": 65, "spDefense": 75},
     "types": ["POISON", "FLYING"],
     "catchRate": 90,
@@ -16,6 +16,7 @@
     "abilities": ["INNER_FOCUS", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "PURPLE",
+    "cry": "sound/direct_sound_samples/cries/golbat.bin",
     "levelUpMoves": [
         [1, "SCREECH"],
         [1, "LEECH_LIFE"],

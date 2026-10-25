@@ -2,7 +2,7 @@
     "species": "EEVEE",
     "name": "EEVEE",
     "nationalDex": 133,
-    "hoennDex": 288,
+    "dex": 133,
     "baseStats": {"hp": 55, "attack": 55, "defense": 50, "speed": 55, "spAttack": 45, "spDefense": 65},
     "types": ["NORMAL", "NORMAL"],
     "catchRate": 45,
@@ -16,6 +16,7 @@
     "abilities": ["RUN_AWAY", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "BROWN",
+    "cry": "sound/direct_sound_samples/cries/eevee.bin",
     "evolutions": [
         {"method": "ITEM", "param": "THUNDER_STONE", "into": "JOLTEON"},
         {"method": "ITEM", "param": "WATER_STONE", "into": "VAPOREON"},

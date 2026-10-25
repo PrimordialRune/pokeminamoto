@@ -2,7 +2,7 @@
     "species": "CUBONE",
     "name": "CUBONE",
     "nationalDex": 104,
-    "hoennDex": 272,
+    "dex": 104,
     "baseStats": {"hp": 50, "attack": 50, "defense": 95, "speed": 35, "spAttack": 40, "spDefense": 50},
     "types": ["GROUND", "GROUND"],
     "catchRate": 190,
@@ -17,6 +17,7 @@
     "abilities": ["ROCK_HEAD", "LIGHTNING_ROD"],
     "safariZoneFleeRate": 0,
     "bodyColor": "BROWN",
+    "cry": "sound/direct_sound_samples/cries/cubone.bin",
     "evolutions": [{"method": "LEVEL", "param": 28, "into": "MAROWAK"}],
     "levelUpMoves": [
         [1, "GROWL"],

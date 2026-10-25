@@ -142,7 +142,6 @@ const s8 gNatureStatTable[NUM_NATURES][NUM_NATURE_STATS] =
 
 #include "data/pokemon/tmhm_learnsets.h"
 #include "data/pokemon/trainer_class_lookups.h"
-#include "data/pokemon/cry_ids.h"
 #include "data/pokemon/experience_tables.h"
 #include "data/pokemon/species_info.h"
 #include "data/pokemon/level_up_learnsets.h"
@@ -3758,16 +3757,18 @@ u16 GetEvolutionTargetSpecies(struct Pokemon *mon, u8 mode, u16 evolutionItem)
     return targetSpecies;
 }
 
-u16 HoennPokedexNumToSpecies(u16 hoennNum)
+// The regional Pokédex is the "dex" number in the species records (src/data/species/);
+// species without one have 0 in sSpeciesToRegionalPokedexNum.
+u16 RegionalPokedexNumToSpecies(u16 regionalNum)
 {
     u16 species;
 
-    if (!hoennNum)
+    if (!regionalNum)
         return 0;
 
     species = 0;
 
-    while (species < (NUM_SPECIES - 1) && sSpeciesToHoennPokedexNum[species] != hoennNum)
+    while (species < (NUM_SPECIES - 1) && sSpeciesToRegionalPokedexNum[species] != regionalNum)
         species++;
 
     if (species == NUM_SPECIES - 1)
@@ -3794,57 +3795,54 @@ u16 NationalPokedexNumToSpecies(u16 nationalNum)
     return species + 1;
 }
 
-u16 NationalToHoennOrder(u16 nationalNum)
+u16 NationalToRegionalOrder(u16 nationalNum)
 {
-    u16 hoennNum;
+    u16 regionalNum;
 
     if (!nationalNum)
         return 0;
 
-    hoennNum = 0;
+    regionalNum = 0;
 
-    while (hoennNum < (NUM_SPECIES - 1) && sHoennToNationalOrder[hoennNum] != nationalNum)
-        hoennNum++;
+    while (regionalNum < REGIONAL_DEX_COUNT && sRegionalToNationalOrder[regionalNum] != nationalNum)
+        regionalNum++;
 
-    if (hoennNum == NUM_SPECIES - 1)
+    if (regionalNum == REGIONAL_DEX_COUNT)
         return 0;
 
-    return hoennNum + 1;
+    return regionalNum + 1;
 }
 
+// Species past NUM_SPECIES (the removed ones, see constants/removed_species.h) have no number
 u16 SpeciesToNationalPokedexNum(u16 species)
 {
-    if (!species)
+    if (!species || species >= NUM_SPECIES)
         return 0;
 
     return sSpeciesToNationalPokedexNum[species - 1];
 }
 
-u16 SpeciesToHoennPokedexNum(u16 species)
+u16 SpeciesToRegionalPokedexNum(u16 species)
 {
-    if (!species)
+    if (!species || species >= NUM_SPECIES)
         return 0;
 
-    return sSpeciesToHoennPokedexNum[species - 1];
+    return sSpeciesToRegionalPokedexNum[species - 1];
 }
 
-u16 HoennToNationalOrder(u16 hoennNum)
+u16 RegionalToNationalOrder(u16 regionalNum)
 {
-    if (!hoennNum)
+    if (!regionalNum || regionalNum > REGIONAL_DEX_COUNT)
         return 0;
 
-    return sHoennToNationalOrder[hoennNum - 1];
+    return sRegionalToNationalOrder[regionalNum - 1];
 }
 
+// Cry ids follow the species ids (the cry table is generated in species order);
+// PlayCryInternal passes species - 1.
 u16 SpeciesToCryId(u16 species)
 {
-    if (species <= SPECIES_CELEBI - 1)
-        return species;
-
-    if (species < SPECIES_TREECKO - 1)
-        return SPECIES_UNOWN - 1;
-
-    return gSpeciesIdToCryId[species - (SPECIES_TREECKO - 1)];
+    return species;
 }
 
 // Spots can be drawn on Spinda's color indexes 1, 2, or 3
@@ -4539,8 +4537,8 @@ u16 SpeciesToPokedexNum(u16 species)
     }
     else
     {
-        species = SpeciesToHoennPokedexNum(species);
-        if (species <= HOENN_DEX_COUNT)
+        species = SpeciesToRegionalPokedexNum(species);
+        if (species != 0)
             return species;
         return 0xFFFF;
     }
@@ -4548,10 +4546,7 @@ u16 SpeciesToPokedexNum(u16 species)
 
 bool32 IsSpeciesInHoennDex(u16 species)
 {
-    if (SpeciesToHoennPokedexNum(species) > HOENN_DEX_COUNT)
-        return FALSE;
-    else
-        return TRUE;
+    return SpeciesToRegionalPokedexNum(species) != 0;
 }
 
 void ClearBattleMonForms(void)

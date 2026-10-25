@@ -2,7 +2,7 @@
     "species": "DIGLETT",
     "name": "DIGLETT",
     "nationalDex": 50,
-    "hoennDex": 239,
+    "dex": 50,
     "baseStats": {"hp": 10, "attack": 55, "defense": 25, "speed": 95, "spAttack": 35, "spDefense": 45},
     "types": ["GROUND", "GROUND"],
     "catchRate": 255,
@@ -16,6 +16,7 @@
     "abilities": ["SAND_VEIL", "ARENA_TRAP"],
     "safariZoneFleeRate": 0,
     "bodyColor": "BROWN",
+    "cry": "sound/direct_sound_samples/cries/diglett.bin",
     "evolutions": [{"method": "LEVEL", "param": 26, "into": "DUGTRIO"}],
     "levelUpMoves": [
         [1, "SCRATCH"],

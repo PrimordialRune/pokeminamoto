@@ -2,7 +2,7 @@
     "species": "SLOWBRO",
     "name": "SLOWBRO",
     "nationalDex": 80,
-    "hoennDex": 256,
+    "dex": 80,
     "baseStats": {"hp": 95, "attack": 75, "defense": 110, "speed": 30, "spAttack": 100, "spDefense": 80},
     "types": ["WATER", "PSYCHIC"],
     "catchRate": 75,
@@ -17,6 +17,7 @@
     "abilities": ["OBLIVIOUS", "OWN_TEMPO"],
     "safariZoneFleeRate": 0,
     "bodyColor": "PINK",
+    "cry": "sound/direct_sound_samples/cries/slowbro.bin",
     "levelUpMoves": [
         [1, "GROWL"],
         [1, "HYPNOSIS"],

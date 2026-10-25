@@ -2,7 +2,7 @@
     "species": "SPEAROW",
     "name": "SPEAROW",
     "nationalDex": 21,
-    "hoennDex": 223,
+    "dex": 21,
     "baseStats": {"hp": 40, "attack": 60, "defense": 30, "speed": 70, "spAttack": 31, "spDefense": 31},
     "types": ["NORMAL", "FLYING"],
     "catchRate": 255,
@@ -16,6 +16,7 @@
     "abilities": ["KEEN_EYE", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "BROWN",
+    "cry": "sound/direct_sound_samples/cries/spearow.bin",
     "evolutions": [{"method": "LEVEL", "param": 20, "into": "FEAROW"}],
     "levelUpMoves": [
         [1, "PECK"],

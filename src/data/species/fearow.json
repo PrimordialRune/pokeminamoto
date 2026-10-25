@@ -2,7 +2,7 @@
     "species": "FEAROW",
     "name": "FEAROW",
     "nationalDex": 22,
-    "hoennDex": 224,
+    "dex": 22,
     "baseStats": {"hp": 65, "attack": 90, "defense": 65, "speed": 100, "spAttack": 61, "spDefense": 61},
     "types": ["NORMAL", "FLYING"],
     "catchRate": 90,
@@ -17,6 +17,7 @@
     "abilities": ["KEEN_EYE", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "BROWN",
+    "cry": "sound/direct_sound_samples/cries/fearow.bin",
     "levelUpMoves": [
         [1, "PECK"],
         [1, "GROWL"],

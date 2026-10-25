@@ -2,7 +2,7 @@
     "species": "GRIMER",
     "name": "GRIMER",
     "nationalDex": 88,
-    "hoennDex": 106,
+    "dex": 88,
     "baseStats": {"hp": 80, "attack": 80, "defense": 50, "speed": 25, "spAttack": 40, "spDefense": 50},
     "types": ["POISON", "POISON"],
     "catchRate": 190,
@@ -17,6 +17,7 @@
     "abilities": ["STENCH", "STICKY_HOLD"],
     "safariZoneFleeRate": 0,
     "bodyColor": "PURPLE",
+    "cry": "sound/direct_sound_samples/cries/grimer.bin",
     "evolutions": [{"method": "LEVEL", "param": 38, "into": "MUK"}],
     "levelUpMoves": [
         [1, "POISON_GAS"],

@@ -2,7 +2,7 @@
     "species": "GEODUDE",
     "name": "GEODUDE",
     "nationalDex": 74,
-    "hoennDex": 57,
+    "dex": 74,
     "baseStats": {"hp": 40, "attack": 80, "defense": 100, "speed": 20, "spAttack": 30, "spDefense": 30},
     "types": ["ROCK", "GROUND"],
     "catchRate": 255,
@@ -17,6 +17,7 @@
     "abilities": ["ROCK_HEAD", "STURDY"],
     "safariZoneFleeRate": 4,
     "bodyColor": "BROWN",
+    "cry": "sound/direct_sound_samples/cries/geodude.bin",
     "evolutions": [{"method": "LEVEL", "param": 25, "into": "GRAVELER"}],
     "levelUpMoves": [
         [1, "TACKLE"],

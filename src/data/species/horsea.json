@@ -2,7 +2,7 @@
     "species": "HORSEA",
     "name": "HORSEA",
     "nationalDex": 116,
-    "hoennDex": 184,
+    "dex": 116,
     "baseStats": {"hp": 30, "attack": 40, "defense": 70, "speed": 60, "spAttack": 70, "spDefense": 25},
     "types": ["WATER", "WATER"],
     "catchRate": 225,
@@ -17,6 +17,7 @@
     "abilities": ["SWIFT_SWIM", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "BLUE",
+    "cry": "sound/direct_sound_samples/cries/horsea.bin",
     "evolutions": [{"method": "LEVEL", "param": 32, "into": "SEADRA"}],
     "levelUpMoves": [
         [1, "BUBBLE"],

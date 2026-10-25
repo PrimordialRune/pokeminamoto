@@ -2,7 +2,7 @@
     "species": "MUK",
     "name": "MUK",
     "nationalDex": 89,
-    "hoennDex": 107,
+    "dex": 89,
     "baseStats": {"hp": 105, "attack": 105, "defense": 75, "speed": 50, "spAttack": 65, "spDefense": 100},
     "types": ["POISON", "POISON"],
     "catchRate": 75,
@@ -17,6 +17,7 @@
     "abilities": ["STENCH", "STICKY_HOLD"],
     "safariZoneFleeRate": 0,
     "bodyColor": "PURPLE",
+    "cry": "sound/direct_sound_samples/cries/muk.bin",
     "levelUpMoves": [
         [1, "POISON_GAS"],
         [1, "POUND"],

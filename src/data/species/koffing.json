@@ -2,7 +2,7 @@
     "species": "KOFFING",
     "name": "KOFFING",
     "nationalDex": 109,
-    "hoennDex": 108,
+    "dex": 109,
     "baseStats": {"hp": 40, "attack": 65, "defense": 95, "speed": 35, "spAttack": 60, "spDefense": 45},
     "types": ["POISON", "POISON"],
     "catchRate": 190,
@@ -17,6 +17,7 @@
     "abilities": ["LEVITATE", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "PURPLE",
+    "cry": "sound/direct_sound_samples/cries/koffing.bin",
     "evolutions": [{"method": "LEVEL", "param": 35, "into": "WEEZING"}],
     "levelUpMoves": [
         [1, "POISON_GAS"],

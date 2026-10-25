@@ -2,7 +2,7 @@
     "species": "DRATINI",
     "name": "DRATINI",
     "nationalDex": 147,
-    "hoennDex": 302,
+    "dex": 147,
     "baseStats": {"hp": 41, "attack": 64, "defense": 45, "speed": 50, "spAttack": 50, "spDefense": 50},
     "types": ["DRAGON", "DRAGON"],
     "catchRate": 45,
@@ -17,6 +17,7 @@
     "abilities": ["SHED_SKIN", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "BLUE",
+    "cry": "sound/direct_sound_samples/cries/dratini.bin",
     "evolutions": [{"method": "LEVEL", "param": 30, "into": "DRAGONAIR"}],
     "levelUpMoves": [
         [1, "WRAP"],

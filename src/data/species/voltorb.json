@@ -2,7 +2,7 @@
     "species": "VOLTORB",
     "name": "VOLTORB",
     "nationalDex": 100,
-    "hoennDex": 84,
+    "dex": 100,
     "baseStats": {"hp": 40, "attack": 30, "defense": 50, "speed": 100, "spAttack": 55, "spDefense": 55},
     "types": ["ELECTRIC", "ELECTRIC"],
     "catchRate": 190,
@@ -16,6 +16,7 @@
     "abilities": ["SOUNDPROOF", "STATIC"],
     "safariZoneFleeRate": 0,
     "bodyColor": "RED",
+    "cry": "sound/direct_sound_samples/cries/voltorb.bin",
     "evolutions": [{"method": "LEVEL", "param": 30, "into": "ELECTRODE"}],
     "levelUpMoves": [
         [1, "THUNDER_WAVE"],

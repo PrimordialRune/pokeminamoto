@@ -2,7 +2,7 @@
     "species": "MEWTWO",
     "name": "MEWTWO",
     "nationalDex": 150,
-    "hoennDex": 305,
+    "dex": 150,
     "baseStats": {"hp": 106, "attack": 110, "defense": 90, "speed": 130, "spAttack": 154, "spDefense": 90},
     "types": ["PSYCHIC", "PSYCHIC"],
     "catchRate": 3,
@@ -16,6 +16,7 @@
     "abilities": ["PRESSURE", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "PURPLE",
+    "cry": "sound/direct_sound_samples/cries/mewtwo.bin",
     "levelUpMoves": [
         [1, "CONFUSION"],
         [1, "DISABLE"],

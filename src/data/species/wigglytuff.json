@@ -2,7 +2,7 @@
     "species": "WIGGLYTUFF",
     "name": "WIGGLYTUFF",
     "nationalDex": 40,
-    "hoennDex": 139,
+    "dex": 40,
     "baseStats": {"hp": 140, "attack": 70, "defense": 45, "speed": 45, "spAttack": 75, "spDefense": 50},
     "types": ["NORMAL", "NORMAL"],
     "catchRate": 50,
@@ -16,6 +16,7 @@
     "abilities": ["CUTE_CHARM", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "PINK",
+    "cry": "sound/direct_sound_samples/cries/wigglytuff.bin",
     "levelUpMoves": [[1, "SING"], [1, "DISABLE"], [1, "DEFENSE_CURL"], [1, "DOUBLE_SLAP"]],
     "tmhm": [
         "MEGA_PUNCH",

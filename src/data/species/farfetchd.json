@@ -2,7 +2,7 @@
     "species": "FARFETCHD",
     "name": "FARFETCH'D",
     "nationalDex": 83,
-    "hoennDex": 257,
+    "dex": 83,
     "baseStats": {"hp": 52, "attack": 65, "defense": 55, "speed": 60, "spAttack": 58, "spDefense": 62},
     "types": ["NORMAL", "FLYING"],
     "catchRate": 45,
@@ -17,6 +17,7 @@
     "abilities": ["KEEN_EYE", "INNER_FOCUS"],
     "safariZoneFleeRate": 0,
     "bodyColor": "BROWN",
+    "cry": "sound/direct_sound_samples/cries/farfetchd.bin",
     "levelUpMoves": [
         [1, "PECK"],
         [6, "SAND_ATTACK"],

@@ -2,7 +2,7 @@
     "species": "CLEFAIRY",
     "name": "CLEFAIRY",
     "nationalDex": 35,
-    "hoennDex": 233,
+    "dex": 35,
     "baseStats": {"hp": 70, "attack": 45, "defense": 48, "speed": 35, "spAttack": 60, "spDefense": 65},
     "types": ["NORMAL", "NORMAL"],
     "catchRate": 150,
@@ -17,6 +17,7 @@
     "abilities": ["CUTE_CHARM", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "PINK",
+    "cry": "sound/direct_sound_samples/cries/clefairy.bin",
     "evolutions": [{"method": "ITEM", "param": "MOON_STONE", "into": "CLEFABLE"}],
     "levelUpMoves": [
         [1, "POUND"],

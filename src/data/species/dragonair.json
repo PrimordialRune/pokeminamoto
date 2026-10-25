@@ -2,7 +2,7 @@
     "species": "DRAGONAIR",
     "name": "DRAGONAIR",
     "nationalDex": 148,
-    "hoennDex": 303,
+    "dex": 148,
     "baseStats": {"hp": 61, "attack": 84, "defense": 65, "speed": 70, "spAttack": 70, "spDefense": 70},
     "types": ["DRAGON", "DRAGON"],
     "catchRate": 45,
@@ -17,6 +17,7 @@
     "abilities": ["SHED_SKIN", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "BLUE",
+    "cry": "sound/direct_sound_samples/cries/dragonair.bin",
     "evolutions": [{"method": "LEVEL", "param": 55, "into": "DRAGONITE"}],
     "levelUpMoves": [
         [1, "WRAP"],

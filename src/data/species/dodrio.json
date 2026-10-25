@@ -2,7 +2,7 @@
     "species": "DODRIO",
     "name": "DODRIO",
     "nationalDex": 85,
-    "hoennDex": 93,
+    "dex": 85,
     "baseStats": {"hp": 60, "attack": 110, "defense": 70, "speed": 100, "spAttack": 60, "spDefense": 60},
     "types": ["NORMAL", "FLYING"],
     "catchRate": 45,
@@ -17,6 +17,7 @@
     "abilities": ["RUN_AWAY", "EARLY_BIRD"],
     "safariZoneFleeRate": 10,
     "bodyColor": "BROWN",
+    "cry": "sound/direct_sound_samples/cries/dodrio.bin",
     "levelUpMoves": [
         [1, "PECK"],
         [1, "GROWL"],

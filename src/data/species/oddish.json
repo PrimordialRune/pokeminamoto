@@ -2,7 +2,7 @@
     "species": "ODDISH",
     "name": "ODDISH",
     "nationalDex": 43,
-    "hoennDex": 88,
+    "dex": 43,
     "baseStats": {"hp": 45, "attack": 50, "defense": 55, "speed": 30, "spAttack": 75, "spDefense": 65},
     "types": ["GRASS", "POISON"],
     "catchRate": 255,
@@ -16,6 +16,7 @@
     "abilities": ["CHLOROPHYLL", "NONE"],
     "safariZoneFleeRate": 4,
     "bodyColor": "BLUE",
+    "cry": "sound/direct_sound_samples/cries/oddish.bin",
     "evolutions": [{"method": "LEVEL", "param": 21, "into": "GLOOM"}],
     "levelUpMoves": [
         [1, "ABSORB"],

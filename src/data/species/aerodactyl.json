@@ -2,7 +2,7 @@
     "species": "AERODACTYL",
     "name": "AERODACTYL",
     "nationalDex": 142,
-    "hoennDex": 297,
+    "dex": 142,
     "baseStats": {"hp": 80, "attack": 105, "defense": 65, "speed": 130, "spAttack": 60, "spDefense": 75},
     "types": ["ROCK", "FLYING"],
     "catchRate": 45,
@@ -16,6 +16,7 @@
     "abilities": ["ROCK_HEAD", "PRESSURE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "PURPLE",
+    "cry": "sound/direct_sound_samples/cries/aerodactyl.bin",
     "levelUpMoves": [
         [1, "WING_ATTACK"],
         [8, "AGILITY"],

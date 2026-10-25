@@ -2,7 +2,7 @@
     "species": "RATICATE",
     "name": "RATICATE",
     "nationalDex": 20,
-    "hoennDex": 222,
+    "dex": 20,
     "baseStats": {"hp": 55, "attack": 81, "defense": 60, "speed": 97, "spAttack": 50, "spDefense": 70},
     "types": ["NORMAL", "NORMAL"],
     "catchRate": 127,
@@ -16,6 +16,7 @@
     "abilities": ["RUN_AWAY", "GUTS"],
     "safariZoneFleeRate": 0,
     "bodyColor": "BROWN",
+    "cry": "sound/direct_sound_samples/cries/raticate.bin",
     "levelUpMoves": [
         [1, "TACKLE"],
         [1, "TAIL_WHIP"],

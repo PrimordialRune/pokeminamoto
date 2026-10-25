@@ -2,7 +2,7 @@
     "species": "ONIX",
     "name": "ONIX",
     "nationalDex": 95,
-    "hoennDex": 265,
+    "dex": 95,
     "baseStats": {"hp": 35, "attack": 45, "defense": 160, "speed": 70, "spAttack": 30, "spDefense": 45},
     "types": ["ROCK", "GROUND"],
     "catchRate": 45,
@@ -16,6 +16,7 @@
     "abilities": ["ROCK_HEAD", "STURDY"],
     "safariZoneFleeRate": 0,
     "bodyColor": "GRAY",
+    "cry": "sound/direct_sound_samples/cries/onix.bin",
     "levelUpMoves": [
         [1, "TACKLE"],
         [1, "SCREECH"],

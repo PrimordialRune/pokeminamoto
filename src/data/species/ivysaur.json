@@ -2,7 +2,7 @@
     "species": "IVYSAUR",
     "name": "IVYSAUR",
     "nationalDex": 2,
-    "hoennDex": 204,
+    "dex": 2,
     "baseStats": {"hp": 60, "attack": 62, "defense": 63, "speed": 60, "spAttack": 80, "spDefense": 80},
     "types": ["GRASS", "POISON"],
     "catchRate": 45,
@@ -16,6 +16,7 @@
     "abilities": ["OVERGROW", "NONE"],
     "safariZoneFleeRate": 0,
     "bodyColor": "GREEN",
+    "cry": "sound/direct_sound_samples/cries/ivysaur.bin",
     "evolutions": [{"method": "LEVEL", "param": 32, "into": "VENUSAUR"}],
     "levelUpMoves": [
         [1, "TACKLE"],

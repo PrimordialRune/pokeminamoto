@@ -2,7 +2,7 @@
     "species": "KADABRA",
     "name": "KADABRA",
     "nationalDex": 64,
-    "hoennDex": 40,
+    "dex": 64,
     "baseStats": {"hp": 40, "attack": 35, "defense": 30, "speed": 105, "spAttack": 120, "spDefense": 70},
     "types": ["PSYCHIC", "PSYCHIC"],
     "catchRate": 100,
@@ -17,6 +17,7 @@
     "abilities": ["SYNCHRONIZE", "INNER_FOCUS"],
     "safariZoneFleeRate": 0,
     "bodyColor": "BROWN",
+    "cry": "sound/direct_sound_samples/cries/kadabra.bin",
     "evolutions": [{"method": "TRADE", "param": 0, "into": "ALAKAZAM"}],
     "levelUpMoves": [
         [1, "TELEPORT"],

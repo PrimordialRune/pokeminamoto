@@ -2,7 +2,7 @@
     "species": "SLOWPOKE",
     "name": "SLOWPOKE",
     "nationalDex": 79,
-    "hoennDex": 255,
+    "dex": 79,
     "baseStats": {"hp": 90, "attack": 65, "defense": 65, "speed": 15, "spAttack": 40, "spDefense": 40},
     "types": ["WATER", "PSYCHIC"],
     "catchRate": 190,
@@ -17,6 +17,7 @@
     "abilities": ["OBLIVIOUS", "OWN_TEMPO"],
     "safariZoneFleeRate": 0,
     "bodyColor": "PINK",
+    "cry": "sound/direct_sound_samples/cries/slowpoke.bin",
     "evolutions": [{"method": "LEVEL", "param": 37, "into": "SLOWBRO"}],
     "levelUpMoves": [
         [1, "GROWL"],

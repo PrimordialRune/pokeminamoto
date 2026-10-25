@@ -2,7 +2,7 @@
     "species": "DUGTRIO",
     "name": "DUGTRIO",
     "nationalDex": 51,
-    "hoennDex": 240,
+    "dex": 51,
     "baseStats": {"hp": 35, "attack": 80, "defense": 50, "speed": 120, "spAttack": 50, "spDefense": 70},
     "types": ["GROUND", "GROUND"],
     "catchRate": 50,
@@ -16,6 +16,7 @@
     "abilities": ["SAND_VEIL", "ARENA_TRAP"],
     "safariZoneFleeRate": 0,
     "bodyColor": "BROWN",
+    "cry": "sound/direct_sound_samples/cries/dugtrio.bin",
     "levelUpMoves": [
         [1, "TRI_ATTACK"],
         [1, "SCRATCH"],
