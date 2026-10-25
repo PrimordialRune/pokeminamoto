@@ -1,6 +1,5 @@
 #include "global.h"
 #include "berry.h"
-#include "dewford_trend.h"
 #include "event_data.h"
 #include "field_specials.h"
 #include "field_weather.h"
@@ -42,7 +41,6 @@ static void UpdatePerDay(struct Time *localTime)
     {
         daysSince = localTime->days - *days;
         ClearDailyFlags();
-        UpdateDewfordTrendPerDay(daysSince);
         UpdateTVShowsPerDay(daysSince);
         UpdateWeatherPerDay(daysSince);
         UpdatePartyPokerusTime(daysSince);

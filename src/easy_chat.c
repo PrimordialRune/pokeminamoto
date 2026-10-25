@@ -4,7 +4,6 @@
 #include "bg.h"
 #include "data.h"
 #include "decompress.h"
-#include "dewford_trend.h"
 #include "dynamic_placeholder_text_util.h"
 #include "easy_chat.h"
 #include "event_data.h"
@@ -1460,11 +1459,6 @@ void ShowEasyChatScreen(void)
         displayedPersonType = EASY_CHAT_PERSON_REPORTER_MALE;
         break;
 #endif
-    case EASY_CHAT_TYPE_TRENDY_PHRASE:
-        words = (u16 *)gStringVar3;
-        words[0] = DEWFORD_TRENDS[0].words[0];
-        words[1] = DEWFORD_TRENDS[0].words[1];
-        break;
 #ifndef FREE_TV
     case EASY_CHAT_TYPE_GABBY_AND_TY:
         words = gSaveBlock1Ptr->gabbyAndTyData.quote;
@@ -2929,28 +2923,6 @@ static void GetQuizTitle(u8 *dst)
     DynamicPlaceholderTextUtil_ExpandPlaceholders(dst, gText_F700sQuiz);
 }
 
-static void BufferCurrentPhraseToStringVar2(void)
-{
-    int i;
-    u16 *phrase;
-    u8 *str;
-
-    phrase = sEasyChatScreen->currentPhrase;
-    str = gStringVar2;
-    i = 0;
-    while (i < sEasyChatScreen->maxWords)
-    {
-        str = CopyEasyChatWordPadded(str, *phrase, 0);
-        *str = 0;
-        str++;
-        phrase++;
-        i++;
-    }
-
-    str--;
-    str[0] = EOS;
-}
-
 static void SetSpecialEasyChatResult(void)
 {
     switch (sEasyChatScreen->type)
@@ -2964,10 +2936,6 @@ static void SetSpecialEasyChatResult(void)
         else
             gSpecialVar_0x8004 = 0;
 #endif
-        break;
-    case EASY_CHAT_TYPE_TRENDY_PHRASE:
-        BufferCurrentPhraseToStringVar2();
-        gSpecialVar_0x8004 = TrySetTrendyPhrase(sEasyChatScreen->currentPhrase);
         break;
     case EASY_CHAT_TYPE_GOOD_SAYING:
         gSpecialVar_0x8004 = DidPlayerInputABerryMasterWifePhrase();
@@ -5331,14 +5299,6 @@ u16 GetRandomEasyChatWordFromUnlockedGroup(u16 groupId)
         return GetRandomUnlockedEasyChatPokemon();
 
     return GetRandomEasyChatWordFromGroup(groupId);
-}
-
-// The phrase that a man in Dewford Hall suggests has a "deep link" to the current trendy phrase
-void BufferDeepLinkPhrase(void)
-{
-    int groupId = Random() & 1 ? EC_GROUP_HOBBIES : EC_GROUP_LIFESTYLE;
-    u16 easyChatWord = GetRandomEasyChatWordFromUnlockedGroup(groupId);
-    CopyEasyChatWord(gStringVar2, easyChatWord);
 }
 
 /*

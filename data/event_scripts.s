@@ -223,12 +223,6 @@ Common_EventScript_ReadyPetalburgGymForBattle::
 	setflag FLAG_PETALBURG_MART_EXPANDED_ITEMS
 	return
 
-Common_EventScript_BufferTrendyPhrase::
-	dotimebasedevents
-	setvar VAR_0x8004, 0
-	special BufferTrendyPhraseString
-	return
-
 EventScript_BackupMrBrineyLocation::
 	copyvar VAR_0x8008, VAR_BRINEY_LOCATION
 	setvar VAR_BRINEY_LOCATION, 0

@@ -12,7 +12,6 @@
 #include "lilycove_lady.h"
 #include "load_save.h"
 #include "pokeblock.h"
-#include "dewford_trend.h"
 #include "berry.h"
 #include "rtc.h"
 #include "easy_chat.h"
@@ -192,7 +191,6 @@ void NewGameInitData(void)
     ClearDecorationInventories();
     InitEasyChatPhrases();
     SetMauvilleOldMan();
-    InitDewfordTrend();
     ResetFanClub();
     ResetLotteryCorner();
     WarpToTruck();

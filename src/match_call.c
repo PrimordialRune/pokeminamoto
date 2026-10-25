@@ -1877,7 +1877,6 @@ static bool32 ShouldTrainerRequestBattle(int matchCallId)
 {
     int dayCount;
     int otId;
-    u16 dewfordRand;
     int numRematchTrainersFought;
     int max, rand, n;
 
@@ -1887,10 +1886,9 @@ static bool32 ShouldTrainerRequestBattle(int matchCallId)
     dayCount = RtcGetLocalDayCount();
     otId = GetTrainerId(gSaveBlock2Ptr->playerTrainerId) & 0xFFFF;
 
-    dewfordRand = DEWFORD_TRENDS[0].rand;
     numRematchTrainersFought = GetNumRematchTrainersFought();
     max = (numRematchTrainersFought * 13) / 10;
-    rand = ((dayCount ^ dewfordRand) + (dewfordRand ^ GetGameStat(GAME_STAT_TRAINER_BATTLES))) ^ otId;
+    rand = (dayCount + GetGameStat(GAME_STAT_TRAINER_BATTLES)) ^ otId;
     n = rand % max;
     if (n < numRematchTrainersFought)
     {

@@ -643,16 +643,7 @@ struct RamScript
     struct RamScriptData data;
 };
 
-// See dewford_trend.c
-struct DewfordTrend
-{
-    u16 trendiness:7;
-    u16 maxTrendiness:7;
-    u16 gainingTrendiness:1;
-    //u16 padding:1;
-    u16 rand;
-    u16 words[2];
-}; /*size = 0x8*/
+/*size = 0x8*/
 
 struct MauvilleManCommon
 {
@@ -1009,9 +1000,6 @@ struct SaveBlock1
 #ifndef FREE_MAUVILLE_OLD_MAN
     /*0x2E28*/ OldMan oldMan;
 #endif
-#ifndef FREE_DEWFORD_TRENDS
-    /*0x2e64*/ struct DewfordTrend dewfordTrends[SAVED_TRENDS_COUNT];
-#endif
 #ifndef FREE_CONTEST_WINNERS
     /*0x2e90*/ struct ContestWinner contestWinners[NUM_CONTEST_WINNERS]; // see CONTEST_WINNER_*
 #endif
@@ -1065,14 +1053,6 @@ extern const struct Apprentice gEmptyApprentices[APPRENTICE_COUNT];
 #define SAVED_APPRENTICES gEmptyApprentices
 #else
 #define SAVED_APPRENTICES gSaveBlock2Ptr->apprentices
-#endif
-
-// The Dewford trendy phrases, read the same way as ENIGMA_BERRY.
-#ifdef FREE_DEWFORD_TRENDS
-extern const struct DewfordTrend gEmptyDewfordTrends[SAVED_TRENDS_COUNT];
-#define DEWFORD_TRENDS gEmptyDewfordTrends
-#else
-#define DEWFORD_TRENDS gSaveBlock1Ptr->dewfordTrends
 #endif
 
 // The e-Reader Battle Tower trainer, read the same way as ENIGMA_BERRY.
