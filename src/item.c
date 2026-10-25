@@ -12,6 +12,7 @@
 #include "item_use.h"
 #include "battle_pyramid.h"
 #include "battle_pyramid_bag.h"
+#include "constants/secret_bases.h"
 #include "constants/items.h"
 #include "constants/hold_effects.h"
 

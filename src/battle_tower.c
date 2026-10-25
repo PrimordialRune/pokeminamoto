@@ -2644,21 +2644,10 @@ static u8 GetMonCountForBattleMode(u8 battleMode)
         return FRONTIER_PARTY_SIZE;
 }
 
-struct RibbonCounter
-{
-    u8 partyIndex;
-    u8 count;
-};
-
 static void AwardBattleTowerRibbons(void)
 {
     s32 i;
     u32 partyIndex;
-#ifdef BUGFIX
-    struct RibbonCounter ribbons[MAX_FRONTIER_PARTY_SIZE];
-#else
-    struct RibbonCounter ribbons[3]; // BUG: 4 Pokémon can receive ribbons in a double battle mode.
-#endif
     u8 ribbonType = 0;
     u8 lvlMode = gSaveBlock2Ptr->frontier.lvlMode;
     u8 battleMode = VarGet(VAR_FRONTIER_BATTLE_MODE);
@@ -2676,34 +2665,16 @@ static void AwardBattleTowerRibbons(void)
         for (i = 0; i < monCount; i++)
         {
             partyIndex = gSaveBlock2Ptr->frontier.selectedPartyMons[i] - 1;
-            ribbons[i].partyIndex = partyIndex;
-            ribbons[i].count = 0;
             if (!GetMonData(&gSaveBlock1Ptr->playerParty[partyIndex], ribbonType))
             {
                 gSpecialVar_Result = TRUE;
                 SetMonData(&gSaveBlock1Ptr->playerParty[partyIndex], ribbonType, &gSpecialVar_Result);
-                ribbons[i].count = GetRibbonCount(&gSaveBlock1Ptr->playerParty[partyIndex]);
             }
         }
     }
 
     if (gSpecialVar_Result)
-    {
         IncrementGameStat(GAME_STAT_RECEIVED_RIBBONS);
-        for (i = 1; i < monCount; i++)
-        {
-            if (ribbons[i].count > ribbons[0].count)
-            {
-                struct RibbonCounter prevBest = ribbons[0];
-                ribbons[0] = ribbons[i];
-                ribbons[i] = prevBest;
-            }
-        }
-        if (ribbons[0].count > NUM_CUTIES_RIBBONS)
-        {
-            TryPutSpotTheCutiesOnAir(&gSaveBlock1Ptr->playerParty[ribbons[0].partyIndex], ribbonType);
-        }
-    }
 }
 
 
@@ -2724,17 +2695,6 @@ const struct Apprentice gEmptyApprentices[APPRENTICE_COUNT] =
 };
 STATIC_ASSERT(APPRENTICE_COUNT == 4, EmptyApprenticesCount);
 #endif
-
-void TryHideBattleTowerReporter(void)
-{
-    if (gSaveBlock2Ptr->frontier.challengeStatus == CHALLENGE_STATUS_SAVING)
-        HideBattleTowerReporter();
-    if (FlagGet(FLAG_CANCEL_BATTLE_ROOM_CHALLENGE) == TRUE)
-    {
-        HideBattleTowerReporter();
-        FlagClear(FLAG_CANCEL_BATTLE_ROOM_CHALLENGE);
-    }
-}
 
 #define STEVEN_OTID 61226
 

@@ -1424,44 +1424,6 @@ void ShowEasyChatScreen(void)
         words = (u16 *)gStringVar3;
         InitializeEasyChatWordArray(words, NUM_BARD_SONG_WORDS);
         break;
-#ifndef FREE_TV
-    case EASY_CHAT_TYPE_INTERVIEW:
-        words = gSaveBlock1Ptr->tvShows[gSpecialVar_0x8005].bravoTrainer.words;
-        displayedPersonType = gSpecialVar_0x8006;
-        break;
-#endif
-#ifndef FREE_TV
-    case EASY_CHAT_TYPE_FAN_CLUB:
-        words = &gSaveBlock1Ptr->tvShows[gSpecialVar_0x8005].fanclubOpinions.words[gSpecialVar_0x8006];
-        displayedPersonType = EASY_CHAT_PERSON_REPORTER_FEMALE;
-        break;
-#endif
-#ifndef FREE_TV
-    case EASY_CHAT_TYPE_DUMMY_SHOW:
-        words = gSaveBlock1Ptr->tvShows[gSpecialVar_0x8005].dummy.words;
-        displayedPersonType = EASY_CHAT_PERSON_REPORTER_MALE;
-        break;
-#endif
-#ifndef FREE_TV
-    case EASY_CHAT_TYPE_GABBY_AND_TY:
-        words = gSaveBlock1Ptr->gabbyAndTyData.quote;
-        *words = EC_EMPTY_WORD;
-        displayedPersonType = EASY_CHAT_PERSON_REPORTER_FEMALE;
-        break;
-#endif
-#ifndef FREE_TV
-    case EASY_CHAT_TYPE_CONTEST_INTERVIEW:
-        words = &gSaveBlock1Ptr->tvShows[gSpecialVar_0x8005].bravoTrainer.words[gSpecialVar_0x8006];
-        displayedPersonType = EASY_CHAT_PERSON_REPORTER_MALE;
-        break;
-#endif
-#ifndef FREE_TV
-    case EASY_CHAT_TYPE_BATTLE_TOWER_INTERVIEW:
-        words = gSaveBlock1Ptr->tvShows[gSpecialVar_0x8005].bravoTrainerTower.words;
-        displayedPersonType = EASY_CHAT_PERSON_REPORTER_FEMALE;
-        break;
-#endif
-#ifdef FREE_TV
     case EASY_CHAT_TYPE_INTERVIEW:
     case EASY_CHAT_TYPE_FAN_CLUB:
     case EASY_CHAT_TYPE_DUMMY_SHOW:
@@ -1475,18 +1437,10 @@ void ShowEasyChatScreen(void)
             words[i] = EC_EMPTY_WORD;
         displayedPersonType = EASY_CHAT_PERSON_REPORTER_MALE;
         break;
-#endif
     case EASY_CHAT_TYPE_GOOD_SAYING:
         words = (u16 *)gStringVar3;
         InitializeEasyChatWordArray(words, 2);
         break;
-#ifndef FREE_TV
-    case EASY_CHAT_TYPE_FAN_QUESTION:
-        words = gSaveBlock1Ptr->tvShows[gSpecialVar_0x8005].fanClubSpecial.words;
-        words[0] = EC_EMPTY_WORD;
-        displayedPersonType = EASY_CHAT_PERSON_BOY;
-        break;
-#endif
     case EASY_CHAT_TYPE_QUIZ_ANSWER:
         words = &QUIZ_LADY_QUIZ->playerAnswer;
         break;

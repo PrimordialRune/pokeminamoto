@@ -7,7 +7,6 @@
 #include "battle_message.h"
 #include "battle_setup.h"
 #include "battle_tower.h"
-#include "battle_tv.h"
 #include "bg.h"
 #include "data.h"
 #include "link.h"
@@ -1236,7 +1235,6 @@ static void LinkPartnerHandleMoveAnimation(void)
         {
             gBattleSpritesDataPtr->healthBoxesData[gActiveBattler].animationState = 0;
             gBattlerControllerFuncs[gActiveBattler] = LinkPartnerDoMoveAnimation;
-            BattleTv_SetDataBasedOnMove(move, gWeatherMoveAnim, gAnimDisableStructPtr);
         }
     }
 }
@@ -1300,7 +1298,6 @@ static void LinkPartnerHandlePrintString(void)
     BufferStringBattle(*stringId);
     BattlePutTextOnWindow(gDisplayedStringBattle, B_WIN_MSG);
     gBattlerControllerFuncs[gActiveBattler] = CompleteOnInactiveTextPrinter;
-    BattleTv_SetDataBasedOnString(*stringId);
 }
 
 static void LinkPartnerHandlePrintSelectionString(void)
@@ -1664,7 +1661,6 @@ static void LinkPartnerHandleBattleAnimation(void)
         else
             gBattlerControllerFuncs[gActiveBattler] = CompleteOnFinishedBattleAnimation;
 
-        BattleTv_SetDataBasedOnAnimation(animationId);
     }
 }
 

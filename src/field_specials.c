@@ -476,23 +476,6 @@ bool32 ShouldDoRivalRayquazaCall(void)
     return TRUE;
 }
 
-u8 GetLinkPartnerNames(void)
-{
-    u8 i;
-    u8 j = 0;
-    u8 myLinkPlayerNumber = GetMultiplayerId();
-    u8 nLinkPlayers = GetLinkPlayerCount();
-    for (i = 0; i < nLinkPlayers; i++)
-    {
-        if (myLinkPlayerNumber != i)
-        {
-            StringCopy(gTVStringVarPtrs[j], gLinkPlayers[i].name);
-            j++;
-        }
-    }
-    return nLinkPlayers;
-}
-
 void SpawnLinkPartnerObjectEvent(void)
 {
     u8 j = 0;
@@ -1299,25 +1282,8 @@ u16 GetSlotMachineId(void)
         SLOT_MACHINE_LUCKIER,
         SLOT_MACHINE_LUCKIEST
     };
-    static const u8 sSlotMachineServiceDayIds[SLOT_MACHINE_COUNT] = {
-        SLOT_MACHINE_LUCKY,
-        SLOT_MACHINE_LUCKY,
-        SLOT_MACHINE_LUCKY,
-        SLOT_MACHINE_LUCKY,
-        SLOT_MACHINE_LUCKY,
-        SLOT_MACHINE_LUCKY,
-        SLOT_MACHINE_LUCKIER,
-        SLOT_MACHINE_LUCKIER,
-        SLOT_MACHINE_LUCKIER,
-        SLOT_MACHINE_LUCKIER,
-        SLOT_MACHINE_LUCKIEST,
-        SLOT_MACHINE_LUCKIEST
-    };
 
     u32 rnd = sSlotMachineRandomSeeds[gSpecialVar_0x8004];
-    if (IsPokeNewsActive(POKENEWS_GAME_CORNER))
-        return sSlotMachineServiceDayIds[rnd % SLOT_MACHINE_COUNT];
-
     return sSlotMachineIds[rnd % SLOT_MACHINE_COUNT];
 }
 
@@ -1379,8 +1345,6 @@ void GiveLeadMonEffortRibbon(void)
     ribbonSet = TRUE;
     leadMon = &gPlayerParty[GetLeadMonIndex()];
     SetMonData(leadMon, MON_DATA_EFFORT_RIBBON, &ribbonSet);
-    if (GetRibbonCount(leadMon) > NUM_CUTIES_RIBBONS)
-        TryPutSpotTheCutiesOnAir(leadMon, MON_DATA_EFFORT_RIBBON);
 }
 
 bool8 Special_AreLeadMonEVsMaxedOut(void)
@@ -1576,40 +1540,6 @@ bool8 MonOTNameNotPlayer(void)
         return FALSE;
 
     return TRUE;
-}
-
-void BufferLottoTicketNumber(void)
-{
-    if (gSpecialVar_Result >= 10000)
-    {
-        ConvertIntToDecimalString(0, gSpecialVar_Result);
-    }
-    else if (gSpecialVar_Result >= 1000)
-    {
-        gStringVar1[0] = CHAR_0;
-        ConvertIntToDecimalStringN(gStringVar1 + 1, gSpecialVar_Result, STR_CONV_MODE_LEFT_ALIGN, CountDigits(gSpecialVar_Result));
-    }
-    else if (gSpecialVar_Result >= 100)
-    {
-        gStringVar1[0] = CHAR_0;
-        gStringVar1[1] = CHAR_0;
-        ConvertIntToDecimalStringN(gStringVar1 + 2, gSpecialVar_Result, STR_CONV_MODE_LEFT_ALIGN, CountDigits(gSpecialVar_Result));
-    }
-    else if (gSpecialVar_Result >= 10)
-    {
-        gStringVar1[0] = CHAR_0;
-        gStringVar1[1] = CHAR_0;
-        gStringVar1[2] = CHAR_0;
-        ConvertIntToDecimalStringN(gStringVar1 + 3, gSpecialVar_Result, STR_CONV_MODE_LEFT_ALIGN, CountDigits(gSpecialVar_Result));
-    }
-    else
-    {
-        gStringVar1[0] = CHAR_0;
-        gStringVar1[1] = CHAR_0;
-        gStringVar1[2] = CHAR_0;
-        gStringVar1[3] = CHAR_0;
-        ConvertIntToDecimalStringN(gStringVar1 + 4, gSpecialVar_Result, STR_CONV_MODE_LEFT_ALIGN, CountDigits(gSpecialVar_Result));
-    }
 }
 
 u16 GetMysteryGiftCardStat(void)

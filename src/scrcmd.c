@@ -1725,6 +1725,18 @@ bool8 ScrCmd_buffermovename(struct ScriptContext *ctx)
     return FALSE;
 }
 
+static u8 CountDigits(int value)
+{
+    u8 digits = 1;
+
+    while (value >= 10 && digits < 8)
+    {
+        value /= 10;
+        digits++;
+    }
+    return digits;
+}
+
 bool8 ScrCmd_buffernumberstring(struct ScriptContext *ctx)
 {
     u8 stringVarIndex = ScriptReadByte(ctx);
@@ -2033,14 +2045,6 @@ bool8 ScrCmd_setberrytree(struct ScriptContext *ctx)
         PlantBerryTree(treeId, berry, growthStage, FALSE);
     else
         PlantBerryTree(treeId, berry, growthStage, FALSE);
-    return FALSE;
-}
-
-bool8 ScrCmd_getpokenewsactive(struct ScriptContext *ctx)
-{
-    u16 newsKind = VarGet(ScriptReadHalfword(ctx));
-
-    gSpecialVar_Result = IsPokeNewsActive(newsKind);
     return FALSE;
 }
 

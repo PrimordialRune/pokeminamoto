@@ -92,12 +92,6 @@ void InitBattleControllers(void)
         for (i = 0; i < gBattlersCount; i++)
             BufferBattlePartyCurrentOrderBySide(i, 0);
     }
-
-    for (i = 0; i < sizeof(gBattleStruct->tvMovePoints); i++)
-        *((u8 *)(&gBattleStruct->tvMovePoints) + i) = 0;
-
-    for (i = 0; i < sizeof(gBattleStruct->tv); i++)
-        *((u8 *)(&gBattleStruct->tv) + i) = 0;
 }
 
 static void InitSinglePlayerBtlControllers(void)

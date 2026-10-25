@@ -604,10 +604,6 @@ static void Task_ShowContestResults(u8 taskId)
             if (gContestFinalStandings[gContestPlayerMonIndex] == 0)
             {
                 IncrementGameStat(GAME_STAT_WON_LINK_CONTEST);
-                gSpecialVar_0x8005 = TVSHOW_CONTEST_LIVE_UPDATES;
-                InterviewBefore();
-                if (gSpecialVar_Result != TRUE)
-                    InterviewAfter();
             }
 
             TryGainNewFanFromCounter(FANCOUNTER_FINISHED_CONTEST);

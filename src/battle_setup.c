@@ -415,7 +415,6 @@ static void DoStandardWildBattle(void)
     CreateBattleStartTask(GetWildBattleTransition(), 0);
     IncrementGameStat(GAME_STAT_TOTAL_BATTLES);
     IncrementGameStat(GAME_STAT_WILD_BATTLES);
-    IncrementDailyWildBattles();
     TryUpdateGymLeaderRematchFromWild();
 }
 
@@ -429,7 +428,6 @@ void BattleSetup_StartRoamerBattle(void)
     CreateBattleStartTask(GetWildBattleTransition(), 0);
     IncrementGameStat(GAME_STAT_TOTAL_BATTLES);
     IncrementGameStat(GAME_STAT_WILD_BATTLES);
-    IncrementDailyWildBattles();
     TryUpdateGymLeaderRematchFromWild();
 }
 
@@ -453,7 +451,6 @@ static void DoBattlePikeWildBattle(void)
     CreateBattleStartTask(GetWildBattleTransition(), 0);
     IncrementGameStat(GAME_STAT_TOTAL_BATTLES);
     IncrementGameStat(GAME_STAT_WILD_BATTLES);
-    IncrementDailyWildBattles();
     TryUpdateGymLeaderRematchFromWild();
 }
 
@@ -482,7 +479,6 @@ void BattleSetup_StartScriptedWildBattle(void)
     CreateBattleStartTask(GetWildBattleTransition(), 0);
     IncrementGameStat(GAME_STAT_TOTAL_BATTLES);
     IncrementGameStat(GAME_STAT_WILD_BATTLES);
-    IncrementDailyWildBattles();
     TryUpdateGymLeaderRematchFromWild();
 }
 
@@ -494,7 +490,6 @@ void BattleSetup_StartLatiBattle(void)
     CreateBattleStartTask(GetWildBattleTransition(), 0);
     IncrementGameStat(GAME_STAT_TOTAL_BATTLES);
     IncrementGameStat(GAME_STAT_WILD_BATTLES);
-    IncrementDailyWildBattles();
     TryUpdateGymLeaderRematchFromWild();
 }
 
@@ -532,7 +527,6 @@ void BattleSetup_StartLegendaryBattle(void)
 
     IncrementGameStat(GAME_STAT_TOTAL_BATTLES);
     IncrementGameStat(GAME_STAT_WILD_BATTLES);
-    IncrementDailyWildBattles();
     TryUpdateGymLeaderRematchFromWild();
 }
 
@@ -549,7 +543,6 @@ void StartGroudonKyogreBattle(void)
 
     IncrementGameStat(GAME_STAT_TOTAL_BATTLES);
     IncrementGameStat(GAME_STAT_WILD_BATTLES);
-    IncrementDailyWildBattles();
     TryUpdateGymLeaderRematchFromWild();
 }
 
@@ -582,7 +575,6 @@ void StartRegiBattle(void)
 
     IncrementGameStat(GAME_STAT_TOTAL_BATTLES);
     IncrementGameStat(GAME_STAT_WILD_BATTLES);
-    IncrementDailyWildBattles();
     TryUpdateGymLeaderRematchFromWild();
 }
 
@@ -925,7 +917,6 @@ static void CB2_StartFirstBattle(void)
         ClearPoisonStepCounter();
         IncrementGameStat(GAME_STAT_TOTAL_BATTLES);
         IncrementGameStat(GAME_STAT_WILD_BATTLES);
-        IncrementDailyWildBattles();
         TryUpdateGymLeaderRematchFromWild();
     }
 }

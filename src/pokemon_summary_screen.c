@@ -38,7 +38,7 @@
 #include "strings.h"
 #include "task.h"
 #include "text.h"
-#include "tv.h"
+#include "name_rater.h"
 #include "window.h"
 #include "constants/items.h"
 #include "constants/moves.h"

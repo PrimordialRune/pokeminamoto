@@ -7,7 +7,6 @@
 #include "battle_interface.h"
 #include "battle_message.h"
 #include "battle_setup.h"
-#include "battle_tv.h"
 #include "bg.h"
 #include "data.h"
 #include "graphics.h"
@@ -930,7 +929,6 @@ static void SetLinkBattleEndCallbacks(void)
             gMain.callback1 = gPreBattleCallback1;
             SetMainCallback2(CB2_InitEndLinkBattle);
             if (gBattleOutcome == B_OUTCOME_WON)
-                TryPutLinkBattleTvShowOnAir();
             FreeAllWindowBuffers();
         }
     }
@@ -943,7 +941,6 @@ static void SetLinkBattleEndCallbacks(void)
             gMain.callback1 = gPreBattleCallback1;
             SetMainCallback2(CB2_InitEndLinkBattle);
             if (gBattleOutcome == B_OUTCOME_WON)
-                TryPutLinkBattleTvShowOnAir();
             FreeAllWindowBuffers();
         }
     }
@@ -2862,7 +2859,6 @@ static void PlayerHandleMoveAnimation(void)
         {
             gBattleSpritesDataPtr->healthBoxesData[gActiveBattler].animationState = 0;
             gBattlerControllerFuncs[gActiveBattler] = PlayerDoMoveAnimation;
-            BattleTv_SetDataBasedOnMove(move, gWeatherMoveAnim, gAnimDisableStructPtr);
         }
     }
 }
@@ -2926,7 +2922,6 @@ static void PlayerHandlePrintString(void)
     BufferStringBattle(*stringId);
     BattlePutTextOnWindow(gDisplayedStringBattle, B_WIN_MSG);
     gBattlerControllerFuncs[gActiveBattler] = CompleteOnInactiveTextPrinter2;
-    BattleTv_SetDataBasedOnString(*stringId);
     BattleArena_DeductSkillPoints(gActiveBattler, *stringId);
 }
 
@@ -2951,7 +2946,6 @@ static void HandleChooseActionAfterDma3(void)
 static void PlayerHandleChooseAction(void)
 {
     gBattlerControllerFuncs[gActiveBattler] = HandleChooseActionAfterDma3;
-    BattleTv_ClearExplosionFaintCause();
     ActionSelectionDrawMenu();
     ActionSelectionCreateCursorAt(gActionSelectionCursor[gActiveBattler], 0);
     BattleStringExpandPlaceholdersToDisplayedString(gText_WhatWillPkmnDo);
@@ -3459,7 +3453,6 @@ static void PlayerHandleBattleAnimation(void)
         else
             gBattlerControllerFuncs[gActiveBattler] = CompleteOnFinishedBattleAnimation;
 
-        BattleTv_SetDataBasedOnAnimation(animationId);
     }
 }
 

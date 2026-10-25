@@ -1822,7 +1822,6 @@ void CheckLeftFriendsSecretBase(void)
     {
         VarSet(VAR_SECRET_BASE_IS_NOT_LOCAL, FALSE);
         sInFriendSecretBase = FALSE;
-        TryPutSecretBaseSecretsOnAir();
         VarSet(VAR_SECRET_BASE_STEP_COUNTER, 0);
         VarSet(VAR_SECRET_BASE_LAST_ITEM_USED, 0);
         VarSet(VAR_SECRET_BASE_LOW_TV_FLAGS, 0);

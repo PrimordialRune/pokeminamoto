@@ -66,7 +66,6 @@ void DoSpecialTrainerBattle(void);
 void CalcEmeraldBattleTowerChecksum(struct EmeraldBattleTowerRecord *record);
 void CalcRubyBattleTowerChecksum(struct RSBattleTowerRecord *record);
 u16 GetCurrentBattleTowerWinStreak(u8 lvlMode, u8 battleMode);
-void TryHideBattleTowerReporter(void);
 bool32 RubyBattleTowerRecordToEmerald(struct RSBattleTowerRecord *src, struct EmeraldBattleTowerRecord *dst);
 bool32 EmeraldBattleTowerRecordToRuby(struct EmeraldBattleTowerRecord *src, struct RSBattleTowerRecord *dst);
 void CalcApprenticeChecksum(struct Apprentice *apprentice);

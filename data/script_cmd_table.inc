@@ -165,7 +165,7 @@ gScriptCmdTable::
 	script_cmd_table_entry SCR_OP_SHOWMONEYBOX                  ScrCmd_showmoneybox                   @ 0x93
 	script_cmd_table_entry SCR_OP_HIDEMONEYBOX                  ScrCmd_hidemoneybox                   @ 0x94
 	script_cmd_table_entry SCR_OP_UPDATEMONEYBOX                ScrCmd_updatemoneybox                 @ 0x95
-	script_cmd_table_entry SCR_OP_GETPOKENEWSACTIVE             ScrCmd_getpokenewsactive              @ 0x96
+	script_cmd_table_entry SCR_OP_GETPOKENEWSACTIVE             ScrCmd_nop              @ 0x96
 	script_cmd_table_entry SCR_OP_FADESCREEN                    ScrCmd_fadescreen                     @ 0x97
 	script_cmd_table_entry SCR_OP_FADESCREENSPEED               ScrCmd_fadescreenspeed                @ 0x98
 	script_cmd_table_entry SCR_OP_SETFLASHLEVEL                 ScrCmd_setflashlevel                  @ 0x99

@@ -43,7 +43,6 @@ gSpecials::
 	def_special Script_StartWiredTrade
 	def_special CableClubSaveGame
 	def_special TryBerryBlenderLinkup
-	def_special GetLinkPartnerNames
 	def_special SpawnLinkPartnerObjectEvent
 	def_special SavePlayerParty
 	def_special LoadPlayerParty
@@ -70,19 +69,9 @@ gSpecials::
 	def_special ShowPokemonStorageSystemPC
 	def_special HasEnoughMonsForDoubleBattle
 	def_special TurnOffTVScreen
-	def_special DoTVShow
-	def_special DoPokeNews
-	def_special GetRandomActiveShowIdx
-	def_special GetSelectedTVShow
-	def_special InterviewBefore
-	def_special InterviewAfter
 	def_special IsLeadMonNicknamedOrNotEnglish
-	def_special SetContestCategoryStringVarForInterview
-	def_special GetNextActiveShowIfMassOutbreak
-	def_special IsTVShowAlreadyInQueue
 	def_special CheckForPlayersHouseNews
 	def_special GetMomOrDadStringForTVMessage
-	def_special ResetTVShowState
 	def_special GetContestWinnerId
 	def_special GetContestPlayerId
 	def_special GetNpcContestantLocalId
@@ -107,7 +96,6 @@ gSpecials::
 	def_special CompareSeedotSize
 	def_special GetLotadSizeRecordInfo
 	def_special CompareLotadSize
-	def_special TryPutNameRaterShowOnTheAir
 	def_special BufferMonNickname
 	def_special IsMonOTIDNotPlayers
 	def_special SwapRegisteredBike
@@ -151,14 +139,6 @@ gSpecials::
 	def_special UpdateTrainerFanClubGameClear
 	def_special Script_TryGainNewFanFromCounter
 	def_special RockSmashWildEncounter
-	def_special GabbyAndTyGetBattleNum
-	def_special GabbyAndTyAfterInterview
-	def_special GabbyAndTyBeforeInterview
-	def_special DoTVShowInSearchOfTrainers
-	def_special IsGabbyAndTyShowOnTheAir
-	def_special GabbyAndTyGetLastQuote
-	def_special GabbyAndTyGetLastBattleTrivia
-	def_special GetGabbyAndTyLocalIds
 	def_special GetBattleOutcome
 	def_special GetDaycareMonNicknames
 	def_special GetDaycareState
@@ -310,18 +290,9 @@ gSpecials::
 	def_special GetDaysUntilPacifidlogTMAvailable
 	def_special HasAllHoennMons
 	def_special MonOTNameNotPlayer
-	def_special BufferLottoTicketNumber
-	def_special TryHideBattleTowerReporter
 	def_special GenerateContestRand
 	def_special SetChampionSaveWarp
-	def_special TryPutTreasureInvestigatorsOnAir
-	def_special TryPutLotteryWinnerReportOnAir
-	def_special TryPutTrainerFanClubOnAir
-	def_special ShouldHideFanClubInterviewer
 	def_special ShowGlassWorkshopMenu
-	def_special PutFanClubSpecialOnTheAir
-	def_special IncrementDailyPlantedBerries
-	def_special IncrementDailyPickedBerries
 	def_special InitSecretBaseVars
 	def_special CheckInteractedWithFriendsSandOrnament
 	def_special DeclinedSecretBaseBattle
@@ -336,7 +307,6 @@ gSpecials::
 	def_special CheckInteractedWithFriendsPosterDecor
 	def_special QuizLadyShowQuizQuestion
 	def_special GetMysteryGiftCardStat
-	def_special PutLilycoveContestLadyShowOnTheAir
 	def_special CloseBattlePikeCurtain
 	def_special CallApprenticeFunction
 	def_special ShouldTryGetTrainerScript

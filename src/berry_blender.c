@@ -186,7 +186,6 @@ struct BerryBlender
     struct TimeAndRPM smallBlock;
     u32 linkPlayAgainState;
     u8 ownRanking;
-    struct TvBlenderStruct tvBlender;
     u8 tilemapBuffers[2][BG_SCREEN_SIZE];
     s16 textState;
     void *tilesBuffer;
@@ -234,7 +233,6 @@ static void CB2_CheckPlayAgainLocal(void);
 static void CB2_CheckPlayAgainLink(void);
 static void UpdateProgressBar(u16, u16);
 static void PrintMadePokeblockString(struct Pokeblock *, u8 *);
-static bool32 TryAddContestLinkTvShow(struct Pokeblock *, struct TvBlenderStruct *);
 
 EWRAM_DATA static struct BerryBlender *sBerryBlender = NULL;
 EWRAM_DATA static s32 sDebug_PokeblockFactorFlavors[FLAVOR_COUNT] = {0};
@@ -3568,10 +3566,8 @@ static bool8 PrintBlendingResults(void)
         Debug_SetStageVars();
         CalculatePokeblock(sBerryBlender->blendedBerries, &pokeblock, sBerryBlender->numPlayers, flavors, sBerryBlender->maxRPM);
         PrintMadePokeblockString(&pokeblock, sBerryBlender->stringVar);
-        TryAddContestLinkTvShow(&pokeblock, &sBerryBlender->tvBlender);
 
         CreateTask(Task_PlayPokeblockFanfare, 6);
-        IncrementDailyBerryBlender();
 
         RemoveBagItem(gSpecialVar_ItemId, 1);
         AddPokeblock(&pokeblock);
@@ -3806,50 +3802,6 @@ static void Task_PlayPokeblockFanfare(u8 taskId)
         PlayBGM(sBerryBlender->savedMusic);
         DestroyTask(taskId);
     }
-}
-
-static bool32 TryAddContestLinkTvShow(struct Pokeblock *pokeblock, struct TvBlenderStruct *tvBlender)
-{
-    u8 flavorLevel = GetHighestPokeblocksFlavorLevel(pokeblock);
-    u16 sheen = (flavorLevel * 10) / GetPokeblocksFeel(pokeblock);
-
-    tvBlender->pokeblockSheen = sheen;
-    tvBlender->pokeblockColor = pokeblock->color;
-    tvBlender->name[0] = EOS;
-
-    if (gReceivedRemoteLinkPlayers)
-    {
-        if (sBerryBlender->ownRanking == 0 && sheen > 20)
-        {
-            // Player came first, try to put on air
-            StringCopy(tvBlender->name, gLinkPlayers[sBerryBlender->playerPlaces[sBerryBlender->numPlayers - 1]].name);
-            tvBlender->pokeblockFlavor = GetPokeblocksFlavor(pokeblock);
-            if (Put3CheersForPokeblocksOnTheAir(tvBlender->name, tvBlender->pokeblockFlavor,
-                                            tvBlender->pokeblockColor, tvBlender->pokeblockSheen,
-                                            gLinkPlayers[sBerryBlender->playerPlaces[sBerryBlender->numPlayers - 1]].language))
-            {
-                return TRUE;
-            }
-
-            return FALSE;
-        }
-        else if (sBerryBlender->ownRanking == sBerryBlender->numPlayers - 1 && sheen <= 20)
-        {
-            // Player came last, try to put on air
-            StringCopy(tvBlender->name, gLinkPlayers[sBerryBlender->playerPlaces[0]].name);
-            tvBlender->pokeblockFlavor = GetPokeblocksFlavor(pokeblock);
-            if (Put3CheersForPokeblocksOnTheAir(tvBlender->name, tvBlender->pokeblockFlavor,
-                                            tvBlender->pokeblockColor, tvBlender->pokeblockSheen,
-                                            gLinkPlayers[sBerryBlender->playerPlaces[0]].language))
-            {
-                return TRUE;
-            }
-
-            return FALSE;
-        }
-    }
-
-    return FALSE;
 }
 
 static void Blender_AddTextPrinter(u8 windowId, const u8 *string, u8 x, u8 y, s32 speed, s32 caseId)

@@ -111,7 +111,6 @@ BerryTree_EventScript_CheckBerryFullyGrown::
 BerryTree_EventScript_PickBerry::
 	special ObjectEventInteractionPickBerryTree
 	goto_if_eq VAR_0x8004, 0, BerryTree_EventScript_BerryPocketFull
-	special IncrementDailyPickedBerries
 	special ObjectEventInteractionRemoveBerryTree
 	message BerryTree_Text_PickedTheBerry
 	playfanfare MUS_OBTAIN_BERRY
@@ -176,7 +175,6 @@ BerryTree_EventScript_WaterBerry::
 BerryTree_EventScript_PlantBerry::
 	special ObjectEventInteractionPlantBerryTree
 	incrementgamestat GAME_STAT_PLANTED_BERRIES
-	special IncrementDailyPlantedBerries
 	special ObjectEventInteractionGetBerryCountString
 	message BerryTree_Text_PlantedOneBerry
 	waitmessage

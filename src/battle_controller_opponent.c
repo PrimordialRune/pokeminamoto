@@ -8,7 +8,6 @@
 #include "battle_interface.h"
 #include "battle_setup.h"
 #include "battle_tower.h"
-#include "battle_tv.h"
 #include "bg.h"
 #include "data.h"
 #include "frontier_util.h"
