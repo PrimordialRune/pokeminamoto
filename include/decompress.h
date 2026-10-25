@@ -3,7 +3,9 @@
 
 #include "sprite.h"
 
-extern u8 ALIGNED(4) gDecompressionBuffer[0x4000];
+// 8 KB: the biggest fixed user is the Hall of Fame record (2 save sectors).
+#define DECOMPRESSION_BUFFER_SIZE 0x2000
+extern u8 ALIGNED(4) gDecompressionBuffer[DECOMPRESSION_BUFFER_SIZE];
 
 void LZDecompressWram(const u32 *src, void *dest);
 void LZDecompressVram(const u32 *src, void *dest);

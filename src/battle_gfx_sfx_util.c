@@ -1053,7 +1053,7 @@ void BattleLoadSubstituteOrMonSpriteGfx(u8 battler, bool8 loadMonSprite)
         else
             LZDecompressVram(gSubstituteDollBackGfx, gMonSpritesGfxPtr->sprites.ptr[position]);
 
-        for (i = 1; i < 4; i++)
+        for (i = 1; i < MAX_MON_PIC_FRAMES; i++)
         {
             Dma3CopyLarge32_(gMonSpritesGfxPtr->sprites.ptr[position], &gMonSpritesGfxPtr->sprites.byte[position][MON_PIC_SIZE * i], MON_PIC_SIZE);
         }
@@ -1294,18 +1294,26 @@ void ClearTemporarySpeciesSpriteData(u8 battler, bool8 dontClearSubstitute)
 
 void AllocateMonSpritesGfx(void)
 {
+    AllocateMonSpritesGfxBuffers(MAX_BATTLERS_COUNT);
+}
+
+// numBuffers pics are allocated; positions past them share the buffers of
+// the first ones. A single battle only draws the two left positions, while
+// evolution, trade and egg hatch use all four.
+void AllocateMonSpritesGfxBuffers(u8 numBuffers)
+{
     u8 i = 0, j;
 
     gMonSpritesGfxPtr = NULL;
     gMonSpritesGfxPtr = AllocZeroed(sizeof(*gMonSpritesGfxPtr));
-    gMonSpritesGfxPtr->firstDecompressed = AllocZeroed(MON_PIC_SIZE * 4 * MAX_BATTLERS_COUNT);
+    gMonSpritesGfxPtr->firstDecompressed = AllocZeroed(MON_PIC_SIZE * MAX_MON_PIC_FRAMES * numBuffers);
 
     for (i = 0; i < MAX_BATTLERS_COUNT; i++)
     {
-        gMonSpritesGfxPtr->sprites.ptr[i] = gMonSpritesGfxPtr->firstDecompressed + (i * MON_PIC_SIZE * 4);
+        gMonSpritesGfxPtr->sprites.ptr[i] = gMonSpritesGfxPtr->firstDecompressed + ((i % numBuffers) * MON_PIC_SIZE * MAX_MON_PIC_FRAMES);
         *(gMonSpritesGfxPtr->templates + i) = gBattlerSpriteTemplates[i];
 
-        for (j = 0; j < 4; j++)
+        for (j = 0; j < MAX_MON_PIC_FRAMES; j++)
         {
             gMonSpritesGfxPtr->frameImages[i][j].data = gMonSpritesGfxPtr->sprites.ptr[i] + (j * MON_PIC_SIZE);
             gMonSpritesGfxPtr->frameImages[i][j].size = MON_PIC_SIZE;

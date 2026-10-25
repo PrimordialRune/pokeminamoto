@@ -41,6 +41,7 @@ void HideBattlerShadowSprite(u8 battler);
 void FillAroundBattleWindows(void);
 void ClearTemporarySpeciesSpriteData(u8 battler, bool8 dontClearSubstitute);
 void AllocateMonSpritesGfx(void);
+void AllocateMonSpritesGfxBuffers(u8 numBuffers);
 void FreeMonSpritesGfx(void);
 bool32 ShouldPlayNormalMonCry(struct Pokemon *mon);
 

@@ -303,10 +303,12 @@ struct ContestResources
 #define eContestAI (*gContestResources->aiData)
 #define eContestExcitement (*gContestResources->excitement)
 #define eContestGfxState (gContestResources->gfxState)
-#define eUnzippedContestAudience_Gfx (gHeap + 0x18000)
-#define eContestAudienceFrame2_Gfx (gHeap + 0x19000)
-#define eContestDebugMode (gHeap[0x1a000])
-#define eContestTempSave (*(struct ContestTempSave *)(gHeap + 0x1a004))
+// Contests keep these in the top 16 KB of the heap (Emerald: 0x18000 of 0x1C000).
+#define CONTEST_HEAP_TOP (HEAP_SIZE - 0x4000)
+#define eUnzippedContestAudience_Gfx (gHeap + CONTEST_HEAP_TOP)
+#define eContestAudienceFrame2_Gfx (gHeap + CONTEST_HEAP_TOP + 0x1000)
+#define eContestDebugMode (gHeap[CONTEST_HEAP_TOP + 0x2000])
+#define eContestTempSave (*(struct ContestTempSave *)(gHeap + CONTEST_HEAP_TOP + 0x2004))
 
 extern struct ContestPokemon gContestMons[CONTESTANT_COUNT];
 extern s16 gContestMonRound1Points[CONTESTANT_COUNT];

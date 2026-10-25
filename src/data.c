@@ -291,7 +291,8 @@ static const union AnimCmd sAnim_MonPic_3[] =
     ANIMCMD_END,
 };
 
-const union AnimCmd *const gAnims_MonPic[MAX_MON_PIC_FRAMES] =
+// Only the first MAX_MON_PIC_FRAMES are backed by frame images.
+const union AnimCmd *const gAnims_MonPic[] =
 {
     sAnim_MonPic_0,
     sAnim_MonPic_1,

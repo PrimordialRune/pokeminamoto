@@ -10,7 +10,9 @@
 
 #define TRY_FREE_AND_SET_NULL(ptr) if (ptr != NULL) FREE_AND_SET_NULL(ptr)
 
-#define HEAP_SIZE 0x1C000
+// 88 KB. Highest measured use is ~76 KB (double battle); tools/regress
+// scene_check.py and run.py report the peak per screen.
+#define HEAP_SIZE 0x16000
 extern u8 gHeap[HEAP_SIZE];
 
 void *Alloc(u32 size);

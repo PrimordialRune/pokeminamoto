@@ -585,12 +585,27 @@ const u8 *const gStatusConditionStringsTable[][2] =
     {gStatusConditionString_LoveJpn, gText_Love}
 };
 
+// A single battle only draws two battlers, so it gets two sprite buffers.
+// An ordinary trainer battle only turns into a double in CreateNPCTrainerParty,
+// after the buffers are allocated, so check the trainer data here as well.
+static u8 GetNumMonSpriteBuffers(void)
+{
+    if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE)
+        return MAX_BATTLERS_COUNT;
+    if ((gBattleTypeFlags & BATTLE_TYPE_TRAINER)
+     && !(gBattleTypeFlags & (BATTLE_TYPE_LINK | BATTLE_TYPE_RECORDED | BATTLE_TYPE_FRONTIER | BATTLE_TYPE_EREADER_TRAINER | BATTLE_TYPE_TRAINER_HILL))
+     && gTrainerBattleOpponent_A != TRAINER_SECRET_BASE
+     && gTrainers[gTrainerBattleOpponent_A].doubleBattle)
+        return MAX_BATTLERS_COUNT;
+    return 2;
+}
+
 void CB2_InitBattle(void)
 {
     MoveSaveBlocks_ResetHeap();
     AllocateBattleResources();
     AllocateBattleSpritesData();
-    AllocateMonSpritesGfx();
+    AllocateMonSpritesGfxBuffers(GetNumMonSpriteBuffers());
     RecordedBattle_ClearFrontierPassFlag();
 
     if (gBattleTypeFlags & BATTLE_TYPE_MULTI)

@@ -66,6 +66,9 @@ static EWRAM_DATA u32 sHofFadePalettes = 0;
 static EWRAM_DATA struct HallofFameTeam *sHofMonPtr = NULL;
 static EWRAM_DATA struct HofGfx *sHofGfxPtr = NULL;
 
+// The Hall of Fame record is built and saved in gDecompressionBuffer.
+STATIC_ASSERT(SECTOR_SIZE * NUM_HOF_SECTORS <= DECOMPRESSION_BUFFER_SIZE, HofRecordFitsDecompressionBuffer)
+
 static void ClearVramOamPltt_LoadHofPal(void);
 static void LoadHofGfx(void);
 static void InitHofBgs(void);
