@@ -46,6 +46,8 @@ SECTIONS {
         *libc.a:sbrkr.o(COMMON);
     } > IWRAM
 
+    gIwramEnd = ADDR(iwram) + SIZEOF(iwram);
+
     /* BEGIN ROM DATA */
     . = 0x8000000;
 
@@ -1354,3 +1356,7 @@ SECTIONS {
 
 /* IntrMain (src/crt0.s) runs from a copy in IntrMain_Buffer (src/main.c). */
 ASSERT(IntrMain_End - IntrMain <= 0x180, "IntrMain no longer fits IntrMain_Buffer in src/main.c")
+
+/* The system stack (src/crt0.s: sp_sys = IWRAM_END - 0x1c0) grows down into
+   whatever IWRAM the data leaves free. Keep at least 6 KB of it. */
+ASSERT(gIwramEnd <= 0x3008000 - 0x1c0 - 0x1800, "IWRAM data leaves less than 6 KB for the stack")
