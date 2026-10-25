@@ -8,7 +8,6 @@
       "Bash(make generated*)",
       "Bash(make tidy*)",
       "Bash(make syms*)",
-      "Bash(make compare*)",
       "Bash(git status*)",
       "Bash(git diff*)",
       "Bash(git log*)",

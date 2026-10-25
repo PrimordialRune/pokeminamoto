@@ -29,9 +29,9 @@ In a cloud session or a native Linux shell, run `make`/`git` directly.
 
 ### Prerequisites
 
-Fresh Debian/Ubuntu box (cloud session, CI, new machine): run `tools/setup-cloud.sh`. It installs `build-essential git libpng-dev binutils-arm-none-eabi gcc-arm-none-eabi libnewlib-arm-none-eabi`, marks the committed poryscript binary executable and runs `npm ci` for the MCP servers when node is present. It is idempotent. It skips pret `agbcc` unless you pass `CLASSIC=1` (only `make classic` needs it; it builds a pinned commit into `tools/agbcc/`, not committed). `LEAN=1` installs only the build toolchain (CI uses it): no emulator, MCP deps, Porytiles or pip.
+Fresh Debian/Ubuntu box (cloud session, CI, new machine): run `tools/setup-cloud.sh`. It installs `build-essential git libpng-dev binutils-arm-none-eabi gcc-arm-none-eabi libnewlib-arm-none-eabi`, downloads the pinned Poryscript binary (`tools/poryscript/fetch.sh`, sha256-checked; `make` runs it too when the binary is missing) and runs `npm ci` for the MCP servers when node is present. It is idempotent. `LEAN=1` installs only the build toolchain (CI uses it): no emulator, MCP deps, Porytiles or pip.
 
-On the home WSL box everything is already installed: apt `arm-none-eabi` binutils + gcc 10.3, devkitARM at `/opt/devkitpro` (the modern build picks up its gcc 12.2 and `arm-none-eabi-gdb`), and `tools/agbcc/`.
+On the home WSL box everything is already installed: apt `arm-none-eabi` binutils + gcc 10.3, devkitARM at `/opt/devkitpro` (the modern build picks up its gcc 12.2 and `arm-none-eabi-gdb`).
 
 ### Build Targets
 
@@ -39,8 +39,6 @@ On the home WSL box everything is already installed: apt `arm-none-eabi` binutil
 make -j$(nproc)          # Main build: pokeemerald_modern.gba (arm-none-eabi-gcc)
 make modern -j$(nproc)   # Same as above (kept as an alias)
 make DINFO=1 -j$(nproc)  # Modern build with debug symbols (for GDB)
-make classic -j$(nproc)  # Optional: pokeemerald.gba with agbcc (needs CLASSIC=1 tools/setup-cloud.sh)
-make compare             # Verify ROM matches original sha1 (only useful pre-modification)
 make clean               # Full clean (tools + objects + assets)
 make tidy                # Remove ROM/ELF/objects only (keeps tools and assets)
 make syms                # Generate symbol file from ELF
@@ -59,7 +57,6 @@ rm build/modern/src/<filename>.o && make -j$(nproc)
 - `pokeemerald_modern.gba` — main ROM (modern build)
 - `pokeemerald_modern.elf` — ELF with symbols
 - `pokeemerald_modern.map` — linker map
-- `pokeemerald.gba` / `.elf` / `.map` — only from `make classic`
 
 ## Debugging
 
@@ -142,10 +139,10 @@ Build with `make DINFO=1 -j$(nproc)`, then press F5 in VSCode to debug. The ELF 
 C sources go through a 4-stage pipeline:
 1. `cpp` — C preprocessor (expands `#include`, `#define`)
 2. `preproc` — custom tool expanding Pokémon-specific string escapes (charmap.txt)
-3. `arm-none-eabi-gcc` (main build) or `agbcc`, the GCC 2.95-based compiler (optional `make classic`) → ARM assembly
+3. `arm-none-eabi-gcc` → ARM assembly
 4. `as` (arm-none-eabi) → object files, then `ld` → ELF → `objcopy` → `.gba`
 
-The modern build is the main one since 2026-10-23 and adds `-Wall` plus `-Werror` for return-type, implicit declarations, int/pointer conversions and parentheses. Classic agbcc builds are optional and non-blocking in CI.
+The modern build is the main one since 2026-10-23 and adds `-Wall` plus `-Werror` for return-type, implicit declarations, int/pointer conversions and parentheses.
 
 ### Directory Layout
 
@@ -161,7 +158,7 @@ The modern build is the main one since 2026-10-23 and adds `-Wall` plus `-Werror
 | `data/maps/` | Per-map event/header data (JSON-based, generated via `mapjson`) |
 | `graphics/` | PNG source graphics (converted to GBA formats at build time) |
 | `sound/` | Music and sound effects |
-| `tools/` | Build tools (C programs built from source, except `agbcc`) |
+| `tools/` | Build tools (C programs built from source) |
 
 ### Key Data Files (Gen 1 Modified)
 
@@ -201,8 +198,7 @@ Map and shared scripts are written in [Poryscript](https://github.com/huderlem/p
 
 ### Memory Layout
 
-Defined by `ld_script.ld` (classic) / `ld_script_modern.ld` (modern):
-Measured 2026-10-15 (classic / modern):
+Defined by `ld_script_modern.ld`. Measured 2026-10-15 (classic / modern, before the classic build was dropped):
 - ROM: 32 MB limit (44.5% / 39.7% used)
 - EWRAM: 256 KB (95.3% used — **nearly full**; flag anything that adds RAM or save data)
 - IWRAM: 32 KB (94.3% / 92.8% used)
@@ -214,7 +210,7 @@ The game uses a cooperative multitasking system (`include/task.h`). Nearly all g
 ## Gen 1-Only Build Notes
 
 - **Species arrays** (stats, graphics, evolution, learnsets) retain all entries for array-index compatibility; Gen 2/3 data simply goes unreferenced in gameplay.
-- **Designated initializer arrays** (like `sValidApprenticeMoves` in `src/data/battle_frontier/apprentice.h`) cannot have duplicate keys (agbcc errors, gcc warns with `-Woverride-init`) — if adding move references, check for pre-existing entries.
+- **Designated initializer arrays** (like `sValidApprenticeMoves` in `src/data/battle_frontier/apprentice.h`) cannot have duplicate keys (gcc warns with `-Woverride-init`) — if adding move references, check for pre-existing entries.
 - **Tutor bitfields** in `sTutorLearnsets[]` use `TUTOR_MOVE_xxx` slot names (defined in `include/constants/party_menu.h`), never Gen 1 move names directly.
 - The starters are `SPECIES_BULBASAUR`, `SPECIES_CHARMANDER`, `SPECIES_SQUIRTLE` (set in `src/starter_choose.c`).
 - See `GEN1_ONLY_CHANGES.md` for the full replacement mapping reference.
@@ -224,7 +220,7 @@ The game uses a cooperative multitasking system (`include/task.h`). Nearly all g
 ## Working remotely
 
 - **Remote Control (home PC):** sessions started in the Claude desktop app on the PC connect to Remote Control automatically, so they can be driven from the phone or claude.ai/code. The PC must be on and not asleep (the app keeps it awake only while Claude is working). Claude on Windows reaches the repo through the symlink and runs git/make via `wsl.exe` (the WSL rule above). mGBA, GDB and the `gba-debug` GDB tools only work here.
-- **Cloud sessions (claude.ai/code, from GitHub):** the repo is cloned fresh into an Ubuntu container. Set the environment's setup script to `tools/setup-cloud.sh` (it skips agbcc unless `CLASSIC=1`). `make` (modern, apt gcc 13) builds there, and `make classic` too after `CLASSIC=1 tools/setup-cloud.sh`. The headless emulator (`emu_*` tools) runs there too, so agents can boot the ROM, debug and screenshot it; play-feel checks still happen on the PC. Commit and push before the session ends; the container is discarded.
+- **Cloud sessions (claude.ai/code, from GitHub):** the repo is cloned fresh into an Ubuntu container. Set the environment's setup script to `tools/setup-cloud.sh`. `make` (apt gcc 13) builds there. The headless emulator (`emu_*` tools) runs there too, so agents can boot the ROM, debug and screenshot it; play-feel checks still happen on the PC. Commit and push before the session ends; the container is discarded.
 - **MCP servers** (`.mcp.json`): `porymap` (maps, scripts, palettes, builds) and `gba-debug` (headless emulator `emu_*` tools, disassembly, symbols, addr2line, map lookup; its `gdb_*` tools attach to an external mGBA, e.g. the desktop one on the PC). Both run with `node`; `tools/setup-cloud.sh` installs their deps.
 
 ## Agents

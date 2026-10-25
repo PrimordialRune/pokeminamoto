@@ -9,23 +9,9 @@ KEEP_TEMPS  ?= 0
 FILE_NAME := pokeemerald
 BUILD_DIR := build
 
-# Modern arm-none-eabi-gcc is the main build (pokeemerald_modern.gba). The classic
-# agbcc build (pokeemerald.gba) is optional: `make classic` or MODERN=0, after
-# installing agbcc (CLASSIC=1 tools/setup-cloud.sh).
-MODERN      ?= 1
-# Compares the ROM to a checksum of the original - only makes sense using when non-modern
-COMPARE     ?= 0
-
-ifeq (modern,$(MAKECMDGOALS))
-  MODERN := 1
-endif
-ifeq (classic,$(MAKECMDGOALS))
-  MODERN := 0
-endif
-ifeq (compare,$(MAKECMDGOALS))
-  MODERN := 0
-  COMPARE := 1
-endif
+# The only build is arm-none-eabi-gcc (pokeemerald_modern.gba); `make modern` is an
+# alias for `make`.
+MODERN      := 1
 # Release builds leave out the debug menus (see DEBUG_MENUS in include/config.h).
 # They build in their own folder and get a _release suffix, so switching between
 # release and normal builds never mixes objects.
@@ -69,15 +55,7 @@ endif
 # we can't unconditionally use arm-none-eabi-cpp
 # as installations which install binutils-arm-none-eabi
 # don't come with it
-ifneq ($(MODERN),1)
-  ifeq ($(shell uname -s),Darwin)
-    CPP := $(PREFIX)cpp
-  else
-    CPP := $(CC) -E
-  endif
-else
-  CPP := $(PREFIX)cpp
-endif
+CPP := $(PREFIX)cpp
 
 ifeq ($(RELEASE),1)
   RELEASE_SUFFIX := _release
@@ -88,24 +66,8 @@ REGRESS ?= 0
 ifeq ($(REGRESS),1)
   RELEASE_SUFFIX := $(RELEASE_SUFFIX)_regress
 endif
-ROM_NAME := $(FILE_NAME)$(RELEASE_SUFFIX).gba
-OBJ_DIR_NAME := $(BUILD_DIR)/emerald$(RELEASE_SUFFIX)
-MODERN_ROM_NAME := $(FILE_NAME)_modern$(RELEASE_SUFFIX).gba
-MODERN_OBJ_DIR_NAME := $(BUILD_DIR)/modern$(RELEASE_SUFFIX)
-
-ELF_NAME := $(ROM_NAME:.gba=.elf)
-MAP_NAME := $(ROM_NAME:.gba=.map)
-MODERN_ELF_NAME := $(MODERN_ROM_NAME:.gba=.elf)
-MODERN_MAP_NAME := $(MODERN_ROM_NAME:.gba=.map)
-
-# Pick our active variables
-ifeq ($(MODERN),0)
-  ROM := $(ROM_NAME)
-  OBJ_DIR := $(OBJ_DIR_NAME)
-else
-  ROM := $(MODERN_ROM_NAME)
-  OBJ_DIR := $(MODERN_OBJ_DIR_NAME)
-endif
+ROM := $(FILE_NAME)_modern$(RELEASE_SUFFIX).gba
+OBJ_DIR := $(BUILD_DIR)/modern$(RELEASE_SUFFIX)
 ELF := $(ROM:.gba=.elf)
 MAP := $(ROM:.gba=.map)
 SYM := $(ROM:.gba=.sym)
@@ -141,28 +103,25 @@ endif
 ifeq ($(REGRESS),1)
   CPPFLAGS += -DREGRESS_HOOKS
 endif
-ifeq ($(MODERN),0)
-  CPPFLAGS += -I tools/agbcc/include -I tools/agbcc -nostdinc -undef -std=gnu89
-  CC1 := tools/agbcc/bin/agbcc$(EXE)
-  override CFLAGS += -mthumb-interwork -Wimplicit -Wparentheses -Werror -O$(O_LEVEL) -fhex-asm -g
-  LIBPATH := -L ../../tools/agbcc/lib
-  LIB := $(LIBPATH) -lgcc -lc -L../../libagbsyscall -lagbsyscall
-else
-  # Note: The makefile must be set up to not call these if modern == 0
-  # Warnings for the modern build, after pokeemerald-expansion's set. Most are reported
-  # without stopping the build because vanilla code still trips them; the ones listed
-  # with -Werror= are always real bugs, so they fail it.
-  MODERN_WARNINGS := -Wall -Wno-strict-aliasing -Wno-attribute-alias -Woverride-init -Wnonnull -Wenum-conversion \
-                     -Wno-pointer-sign -Wno-missing-braces -Wno-array-parameter \
-                     -Werror=return-type -Werror=implicit-function-declaration -Werror=implicit-int \
-                     -Werror=int-conversion -Werror=incompatible-pointer-types -Werror=parentheses
-  MODERNCC := $(PREFIX)gcc
-  PATH_MODERNCC := PATH="$(PATH)" $(MODERNCC)
-  CC1 := $(shell $(PATH_MODERNCC) --print-prog-name=cc1) -quiet
-  override CFLAGS += -mthumb -mthumb-interwork -O$(O_LEVEL) -mabi=apcs-gnu -mtune=arm7tdmi -march=armv4t -fno-toplevel-reorder -Wno-pointer-to-int-cast $(MODERN_WARNINGS)
-  LIBPATH := -L "$(dir $(shell $(PATH_MODERNCC) -mthumb -print-file-name=libgcc.a))" -L "$(dir $(shell $(PATH_MODERNCC) -mthumb -print-file-name=libnosys.a))" -L "$(dir $(shell $(PATH_MODERNCC) -mthumb -print-file-name=libc.a))"
-  LIB := $(LIBPATH) -lc -lnosys -lgcc -L../../libagbsyscall -lagbsyscall
+# Warnings for the modern build, after pokeemerald-expansion's set. Most are reported
+# without stopping the build because vanilla code still trips them; the ones listed
+# with -Werror= are always real bugs, so they fail it.
+MODERN_WARNINGS := -Wall -Wno-strict-aliasing -Wno-attribute-alias -Woverride-init -Wnonnull -Wenum-conversion \
+                   -Wno-pointer-sign -Wno-missing-braces -Wno-array-parameter \
+                   -Werror=return-type -Werror=implicit-function-declaration -Werror=implicit-int \
+                   -Werror=int-conversion -Werror=incompatible-pointer-types -Werror=parentheses
+# Stricter checks, off until the dead-code deletions land: `make STRICT_WARNINGS=1`
+STRICT_WARNINGS ?= 0
+ifeq ($(STRICT_WARNINGS),1)
+  MODERN_WARNINGS += -Werror=array-bounds
+  CPPFLAGS += -Wundef
 endif
+MODERNCC := $(PREFIX)gcc
+PATH_MODERNCC := PATH="$(PATH)" $(MODERNCC)
+CC1 := $(shell $(PATH_MODERNCC) --print-prog-name=cc1) -quiet
+override CFLAGS += -mthumb -mthumb-interwork -O$(O_LEVEL) -mabi=apcs-gnu -mtune=arm7tdmi -march=armv4t -fno-toplevel-reorder -Wno-pointer-to-int-cast $(MODERN_WARNINGS)
+LIBPATH := -L "$(dir $(shell $(PATH_MODERNCC) -mthumb -print-file-name=libgcc.a))" -L "$(dir $(shell $(PATH_MODERNCC) -mthumb -print-file-name=libnosys.a))" -L "$(dir $(shell $(PATH_MODERNCC) -mthumb -print-file-name=libc.a))"
+LIB := $(LIBPATH) -lc -lnosys -lgcc -L../../libagbsyscall -lagbsyscall
 # Enable debug info if set
 ifeq ($(DINFO),1)
   override CFLAGS += -g
@@ -177,7 +136,6 @@ WAV2AGB   := $(TOOLS_DIR)/wav2agb/wav2agb$(EXE)
 MID       := $(TOOLS_DIR)/mid2agb/mid2agb$(EXE)
 SCANINC   := $(TOOLS_DIR)/scaninc/scaninc$(EXE)
 PREPROC   := $(TOOLS_DIR)/preproc/preproc$(EXE)
-RAMSCRGEN := $(TOOLS_DIR)/ramscrgen/ramscrgen$(EXE)
 FIX       := $(TOOLS_DIR)/gbafix/gbafix$(EXE)
 MAPJSON   := $(TOOLS_DIR)/mapjson/mapjson$(EXE)
 JSONPROC  := $(TOOLS_DIR)/jsonproc/jsonproc$(EXE)
@@ -191,7 +149,6 @@ PORY_SRCS      := $(wildcard data/maps/*/scripts.pory) $(wildcard data/scripts/*
 PORY_INCS      := $(PORY_SRCS:.pory=.inc)
 
 PERL := perl
-SHA1 := $(shell { command -v sha1sum || command -v shasum; } 2>/dev/null) -c
 
 MAKEFLAGS += --no-print-directory
 
@@ -202,8 +159,8 @@ MAKEFLAGS += --no-print-directory
 # Delete files that weren't built properly
 .DELETE_ON_ERROR:
 
-RULES_NO_SCAN += libagbsyscall clean clean-assets tidy tidymodern tidynonmodern generated clean-generated
-.PHONY: all rom modern classic compare release
+RULES_NO_SCAN += libagbsyscall clean clean-assets tidy generated clean-generated
+.PHONY: all rom modern release
 .PHONY: $(RULES_NO_SCAN)
 
 infoshell = $(foreach line, $(shell $1 | sed "s/ /__SPACE__/g"), $(info $(subst __SPACE__, ,$(line))))
@@ -271,15 +228,10 @@ $(shell mkdir -p $(SUBDIRS))
 
 # Pretend rules that are actually flags defer to `make all`
 modern: all
-classic: all
 release: all
-compare: all
 
 # Other rules
 rom: $(ROM)
-ifeq ($(COMPARE),1)
-	@$(SHA1) rom.sha1
-endif
 
 syms: $(SYM)
 
@@ -294,16 +246,10 @@ clean-assets:
 	find . \( -iname '*.1bpp' -o -iname '*.4bpp' -o -iname '*.8bpp' -o -iname '*.gbapal' -o -iname '*.lz' -o -iname '*.rl' -o -iname '*.latfont' -o -iname '*.hwjpnfont' -o -iname '*.fwjpnfont' \) -exec rm {} +
 	find $(DATA_ASM_SUBDIR)/maps \( -iname 'connections.inc' -o -iname 'events.inc' -o -iname 'header.inc' \) -exec rm {} +
 
-tidy: tidynonmodern tidymodern
+tidy:
+	rm -f $(ROM) $(ELF) $(MAP)
+	rm -rf $(OBJ_DIR)
 	@$(if $(PORY_INCS),rm -f $(PORY_INCS))
-
-tidynonmodern:
-	rm -f $(ROM_NAME) $(ELF_NAME) $(MAP_NAME)
-	rm -rf $(OBJ_DIR_NAME)
-
-tidymodern:
-	rm -f $(MODERN_ROM_NAME) $(MODERN_ELF_NAME) $(MODERN_MAP_NAME)
-	rm -rf $(MODERN_OBJ_DIR_NAME)
 
 # Other rules
 include graphics_file_rules.mk
@@ -331,28 +277,19 @@ generated: $(AUTO_GEN_TARGETS)
 %.lz:     %      ; $(GFX) $< $@
 %.rl:     %      ; $(GFX) $< $@
 
-%.inc: %.pory $(PORYSCRIPT_CC) $(PORYSCRIPT_FC)
+# The pinned binary is downloaded on first use (tools/poryscript/fetch.sh)
+$(PORYSCRIPT):
+	@tools/poryscript/fetch.sh
+
+%.inc: %.pory $(PORYSCRIPT_CC) $(PORYSCRIPT_FC) | $(PORYSCRIPT)
 	$(PORYSCRIPT) -i $< -o $@ -cc $(PORYSCRIPT_CC) -fc $(PORYSCRIPT_FC) -lm=false -s LANGUAGE=$(LANGUAGE)
 
 clean-generated:
 	@rm -f $(AUTO_GEN_TARGETS)
 	@echo "rm -f <AUTO_GEN_TARGETS>"
 
-ifeq ($(MODERN),0)
-$(C_BUILDDIR)/libc.o: CC1 := $(TOOLS_DIR)/agbcc/bin/old_agbcc$(EXE)
-$(C_BUILDDIR)/libc.o: CFLAGS := -O2
-$(C_BUILDDIR)/siirtc.o: CFLAGS := -mthumb-interwork
-$(C_BUILDDIR)/agb_flash.o: CFLAGS := -O -mthumb-interwork
-$(C_BUILDDIR)/agb_flash_1m.o: CFLAGS := -O -mthumb-interwork
-$(C_BUILDDIR)/agb_flash_mx.o: CFLAGS := -O -mthumb-interwork
-$(C_BUILDDIR)/m4a.o: CC1 := tools/agbcc/bin/old_agbcc$(EXE)
-$(C_BUILDDIR)/record_mixing.o: CFLAGS += -ffreestanding
-$(C_BUILDDIR)/librfu_intr.o: CC1 := $(TOOLS_DIR)/agbcc/bin/agbcc_arm$(EXE)
-$(C_BUILDDIR)/librfu_intr.o: CFLAGS := -O2 -mthumb-interwork -quiet
-else
 $(C_BUILDDIR)/librfu_intr.o: CFLAGS := -mthumb-interwork -O2 -mabi=apcs-gnu -mtune=arm7tdmi -march=armv4t -fno-toplevel-reorder -Wno-pointer-to-int-cast
 $(C_BUILDDIR)/berry_crush.o: override CFLAGS += -Wno-address-of-packed-member
-endif
 
 # Dependency rules (for the *.c & *.s sources to .o files)
 # Have to be explicit or else missing files won't be reported.
@@ -372,7 +309,7 @@ else
 endif
 
 $(C_BUILDDIR)/%.d: $(C_SUBDIR)/%.c
-	$(SCANINC) -M $@ $(INCLUDE_SCANINC_ARGS) -I tools/agbcc/include $<
+	$(SCANINC) -M $@ $(INCLUDE_SCANINC_ARGS) $<
 
 ifneq ($(NODEP),1)
 -include $(addprefix $(OBJ_DIR)/,$(C_SRCS:.c=.d))
@@ -414,23 +351,8 @@ endif
 # Ensure all .pory sources are compiled to .inc before event_scripts.o is assembled
 $(DATA_ASM_BUILDDIR)/event_scripts.o: $(PORY_INCS)
 
-$(OBJ_DIR)/sym_bss.ld: sym_bss.txt
-	$(RAMSCRGEN) .bss $< ENGLISH > $@
-
-$(OBJ_DIR)/sym_common.ld: sym_common.txt $(C_OBJS) $(wildcard common_syms/*.txt)
-	$(RAMSCRGEN) COMMON $< ENGLISH -c $(C_BUILDDIR),common_syms > $@
-
-$(OBJ_DIR)/sym_ewram.ld: sym_ewram.txt
-	$(RAMSCRGEN) ewram_data $< ENGLISH > $@
-
 # Linker script
-ifeq ($(MODERN),0)
-LD_SCRIPT := ld_script.ld
-LD_SCRIPT_DEPS := $(OBJ_DIR)/sym_bss.ld $(OBJ_DIR)/sym_common.ld $(OBJ_DIR)/sym_ewram.ld
-else
 LD_SCRIPT := ld_script_modern.ld
-LD_SCRIPT_DEPS :=
-endif
 
 # Final rules
 
@@ -438,7 +360,7 @@ endif
 LIBAGBSYSCALL := libagbsyscall/libagbsyscall.a
 libagbsyscall: $(LIBAGBSYSCALL)
 $(LIBAGBSYSCALL): libagbsyscall/libagbsyscall.s libagbsyscall/Makefile
-	@$(MAKE) -C libagbsyscall TOOLCHAIN=$(TOOLCHAIN) MODERN=$(MODERN)
+	@$(MAKE) -C libagbsyscall TOOLCHAIN=$(TOOLCHAIN)
 
 # Elf from object files
 LDFLAGS = -Map ../../$(MAP)
@@ -447,7 +369,7 @@ LDFLAGS = -Map ../../$(MAP)
 MISSING_OBJS := $(filter-out $(wildcard $(OBJS)),$(OBJS))
 .PHONY: FORCE
 FORCE:
-$(ELF): $(LD_SCRIPT) $(LD_SCRIPT_DEPS) $(OBJS) $(LIBAGBSYSCALL) $(if $(MISSING_OBJS),FORCE)
+$(ELF): $(LD_SCRIPT) $(OBJS) $(LIBAGBSYSCALL) $(if $(MISSING_OBJS),FORCE)
 	@cd $(OBJ_DIR) && $(LD) $(LDFLAGS) -T ../../$< --print-memory-usage -o ../../$@ $(OBJS_REL) $(LIB) | cat
 	@echo "cd $(OBJ_DIR) && $(LD) $(LDFLAGS) -T ../../$< --print-memory-usage -o ../../$@ <objs> <libs> | cat"
 	$(FIX) $@ -t"$(TITLE)" -c$(GAME_CODE) -m$(MAKER_CODE) -r$(REVISION) --silent

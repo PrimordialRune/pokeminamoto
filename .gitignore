@@ -46,8 +46,7 @@ tools/porymap-mcp/node_modules/
 !tools/gba-debug-mcp/emu.js
 tools/gba-debug-mcp/node_modules/
 tools/gba-emu/gbaemu
-tools/poryscript/poryscript-linux.zip
-!tools/poryscript/poryscript
+tools/poryscript/poryscript
 !tools/poryscript/font_config.json
 !tools/poryscript/command_config.json
 

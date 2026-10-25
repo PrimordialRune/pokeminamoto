@@ -40,7 +40,6 @@ Tasks are defined in `.vscode/tasks.json`. To run one:
 |------|---------|-------------|
 | `Build debug ROM` | `make modern DINFO=1 O_LEVEL=g` | **Default.** GDB-friendly build — variables visible, breakpoints reliable |
 | `Build and ensure firewall` | parallel: build + firewall check | Use before a debug session after a reboot |
-| `Build classic ROM (agbcc)` | `make classic` | Optional legacy agbcc build → `pokeemerald.gba` (needs agbcc: `CLASSIC=1 tools/setup-cloud.sh`) |
 | `Build modern ROM (release)` | `make modern` | `-O2` optimized, no debug symbols → `pokeemerald_modern.gba` |
 | `Build modern ROM (keep temps)` | `make modern … KEEP_TEMPS=1` | Keeps intermediate `.i` (preprocessed C) and `.s` (assembly) files in `build/modern/src/` for inspection |
 | `Rebuild single file (debug)` | `rm <file>.o && make modern …` | Prompts for a filename stem (e.g. `battle_main`) — deletes that object and rebuilds only it |
@@ -52,9 +51,7 @@ Tasks are defined in `.vscode/tasks.json`. To run one:
 
 | Task | What it removes | Keeps |
 |------|----------------|-------|
-| `Tidy modern build` | `pokeemerald_modern.*` + `build/modern/` | Tools, assets, classic build |
-| `Tidy classic build` | `pokeemerald.*` + `build/emerald/` | Tools, assets, modern build |
-| `Tidy both builds` | Both sets of ROMs + object dirs | Tools, assets |
+| `Tidy modern build` | `pokeemerald_modern.*` + `build/modern/` | Tools, assets |
 | `Clean generated files` | Poryscript/mapjson `.inc` outputs | Everything else |
 | `Clean assets` | Graphics/audio binaries (`.4bpp`, `.gbapal`, `.lz`, etc.) | Tools, objects — **slow to regenerate** |
 | `Full clean (tools + objects + assets)` | Everything | Nothing — next build recompiles tools too |
@@ -64,7 +61,6 @@ Tasks are defined in `.vscode/tasks.json`. To run one:
 | Task | What it does |
 |------|-------------|
 | `Ensure WSL firewall rule` | Checks WSL inbound firewall rule; runs automatically on F5 |
-| `Compare ROM sha1` | Builds classic ROM and verifies SHA1 — only meaningful on unmodified pokeemerald code |
 | `Launch mGBA (play-test, no debug)` | Opens `pokeemerald_modern.gba` in mGBA without GDB — silent, no terminal clutter |
 
 ---
@@ -230,10 +226,8 @@ Run these in the integrated terminal (`Ctrl+\``):
 ```bash
 make -j$(nproc)                              # Main build: modern ROM (release) → pokeemerald_modern.gba
 make modern -j$(nproc)                       # Same (alias)
-make classic -j$(nproc)                      # Optional classic ROM (agbcc) → pokeemerald.gba
 make modern DINFO=1 O_LEVEL=g -j$(nproc)    # Debug ROM for GDB (what Ctrl+Shift+B does)
 make tidy                                    # Remove build outputs, keep tools/assets
-make tidymodern                              # Remove only modern build outputs
 make clean                                   # Full clean including tools and assets
 make modern syms                             # Generate pokeemerald_modern.sym symbol table
 make generated                               # Regenerate poryscript/mapjson outputs

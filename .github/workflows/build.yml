@@ -31,28 +31,12 @@ jobs:
           path: pokeemerald_modern.gba
           retention-days: 14
 
-  # The agbcc build is optional now; this job reports whether it still compiles
-  # but never blocks a merge.
-  classic:
+  # gamedata.py reads the C sources with regexes; fail if a refactor makes it parse less
+  balance:
     runs-on: ubuntu-latest
-    continue-on-error: true
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # agbcc is pinned in setup-cloud.sh; the cache key follows that pin
-      - name: Read agbcc pin
-        id: agbcc
-        run: echo "commit=$(sed -n 's/^AGBCC_COMMIT=//p' tools/setup-cloud.sh)" >> "$GITHUB_OUTPUT"
-
-      - name: Cache agbcc
-        uses: actions/cache@v4
-        with:
-          path: tools/agbcc
-          key: agbcc-${{ runner.os }}-${{ steps.agbcc.outputs.commit }}
-
-      - name: Install toolchain and agbcc
-        run: LEAN=1 CLASSIC=1 bash tools/setup-cloud.sh
-
-      - name: Build classic (agbcc)
-        run: make classic -j$(nproc)
+      - name: Balance model still parses the sources
+        run: python3 tools/balance/test_gamedata.py

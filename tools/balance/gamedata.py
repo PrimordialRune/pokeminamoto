@@ -146,10 +146,13 @@ class GameData:
     def _load_type_chart(self):
         text = _read("src/battle_main.c")
         body = text[text.index("gTypeEffectiveness["):]
-        body = body[:body.index("TYPE_FORESIGHT")]
+        # The rows after TYPE_FORESIGHT (Normal/Fighting vs Ghost) are immunities that only
+        # Foresight lifts, so they count; the table ends at TYPE_ENDTABLE.
+        body = re.sub(r"//.*|/\*.*?\*/", "", body[:body.index("TYPE_ENDTABLE")], flags=re.S)
         mul = {"NO_EFFECT": 0, "NOT_EFFECTIVE": 5, "SUPER_EFFECTIVE": 20}
         for atk, dfn, m in re.findall(r"TYPE_(\w+),\s*TYPE_(\w+),\s*TYPE_MUL_(\w+)", body):
-            self.type_chart[(atk, dfn)] = mul[m]
+            if atk != "FORESIGHT":
+                self.type_chart[(atk, dfn)] = mul[m]
 
     # Minamoto names the Notion species table lacks (it has 180 rows with betas, not every ROM species)
     EXTRA_ALIASES = {"ONISUZUME": "SPEAROW"}
