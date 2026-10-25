@@ -12,6 +12,7 @@
  * Commands: see tools/gba-emu/README.md or send "help".
  */
 #include <mgba/flags.h>
+#include <mgba/core/blip_buf.h>
 #include <mgba/core/core.h>
 #include <mgba/core/config.h>
 #include <mgba/core/serialize.h>
@@ -199,20 +200,85 @@ static bool gdbConnected(void) {
 }
 
 /* Run until `frames` frames have elapsed or the debugger stops. */
+/* audio <file>: append the sound output to <file> as raw signed 16-bit
+ * little-endian stereo at AUDIO_RATE Hz until "audio off" (ffmpeg -f s16le
+ * -ar 32768 -ac 2 -i <file>). Emulated time drives it, so it stays in sync
+ * with screenshots taken every frame. */
+#define AUDIO_RATE 32768
+static FILE* audioOut;
+static unsigned long long audioFrames;
+
+static void drainAudio(void) {
+	if (!core) {
+		return;
+	}
+	struct blip_t* left = core->getAudioChannel(core, 0);
+	struct blip_t* right = core->getAudioChannel(core, 1);
+	short buf[2 * 512];
+	int avail;
+	while ((avail = blip_samples_avail(left)) > 0) {
+		if (avail > 512) {
+			avail = 512;
+		}
+		blip_read_samples(left, buf, avail, 1);
+		blip_read_samples(right, buf + 1, avail, 1);
+		if (audioOut) {
+			fwrite(buf, sizeof(short) * 2, avail, audioOut);
+			audioFrames += avail;
+		}
+	}
+}
+
 static void runFrames(uint32_t frames) {
 	struct mDebugger* d = &stub->d;
 	uint32_t target = core->frameCounter(core) + frames;
+	unsigned steps = 0;
 	lastStop.hit = false;
 	d->state = DEBUGGER_RUNNING;
 	while (!lastStop.hit && (int32_t) (core->frameCounter(core) - target) < 0) {
 		if (d->platform->hasBreakpoints(d->platform)) {
 			core->step(core);
 			d->platform->checkBreakpoints(d->platform);
+			if (audioOut && !(++steps & 1023)) {
+				drainAudio();
+			}
 		} else {
 			core->runLoop(core);
+			if (audioOut) {
+				drainAudio();
+			}
 		}
 	}
 	d->state = DEBUGGER_PAUSED;
+}
+
+static bool needCore(void);
+
+static void cmdAudio(const char* args) {
+	if (!needCore()) {
+		return;
+	}
+	if (audioOut) {
+		drainAudio();
+		fclose(audioOut);
+		audioOut = NULL;
+	}
+	if (!*args || !strcmp(args, "off")) {
+		reply("{\"ok\":true,\"samples\":%llu,\"rate\":%d}", audioFrames, AUDIO_RATE);
+		return;
+	}
+	audioOut = fopen(args, "wb");
+	if (!audioOut) {
+		replyError("cannot write %s", args);
+		return;
+	}
+	audioFrames = 0;
+	for (int ch = 0; ch < 2; ++ch) {
+		struct blip_t* b = core->getAudioChannel(core, ch);
+		blip_set_rates(b, core->frequency(core), AUDIO_RATE);
+		blip_clear(b);
+	}
+	reply("{\"ok\":true,\"rate\":%d}", AUDIO_RATE);
 }
 
 static void stopJson(char* out, size_t len) {
@@ -293,6 +359,7 @@ static void cmdLoad(const char* path) {
 	mCoreConfigSetOverrideIntValue(&c->config, "skipBios", 1);
 	mCoreConfigSetOverrideIntValue(&c->config, "audioSync", 0);
 	mCoreConfigSetOverrideIntValue(&c->config, "videoSync", 0);
+	mCoreConfigSetOverrideIntValue(&c->config, "volume", 0x100); /* full volume for "audio" captures */
 	mCoreLoadConfig(c);
 	c->setVideoBuffer(c, videoBuffer, VIDEO_STRIDE);
 	c->setAudioBufferSize(c, 2048);
@@ -783,7 +850,7 @@ static void cmdLog(void) {
 static void cmdHelp(void) {
 	reply("{\"ok\":true,\"commands\":\"load <rom> | reset | loadsav <file> | dumpsav <file> | run [frames] | step [n] | regs | "
 	      "read <addr> <len> | write <addr> <hex> | keys <mask> | break <addr> | watch <addr> [w|r|rw|c] | "
-	      "profile <frames> <file> | delete <id> | list | screenshot <png> | savestate <file> | loadstate <file> [keepsave] | gdb [port] | "
+	      "profile <frames> <file> | delete <id> | list | screenshot <png> | audio <raw>|off | savestate <file> | loadstate <file> [keepsave] | gdb [port] | "
 	      "gdbframes <n> | scale <1-4> | log | info | quit\"}");
 }
 
@@ -821,6 +888,7 @@ static bool dispatch(char* line) {
 	else if (!strcmp(line, "delete")) cmdDelete(args);
 	else if (!strcmp(line, "list")) cmdList();
 	else if (!strcmp(line, "screenshot")) cmdScreenshot(args);
+	else if (!strcmp(line, "audio")) cmdAudio(args);
 	else if (!strcmp(line, "savestate")) cmdSaveState(args);
 	else if (!strcmp(line, "loadstate")) cmdLoadState(args);
 	else if (!strcmp(line, "gdb")) cmdGdb(args);
