@@ -646,3 +646,39 @@ $(SPINDAGFXDIR)/spot_2.1bpp: %.1bpp: %.png
 
 $(SPINDAGFXDIR)/spot_3.1bpp: %.1bpp: %.png
 	$(GFX) $< $@ -plain -data_width 2
+
+# FireRed/LeafGreen intro (Game Freak star, Gengar vs Nidorino), ported from pret/pokefirered
+FRLGINTROGFXDIR := graphics/intro/frlg
+
+$(FRLGINTROGFXDIR)/scene_1/grass.4bpp: %.4bpp: %.png
+	$(GFX) $< $@ -num_tiles 397 -Wnum_tiles
+
+$(FRLGINTROGFXDIR)/scene_2/plants.4bpp: %.4bpp: %.png
+	$(GFX) $< $@ -num_tiles 17 -Wnum_tiles
+
+$(FRLGINTROGFXDIR)/scene_2/nidorino_close.4bpp: %.4bpp: %.png
+	$(GFX) $< $@ -num_tiles 170 -Wnum_tiles
+
+$(FRLGINTROGFXDIR)/scene_2/gengar_close.4bpp: %.4bpp: %.png
+	$(GFX) $< $@ -num_tiles 114 -Wnum_tiles
+
+$(FRLGINTROGFXDIR)/scene_3/gengar_anim.4bpp: %.4bpp: %.png
+	$(GFX) $< $@ -num_tiles 348 -Wnum_tiles
+
+# Title logo: tools/intro_devamp/src/logo.png (edit this one) is cut into tiles,
+# tilemap and palette. Without Pillow the committed files are kept as they are.
+graphics/title_screen/%/game_title_logo.png graphics/title_screen/%/game_title_logo.bin graphics/title_screen/%/game_title_logo.pal: tools/intro_devamp/src/logo.png tools/intro_devamp/title_logo.py
+	@if python3 -c "import PIL" 2>/dev/null; then python3 tools/intro_devamp/title_logo.py --out graphics/title_screen/$*; \
+	else echo "title logo: Pillow missing (pip install pillow), keeping the committed graphics/title_screen/$*/game_title_logo.*"; \
+	touch $(addprefix graphics/title_screen/$*/game_title_logo.,png bin pal); fi
+
+# Minamoto title: paper, PRESS START and sketch pages from tools/intro_devamp/src/title/
+# (title_minamoto.py). Without Pillow the committed files are kept as they are.
+TITLE_MIN_FILES := $(foreach n,paper_sketchbook paper_flipbook,$(n).png $(n).bin $(n).pal) \
+                   $(foreach n,press_start_sketchbook press_start_flipbook,$(n).bin $(n).pal) \
+                   sketch_sketchbook.pal sketch_flipbook.pal sketch_sketchbook_ghost.pal sketch_flipbook_ghost.pal \
+                   $(foreach n,sketchbook_1 sketchbook_2 sketchbook_3 sketchbook_4 sketchbook_5 flipbook_1 flipbook_2,$(foreach f,a b,sketch_$(n)_$(f).png sketch_$(n)_$(f).bin))
+$(foreach f,$(TITLE_MIN_FILES),graphics/title_screen/%/$(f)): $(wildcard tools/intro_devamp/src/title/*.png) tools/intro_devamp/title_minamoto.py
+	@if python3 -c "import PIL" 2>/dev/null; then python3 tools/intro_devamp/title_minamoto.py --out graphics/title_screen/$*; \
+	else echo "title art: Pillow missing (pip install pillow), keeping the committed graphics/title_screen/$*/ files"; \
+	touch $(addprefix graphics/title_screen/$*/,$(TITLE_MIN_FILES)); fi
