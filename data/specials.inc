@@ -327,3 +327,11 @@ gSpecials::
 	def_special CloseDeptStoreElevatorWindow
 	def_special TrySetBattleTowerLinkType
 	def_special AddCharisma
+	def_special RestPlayerParty
+	def_special GetCharismaTier
+	def_special CheckHourWindow
+	def_special GetTimeOfDayForScript
+	def_special ShowObjectDuringHours
+	def_special ShowObjectDuringTimeOfDay
+	def_special IsInnRoomOpen
+	def_special InnRest

@@ -680,7 +680,7 @@ void Regress_OverworldTick(void)
         Dump();
         break;
     case REGRESS_CMD_HEAL:
-        HealPlayerParty();
+        RestPlayerParty();
         break;
     case REGRESS_CMD_TV:
         FlagSet(FLAG_SYS_TV_START);

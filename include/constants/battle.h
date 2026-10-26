@@ -49,11 +49,12 @@ enum BattlerId
 #define B_SIDE_OPPONENT   1
 #define NUM_BATTLE_SIDES  2
 
-// Technical Points (TP) replace PP in battle. Every mon starts each battle at TP_MAX,
-// pays a move's tpCost to use it and regains TP_REGEN_BASE + INT / TP_REGEN_INT_DIVISOR at the end of each turn.
-#define TP_MAX                 100
-#define TP_REGEN_BASE          5
-#define TP_REGEN_INT_DIVISOR   8
+// Technical Points (TP) replace PP in battle. A party mon's TP persists between battles
+// (MON_DATA_SAVED_TP) and only refills when the player rests at an inn; foes start at TP_MAX.
+// A mon pays a move's tpCost to use it and regains TP_REGEN_BASE + INT / TP_REGEN_INT_DIVISOR
+// at the end of each turn (balance model FINDINGS section 10).
+// TP_MAX, TP_REGEN_BASE, TP_REGEN_INT_DIVISOR: baked from tools/balance/tp_model.json
+#include "constants/tp_model.h"
 
 #define B_FLANK_LEFT  0
 #define B_FLANK_RIGHT 1

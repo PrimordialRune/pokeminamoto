@@ -15,6 +15,7 @@
 #include "constants/cable_club.h"
 #include "constants/coins.h"
 #include "constants/contest.h"
+#include "constants/day_night.h"
 #include "constants/daycare.h"
 #include "constants/decorations.h"
 #include "constants/easy_chat.h"
@@ -47,6 +48,7 @@
 #include "constants/species.h"
 #include "constants/trade.h"
 #include "constants/trainers.h"
+#include "constants/town_life.h"
 #include "constants/tv.h"
 #include "constants/vars.h"
 #include "constants/weather.h"
@@ -194,6 +196,7 @@ EventScript_SetBrineyLocation_Route109::
 	return
 
 	.include "data/scripts/pkmn_center_nurse.inc"
+	.include "data/scripts/inn.inc"
 	.include "data/scripts/obtain_item.inc"
 	.include "data/scripts/pc.inc"
 
@@ -252,7 +255,7 @@ Common_EventScript_OutOfCenterPartyHeal::
 	fadescreen FADE_TO_BLACK
 	playfanfare MUS_HEAL
 	waitfanfare
-	special HealPlayerParty
+	special RestPlayerParty
 	fadescreen FADE_FROM_BLACK
 	return
 

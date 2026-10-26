@@ -1,0 +1,8 @@
+{
+  "_comment": "TP rules the ROM ships, picked from the balance model (FINDINGS section 10). Edit here, then run `python3 tools/balance/costcurve.py --write` to bake them into include/constants/tp_model.h and the .tpCost of every move in src/data/moves_info.h. `make check` fails if the ROM is out of sync. engine.Rules uses these as its defaults.",
+  "tp_max": 100,
+  "tp_regen_base": 3,
+  "tp_int_div": 32,
+  "curve_base": 1.0,
+  "curve_k": 0.13
+}

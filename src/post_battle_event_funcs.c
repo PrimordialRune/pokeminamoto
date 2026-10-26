@@ -13,7 +13,7 @@ int GameClear(void)
     int i;
     bool32 ribbonGet;
 
-    HealPlayerParty();
+    RestPlayerParty();
 
     if (FlagGet(FLAG_SYS_GAME_CLEAR) == TRUE)
     {

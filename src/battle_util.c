@@ -3866,6 +3866,13 @@ u8 IsMonDisobedient(void)
     }
 }
 
+// TP persists between the player's own battles. Link and Frontier battles use a
+// party that isn't the player's to keep, so they start full and don't write back.
+static bool32 BattleUsesSavedTP(void)
+{
+    return !(gBattleTypeFlags & (BATTLE_TYPE_LINK | BATTLE_TYPE_FRONTIER));
+}
+
 void InitBattleTP(void)
 {
     s32 side, i;
@@ -3874,6 +3881,28 @@ void InitBattleTP(void)
     {
         for (i = 0; i < PARTY_SIZE; i++)
             gBattleStruct->tp[side][i] = TP_MAX;
+    }
+    if (BattleUsesSavedTP())
+    {
+        for (i = 0; i < PARTY_SIZE; i++)
+            gBattleStruct->tp[B_SIDE_PLAYER][i] = GetMonData(&gPlayerParty[i], MON_DATA_SAVED_TP);
+    }
+}
+
+// End of battle: the party keeps the TP it has left (a mon caught this battle
+// sits in a slot that started at TP_MAX).
+void SaveBattleTP(void)
+{
+    s32 i;
+
+    if (!BattleUsesSavedTP())
+        return;
+    for (i = 0; i < PARTY_SIZE; i++)
+    {
+        u8 tp = gBattleStruct->tp[B_SIDE_PLAYER][i];
+
+        if (GetMonData(&gPlayerParty[i], MON_DATA_SPECIES) != SPECIES_NONE)
+            SetMonData(&gPlayerParty[i], MON_DATA_SAVED_TP, &tp);
     }
 }
 
