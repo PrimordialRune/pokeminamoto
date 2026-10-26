@@ -150,11 +150,19 @@ struct SaveMigration
     SaveMigrationFunc migrate;
 };
 
+// Version 2 appended foeBattleCounts to SaveBlock2, which sits at the start of
+// sector 0 and fits in what the sector had spare. Nothing moved, so the
+// counts only need to start at zero.
+static bool8 MigrateSave_1To2(u8 *image)
+{
+    memset(&image[SECTOR_ID_SAVEBLOCK2 * SECTOR_DATA_SIZE + offsetof(struct SaveBlock2, foeBattleCounts)],
+           0, FOE_BATTLE_COUNT_BYTES);
+    return TRUE;
+}
+
 static const struct SaveMigration sSaveMigrations[] =
 {
-    // Version 1 is the first versioned layout, so there is nothing to migrate yet.
-    // { .fromVersion = 1, .fromLayoutHash = 0x...., .migrate = MigrateSave_1To2 },
-    { .fromVersion = 0, .fromLayoutHash = 0, .migrate = NULL },
+    { .fromVersion = 1, .fromLayoutHash = 0x2C45, .migrate = MigrateSave_1To2 },
 };
 
 #define SAVE_MIGRATION_IMAGE_SIZE (NUM_SECTORS_PER_SLOT * SECTOR_DATA_SIZE)

@@ -5,11 +5,13 @@
 #include "battle_arena.h"
 #include "battle_controllers.h"
 #include "battle_interface.h"
+#include "battle_foe_info.h"
 #include "battle_main.h"
 #include "battle_message.h"
 #include "battle_pyramid.h"
 #include "battle_scripts.h"
 #include "battle_setup.h"
+#include "battle_talk.h"
 #include "battle_tower.h"
 #include "battle_util.h"
 #include "berry.h"
@@ -2944,6 +2946,7 @@ static void BattleIntroDrawTrainersOrMonsSprites(void)
                                       | BATTLE_TYPE_LINK)))
             {
                 HandleSetPokedexFlag(SpeciesToNationalPokedexNum(gBattleMons[gActiveBattler].species), FLAG_SET_SEEN, gBattleMons[gActiveBattler].personality);
+                RecordFoeBattled(gActiveBattler);
             }
         }
         else
@@ -2954,6 +2957,7 @@ static void BattleIntroDrawTrainersOrMonsSprites(void)
                                       | BATTLE_TYPE_LINK)))
                 {
                     HandleSetPokedexFlag(SpeciesToNationalPokedexNum(gBattleMons[gActiveBattler].species), FLAG_SET_SEEN, gBattleMons[gActiveBattler].personality);
+                    RecordFoeBattled(gActiveBattler);
                 }
                 BtlController_EmitLoadMonSprite(B_COMM_TO_CONTROLLER);
                 MarkBattlerForControllerExec(gActiveBattler);
@@ -3143,6 +3147,7 @@ static void BattleIntroRecordMonsToDex(void)
                                       | BATTLE_TYPE_LINK)))
             {
                 HandleSetPokedexFlag(SpeciesToNationalPokedexNum(gBattleMons[gActiveBattler].species), FLAG_SET_SEEN, gBattleMons[gActiveBattler].personality);
+                RecordFoeBattled(gActiveBattler);
             }
         }
         gBattleMainFunc = BattleIntroPrintPlayerSendsOut;
@@ -3607,7 +3612,7 @@ static void HandleTurnActionSelectionState(void)
                         for (i = 0; i < MAX_MON_MOVES; i++)
                         {
                             moveInfo.moves[i] = gBattleMons[gActiveBattler].moves[i];
-                            moveInfo.tpCost[i] = GetMoveTPCost(gBattleMons[gActiveBattler].moves[i]);
+                            moveInfo.tpCost[i] = GetBattlerMoveTPCost(gActiveBattler, gBattleMons[gActiveBattler].moves[i]);
                         }
                         moveInfo.currentTp = GetBattlerTP(gActiveBattler);
 
@@ -4007,6 +4012,12 @@ u8 GetWhoStrikesFirst(u8 battler1, u8 battler2, bool8 ignoreChosenMoves)
         speedBattler2 /= 4;
 
     if (holdEffect == HOLD_EFFECT_QUICK_CLAW && gRandomTurnNumber < (0xFFFF * holdEffectParam) / 100)
+        speedBattler2 = UINT_MAX;
+
+    // A Resolute trainer's mons move first (move priority still goes before this)
+    if (GetBattlerTrainerState(battler1) == TRAINER_STATE_RESOLUTE)
+        speedBattler1 = UINT_MAX;
+    if (GetBattlerTrainerState(battler2) == TRAINER_STATE_RESOLUTE)
         speedBattler2 = UINT_MAX;
 
     if (ignoreChosenMoves)

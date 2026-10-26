@@ -7,6 +7,7 @@
 #include "battle_message.h"
 #include "battle_interface.h"
 #include "battle_setup.h"
+#include "battle_talk.h"
 #include "battle_tower.h"
 #include "bg.h"
 #include "data.h"
@@ -1407,7 +1408,9 @@ static void OpponentHandleChooseMove(void)
         u8 chosenMoveId;
         struct ChooseMoveStruct *moveInfo = (struct ChooseMoveStruct *)(&gBattleBufferA[gActiveBattler][4]);
 
-        if (gBattleTypeFlags & (BATTLE_TYPE_TRAINER | BATTLE_TYPE_FIRST_BATTLE | BATTLE_TYPE_SAFARI | BATTLE_TYPE_ROAMER))
+        // A Panicking trainer ignores its AI and picks a move at random, below
+        if (gBattleTypeFlags & (BATTLE_TYPE_TRAINER | BATTLE_TYPE_FIRST_BATTLE | BATTLE_TYPE_SAFARI | BATTLE_TYPE_ROAMER)
+         && GetBattlerTrainerState(gActiveBattler) != TRAINER_STATE_PANIC)
         {
 
             BattleAI_SetupAIData(ALL_MOVES_MASK);
