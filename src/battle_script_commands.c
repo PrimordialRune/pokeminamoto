@@ -13,6 +13,7 @@
 #include "battle_interface.h"
 #include "text.h"
 #include "sound.h"
+#include "special_move.h"
 #include "pokedex.h"
 #include "window.h"
 #include "reshow_battle_screen.h"
@@ -729,6 +730,7 @@ static const u16 sMovesForbiddenToCopy[] =
     MOVE_STRUGGLE,
     MOVE_SKETCH,
     MOVE_MIMIC,
+    MOVE_FLAME_CLAWS, // Specials belong to their species line
     MIMIC_FORBIDDEN_END,
     MOVE_COUNTER,
     MOVE_MIRROR_COAT,
@@ -1224,7 +1226,7 @@ static void Cmd_ppreduce(void)
     // PP is no longer spent in battle.
     if (!(gHitMarker & (HITMARKER_NO_TPDEDUCT | HITMARKER_NO_ATTACKSTRING)) && gCurrentMove != MOVE_STRUGGLE)
     {
-        s32 tpToSpend = GetBattlerMoveTPCost(gBattlerAttacker, gBattleMons[gBattlerAttacker].moves[gCurrMovePos]) * ppToDeduct;
+        s32 tpToSpend = GetBattlerMoveTPCost(gBattlerAttacker, GetBattlerMoveAtPos(gBattlerAttacker, gCurrMovePos)) * ppToDeduct;
 
         gProtectStructs[gBattlerAttacker].notFirstStrike = 1;
         if (tpToSpend > TP_MAX)
@@ -2973,6 +2975,7 @@ static void Cmd_tryfaintmon(void)
             {
                 if (gBattleResults.opponentFaintCounter < 255)
                     gBattleResults.opponentFaintCounter++;
+                SpecialMove_OnFoeFainted(gActiveBattler);
                 gBattleResults.lastOpponentSpecies = GetMonData(&gEnemyParty[gBattlerPartyIndexes[gActiveBattler]], MON_DATA_SPECIES, NULL);
             }
             if ((gHitMarker & HITMARKER_DESTINYBOND) && gBattleMons[gBattlerAttacker].hp != 0)
@@ -6383,6 +6386,22 @@ static void Cmd_various(void)
         BtlController_EmitPlayFanfareOrBGM(B_COMM_TO_CONTROLLER, MUS_VICTORY_TRAINER, TRUE);
         MarkBattlerForControllerExec(gActiveBattler);
         break;
+    case VARIOUS_TRY_AWAKEN_SPECIAL:
+    {
+        s32 partyId = SpecialMove_TryAwakenNext();
+
+        if (partyId < 0)
+        {
+            gBattlescriptCurrInstr = T1_READ_PTR(gBattlescriptCurrInstr + 3);
+        }
+        else
+        {
+            PREPARE_MON_NICK_BUFFER(gBattleTextBuff1, GetBattlerAtPosition(B_POSITION_PLAYER_LEFT), partyId);
+            PREPARE_MOVE_BUFFER(gBattleTextBuff2, GetMonSpecialMove(&gPlayerParty[partyId]));
+            gBattlescriptCurrInstr += 7;
+        }
+        return;
+    }
     }
 
     gBattlescriptCurrInstr += 3;

@@ -42,6 +42,8 @@ enum
     REGRESS_SCENE_SAVE_LINK,       // TrySavingData(SAVE_LINK)
     REGRESS_SCENE_TOWN_MAP,      // the wall Town Map (FieldShowRegionMap)
     REGRESS_SCENE_FLY_MAP,       // the Fly map
+    REGRESS_SCENE_SPECIAL_MON,   // party slot 1 becomes a Lv 20 Charmander one deed short of its Special
+    REGRESS_SCENE_WILD_GEODUDE,  // wild battle against a Lv 8 Geodude (a Rock foe, a deed for Charmander)
 };
 
 #define REGRESS_MAGIC 0x53524752 // "RGRS"

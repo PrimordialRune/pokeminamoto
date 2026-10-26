@@ -1276,6 +1276,10 @@ static const u8 sOverheatDescription[] = _(
     "Allows a full-power attack,\n"
     "but sharply lowers SP. ATK.");
 
+static const u8 sFlameClawsDescription[] = _(
+    "Rakes the foe with blazing\n"
+    "claws. May cause a burn.");
+
 static const u8 sOdorSleuthDescription[] = _(
     "Negates the foe's efforts\n"
     "to heighten evasiveness.");
@@ -6757,5 +6761,24 @@ const struct MoveInfo gMovesInfo[MOVES_COUNT] =
         .priority = 0,
         .flags = FLAG_PROTECT_AFFECTED | FLAG_MIRROR_MOVE_AFFECTED | FLAG_KINGS_ROCK_AFFECTED,
         .description = sPsychoBoostDescription,
+    },
+
+    // Specials: one per species line, used from the Special page of the FIGHT menu
+    // (gSpecialMoves in src/data/pokemon/special_moves.h). Placeholder numbers:
+    // 40-50 TP per the balance model (FINDINGS section 10).
+    [MOVE_FLAME_CLAWS] =
+    {
+        .name = _("FLAME CLAWS"),
+        .effect = EFFECT_BURN_HIT,
+        .power = 90,
+        .type = TYPE_FIRE,
+        .accuracy = 100,
+        .tpCost = 45,
+        .secondaryEffectChance = 30,
+        .target = MOVE_TARGET_SELECTED,
+        .priority = 0,
+        .flags = FLAG_MAKES_CONTACT | FLAG_PROTECT_AFFECTED | FLAG_KINGS_ROCK_AFFECTED,
+        .signatureSpecies = SPECIES_CHARMANDER,
+        .description = sFlameClawsDescription,
     },
 };

@@ -40,6 +40,7 @@
 #include "safari_zone.h"
 #include "scanline_effect.h"
 #include "sound.h"
+#include "special_move.h"
 #include "sprite.h"
 #include "string_util.h"
 #include "strings.h"
@@ -3785,7 +3786,7 @@ static void HandleTurnActionSelectionState(void)
                         else
                         {
                             *(gBattleStruct->chosenMovePositions + gActiveBattler) = gBattleBufferB[gActiveBattler][2];
-                            gChosenMoveByBattler[gActiveBattler] = gBattleMons[gActiveBattler].moves[*(gBattleStruct->chosenMovePositions + gActiveBattler)];
+                            gChosenMoveByBattler[gActiveBattler] = GetBattlerMoveAtPos(gActiveBattler, *(gBattleStruct->chosenMovePositions + gActiveBattler));
                             *(gBattleStruct->moveTarget + gActiveBattler) = gBattleBufferB[gActiveBattler][3];
                             gBattleCommunication[gActiveBattler]++;
                         }
@@ -4052,7 +4053,7 @@ u8 GetWhoStrikesFirst(u8 battler1, u8 battler2, bool8 ignoreChosenMoves)
             if (gProtectStructs[battler1].noValidMoves)
                 moveBattler1 = MOVE_STRUGGLE;
             else
-                moveBattler1 = gBattleMons[battler1].moves[*(gBattleStruct->chosenMovePositions + battler1)];
+                moveBattler1 = GetBattlerMoveAtPos(battler1, *(gBattleStruct->chosenMovePositions + battler1));
         }
         else
         {
@@ -4064,7 +4065,7 @@ u8 GetWhoStrikesFirst(u8 battler1, u8 battler2, bool8 ignoreChosenMoves)
             if (gProtectStructs[battler2].noValidMoves)
                 moveBattler2 = MOVE_STRUGGLE;
             else
-                moveBattler2 = gBattleMons[battler2].moves[*(gBattleStruct->chosenMovePositions + battler2)];
+                moveBattler2 = GetBattlerMoveAtPos(battler2, *(gBattleStruct->chosenMovePositions + battler2));
         }
         else
         {
@@ -4313,6 +4314,9 @@ static void RunTurnActionsFunctions(void)
 static void HandleEndTurn_BattleWon(void)
 {
     gCurrentActionFuncId = 0;
+
+    if (!(gBattleTypeFlags & BATTLE_TYPE_LINK))
+        SpecialMove_OnBattleWon();
 
     if (gBattleTypeFlags & BATTLE_TYPE_LINK)
     {

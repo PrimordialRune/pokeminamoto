@@ -14,6 +14,7 @@
 #include "battle_util2.h"
 #include "pokemon.h"
 #include "random.h"
+#include "special_move.h"
 #include "string_util.h"
 #include "constants/battle.h"
 #include "constants/moves.h"
@@ -632,6 +633,32 @@ static void Test_PartyMonCopyKeepsData(void)
     ASSERT_EQ(GetMonData(&a, MON_DATA_LEVEL), 42);
 }
 
+// Evolution sets the species with SetMonData and nothing else, so the Special's per-mon
+// awakened bit and progress carry over, and the Special itself comes from the new species
+static void Test_SpecialSurvivesEvolution(void)
+{
+    struct Pokemon mon;
+    u16 species = SPECIES_CHARMELEON;
+    u8 progress = 3, awakened = TRUE;
+
+    MakeCharmander(&mon, 16);
+    ASSERT_EQ(GetMonData(&mon, MON_DATA_SPECIAL_AWAKENED), FALSE);
+    ASSERT_EQ(GetMonData(&mon, MON_DATA_SPECIAL_PROGRESS), 0);
+    ASSERT_EQ(IsMonSpecialAwakened(&mon), FALSE);
+    SetMonData(&mon, MON_DATA_SPECIAL_PROGRESS, &progress);
+    SetMonData(&mon, MON_DATA_SPECIAL_AWAKENED, &awakened);
+    SetMonData(&mon, MON_DATA_SPECIES, &species);
+    CalculateMonStats(&mon);
+    ASSERT_EQ(GetMonData(&mon, MON_DATA_SPECIES), SPECIES_CHARMELEON);
+    ASSERT_EQ(GetMonData(&mon, MON_DATA_SPECIAL_PROGRESS), 3);
+    ASSERT_EQ(IsMonSpecialAwakened(&mon), TRUE);
+    ASSERT_EQ(GetMonSpecialMove(&mon), MOVE_FLAME_CLAWS);
+    // A species with no Special yet stays sealed whatever its bit says
+    species = SPECIES_BULBASAUR;
+    SetMonData(&mon, MON_DATA_SPECIES, &species);
+    ASSERT_EQ(IsMonSpecialAwakened(&mon), FALSE);
+}
+
 static void Test_MonGenderAndNature(void)
 {
     struct Pokemon mon;
@@ -706,6 +733,7 @@ const struct TestCase gPureTests[] =
     {"boxmon_corruption_detected",   Test_BoxMonCorruptionDetected},
     {"mon_copy_independent",         Test_PartyMonCopyKeepsData},
     {"mon_gender_nature",            Test_MonGenderAndNature},
+    {"special_survives_evolution",   Test_SpecialSurvivesEvolution},
     {"string_util",                  Test_StringUtil},
 };
 

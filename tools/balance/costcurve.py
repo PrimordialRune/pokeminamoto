@@ -76,11 +76,13 @@ def curve_cost(m, base, k):
 
 
 def baked_moves_info(d, base, k):
-    """src/data/moves_info.h with every .tpCost set from the curve."""
+    """src/data/moves_info.h with every .tpCost set from the curve, except the Specials'."""
     text = open(os.path.join(ROOT, "src", "data", "moves_info.h")).read()
 
     def repl(match):
         name, body = match.group(1), match.group(2)
+        if ".signatureSpecies" in body:
+            return match.group(0)  # Specials keep their hand-set cost (40-50 TP, FINDINGS section 10)
         cost = 0 if name in ("NONE", "STRUGGLE") else curve_cost(d.moves[name], base, k)
         return match.group(0).replace(body, re.sub(r"\.tpCost = \d+", ".tpCost = %d" % cost, body))
 

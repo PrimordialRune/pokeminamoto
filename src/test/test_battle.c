@@ -15,6 +15,7 @@
 #include "main.h"
 #include "pokemon.h"
 #include "random.h"
+#include "special_move.h"
 #include "constants/battle.h"
 #include "constants/moves.h"
 #include "constants/species.h"
@@ -256,6 +257,90 @@ static void Check_Repeat(void)
     CHECK_TRUE(gBattleOutcome == B_OUTCOME_WON || gBattleOutcome == B_OUTCOME_LOST);
 }
 
+// --- scenarios 6-9: the Special (include/special_move.h) ----------------------------
+// Charmander's Special, FLAME CLAWS, awakens after 3 won battles in which a Rock or Water foe fainted
+// while it was on the field. Progress starts at 2, so one such win awakens it.
+
+static const u16 sCharmanderMoves[MAX_MON_MOVES] = {MOVE_EMBER, MOVE_SCRATCH, MOVE_GROWL, MOVE_NONE};
+
+static void SetSpecial(u8 progress, u8 awakened)
+{
+    SetMonData(&gPlayerParty[0], MON_DATA_SPECIAL_PROGRESS, &progress);
+    SetMonData(&gPlayerParty[0], MON_DATA_SPECIAL_AWAKENED, &awakened);
+}
+
+static void Setup_SpecialDeed(void)
+{
+    SetupParties(SPECIES_CHARMANDER, 20, sCharmanderMoves, SPECIES_GEODUDE, 5, sTackleOnly);
+    SetSpecial(2, FALSE);
+}
+
+static void Check_SpecialDeed(void)
+{
+    CHECK_EQ(gBattleOutcome, B_OUTCOME_WON);
+    CHECK_EQ(GetMonData(&gPlayerParty[0], MON_DATA_SPECIAL_PROGRESS), 3);
+    CHECK_EQ(GetMonData(&gPlayerParty[0], MON_DATA_SPECIAL_AWAKENED), TRUE);
+    CHECK_TRUE(IsMonSpecialAwakened(&gPlayerParty[0]));
+    CHECK_EQ(GetMonSpecialMove(&gPlayerParty[0]), MOVE_FLAME_CLAWS);
+}
+
+// A win against a foe of another type is no deed
+static void Setup_SpecialNoDeed(void)
+{
+    SetupParties(SPECIES_CHARMANDER, 20, sCharmanderMoves, SPECIES_PIDGEY, 5, sTackleOnly);
+    SetSpecial(2, FALSE);
+}
+
+static void Check_SpecialNoDeed(void)
+{
+    CHECK_EQ(gBattleOutcome, B_OUTCOME_WON);
+    CHECK_EQ(GetMonData(&gPlayerParty[0], MON_DATA_SPECIAL_PROGRESS), 2);
+    CHECK_EQ(GetMonData(&gPlayerParty[0], MON_DATA_SPECIAL_AWAKENED), FALSE);
+}
+
+// An awakened Special is chosen from the Special page (SPECIAL_MOVE_POS) and spends its own TP cost
+static void Setup_SpecialUse(void)
+{
+    u32 hp = 500;   // survives FLAME CLAWS
+
+    SetupParties(SPECIES_CHARMANDER, 20, sCharmanderMoves, SPECIES_MAGIKARP, 40, sSplashOnly);
+    SetMonData(&gEnemyParty[0], MON_DATA_MAX_HP, &hp);
+    SetMonData(&gEnemyParty[0], MON_DATA_HP, &hp);
+    SetSpecial(3, TRUE);
+}
+
+static u8 Pick_SpecialThenSlot0(u32 turn, u32 frame)
+{
+    return turn == 0 ? SPECIAL_MOVE_POS : 0;
+}
+
+static void Check_SpecialUse(void)
+{
+    CHECK_TRUE(sLog[1].valid);
+    CHECK_TRUE(GetMoveTPCost(MOVE_FLAME_CLAWS) >= 40);
+    CHECK_EQ(sLog[1].playerTp, AfterTurn(sLog[0].playerTp, GetMoveTPCost(MOVE_FLAME_CLAWS), SPECIES_CHARMANDER));
+    CHECK_EQ(gBattleOutcome, B_OUTCOME_WON);
+}
+
+// A sealed Special can't be chosen: 399 frames of picking it pass no turn and spend no TP
+static void Setup_SpecialSealed(void)
+{
+    Setup_SpecialUse();
+    SetSpecial(0, FALSE);
+}
+
+static u8 Pick_SpecialThenSlot0ByFrame(u32 turn, u32 frame)
+{
+    return frame < 400 ? SPECIAL_MOVE_POS : 0;
+}
+
+static void Check_SpecialSealed(void)
+{
+    CHECK_EQ(sSnapTurn, 0);
+    CHECK_EQ(sSnap.playerTp, sLog[0].playerTp);
+    CHECK_EQ(gBattleOutcome, B_OUTCOME_WON);
+}
+
 // --- table -------------------------------------------------------------------
 
 // The repeat runs come after the other scenarios on purpose: they must not depend on what ran before.
@@ -265,6 +350,10 @@ static const struct Scenario sScenarios[] =
     {"battle_struggle_at_zero_tp",  Setup_Struggle, Tweak_ZeroTp, Pick_Slot0ThenRefill,         Check_Struggle},
     {"battle_unaffordable_blocked", Setup_StruggleTanky, Tweak_EmberTp, Pick_BlockedThenAffordable,  Check_Blocked, 2},
     {"battle_exp_gain",             Setup_Exp,      NULL,         Pick_Slot0,                   Check_Exp},
+    {"battle_special_deed_awakens", Setup_SpecialDeed, NULL,      Pick_Slot0,                   Check_SpecialDeed, 1},
+    {"battle_special_other_type",   Setup_SpecialNoDeed, NULL,    Pick_Slot0,                   Check_SpecialNoDeed, 1},
+    {"battle_special_used",         Setup_SpecialUse, NULL,       Pick_SpecialThenSlot0,        Check_SpecialUse, 2},
+    {"battle_special_sealed",       Setup_SpecialSealed, NULL,    Pick_SpecialThenSlot0ByFrame, Check_SpecialSealed, 2},
     {"battle_seeded_run_a",         Setup_Repeat,   NULL,         Pick_Slot0,                   Check_Repeat},
     {"battle_seeded_run_b_same_hp", Setup_Repeat,   NULL,         Pick_Slot0,                   Check_Repeat},
     {"battle_seeded_run_c_same_hp", Setup_Repeat,   NULL,         Pick_Slot0,                   Check_Repeat},

@@ -57,10 +57,11 @@ checksum, write and re-encrypt. Writing the struct directly corrupts the mon
 - **Special**: per the design sessions (2026-10-22) the Special is innate but
   sealed, a fifth move outside the 4 slots, unlocked per mon (Deed / Place / Witness,
   Bond as fallback) and kept through evolution. The move itself comes from the
-  species (a ROM table, not written yet; `gMovesInfo[].signatureSpecies` is the
-  move-side placeholder), so a mon only needs the awakened flag and a progress
-  counter. There is no "signature slot" field because the Special never takes one of
-  the 4 slots.
+  species (`gSpecialMoves[]` in `src/data/pokemon/special_moves.h`), so a mon only
+  needs the awakened flag and a progress counter. There is no "signature slot" field
+  because the Special never takes one of the 4 slots. Wired since v1 (2026-10-26,
+  `src/special_move.c`): Bond and Deed conditions, the awakening message after a won
+  battle, and the Special page on SELECT in the FIGHT menu.
 - **savedTp**: TP resets to `TP_MAX` at the start of each battle (GDD) and lives in
   `gBattleStruct->tp`. Omar wants TP to run out and need rest to recover, which may
   mean TP that persists between battles; `savedTp` is reserved for that. Unused.

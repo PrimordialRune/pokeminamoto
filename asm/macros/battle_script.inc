@@ -664,6 +664,13 @@
 	.byte \id
 	.endm
 
+	@ Unseals the next party mon whose Special condition is met and buffers its name and
+	@ Special, or jumps to jumpInstr when there is none
+	.macro tryawakenspecial jumpInstr:req
+	various BS_ATTACKER, VARIOUS_TRY_AWAKEN_SPECIAL
+	.4byte \jumpInstr
+	.endm
+
 	.macro setprotectlike
 	.byte B_SCR_OP_SETPROTECTLIKE
 	.endm
