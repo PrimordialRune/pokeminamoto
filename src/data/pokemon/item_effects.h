@@ -113,24 +113,26 @@ const u8 gItemEffect_RevivalHerb[10] = {
     [9] = -20, // Friendship change, high
 };
 
+// TP restoratives (GDD: "TP restoratives exist as Bag items"). They work only in
+// battle, where TP exists. TODO(balance): the amounts are placeholders.
 const u8 gItemEffect_Ether[7] = {
-    [4] = ITEM4_HEAL_PP_ONE | ITEM4_HEAL_PP,
-    [6] = 10,
+    [4] = ITEM4_HEAL_TP,
+    [6] = 25, // TP restored
 };
 
 const u8 gItemEffect_MaxEther[7] = {
-    [4] = ITEM4_HEAL_PP_ONE | ITEM4_HEAL_PP,
-    [6] = ITEM6_HEAL_PP_FULL,
+    [4] = ITEM4_HEAL_TP,
+    [6] = 50, // TP restored
 };
 
 const u8 gItemEffect_Elixir[7] = {
-    [4] = ITEM4_HEAL_PP,
-    [6] = 10, // Amount of PP to recover
+    [4] = ITEM4_HEAL_TP,
+    [6] = 75, // TP restored
 };
 
 const u8 gItemEffect_MaxElixir[7] = {
-    [4] = ITEM4_HEAL_PP,
-    [6] = ITEM6_HEAL_PP_FULL,
+    [4] = ITEM4_HEAL_TP,
+    [6] = ITEM6_HEAL_TP_FULL,
 };
 
 const u8 gItemEffect_LavaCookie[6] = {
@@ -205,21 +207,10 @@ const u8 gItemEffect_RareCandy[10] = {
     VITAMIN_FRIENDSHIP_CHANGE(7),
 };
 
-const u8 gItemEffect_PPUp[9] = {
-    [4] = ITEM4_PP_UP,
-    [5] = ITEM5_FRIENDSHIP_ALL,
-    VITAMIN_FRIENDSHIP_CHANGE(6),
-};
-
 const u8 gItemEffect_Zinc[10] = {
     [5] = ITEM5_EV_SPDEF | ITEM5_FRIENDSHIP_ALL,
     [6] = ITEM6_ADD_EV,
     VITAMIN_FRIENDSHIP_CHANGE(7),
-};
-
-const u8 gItemEffect_PPMax[9] = {
-    [5] = ITEM5_PP_MAX | ITEM5_FRIENDSHIP_ALL,
-    VITAMIN_FRIENDSHIP_CHANGE(6),
 };
 
 #define STAT_BOOST_FRIENDSHIP_CHANGE      \
@@ -317,8 +308,8 @@ const u8 gItemEffect_AspearBerry[6] = {
 };
 
 const u8 gItemEffect_LeppaBerry[7] = {
-    [4] = ITEM4_HEAL_PP_ONE | ITEM4_HEAL_PP,
-    [6] = 10, // Amount of PP to recover
+    [4] = ITEM4_HEAL_TP,
+    [6] = 10, // TP restored
 };
 
 const u8 gItemEffect_OranBerry[7] = {
@@ -421,9 +412,9 @@ const u8 *const gItemEffectTable[] =
     [ITEM_CARBOS - ITEM_POTION]        = gItemEffect_Carbos,
     [ITEM_CALCIUM - ITEM_POTION]       = gItemEffect_Calcium,
     [ITEM_RARE_CANDY - ITEM_POTION]    = gItemEffect_RareCandy,
-    [ITEM_PP_UP - ITEM_POTION]         = gItemEffect_PPUp,
+    // ITEM_PP_UP has no effect: PP is gone. TODO: give it a new use or drop the item
     [ITEM_ZINC - ITEM_POTION]          = gItemEffect_Zinc,
-    [ITEM_PP_MAX - ITEM_POTION]        = gItemEffect_PPMax,
+    // ITEM_PP_MAX has no effect: PP is gone. TODO: give it a new use or drop the item
     [ITEM_GUARD_SPEC - ITEM_POTION]    = gItemEffect_GuardSpec,
     [ITEM_DIRE_HIT - ITEM_POTION]      = gItemEffect_DireHit,
     [ITEM_X_ATTACK - ITEM_POTION]      = gItemEffect_XAttack,

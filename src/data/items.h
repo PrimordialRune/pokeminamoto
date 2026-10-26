@@ -462,9 +462,9 @@ const struct Item gItems[] =
         .description = sEtherDesc,
         .pocket = POCKET_ITEMS,
         .type = ITEM_USE_PARTY_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_PPRecovery,
+        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // TP only exists in battle
         .battleUsage = ITEM_B_USE_MEDICINE,
-        .battleUseFunc = ItemUseInBattle_PPRecovery,
+        .battleUseFunc = ItemUseInBattle_TPRecovery,
     },
 
     [ITEM_MAX_ETHER] =
@@ -476,9 +476,9 @@ const struct Item gItems[] =
         .description = sMaxEtherDesc,
         .pocket = POCKET_ITEMS,
         .type = ITEM_USE_PARTY_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_PPRecovery,
+        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // TP only exists in battle
         .battleUsage = ITEM_B_USE_MEDICINE,
-        .battleUseFunc = ItemUseInBattle_PPRecovery,
+        .battleUseFunc = ItemUseInBattle_TPRecovery,
     },
 
     [ITEM_ELIXIR] =
@@ -490,9 +490,9 @@ const struct Item gItems[] =
         .description = sElixirDesc,
         .pocket = POCKET_ITEMS,
         .type = ITEM_USE_PARTY_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_PPRecovery,
+        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // TP only exists in battle
         .battleUsage = ITEM_B_USE_MEDICINE,
-        .battleUseFunc = ItemUseInBattle_PPRecovery,
+        .battleUseFunc = ItemUseInBattle_TPRecovery,
     },
 
     [ITEM_MAX_ELIXIR] =
@@ -504,9 +504,9 @@ const struct Item gItems[] =
         .description = sMaxElixirDesc,
         .pocket = POCKET_ITEMS,
         .type = ITEM_USE_PARTY_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_PPRecovery,
+        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // TP only exists in battle
         .battleUsage = ITEM_B_USE_MEDICINE,
-        .battleUseFunc = ItemUseInBattle_PPRecovery,
+        .battleUseFunc = ItemUseInBattle_TPRecovery,
     },
 
     [ITEM_LAVA_COOKIE] =
@@ -876,7 +876,7 @@ const struct Item gItems[] =
         .description = sPPUpDesc,
         .pocket = POCKET_ITEMS,
         .type = ITEM_USE_PARTY_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_PPUp,
+        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // PP is gone. TODO: new use or drop
     },
 
     [ITEM_ZINC] =
@@ -898,7 +898,7 @@ const struct Item gItems[] =
         .description = sPPMaxDesc,
         .pocket = POCKET_ITEMS,
         .type = ITEM_USE_PARTY_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_PPUp,
+        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // PP is gone. TODO: new use or drop
     },
 
     [ITEM_048] =
@@ -1696,9 +1696,9 @@ const struct Item gItems[] =
         .description = sLeppaBerryDesc,
         .pocket = POCKET_BERRIES,
         .type = ITEM_USE_PARTY_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_PPRecovery,
+        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // TP only exists in battle
         .battleUsage = ITEM_B_USE_MEDICINE,
-        .battleUseFunc = ItemUseInBattle_PPRecovery,
+        .battleUseFunc = ItemUseInBattle_TPRecovery,
     },
 
     [ITEM_ORAN_BERRY] =
@@ -3324,10 +3324,9 @@ const struct Item gItems[] =
         .price = 0,
         .description = sPokeblockCaseDesc,
         .importance = 1,
-        .registrability = TRUE,
         .pocket = POCKET_KEY_ITEMS,
-        .type = ITEM_USE_PBLOCK_CASE,
-        .fieldUseFunc = ItemUseOutOfBattle_PokeblockCase,
+        .type = ITEM_USE_BAG_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_CannotUse,
     },
 
     [ITEM_LETTER] =

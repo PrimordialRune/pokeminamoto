@@ -218,15 +218,14 @@ void BufferStringBattle(u16 stringID);
 u32 BattleStringExpandPlaceholdersToDisplayedString(const u8 *src);
 u32 BattleStringExpandPlaceholders(const u8 *src, u8 *dst);
 void BattlePutTextOnWindow(const u8 *text, u8 windowId);
-void SetPpNumbersPaletteInMoveSelection(void);
-u8 GetCurrentPpToMaxPpState(u8 currentPp, u8 maxPp);
+void SetTpCostPaletteInMoveSelection(void);
 u8 GetTPCostToCurrentTPState(u8 tpCost, u8 currentTp);
 
 extern struct BattleMsgData *gBattleMsgDataPtr;
 
 extern const u8 *const gBattleStringsTable[];
 extern const u8 *const gStatNamesTable[];
-extern const u8 *const gPokeblockWasTooXStringTable[];
+extern const u8 *const gWasTooXStringTable[];
 extern const u8 *const gRefereeStringsTable[];
 extern const u8 *const gRoundsStringTable[];
 
@@ -239,18 +238,15 @@ extern const u8 gText_WhatWillPkmnDo2[];
 extern const u8 gText_WhatWillWallyDo[];
 extern const u8 gText_LinkStandby[];
 extern const u8 gText_BattleMenu[];
-extern const u8 gText_SafariZoneMenu[];
 extern const u8 gText_TalkStub[];
 extern const u8 gText_BattleMenuFight[];
 extern const u8 gText_BattleMenuPkmn[];
 extern const u8 gText_BattleMenuItem[];
 extern const u8 gText_BattleMenuRun[];
 extern const u8 gText_SafariMenuBall[];
-extern const u8 gText_SafariMenuBlock[];
+extern const u8 gText_SafariMenuNone[];
 extern const u8 gText_SafariMenuNear[];
-extern const u8 gText_MoveInterfacePP[];
 extern const u8 gText_MoveInterfaceType[];
-extern const u8 gText_MoveInterfacePpType[];
 extern const u8 gText_MoveInterfaceDynamicColors[];
 extern const u8 gText_WhichMoveToForget4[];
 extern const u8 gText_BattleYesNoChoice[];

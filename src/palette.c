@@ -1,5 +1,6 @@
 #include "global.h"
 #include "palette.h"
+#include "palette_tone.h"
 #include "util.h"
 #include "decompress.h"
 #include "gpu_regs.h"
@@ -58,11 +59,10 @@ static void Task_BlendPalettesGradually(u8 taskId);
 
 // palette buffers require alignment with agbcc because
 // unaligned word reads are issued in BlendPalette otherwise
-ALIGNED(4) EWRAM_DATA u16 gPlttBufferUnfaded[PLTT_BUFFER_SIZE] = {0};
-ALIGNED(4) EWRAM_DATA u16 gPlttBufferFaded[PLTT_BUFFER_SIZE] = {0};
+ALIGNED(4) u16 gPlttBufferUnfaded[PLTT_BUFFER_SIZE] = {0};
+ALIGNED(4) u16 gPlttBufferFaded[PLTT_BUFFER_SIZE] = {0};
 static EWRAM_DATA struct PaletteStruct sPaletteStructs[NUM_PALETTE_STRUCTS] = {0};
 EWRAM_DATA struct PaletteFadeControl gPaletteFade = {0};
-static EWRAM_DATA u32 sFiller = 0;
 static EWRAM_DATA u32 sPlttBufferTransferPending = 0;
 EWRAM_DATA u8 ALIGNED(2) gPaletteDecompressionBuffer[PLTT_SIZE] = {0};
 
@@ -104,9 +104,7 @@ void TransferPlttBuffer(void)
 {
     if (!gPaletteFade.bufferTransferDisabled)
     {
-        void *src = gPlttBufferFaded;
-        void *dest = (void *)PLTT;
-        DmaCopy16(3, src, dest, PLTT_SIZE);
+        TransferPlttBufferToPltt();
         sPlttBufferTransferPending = FALSE;
         if (gPaletteFade.mode == HARDWARE_FADE && gPaletteFade.active)
             UpdateBlendRegisters();
@@ -192,7 +190,10 @@ bool8 BeginNormalPaletteFade(u32 selectedPalettes, s8 delay, u8 startY, u8 targe
 
         temp = gPaletteFade.bufferTransferDisabled;
         gPaletteFade.bufferTransferDisabled = FALSE;
-        CpuCopy32(gPlttBufferFaded, (void *)PLTT, PLTT_SIZE);
+        if (GetLcdProfile() == LCD_PROFILE_IPS)
+            CpuCopy32(gPlttBufferFaded, (void *)PLTT, PLTT_SIZE);
+        else
+            TransferPlttBufferToPltt();
         sPlttBufferTransferPending = FALSE;
         if (gPaletteFade.mode == HARDWARE_FADE && gPaletteFade.active)
             UpdateBlendRegisters();
@@ -849,44 +850,7 @@ void BlendPalettesUnfaded(u32 selectedPalettes, u8 coeff, u16 color)
     BlendPalettes(selectedPalettes, coeff, color);
 }
 
-void TintPalette_GrayScale(u16 *palette, u16 count)
-{
-    s32 r, g, b, i;
-    u32 gray;
 
-    for (i = 0; i < count; i++)
-    {
-        r = GET_R(*palette);
-        g = GET_G(*palette);
-        b = GET_B(*palette);
-
-        gray = (r * Q_8_8(0.3) + g * Q_8_8(0.59) + b * Q_8_8(0.1133)) >> 8;
-
-        *palette++ = RGB2(gray, gray, gray);
-    }
-}
-
-void TintPalette_GrayScale2(u16 *palette, u16 count)
-{
-    s32 r, g, b, i;
-    u32 gray;
-
-    for (i = 0; i < count; i++)
-    {
-        r = GET_R(*palette);
-        g = GET_G(*palette);
-        b = GET_B(*palette);
-
-        gray = (r * Q_8_8(0.3) + g * Q_8_8(0.59) + b * Q_8_8(0.1133)) >> 8;
-
-        if (gray > 31)
-            gray = 31;
-
-        gray = sRoundedDownGrayscaleMap[gray];
-
-        *palette++ = RGB2(gray, gray, gray);
-    }
-}
 
 void TintPalette_SepiaTone(u16 *palette, u16 count)
 {

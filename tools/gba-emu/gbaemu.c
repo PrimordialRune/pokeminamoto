@@ -12,12 +12,14 @@
  * Commands: see tools/gba-emu/README.md or send "help".
  */
 #include <mgba/flags.h>
+#include <mgba/core/blip_buf.h>
 #include <mgba/core/core.h>
 #include <mgba/core/config.h>
 #include <mgba/core/serialize.h>
 #include <mgba/debugger/debugger.h>
 #include <mgba/internal/arm/arm.h>
 #include <mgba/internal/debugger/gdb-stub.h>
+#include <mgba/internal/gba/gba.h>
 #include <mgba-util/png-io.h>
 #include <mgba-util/vfs.h>
 
@@ -183,25 +185,100 @@ static void hostEntered(struct mDebugger* d, enum mDebuggerEntryReason reason, s
 	}
 }
 
+/* The BIOS Stop call (SWI 3) does nothing in mGBA unless a frontend reacts to
+ * the sleep callback. Treat it like Halt: the CPU waits until an enabled
+ * interrupt (the game sets the keypad one) is pending. */
+static void onSleep(void* context) {
+	(void) context;
+	GBAHalt((struct GBA*) core->board);
+}
+
+static struct mCoreCallbacks coreCallbacks = {.sleep = onSleep};
+
 static bool gdbConnected(void) {
 	return stub && !SOCKET_FAILED(stub->connection);
 }
 
 /* Run until `frames` frames have elapsed or the debugger stops. */
+/* audio <file>: append the sound output to <file> as raw signed 16-bit
+ * little-endian stereo at AUDIO_RATE Hz until "audio off" (ffmpeg -f s16le
+ * -ar 32768 -ac 2 -i <file>). Emulated time drives it, so it stays in sync
+ * with screenshots taken every frame. */
+#define AUDIO_RATE 32768
+static FILE* audioOut;
+static unsigned long long audioFrames;
+
+static void drainAudio(void) {
+	if (!core) {
+		return;
+	}
+	struct blip_t* left = core->getAudioChannel(core, 0);
+	struct blip_t* right = core->getAudioChannel(core, 1);
+	short buf[2 * 512];
+	int avail;
+	while ((avail = blip_samples_avail(left)) > 0) {
+		if (avail > 512) {
+			avail = 512;
+		}
+		blip_read_samples(left, buf, avail, 1);
+		blip_read_samples(right, buf + 1, avail, 1);
+		if (audioOut) {
+			fwrite(buf, sizeof(short) * 2, avail, audioOut);
+			audioFrames += avail;
+		}
+	}
+}
+
 static void runFrames(uint32_t frames) {
 	struct mDebugger* d = &stub->d;
 	uint32_t target = core->frameCounter(core) + frames;
+	unsigned steps = 0;
 	lastStop.hit = false;
 	d->state = DEBUGGER_RUNNING;
 	while (!lastStop.hit && (int32_t) (core->frameCounter(core) - target) < 0) {
 		if (d->platform->hasBreakpoints(d->platform)) {
 			core->step(core);
 			d->platform->checkBreakpoints(d->platform);
+			if (audioOut && !(++steps & 1023)) {
+				drainAudio();
+			}
 		} else {
 			core->runLoop(core);
+			if (audioOut) {
+				drainAudio();
+			}
 		}
 	}
 	d->state = DEBUGGER_PAUSED;
+}
+
+static bool needCore(void);
+
+static void cmdAudio(const char* args) {
+	if (!needCore()) {
+		return;
+	}
+	if (audioOut) {
+		drainAudio();
+		fclose(audioOut);
+		audioOut = NULL;
+	}
+	if (!*args || !strcmp(args, "off")) {
+		reply("{\"ok\":true,\"samples\":%llu,\"rate\":%d}", audioFrames, AUDIO_RATE);
+		return;
+	}
+	audioOut = fopen(args, "wb");
+	if (!audioOut) {
+		replyError("cannot write %s", args);
+		return;
+	}
+	audioFrames = 0;
+	for (int ch = 0; ch < 2; ++ch) {
+		struct blip_t* b = core->getAudioChannel(core, ch);
+		blip_set_rates(b, core->frequency(core), AUDIO_RATE);
+		blip_clear(b);
+	}
+	reply("{\"ok\":true,\"rate\":%d}", AUDIO_RATE);
 }
 
 static void stopJson(char* out, size_t len) {
@@ -282,6 +359,7 @@ static void cmdLoad(const char* path) {
 	mCoreConfigSetOverrideIntValue(&c->config, "skipBios", 1);
 	mCoreConfigSetOverrideIntValue(&c->config, "audioSync", 0);
 	mCoreConfigSetOverrideIntValue(&c->config, "videoSync", 0);
+	mCoreConfigSetOverrideIntValue(&c->config, "volume", 0x100); /* full volume for "audio" captures */
 	mCoreLoadConfig(c);
 	c->setVideoBuffer(c, videoBuffer, VIDEO_STRIDE);
 	c->setAudioBufferSize(c, 2048);
@@ -294,11 +372,20 @@ static void cmdLoad(const char* path) {
 	core = c;
 	snprintf(romPath, sizeof(romPath), "%s", path);
 
+	// GBAEMU_RTC=<unix seconds> starts the cartridge clock at that time and
+	// advances it with emulated frames, so runs don't depend on the host clock.
+	const char* rtc = getenv("GBAEMU_RTC");
+	if (rtc && *rtc) {
+		core->rtc.override = RTC_FAKE_EPOCH;
+		core->rtc.value = strtoll(rtc, NULL, 0) * 1000LL;
+	}
+
 	stub = calloc(1, sizeof(*stub));
 	GDBStubCreate(stub);
 	stubEntered = stub->d.entered;
 	stub->d.entered = hostEntered;
 	mDebuggerAttach(&stub->d, core);
+	core->addCoreCallbacks(core, &coreCallbacks);
 	core->reset(core);
 	stub->d.state = DEBUGGER_PAUSED;
 	heldKeys = 0;
@@ -326,6 +413,63 @@ static void cmdRun(const char* args) {
 	char out[512];
 	stopJson(out, sizeof(out));
 	reply("%s", out);
+}
+
+
+/* profile <frames> <file>: run with single-stepping and write "pc cycles"
+ * lines (cycles spent while that instruction ran, halted time included) to
+ * <file>. Slow (a few hundred frames per second); tools/regress/profile.py
+ * turns it into per-function totals. */
+struct ProfEntry {
+	uint32_t pc;
+	uint64_t cycles;
+};
+
+static void cmdProfile(const char* args) {
+	if (!needCore()) {
+		return;
+	}
+	char path[1024];
+	long frames = 0;
+	if (sscanf(args, "%ld %1023s", &frames, path) != 2 || frames < 1) {
+		replyError("usage: profile <frames> <file>");
+		return;
+	}
+	const size_t size = 1u << 20;
+	struct ProfEntry* tab = calloc(size, sizeof(*tab));
+	struct mDebugger* d = &stub->d;
+	uint32_t target = core->frameCounter(core) + (uint32_t) frames;
+	d->state = DEBUGGER_RUNNING;
+	while ((int32_t) (core->frameCounter(core) - target) < 0) {
+		uint32_t pc = currentPC();
+		uint32_t t0 = mTimingCurrentTime(&((struct GBA*) core->board)->timing);
+		core->step(core);
+		uint32_t dt = mTimingCurrentTime(&((struct GBA*) core->board)->timing) - t0;
+		size_t h = (pc * 2654435761u) >> 12;
+		for (;; h++) {
+			struct ProfEntry* e = &tab[h & (size - 1)];
+			if (e->pc == pc || e->pc == 0) {
+				e->pc = pc;
+				e->cycles += dt;
+				break;
+			}
+		}
+	}
+	d->state = DEBUGGER_PAUSED;
+	FILE* f = fopen(path, "w");
+	if (!f) {
+		free(tab);
+		replyError("cannot write file");
+		return;
+	}
+	for (size_t i = 0; i < size; i++) {
+		if (tab[i].pc) {
+			fprintf(f, "%08x %llu\n", tab[i].pc, (unsigned long long) tab[i].cycles);
+		}
+	}
+	fclose(f);
+	free(tab);
+	reply("{\"ok\":true,\"path\":\"%s\"}", path);
 }
 
 static void cmdStep(const char* args) {
@@ -565,16 +709,25 @@ static void cmdSaveState(const char* path) {
 	reply("{\"ok\":true,\"path\":\"%s\",\"frame\":%u}", path, core->frameCounter(core));
 }
 
-static void cmdLoadState(const char* path) {
+/* "loadstate <file> keepsave" restores everything but the battery save. */
+static void cmdLoadState(const char* args) {
 	if (!needCore()) {
 		return;
+	}
+	char path[1024];
+	snprintf(path, sizeof(path), "%s", args);
+	int flags = SAVESTATE_SAVEDATA | SAVESTATE_RTC;
+	char* opt = strrchr(path, ' ');
+	if (opt && !strcmp(opt + 1, "keepsave")) {
+		*opt = 0;
+		flags = SAVESTATE_RTC;
 	}
 	struct VFile* vf = VFileOpen(path, O_RDONLY);
 	if (!vf) {
 		replyError("cannot open %s: %s", path, strerror(errno));
 		return;
 	}
-	bool ok = mCoreLoadStateNamed(core, vf, SAVESTATE_SAVEDATA | SAVESTATE_RTC);
+	bool ok = mCoreLoadStateNamed(core, vf, flags);
 	vf->close(vf);
 	if (!ok) {
 		replyError("load state failed (state from a different ROM build?)");
@@ -613,6 +766,34 @@ static void cmdLoadSav(const char* path) {
 	}
 	core->reset(core);
 	reply("{\"ok\":true,\"bytes\":%zd,\"note\":\"core reset with save loaded\"}", size);
+}
+
+/* Write the battery save (flash/SRAM contents) to a .sav file. */
+static void cmdDumpSav(const char* path) {
+	if (!needCore()) {
+		return;
+	}
+	void* data = NULL;
+	size_t size = core->savedataClone(core, &data);
+	if (!size || !data) {
+		free(data);
+		replyError("no save data");
+		return;
+	}
+	FILE* f = fopen(path, "wb");
+	if (!f) {
+		free(data);
+		replyError("cannot open %s: %s", path, strerror(errno));
+		return;
+	}
+	size_t wrote = fwrite(data, 1, size, f);
+	fclose(f);
+	free(data);
+	if (wrote != size) {
+		replyError("short write on %s", path);
+		return;
+	}
+	reply("{\"ok\":true,\"path\":\"%s\",\"bytes\":%zu}", path, size);
 }
 
 static void cmdReset(void) {
@@ -667,9 +848,9 @@ static void cmdLog(void) {
 }
 
 static void cmdHelp(void) {
-	reply("{\"ok\":true,\"commands\":\"load <rom> | reset | loadsav <file> | run [frames] | step [n] | regs | "
+	reply("{\"ok\":true,\"commands\":\"load <rom> | reset | loadsav <file> | dumpsav <file> | run [frames] | step [n] | regs | "
 	      "read <addr> <len> | write <addr> <hex> | keys <mask> | break <addr> | watch <addr> [w|r|rw|c] | "
-	      "delete <id> | list | screenshot <png> | savestate <file> | loadstate <file> | gdb [port] | "
+	      "profile <frames> <file> | delete <id> | list | screenshot <png> | audio <raw>|off | savestate <file> | loadstate <file> [keepsave] | gdb [port] | "
 	      "gdbframes <n> | scale <1-4> | log | info | quit\"}");
 }
 
@@ -694,8 +875,10 @@ static bool dispatch(char* line) {
 	if (!strcmp(line, "load")) cmdLoad(args);
 	else if (!strcmp(line, "reset")) cmdReset();
 	else if (!strcmp(line, "loadsav")) cmdLoadSav(args);
+	else if (!strcmp(line, "dumpsav")) cmdDumpSav(args);
 	else if (!strcmp(line, "run")) cmdRun(args);
 	else if (!strcmp(line, "step")) cmdStep(args);
+	else if (!strcmp(line, "profile")) cmdProfile(args);
 	else if (!strcmp(line, "regs")) cmdRegs();
 	else if (!strcmp(line, "read")) cmdRead(args);
 	else if (!strcmp(line, "write")) cmdWrite(args);
@@ -705,6 +888,7 @@ static bool dispatch(char* line) {
 	else if (!strcmp(line, "delete")) cmdDelete(args);
 	else if (!strcmp(line, "list")) cmdList();
 	else if (!strcmp(line, "screenshot")) cmdScreenshot(args);
+	else if (!strcmp(line, "audio")) cmdAudio(args);
 	else if (!strcmp(line, "savestate")) cmdSaveState(args);
 	else if (!strcmp(line, "loadstate")) cmdLoadState(args);
 	else if (!strcmp(line, "gdb")) cmdGdb(args);

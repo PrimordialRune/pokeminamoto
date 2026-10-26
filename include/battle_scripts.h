@@ -75,8 +75,8 @@ extern const u8 BattleScript_LeechSeedFree[];
 extern const u8 BattleScript_SpikesFree[];
 extern const u8 BattleScript_MonTookFutureAttack[];
 extern const u8 BattleScript_NoMovesLeft[];
-extern const u8 BattleScript_SelectingMoveWithNoPP[];
-extern const u8 BattleScript_NoPPForMove[];
+extern const u8 BattleScript_SelectingMoveWithNoTP[];
+extern const u8 BattleScript_NoTPForMove[];
 extern const u8 BattleScript_SelectingTormentedMove[];
 extern const u8 BattleScript_MoveUsedIsTormented[];
 extern const u8 BattleScript_SelectingTormentedMoveInPalace[];
@@ -221,6 +221,5 @@ extern const u8 BattleScript_TrainerBallBlock[];
 extern const u8 BattleScript_RunByUsingItem[];
 extern const u8 BattleScript_ActionWatchesCarefully[];
 extern const u8 BattleScript_ActionGetNear[];
-extern const u8 BattleScript_ActionThrowPokeblock[];
 
 #endif // GUARD_BATTLE_SCRIPTS_H

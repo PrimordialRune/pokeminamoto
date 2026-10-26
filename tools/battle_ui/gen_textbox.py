@@ -9,7 +9,8 @@ the windows that are redrawn whole (see battle_controller_player.c).
 
 Tile index rules (see src/battle_bg.c, src/egg_hatch.c, src/trade.c):
   0          blank
-  1-2        yes/no cursor arrow, drawn with palette 1 (kept from Emerald)
+  1-2        yes/no cursor arrow (Emerald's), recoloured to BG palette 5 (text.pal) so it matches
+             the Yes/No text: white 14, arrow 13, shadow 15
   0x12-0x1A  overwritten in battle by the player's window frame
   0x22-0x2A  overwritten in battle by the player's window frame
   < 0x40     everything on the message screen: egg hatch and trade load their
@@ -247,8 +248,9 @@ class TileSet:
         blank = tuple(tuple([0] * 8) for _ in range(8))
         self.add_fixed(0, blank)
         old = Image.open(old_png)
-        for i in (1, 2):  # yes/no arrow, palette 1
-            self.tiles[i] = tuple(tuple(old.getpixel(((i % 16) * 8 + x, (i // 16) * 8 + y)) for x in range(8)) for y in range(8))
+        arrow = {1: 14, 9: 13, 7: 15}  # Emerald's palette 0 colors -> text.pal (already-mapped pixels stay)
+        for i in (1, 2):  # yes/no arrow, palette 5
+            self.tiles[i] = tuple(tuple(arrow.get(old.getpixel(((i % 16) * 8 + x, (i // 16) * 8 + y)), old.getpixel(((i % 16) * 8 + x, (i // 16) * 8 + y))) for x in range(8)) for y in range(8))
         self.next = 3
     def add_fixed(self, idx, t):
         self.tiles[idx] = t

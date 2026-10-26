@@ -37,7 +37,7 @@
 #include "constants/metatile_labels.h"
 #include "constants/moves.h"
 #include "constants/trainers.h"
-#include "constants/removed_maps.h"
+#include "constants/parked_maps.h"
 
 #define NUM_LAYOUT_OFFSETS 8
 
@@ -1458,15 +1458,7 @@ void CopyPyramidTrainerSpeechBefore(u16 trainerId)
     FrontierSpeechToString(gFacilityTrainers[trainerId].speechBefore);
 }
 
-void CopyPyramidTrainerWinSpeech(u16 trainerId)
-{
-    FrontierSpeechToString(gFacilityTrainers[trainerId].speechWin);
-}
 
-void CopyPyramidTrainerLoseSpeech(u16 trainerId)
-{
-    FrontierSpeechToString(gFacilityTrainers[trainerId].speechLose);
-}
 
 u8 GetTrainerEncounterMusicIdInBattlePyramid(u16 trainerId)
 {

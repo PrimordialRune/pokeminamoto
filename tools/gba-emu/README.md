@@ -65,10 +65,10 @@ One command per line on stdin, one JSON object per line on stdout
 (`{"ok":true,...}` or `{"ok":false,"error":"..."}`). Send `help` for the list:
 
 ```
-load <rom> | reset | loadsav <file> | run [frames] | step [n] | regs |
+load <rom> | reset | loadsav <file> | dumpsav <file> | run [frames] | step [n] | regs |
 read <addr> <len> | write <addr> <hex> | keys <mask> | break <addr> |
 watch <addr> [w|r|rw|c] | delete <id> | list | screenshot <png> |
-savestate <file> | loadstate <file> | gdb [port] | gdbframes <n> |
+savestate <file> | loadstate <file> [keepsave] | gdb [port] | gdbframes <n> |
 scale <1-4> | log | info | quit
 ```
 

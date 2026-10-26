@@ -62,26 +62,6 @@ int GetMaxWidthInSubsetOfMenuTable(const struct MenuAction *actions, const u8 *a
     return ConvertPixelWidthToTileWidth(maxWidth);
 }
 
-int Intl_GetListMenuWidth(const struct ListMenuTemplate *listMenu)
-{
-    int i, maxWidth, finalWidth;
-    const struct ListMenuItem *items = listMenu->items;
-
-    maxWidth = 0;
-    for (i = 0; i < listMenu->totalItems; i++)
-    {
-        int width = GetStringWidth(listMenu->fontId, items[i].name, 0);
-        if (width > maxWidth)
-            maxWidth = width;
-    }
-
-    finalWidth = maxWidth + listMenu->item_X + 9;
-    finalWidth /= 8;
-    if (finalWidth > 28)
-        finalWidth = 28;
-
-    return finalWidth;
-}
 
 void CopyMonCategoryText(int dexNum, u8 *dest)
 {
@@ -179,38 +159,12 @@ void ConvertInternationalPlayerNameStripChar(u8 *str, u8 removeChar)
     }
 }
 
-void ConvertInternationalContestantName(u8 *str)
-{
-    if (*str++ == EXT_CTRL_CODE_BEGIN && *str++ == EXT_CTRL_CODE_JPN)
-    {
-        while (*str != EOS)
-        {
-            if (str[0] == EXT_CTRL_CODE_BEGIN && str[1] == EXT_CTRL_CODE_ENG)
-                return;
-
-            str++;
-        }
-
-        *str++ = EXT_CTRL_CODE_BEGIN;
-        *str++ = EXT_CTRL_CODE_ENG;
-        *str = EOS;
-    }
-}
-
 void TVShowConvertInternationalString(u8 *dest, const u8 *src, int language)
 {
     StringCopy(dest, src);
     ConvertInternationalString(dest, language);
 }
 
-// It's impossible to distinguish between Latin languages just from a string alone, so the function defaults to LANGUAGE_ENGLISH. This is the case in all of the versions of the game.
-int GetNicknameLanguage(u8 *str)
-{
-    if (str[0] == EXT_CTRL_CODE_BEGIN && str[1] == EXT_CTRL_CODE_JPN)
-        return LANGUAGE_JAPANESE;
-    else
-        return LANGUAGE_ENGLISH;
-}
 
 // Used by Pokénav's Match Call to erase the previous trainer's flavor text when switching between their info pages.
 void FillWindowTilesByRow(int windowId, int columnStart, int rowStart, int numFillTiles, int numRows)

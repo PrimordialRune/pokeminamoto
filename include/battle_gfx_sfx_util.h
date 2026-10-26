@@ -31,7 +31,6 @@ void TrySetBehindSubstituteSpriteBit(u8 battler, u16 move);
 void ClearBehindSubstituteBit(u8 battler);
 void HandleLowHpMusicChange(struct Pokemon *mon, u8 battler);
 void BattleStopLowHpSound(void);
-u8 GetMonHPBarLevel(struct Pokemon *mon);
 void HandleBattleLowHpMusicChange(void);
 void SetBattlerSpriteAffineMode(u8 affineMode);
 void LoadAndCreateEnemyShadowSprites(void);
@@ -41,6 +40,7 @@ void HideBattlerShadowSprite(u8 battler);
 void FillAroundBattleWindows(void);
 void ClearTemporarySpeciesSpriteData(u8 battler, bool8 dontClearSubstitute);
 void AllocateMonSpritesGfx(void);
+void AllocateMonSpritesGfxBuffers(u8 numBuffers);
 void FreeMonSpritesGfx(void);
 bool32 ShouldPlayNormalMonCry(struct Pokemon *mon);
 

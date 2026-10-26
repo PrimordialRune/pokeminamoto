@@ -93,7 +93,6 @@ struct
 static void FindMapsWithMon(u16);
 static void BuildAreaGlowTilemap(void);
 static void SetAreaHasMon(u16, u16);
-static void SetSpecialMapHasMon(u16, u16);
 static mapsec_u16_t GetRegionMapSectionId(u8, u8);
 static bool8 MapHasSpecies(const struct WildPokemonHeader *, u16);
 static bool8 MonListHasSpecies(const struct WildPokemonInfo *, u16, u16);
@@ -295,46 +294,6 @@ static void SetAreaHasMon(u16 mapGroup, u16 mapNum)
         sPokedexAreaScreen->overworldAreasWithMons[sPokedexAreaScreen->numOverworldAreas].mapNum = mapNum;
         sPokedexAreaScreen->overworldAreasWithMons[sPokedexAreaScreen->numOverworldAreas].regionMapSectionId = CorrectSpecialMapSecId(Overworld_GetMapHeaderByGroupAndId(mapGroup, mapNum)->regionMapSectionId);
         sPokedexAreaScreen->numOverworldAreas++;
-    }
-}
-
-static void SetSpecialMapHasMon(u16 mapGroup, u16 mapNum)
-{
-    int i;
-
-    if (sPokedexAreaScreen->numSpecialAreas < MAX_AREA_MARKERS)
-    {
-        mapsec_u16_t regionMapSectionId = GetRegionMapSectionId(mapGroup, mapNum);
-        if (regionMapSectionId < MAPSEC_NONE)
-        {
-            // Don't highlight the area if it's a moving area (Marine/Terra Cave)
-            for (i = 0; i < ARRAY_COUNT(sMovingRegionMapSections); i++)
-            {
-                if (regionMapSectionId == sMovingRegionMapSections[i])
-                    return;
-            }
-
-            // Don't highlight the area if it's an undiscovered landmark (e.g. Sky Pillar)
-            for (i = 0; sLandmarkData[i][0] != MAPSEC_NONE; i++)
-            {
-                if (regionMapSectionId == sLandmarkData[i][0] && !FlagGet(sLandmarkData[i][1]))
-                    return;
-            }
-
-            // Check if this special area is already being tracked
-            for (i = 0; i < sPokedexAreaScreen->numSpecialAreas; i++)
-            {
-                if (sPokedexAreaScreen->specialAreaRegionMapSectionIds[i] == regionMapSectionId)
-                    break;
-            }
-
-            if (i == sPokedexAreaScreen->numSpecialAreas)
-            {
-                // New special area
-                sPokedexAreaScreen->specialAreaRegionMapSectionIds[i] = regionMapSectionId;
-                sPokedexAreaScreen->numSpecialAreas++;
-            }
-        }
     }
 }
 

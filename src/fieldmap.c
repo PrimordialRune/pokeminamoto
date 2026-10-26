@@ -6,13 +6,11 @@
 #include "fldeff_misc.h"
 #include "frontier_util.h"
 #include "menu.h"
-#include "mirage_tower.h"
 #include "overworld.h"
 #include "palette.h"
 #include "pokenav.h"
 #include "script.h"
 #include "secret_base.h"
-#include "trainer_hill.h"
 #include "tv.h"
 #include "constants/rgb.h"
 #include "constants/metatile_behaviors.h"
@@ -49,14 +47,12 @@ static bool8 IsPosInIncomingConnectingMap(u8 direction, int x, int y, const stru
 static bool8 IsCoordInIncomingConnectingMap(int coord, int srcMax, int destMax, int offset);
 
 #define GetBorderBlockAt(x, y) ({                                                                  \
-    u16 block;                                                                                     \
     int i;                                                                                         \
-    const u16 *border = gMapHeader.mapLayout->border; /* Unused, they read it again below */       \
                                                                                                    \
     i = (x + 1) & 1;                                                                               \
     i += ((y + 1) & 1) * 2;                                                                        \
                                                                                                    \
-    block = gMapHeader.mapLayout->border[i] | MAPGRID_IMPASSABLE;                                  \
+    (u16)(gMapHeader.mapLayout->border[i] | MAPGRID_IMPASSABLE);                                   \
 })
 
 #define AreCoordsWithinMapGridBounds(x, y) (x >= 0 && x < gBackupMapLayout.width && y >= 0 && y < gBackupMapLayout.height)
@@ -89,12 +85,6 @@ void InitBattlePyramidMap(bool8 setPlayerPosition)
 {
     CpuFastFill16(MAPGRID_UNDEFINED, sBackupMapData, sizeof(sBackupMapData));
     GenerateBattlePyramidFloorLayout(sBackupMapData, setPlayerPosition);
-}
-
-void InitTrainerHillMap(void)
-{
-    CpuFastFill16(MAPGRID_UNDEFINED, sBackupMapData, sizeof(sBackupMapData));
-    GenerateTrainerHillFloorLayout(sBackupMapData);
 }
 
 static void InitMapLayoutData(struct MapHeader *mapHeader)
@@ -661,7 +651,6 @@ bool8 CameraMove(int x, int y)
     else
     {
         SaveMapView();
-        ClearMirageTowerPulseBlendEffect();
         old_x = gSaveBlock1Ptr->pos.x;
         old_y = gSaveBlock1Ptr->pos.y;
         connection = GetIncomingConnection(direction, gSaveBlock1Ptr->pos.x, gSaveBlock1Ptr->pos.y);
@@ -813,16 +802,6 @@ void GetCameraCoords(u16 *x, u16 *y)
     *y = gSaveBlock1Ptr->pos.y;
 }
 
-void MapGridSetMetatileImpassabilityAt(int x, int y, bool32 impassable)
-{
-    if (AreCoordsWithinMapGridBounds(x, y))
-    {
-        if (impassable)
-            gBackupMapLayout.map[x + gBackupMapLayout.width * y] |= MAPGRID_COLLISION_MASK;
-        else
-            gBackupMapLayout.map[x + gBackupMapLayout.width * y] &= ~MAPGRID_COLLISION_MASK;
-    }
-}
 
 static bool8 SkipCopyingMetatileFromSavedMap(u16 *mapBlock, u16 mapWidth, u8 yMode)
 {
@@ -861,38 +840,36 @@ static void CopyTilesetToVramUsingHeap(struct Tileset const *tileset, u16 numTil
     }
 }
 
-// Below two are dummied functions from FRLG, used to tint the overworld palettes for the Quest Log
-static void ApplyGlobalTintToPaletteEntries(u16 offset, u16 size)
-{
-
-}
-
-static void UNUSED ApplyGlobalTintToPaletteSlot(u8 slot, u8 count)
-{
-
-}
-
+// Time of day (day_night.c): a tileset's own morning/night palettes when it has
+// them, else its day palettes tinted in place.
 static void LoadTilesetPalette(struct Tileset const *tileset, u16 destOffset, u16 size)
 {
     u16 black = RGB_BLACK;
 
     if (tileset)
     {
+        const u16 (*palettes)[16] = GetTilesetPalettesForTimeOfDay(tileset);
+        bool32 tint = (palettes == NULL);
+
+        if (tint)
+            palettes = tileset->palettes;
         if (tileset->isSecondary == FALSE)
         {
             LoadPalette(&black, destOffset, PLTT_SIZEOF(1));
-            LoadPalette(tileset->palettes[0] + 1, destOffset + 1, size - PLTT_SIZEOF(1));
-            ApplyGlobalTintToPaletteEntries(destOffset + 1, (size - PLTT_SIZEOF(1)) >> 1);
+            LoadPalette(palettes[0] + 1, destOffset + 1, size - PLTT_SIZEOF(1));
+            if (tint)
+                ApplyTimeOfDayTint(destOffset + 1, (size - PLTT_SIZEOF(1)) >> 1);
         }
         else if (tileset->isSecondary == TRUE)
         {
-            LoadPalette(tileset->palettes[NUM_PALS_IN_PRIMARY], destOffset, size);
-            ApplyGlobalTintToPaletteEntries(destOffset, size >> 1);
+            LoadPalette(palettes[NUM_PALS_IN_PRIMARY], destOffset, size);
+            if (tint)
+                ApplyTimeOfDayTint(destOffset, size >> 1);
         }
         else
         {
             LoadCompressedPalette((const u32 *)tileset->palettes, destOffset, size);
-            ApplyGlobalTintToPaletteEntries(destOffset, size >> 1);
+            ApplyTimeOfDayTint(destOffset, size >> 1);
         }
     }
 }
@@ -935,7 +912,15 @@ void LoadMapTilesetPalettes(struct MapLayout const *mapLayout)
 {
     if (mapLayout)
     {
+        DayNight_OnMapPalettesLoad();
         LoadPrimaryTilesetPalette(mapLayout);
         LoadSecondaryTilesetPalette(mapLayout);
     }
+}
+
+// The time of day changed (day_night.c): load the current map's palettes again.
+void ReloadMapTilesetPalettes(void)
+{
+    LoadPrimaryTilesetPalette(gMapHeader.mapLayout);
+    LoadSecondaryTilesetPalette(gMapHeader.mapLayout);
 }

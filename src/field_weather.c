@@ -542,10 +542,9 @@ static void ApplyColorMapWithBlend(u8 startPalIndex, u8 numPalettes, s8 colorMap
     u16 palOffset;
     u16 curPalIndex;
     u16 i;
-    struct RGBColor color = *(struct RGBColor *)&blendColor;
-    u8 rBlend = color.r;
-    u8 gBlend = color.g;
-    u8 bBlend = color.b;
+    u8 rBlend = GET_R(blendColor);
+    u8 gBlend = GET_G(blendColor);
+    u8 bBlend = GET_B(blendColor);
 
     palOffset = PLTT_ID(startPalIndex);
     numPalettes += startPalIndex;
@@ -590,7 +589,6 @@ static void ApplyColorMapWithBlend(u8 startPalIndex, u8 numPalettes, s8 colorMap
 
 static void ApplyDroughtColorMapWithBlend(s8 colorMapIndex, u8 blendCoeff, u16 blendColor)
 {
-    struct RGBColor color;
     u8 rBlend;
     u8 gBlend;
     u8 bBlend;
@@ -599,10 +597,9 @@ static void ApplyDroughtColorMapWithBlend(s8 colorMapIndex, u8 blendCoeff, u16 b
     u16 i;
 
     colorMapIndex = -colorMapIndex - 1;
-    color = *(struct RGBColor *)&blendColor;
-    rBlend = color.r;
-    gBlend = color.g;
-    bBlend = color.b;
+    rBlend = GET_R(blendColor);
+    gBlend = GET_G(blendColor);
+    bBlend = GET_B(blendColor);
     palOffset = 0;
     for (curPalIndex = 0; curPalIndex < 32; curPalIndex++)
     {
@@ -645,17 +642,15 @@ static void ApplyDroughtColorMapWithBlend(s8 colorMapIndex, u8 blendCoeff, u16 b
 
 static void ApplyFogBlend(u8 blendCoeff, u16 blendColor)
 {
-    struct RGBColor color;
     u8 rBlend;
     u8 gBlend;
     u8 bBlend;
     u16 curPalIndex;
 
     BlendPalette(BG_PLTT_ID(0), 16 * 16, blendCoeff, blendColor);
-    color = *(struct RGBColor *)&blendColor;
-    rBlend = color.r;
-    gBlend = color.g;
-    bBlend = color.b;
+    rBlend = GET_R(blendColor);
+    gBlend = GET_G(blendColor);
+    bBlend = GET_B(blendColor);
 
     for (curPalIndex = 16; curPalIndex < 32; curPalIndex++)
     {
@@ -1085,6 +1080,11 @@ u8 IsWeatherChangeComplete(void)
 void SetWeatherScreenFadeOut(void)
 {
     gWeatherPtr->palProcessingState = WEATHER_PAL_STATE_SCREEN_FADING_OUT;
+}
+
+bool8 IsWeatherPalStateIdle(void)
+{
+    return gWeatherPtr->palProcessingState == WEATHER_PAL_STATE_IDLE;
 }
 
 void SetWeatherPalStateIdle(void)

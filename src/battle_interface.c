@@ -1078,12 +1078,14 @@ static u32 GetPartyPipsState(u8 battler)
     {
         u32 pip;
 
-        if (GetMonData(&party[i], MON_DATA_SPECIES_OR_EGG) == SPECIES_NONE
-         || GetMonData(&party[i], MON_DATA_SPECIES_OR_EGG) == SPECIES_EGG)
+        // Runs every frame for both boxes, so read the plain-text copies of what the encrypted
+        // data holds (hasSpecies, isEgg, isBadEgg are kept in step by SetBoxMonData and by the
+        // checksum test) instead of decrypting each mon twice through GetMonData.
+        if (!party[i].box.hasSpecies || party[i].box.isEgg || party[i].box.isBadEgg)
             pip = PIP_EMPTY;
-        else if (GetMonData(&party[i], MON_DATA_HP) == 0)
+        else if (party[i].hp == 0)
             pip = PIP_FAINTED;
-        else if (GetMonData(&party[i], MON_DATA_STATUS) != 0)
+        else if (party[i].status != 0)
             pip = PIP_STATUS;
         else
             pip = PIP_HEALTHY;
@@ -1312,17 +1314,6 @@ static void UpdateSpritePos(u8 spriteId, s16 x, s16 y)
     gSprites[spriteId].y = y;
 }
 
-void DestoryHealthboxSprite(u8 healthboxSpriteId)
-{
-    struct Sprite *tpBar = &gSprites[gSprites[gSprites[healthboxSpriteId].oam.affineParam].hOther_TpBarSpriteId];
-
-    if (tpBar->hTp_PipsSpriteId != MAX_SPRITES)
-        DestroySprite(&gSprites[tpBar->hTp_PipsSpriteId]);
-    DestroySprite(&gSprites[gSprites[gSprites[healthboxSpriteId].oam.affineParam].hOther_TpBarSpriteId]);
-    DestroySprite(&gSprites[gSprites[healthboxSpriteId].oam.affineParam]);
-    DestroySprite(&gSprites[gSprites[healthboxSpriteId].hMain_HealthBarSpriteId]);
-    DestroySprite(&gSprites[healthboxSpriteId]);
-}
 
 void DummyBattleInterfaceFunc(u8 healthboxSpriteId, bool8 isDoubleBattleBattlerOnly)
 {
@@ -1456,7 +1447,6 @@ void UpdateHpTextInHealthbox(u8 healthboxSpriteId, s16 value, u8 maxOrCurrent)
     u32 windowId, spriteTileNum;
     u8 *windowTileData;
     u8 text[32];
-    void *objVram;
 
     if (GetBattlerSide(gSprites[healthboxSpriteId].hMain_Battler) == B_SIDE_PLAYER && !IsDoubleBattle())
     {
@@ -2313,14 +2303,13 @@ static void TryAddPokeballIconToHealthbox(u8 healthboxSpriteId, bool8 noStatus)
 static void UpdateStatusIconInHealthbox(u8 healthboxSpriteId)
 {
     s32 i;
-    u8 battler, healthBarSpriteId;
+    u8 battler;
     u32 status, pltAdder;
     const u8 *statusGfxPtr;
     s16 tileNumAdder;
     u8 statusPalId;
 
     battler = gSprites[healthboxSpriteId].hMain_Battler;
-    healthBarSpriteId = gSprites[healthboxSpriteId].hMain_HealthBarSpriteId;
     if (GetBattlerSide(battler) == B_SIDE_PLAYER)
     {
         status = GetMonData(&gPlayerParty[gBattlerPartyIndexes[battler]], MON_DATA_STATUS);

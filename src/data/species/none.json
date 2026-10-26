@@ -1,0 +1,39 @@
+{
+    "species": "NONE",
+    "name": "??????????",
+    "info": null,
+    "levelUpMoves": "@BULBASAUR",
+    "tmhm": [],
+    "tutor": [],
+    "pokedex": {
+        "category": "UNKNOWN",
+        "height": 0,
+        "weight": 0,
+        "text": {
+            "symbol": "gDummyPokedexText",
+            "data": [
+                "This is a newly discovered POKéMON.",
+                "It is currently under investigation.",
+                "No detailed information is available",
+                "at this time."
+            ]
+        },
+        "pokemonScale": 256,
+        "pokemonOffset": 0,
+        "trainerScale": 256,
+        "trainerOffset": 0
+    },
+    "graphics": {
+        "frontPic": {"symbol": "gMonFrontPic_CircledQuestionMark", "data": "graphics/pokemon/question_mark/circled/anim_front.4bpp.lz"},
+        "stillFrontPic": {"symbol": "gMonStillFrontPic_CircledQuestionMark", "data": "graphics/pokemon/question_mark/circled/front.4bpp.lz"},
+        "backPic": {"symbol": "gMonBackPic_CircledQuestionMark", "data": "graphics/pokemon/question_mark/circled/back.4bpp.lz"},
+        "palette": {"symbol": "gMonPalette_CircledQuestionMark", "data": "graphics/pokemon/question_mark/circled/normal.gbapal.lz"},
+        "shinyPalette": {"symbol": "gMonShinyPalette_CircledQuestionMark", "data": "graphics/pokemon/question_mark/circled/shiny.gbapal.lz"},
+        "icon": {"symbol": "gMonIcon_QuestionMark", "data": "graphics/pokemon/question_mark/icon.4bpp"},
+        "iconPalette": 0,
+        "footprint": "@BULBASAUR",
+        "frontCoords": [64, 64, 0],
+        "backCoords": [64, 64, 0],
+        "frontAnimFrames": [[[0, 30], [1, 30], [0, 1]]]
+    }
+}

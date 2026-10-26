@@ -33,6 +33,7 @@ struct ScanlineEffect
     u8 unused16;
     u8 unused17;
     u8 waveTaskId;
+    u8 unitsPerLine; // registers written per HBlank (the DMA count), see ScanlineEffect_SetParams
 };
 
 extern struct ScanlineEffect gScanlineEffect;

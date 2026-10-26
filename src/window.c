@@ -1,5 +1,6 @@
 #include "global.h"
 #include "window.h"
+#include "regress.h"
 #include "malloc.h"
 #include "bg.h"
 #include "blit.h"
@@ -122,7 +123,7 @@ u16 AddWindow(const struct WindowTemplate *template)
     }
 
     if (win == WINDOWS_MAX)
-        return WINDOW_NONE;
+        return REGRESS_NOTE_FAIL(REGRESS_FAIL_WINDOW, WINDOW_NONE);
 
     bgLayer = template->bg;
     allocatedBaseBlock = 0;
@@ -132,7 +133,7 @@ u16 AddWindow(const struct WindowTemplate *template)
         allocatedBaseBlock = BgTileAllocOp(bgLayer, 0, template->width * template->height, 0);
 
         if (allocatedBaseBlock == -1)
-            return WINDOW_NONE;
+            return REGRESS_NOTE_FAIL(REGRESS_FAIL_WINDOW, WINDOW_NONE);
     }
 
     if (gWindowBgTilemapBuffers[bgLayer] == NULL)
@@ -144,7 +145,7 @@ u16 AddWindow(const struct WindowTemplate *template)
             allocatedTilemapBuffer = AllocZeroed(attrib);
 
             if (allocatedTilemapBuffer == NULL)
-                return WINDOW_NONE;
+                return REGRESS_NOTE_FAIL(REGRESS_FAIL_WINDOW, WINDOW_NONE);
 
             for (i = 0; i < attrib; ++i)
                 allocatedTilemapBuffer[i] = 0;
@@ -163,7 +164,7 @@ u16 AddWindow(const struct WindowTemplate *template)
             Free(gWindowBgTilemapBuffers[bgLayer]);
             gWindowBgTilemapBuffers[bgLayer] = allocatedTilemapBuffer;
         }
-        return WINDOW_NONE;
+        return REGRESS_NOTE_FAIL(REGRESS_FAIL_WINDOW, WINDOW_NONE);
     }
 
     gWindows[win].tileData = allocatedTilemapBuffer;
@@ -191,7 +192,7 @@ int AddWindowWithoutTileMap(const struct WindowTemplate *template)
     }
 
     if (win == WINDOWS_MAX)
-        return WINDOW_NONE;
+        return REGRESS_NOTE_FAIL(REGRESS_FAIL_WINDOW, WINDOW_NONE);
 
     bgLayer = template->bg;
     allocatedBaseBlock = 0;
@@ -201,7 +202,7 @@ int AddWindowWithoutTileMap(const struct WindowTemplate *template)
         allocatedBaseBlock = BgTileAllocOp(bgLayer, 0, template->width * template->height, 0);
 
         if (allocatedBaseBlock == -1)
-            return WINDOW_NONE;
+            return REGRESS_NOTE_FAIL(REGRESS_FAIL_WINDOW, WINDOW_NONE);
     }
 
     gWindows[win].window = *template;
@@ -609,7 +610,7 @@ u16 AddWindow8Bit(const struct WindowTemplate *template)
             break;
     }
     if (windowId == WINDOWS_MAX)
-        return WINDOW_NONE;
+        return REGRESS_NOTE_FAIL(REGRESS_FAIL_WINDOW, WINDOW_NONE);
     bgLayer = template->bg;
     if (gWindowBgTilemapBuffers[bgLayer] == NULL)
     {
@@ -619,7 +620,7 @@ u16 AddWindow8Bit(const struct WindowTemplate *template)
             s32 i;
             memAddress = Alloc(attribute);
             if (memAddress == NULL)
-                return WINDOW_NONE;
+                return REGRESS_NOTE_FAIL(REGRESS_FAIL_WINDOW, WINDOW_NONE);
             for (i = 0; i < attribute; i++) // if we're going to zero out the memory anyway, why not call AllocZeroed?
                 memAddress[i] = 0;
             gWindowBgTilemapBuffers[bgLayer] = memAddress;
@@ -634,7 +635,7 @@ u16 AddWindow8Bit(const struct WindowTemplate *template)
             Free(gWindowBgTilemapBuffers[bgLayer]);
             gWindowBgTilemapBuffers[bgLayer] = NULL;
         }
-        return WINDOW_NONE;
+        return REGRESS_NOTE_FAIL(REGRESS_FAIL_WINDOW, WINDOW_NONE);
     }
     else
     {

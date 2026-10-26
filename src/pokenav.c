@@ -19,7 +19,6 @@ struct PokenavResources
     u32 (*currentMenuCb1)(void);
     u32 currentMenuIndex;
     u16 mode;
-    u16 conditionSearchId;
     bool32 hasAnyRibbons;
     void *substructPtrs[POKENAV_SUBSTRUCT_COUNT];
 };
@@ -71,26 +70,6 @@ const struct PokenavCallbacks PokenavMenuCallbacks[15] =
         .free1 = FreeMenuHandlerSubstruct1,
         .free2 = FreeMenuHandlerSubstruct2,
     },
-    [POKENAV_CONDITION_MENU - POKENAV_MENU_IDS_START] =
-    {
-        .init = PokenavCallback_Init_ConditionMenu,
-        .callback = GetMenuHandlerCallback,
-        .open = OpenPokenavMenuNotInitial,
-        .createLoopTask = CreateMenuHandlerLoopedTask,
-        .isLoopTaskActive = IsMenuHandlerLoopedTaskActive,
-        .free1 = FreeMenuHandlerSubstruct1,
-        .free2 = FreeMenuHandlerSubstruct2,
-    },
-    [POKENAV_CONDITION_SEARCH_MENU - POKENAV_MENU_IDS_START] =
-    {
-        .init = PokenavCallback_Init_ConditionSearchMenu,
-        .callback = GetMenuHandlerCallback,
-        .open = OpenPokenavMenuNotInitial,
-        .createLoopTask = CreateMenuHandlerLoopedTask,
-        .isLoopTaskActive = IsMenuHandlerLoopedTaskActive,
-        .free1 = FreeMenuHandlerSubstruct1,
-        .free2 = FreeMenuHandlerSubstruct2,
-    },
     [POKENAV_MAIN_MENU_CURSOR_ON_MATCH_CALL - POKENAV_MENU_IDS_START] =
     {
         .init = PokenavCallback_Init_MainMenuCursorOnMatchCall,
@@ -120,46 +99,6 @@ const struct PokenavCallbacks PokenavMenuCallbacks[15] =
         .isLoopTaskActive = IsRegionMapLoopedTaskActive,
         .free1 = FreeRegionMapSubstruct1,
         .free2 = FreeRegionMapSubstruct2,
-    },
-    [POKENAV_CONDITION_GRAPH_PARTY - POKENAV_MENU_IDS_START] =
-    {
-        .init = PokenavCallback_Init_ConditionGraph_Party,
-        .callback = GetConditionGraphMenuCallback,
-        .open = OpenConditionGraphMenu,
-        .createLoopTask = CreateConditionGraphMenuLoopedTask,
-        .isLoopTaskActive = IsConditionGraphMenuLoopedTaskActive,
-        .free1 = FreeConditionGraphMenuSubstruct1,
-        .free2 = FreeConditionGraphMenuSubstruct2,
-    },
-    [POKENAV_CONDITION_SEARCH_RESULTS - POKENAV_MENU_IDS_START] =
-    {
-        .init = PokenavCallback_Init_ConditionSearch,
-        .callback = GetConditionSearchResultsCallback,
-        .open = OpenConditionSearchResults,
-        .createLoopTask = CreateSearchResultsLoopedTask,
-        .isLoopTaskActive = IsSearchResultLoopedTaskActive,
-        .free1 = FreeSearchResultSubstruct1,
-        .free2 = FreeSearchResultSubstruct2,
-    },
-    [POKENAV_CONDITION_GRAPH_SEARCH - POKENAV_MENU_IDS_START] =
-    {
-        .init = PokenavCallback_Init_ConditionGraph_Search,
-        .callback = GetConditionGraphMenuCallback,
-        .open = OpenConditionGraphMenu,
-        .createLoopTask = CreateConditionGraphMenuLoopedTask,
-        .isLoopTaskActive = IsConditionGraphMenuLoopedTaskActive,
-        .free1 = FreeConditionGraphMenuSubstruct1,
-        .free2 = FreeConditionGraphMenuSubstruct2,
-    },
-    [POKENAV_RETURN_CONDITION_SEARCH - POKENAV_MENU_IDS_START] =
-    {
-        .init = PokenavCallback_Init_ReturnToMonSearchList,
-        .callback = GetConditionSearchResultsCallback,
-        .open = OpenConditionSearchListFromGraph,
-        .createLoopTask = CreateSearchResultsLoopedTask,
-        .isLoopTaskActive = IsSearchResultLoopedTaskActive,
-        .free1 = FreeSearchResultSubstruct1,
-        .free2 = FreeSearchResultSubstruct2,
     },
     [POKENAV_MATCH_CALL - POKENAV_MENU_IDS_START] =
     {
@@ -568,20 +507,6 @@ u32 GetPokenavMode(void)
 void SetPokenavMode(u16 mode)
 {
     gPokenavResources->mode = mode;
-}
-
-void SetSelectedConditionSearch(u32 cursorPos)
-{
-    u32 searchId = cursorPos;
-
-    if (searchId > POKENAV_MENUITEM_CONDITION_SEARCH_TOUGH - POKENAV_MENUITEM_CONDITION_SEARCH_COOL)
-        searchId = 0;
-    gPokenavResources->conditionSearchId = searchId;
-}
-
-u32 GetSelectedConditionSearch(void)
-{
-    return gPokenavResources->conditionSearchId;
 }
 
 bool32 CanViewRibbonsMenu(void)

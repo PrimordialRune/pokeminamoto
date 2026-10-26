@@ -39,7 +39,7 @@ except ImportError:
     sys.exit("palopt.py needs OR-Tools: pip install ortools")
 
 NUM_PALS_IN_PRIMARY = 6
-NUM_PALS_TOTAL = 13
+NUM_PALS_TOTAL = 14
 COLORS_PER_PAL = 15
 MAGENTA = (255, 0, 255)
 

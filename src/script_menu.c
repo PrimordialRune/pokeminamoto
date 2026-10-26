@@ -548,8 +548,6 @@ static void Task_HandleMultichoiceInput(u8 taskId)
 
 bool8 ScriptMenu_YesNo(u8 left, u8 top)
 {
-    u8 taskId;
-
     if (FuncIsActiveTask(Task_HandleYesNoInput) == TRUE)
     {
         return FALSE;
@@ -558,19 +556,11 @@ bool8 ScriptMenu_YesNo(u8 left, u8 top)
     {
         gSpecialVar_Result = 0xFF;
         DisplayYesNoMenuDefaultYes();
-        taskId = CreateTask(Task_HandleYesNoInput, 0x50);
+        CreateTask(Task_HandleYesNoInput, 0x50);
         return TRUE;
     }
 }
 
-// Unused
-bool8 IsScriptActive(void)
-{
-    if (gSpecialVar_Result == 0xFF)
-        return FALSE;
-    else
-        return TRUE;
-}
 
 static void Task_HandleYesNoInput(u8 taskId)
 {

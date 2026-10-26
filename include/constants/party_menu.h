@@ -59,10 +59,7 @@
 #define PARTY_MENU_TYPE_MULTI_SHOWCASE            5
 #define PARTY_MENU_TYPE_DAYCARE                   6
 #define PARTY_MENU_TYPE_MOVE_RELEARNER            7
-#define PARTY_MENU_TYPE_UNION_ROOM_REGISTER       8  // trading board
-#define PARTY_MENU_TYPE_UNION_ROOM_TRADE          9  // trading board
 #define PARTY_MENU_TYPE_SPIN_TRADE                10 // Unused beta for Gen IV's Spin Trade
-#define PARTY_MENU_TYPE_MINIGAME                  11
 #define PARTY_MENU_TYPE_STORE_PYRAMID_HELD_ITEMS  12
 
 #define PARTY_ACTION_CHOOSE_MON         0
@@ -78,7 +75,6 @@
 #define PARTY_ACTION_SOFTBOILED         10
 #define PARTY_ACTION_CHOOSE_AND_CLOSE   11
 #define PARTY_ACTION_MOVE_TUTOR         12
-#define PARTY_ACTION_MINIGAME           13
 #define PARTY_ACTION_REUSABLE_ITEM      14  // Unused. The only reusable items are handled separately
 
 // IDs for DisplayPartyMenuStdMessage, to display the message at the bottom of the party menu

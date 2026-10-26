@@ -619,10 +619,6 @@ static void LoadBerryGfx(u8 berryId)
 {
     struct CompressedSpritePalette pal;
 
-    if (berryId == ITEM_TO_BERRY(ITEM_ENIGMA_BERRY) - 1 && IsEnigmaBerryValid())
-    {
-        // unknown empty if statement
-    }
 
     pal.data = sBerryPicTable[berryId].pal;
     pal.tag = TAG_BERRY_PIC_PAL;
@@ -642,19 +638,6 @@ void FreeBerryTagSpritePalette(void)
     FreeSpritePaletteByTag(TAG_BERRY_PIC_PAL);
 }
 
-// For throwing berries into the Berry Blender
-u8 CreateSpinningBerrySprite(u8 berryId, u8 x, u8 y, bool8 startAffine)
-{
-    u8 spriteId;
-
-    FreeSpritePaletteByTag(TAG_BERRY_PIC_PAL);
-    LoadBerryGfx(berryId);
-    spriteId = CreateSprite(&sBerryPicRotatingSpriteTemplate, x, y, 0);
-    if (startAffine == TRUE)
-        StartSpriteAffineAnim(&gSprites[spriteId], 1);
-
-    return spriteId;
-}
 
 u8 CreateBerryFlavorCircleSprite(s16 x)
 {

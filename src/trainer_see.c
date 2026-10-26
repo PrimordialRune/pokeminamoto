@@ -10,7 +10,6 @@
 #include "sprite.h"
 #include "task.h"
 #include "trainer_see.h"
-#include "trainer_hill.h"
 #include "util.h"
 #include "battle_pyramid.h"
 #include "constants/battle_setup.h"
@@ -255,23 +254,14 @@ static u8 CheckTrainer(u8 objectEventId)
     u8 numTrainers = 1;
     u8 approachDistance;
 
-    if (InTrainerHill() == TRUE)
-        scriptPtr = GetTrainerHillTrainerScript();
-    else
-        scriptPtr = GetObjectEventScriptPointerByObjectEventId(objectEventId);
+    scriptPtr = GetObjectEventScriptPointerByObjectEventId(objectEventId);
 
     if (CurrentBattlePyramidLocation() != PYRAMID_LOCATION_NONE)
     {
         if (GetBattlePyramidTrainerFlag(objectEventId))
             return 0;
     }
-    else if (InTrainerHill() == TRUE)
-    {
-        if (GetHillTrainerFlag(objectEventId))
-            return 0;
-    }
-    else
-    {
+    else {
         if (GetTrainerFlagFromScriptPointer(scriptPtr))
             return 0;
     }
@@ -726,7 +716,7 @@ u8 FldEff_HeartIcon(void)
         struct Sprite *sprite = &gSprites[spriteId];
 
         SetIconSpriteData(sprite, FLDEFF_HEART_ICON, 0);
-        sprite->oam.paletteNum = 2;
+        sprite->oam.paletteNum = LoadObjectPaletteForLegacySlot(PALSLOT_NPC_1);
     }
 
     return 0;

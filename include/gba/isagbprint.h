@@ -2,6 +2,7 @@
 #define GUARD_GBA_ISAGBPRINT_H
 
 #include "gba/types.h"
+#include "config.h"
 
 #define MGBA_LOG_FATAL  (0)
 #define MGBA_LOG_ERROR  (1)

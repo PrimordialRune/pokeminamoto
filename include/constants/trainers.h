@@ -8,7 +8,6 @@
 //      0-299 are frontier trainers
 #define TRAINER_RECORD_MIXING_FRIEND        FRONTIER_TRAINERS_COUNT
 #define TRAINER_RECORD_MIXING_APPRENTICE    400
-#define TRAINER_EREADER                     500
 #define TRAINER_FRONTIER_BRAIN              1022
 #define TRAINER_PLAYER                      1023
 #define TRAINER_SECRET_BASE                 1024
@@ -369,10 +368,23 @@
 
 #define F_TRAINER_FEMALE (1 << 7)
 
-// All trainer parties specify the IV, level, and species for each Pokémon in the
-// party. Some trainer parties also specify held items and custom moves for each
-// Pokémon.
-#define F_TRAINER_PARTY_CUSTOM_MOVESET (1 << 0)
-#define F_TRAINER_PARTY_HELD_ITEM      (1 << 1)
+// struct TrainerMon.gender (src/data/trainers.party "(M)" / "(F)")
+#define TRAINER_MON_RANDOM_GENDER 0 // whatever the trainer's usual personality gives
+#define TRAINER_MON_MALE          1
+#define TRAINER_MON_FEMALE        2
+
+// struct TrainerMon.nature when the party names none: keep the personality's nature
+#define TRAINER_MON_NATURE_DEFAULT NUM_NATURES
+
+// struct TrainerMon.tags (src/data/trainers.party "Tags: Lead / Ace"), the names
+// pokeemerald-expansion's party pools use. Nothing reads them yet.
+#define MON_POOL_TAG_LEAD           (1 << 0)
+#define MON_POOL_TAG_ACE            (1 << 1)
+#define MON_POOL_TAG_WEATHER_SETTER (1 << 2)
+#define MON_POOL_TAG_WEATHER_ABUSER (1 << 3)
+#define MON_POOL_TAG_SUPPORT        (1 << 4)
+#define MON_POOL_TAG_TAG6           (1 << 5)
+#define MON_POOL_TAG_TAG7           (1 << 6)
+#define MON_POOL_TAG_TAG8           (1 << 7)
 
 #endif  // GUARD_TRAINERS_H

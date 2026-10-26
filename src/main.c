@@ -1,9 +1,8 @@
 #include "global.h"
+#include "regress.h"
 #include "crt0.h"
 #include "malloc.h"
 #include "link.h"
-#include "link_rfu.h"
-#include "librfu.h"
 #include "m4a.h"
 #include "bg.h"
 #include "rtc.h"
@@ -22,7 +21,7 @@
 #include "text.h"
 #include "intro.h"
 #include "main.h"
-#include "trainer_hill.h"
+#include "test_runner.h"
 #include "constants/rgb.h"
 
 static void VBlankIntr(void);
@@ -66,7 +65,7 @@ COMMON_DATA u16 gKeyRepeatContinueDelay = 0;
 COMMON_DATA bool8 gSoftResetDisabled = 0;
 COMMON_DATA IntrFunc gIntrTable[INTR_COUNT] = {0};
 COMMON_DATA u8 gLinkVSyncDisabled = 0;
-COMMON_DATA u32 IntrMain_Buffer[0x200] = {0};
+COMMON_DATA u32 IntrMain_Buffer[0x180 / 4] = {0}; // IntrMain is 348 bytes, see the check in src/crt0.s
 COMMON_DATA s8 gPcmDmaCounter = 0;
 
 static EWRAM_DATA u16 sTrainerId = 0;
@@ -88,11 +87,9 @@ void EnableVCountIntrAtLine150(void);
 
 void AgbMain(void)
 {
+    REGRESS_STACK_INIT();
     // Modern compilers are liberal with the stack on entry to this function,
     // so RegisterRamReset may crash if it resets IWRAM.
-#if !MODERN
-    RegisterRamReset(RESET_ALL);
-#endif //MODERN
     *(vu16 *)BG_PLTT = RGB_WHITE; // Set the backdrop to white on startup
     InitGpuRegManager();
     REG_WAITCNT = WAITCNT_PREFETCH_ENABLE | WAITCNT_WS0_S_1 | WAITCNT_WS0_N_3;
@@ -100,7 +97,6 @@ void AgbMain(void)
     InitIntrHandlers();
     m4aSoundInit();
     EnableVCountIntrAtLine150();
-    InitRFU();
     RtcInit();
     CheckForFlashMemory();
     InitMainCallbacks();
@@ -136,8 +132,6 @@ void AgbMain(void)
          && JOY_HELD_RAW(A_BUTTON)
          && JOY_HELD_RAW(B_START_SELECT) == B_START_SELECT)
         {
-            rfu_REQ_stopMode();
-            rfu_waitREQComplete();
             DoSoftReset();
         }
 
@@ -177,12 +171,15 @@ static void UpdateLinkAndCallCallbacks(void)
 static void InitMainCallbacks(void)
 {
     gMain.vblankCounter1 = 0;
-    gTrainerHillVBlankCounter = NULL;
     gMain.vblankCounter2 = 0;
     gMain.callback1 = NULL;
+#ifdef TEST_BUILD
+    SetMainCallback2(CB2_TestRunner); // boot straight into the rule tests (include/test_runner.h)
+#else
     SetMainCallback2(CB2_InitCopyrightScreenAfterBootup);
-    gSaveBlock2Ptr = &gSaveblock2.block;
-    gPokemonStoragePtr = &gPokemonStorage.block;
+#endif
+    gSaveBlock2Ptr = &gSaveblock2;
+    gPokemonStoragePtr = &gPokemonStorage;
 }
 
 static void CallCallbacks(void)
@@ -339,15 +336,10 @@ void SetSerialCallback(IntrCallback callback)
 
 static void VBlankIntr(void)
 {
-    if (gWirelessCommType != 0)
-        RfuVSync();
-    else if (gLinkVSyncDisabled == FALSE)
+    if (gLinkVSyncDisabled == FALSE)
         LinkVSync();
 
     gMain.vblankCounter1++;
-
-    if (gTrainerHillVBlankCounter && *gTrainerHillVBlankCounter < 0xFFFFFFFF)
-        (*gTrainerHillVBlankCounter)++;
 
     if (gMain.vblankCallback)
         gMain.vblankCallback();
@@ -362,10 +354,8 @@ static void VBlankIntr(void)
     m4aSoundMain();
     TryReceiveLinkBattleData();
 
-    if (!gMain.inBattle || !(gBattleTypeFlags & (BATTLE_TYPE_LINK | BATTLE_TYPE_FRONTIER | BATTLE_TYPE_RECORDED)))
+    if (TEST_RNG_STIR_ALLOWED() && (!gMain.inBattle || !(gBattleTypeFlags & (BATTLE_TYPE_LINK | BATTLE_TYPE_FRONTIER))))
         Random();
-
-    UpdateWirelessStatusIndicatorSprite();
 
     INTR_CHECK |= INTR_FLAG_VBLANK;
     gMain.intrCheck |= INTR_FLAG_VBLANK;
@@ -409,20 +399,12 @@ static void IntrDummy(void)
 
 static void WaitForVBlank(void)
 {
+    REGRESS_FRAME_END();
     gMain.intrCheck &= ~INTR_FLAG_VBLANK;
 
-    while (!(gMain.intrCheck & INTR_FLAG_VBLANK))
-        ;
-}
-
-void SetTrainerHillVBlankCounter(u32 *counter)
-{
-    gTrainerHillVBlankCounter = counter;
-}
-
-void ClearTrainerHillVBlankCounter(void)
-{
-    gTrainerHillVBlankCounter = NULL;
+    // Halt the CPU until the VBlank interrupt instead of spinning, which
+    // saves battery. The BIOS watches INTR_CHECK, which VBlankIntr sets.
+    VBlankIntrWait();
 }
 
 void DoSoftReset(void)

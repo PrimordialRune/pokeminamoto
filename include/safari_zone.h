@@ -15,7 +15,4 @@ void SafariZoneRetirePrompt(void);
 
 void CB2_EndSafariBattle(void);
 
-struct Pokeblock *SafariZoneGetActivePokeblock(void);
-void SafariZoneActivatePokeblockFeeder(u8 pkblId);
-
 #endif // GUARD_SAFARI_ZONE_H

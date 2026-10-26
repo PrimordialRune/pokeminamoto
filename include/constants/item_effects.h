@@ -31,9 +31,8 @@
 #define ITEM4_EV_HP             0x1
 #define ITEM4_EV_ATK            0x2
 #define ITEM4_HEAL_HP           0x4
-#define ITEM4_HEAL_PP           0x8
-#define ITEM4_HEAL_PP_ONE       0x10
-#define ITEM4_PP_UP             0x20
+#define ITEM4_HEAL_TP           0x8  // Restores TP in battle (TP replaced PP)
+// 0x10 (was ITEM4_HEAL_PP_ONE) and 0x20 (was ITEM4_PP_UP) are unused: PP is gone
 #define ITEM4_REVIVE            0x40
 #define ITEM4_EVO_STONE         0x80
 
@@ -42,7 +41,7 @@
 #define ITEM5_EV_SPEED          0x2
 #define ITEM5_EV_SPDEF          0x4
 #define ITEM5_EV_SPATK          0x8
-#define ITEM5_PP_MAX            0x10
+// 0x10 (was ITEM5_PP_MAX) is unused: PP is gone
 #define ITEM5_FRIENDSHIP_LOW    0x20
 #define ITEM5_FRIENDSHIP_MID    0x40
 #define ITEM5_FRIENDSHIP_HIGH   0x80
@@ -57,8 +56,8 @@
 #define ITEM6_HEAL_HP_HALF   ((u8) -2)
 #define ITEM6_HEAL_HP_LVL_UP ((u8) -3)
 
-// Special PP recovery amounts for ITEM4_HEAL_PP
-#define ITEM6_HEAL_PP_FULL   0x7F
+// TP recovery amount for ITEM4_HEAL_TP; anything >= TP_MAX refills the mon
+#define ITEM6_HEAL_TP_FULL   0x7F
 
 // Amount of EV modified by ITEM4_EV_HP, ITEM4_EV_ATK, ITEM5_EV_DEF, ITEM5_EV_SPEED, ITEM5_EV_SPDEF and ITEM5_EV_SPATK
 #define ITEM6_ADD_EV       10
@@ -84,9 +83,8 @@
 #define ITEM_EFFECT_SPEED_EV 16
 #define ITEM_EFFECT_DEF_EV 17
 #define ITEM_EFFECT_EVO_STONE 18
-#define ITEM_EFFECT_PP_UP 19
-#define ITEM_EFFECT_PP_MAX 20
-#define ITEM_EFFECT_HEAL_PP 21
+// 19 and 20 were PP Up and PP Max
+#define ITEM_EFFECT_HEAL_TP 21
 #define ITEM_EFFECT_NONE 22
 
 #endif // GUARD_CONSTANTS_ITEM_EFFECTS_H

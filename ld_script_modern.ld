@@ -57,17 +57,12 @@ SECTIONS {
     lib_text :
     ALIGN(4)
     {
-        src/libgcnmultiboot.o(.text);
         src/m4a_1.o(.text);
         src/m4a.o(.text);
         src/agb_flash.o(.text);
         src/agb_flash_1m.o(.text);
         src/agb_flash_mx.o(.text);
         src/siirtc.o(.text);
-        src/librfu_stwi.o(.text);
-        src/librfu_intr.o(.text);
-        src/librfu_rfu.o(.text);
-        src/librfu_sio32id.o(.text);
         *libagbsyscall.a:*.o(.text*);
         *libgcc.a:*.o(.text*);
         *libc.a:*.o(.text*);
@@ -97,21 +92,11 @@ SECTIONS {
         src/agb_flash_mx.o(.rodata);
         src/agb_flash_le.o(.rodata);
         src/siirtc.o(.rodata);
-        src/librfu_rfu.o(.rodata);
-        src/librfu_sio32id.o(.rodata);
         *libgcc.a:*.o(.rodata*);
         *libc.a:*.o(.rodata*);
         *libc.a:*.o(.data*);
         src/libisagbprn.o(.rodata);
     } =0
-
-    multiboot_data :
-    ALIGN(4)
-    {
-        data/multiboot_ereader.o(.rodata);
-        data/multiboot_berry_glitch_fix.o(.rodata);
-        data/multiboot_pokemon_colosseum.o(.rodata);
-    } > ROM =0
 
     anim_mon_front_pic_data :
     ALIGN(4)
@@ -124,6 +109,20 @@ SECTIONS {
     {
         src/graphics.o(.rodata);
     } > ROM =0
+
+    /* ARM code that runs from IWRAM (IWRAM_CODE in include/gba/defines.h).
+       It is stored here in ROM and copied right behind the IWRAM data by
+       Init in src/crt0.s. */
+    iwram_code (ADDR(iwram) + SIZEOF(iwram)) :
+    ALIGN(4)
+    {
+        __iwram_code_start = .;
+        src/*.o(.iwram_code*);
+        . = ALIGN(4);
+        __iwram_code_end = .;
+    } > IWRAM AT> ROM
+    __iwram_code_lma = LOADADDR(iwram_code);
+    gIwramEnd = __iwram_code_end;
 
     /* DWARF debug sections.
        Symbols in the DWARF debugging sections are relative to the beginning
@@ -170,3 +169,11 @@ SECTIONS {
         *(*);
     }
 }
+
+/* IntrMain (src/crt0.s) runs from a copy in IntrMain_Buffer (src/main.c). */
+ASSERT(IntrMain_End - IntrMain <= 0x180, "IntrMain no longer fits IntrMain_Buffer in src/main.c")
+
+/* The system stack (src/crt0.s: sp_sys = IWRAM_END - 0x1c0) grows down into
+   whatever IWRAM the data leaves free. Keep at least 6 KB of it. */
+ASSERT(gIwramEnd <= 0x3008000 - 0x1c0 - 0x1800, "IWRAM data leaves less than 6 KB for the stack")
+ASSERT(__iwram_code_end - __iwram_code_start <= 0x1000, "IWRAM_CODE is over its 4 KB budget")

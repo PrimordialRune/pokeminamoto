@@ -29,7 +29,15 @@ tools/porytiles/tileset.sh compile gTileset_Kanto gTileset_MasaraTown
 | `map2porytiles.py` | Cuts the mockup into 16x16 metatiles and merges duplicates. Splits them between the primary and the secondary: a cell goes to the secondary if it holds a tile from the building sheet, or borders one and uses a color the open ground doesn't. `--split-mask` overrides that per cell. Writes the Porytiles sheets, `map.bin`, and a budget `report.md` with an `overlay.png` that marks one-off tiles. |
 | `palopt.py` | Solves palette packing exactly with OR-Tools: fewest primary palettes first, then fewest secondary. Writes the result as Porytiles palette hints so `compile-tileset` reproduces it. `--suggest-merges` lists color merges that would free a palette. |
 | `render_check.py` | Redraws the map from the compiled `tiles.png`, palettes and `metatiles.bin`, and counts the pixels that differ from the mockup. |
-| `tileset.sh` | Wraps the above with Porytiles (`import` and `compile`). |
+| `tileset.sh` | Wraps the above with Porytiles (`import` and `compile`). `SPLIT_MASK=mask.png` passes a split mask to the import. |
+| `fit_tiles.py` | Merges near-identical 8x8 tiles (and flips) so a hand-drawn mockup fits the tile budget. Building-sheet tiles are never touched. |
+| `water_anim.py` | Draws an 8-frame wave and shore-foam animation into every flat water pixel and writes the Porytiles `anim/` frames. |
+| `collision.py` | Guesses walkable/blocked cells from colors (grass and path walk, everything else blocks), with rectangles to override. |
+| `masara.sh` | Runs the whole chain for Masara Town: fit, water, import, compile, render check, collision. |
+
+## Animations
+
+Porytiles compiles tile animations from `porytiles_src/anim/`: one folder per animation with `key.png` (the tiles as they appear in the layer sheets) and one PNG per frame, plus `anim/anim.json` (`frames`, `frame_order`, `tile_offset`). Frames are strips of 8x8 tiles; no tile may be fully transparent. On compile it writes `include/porytiles_generated/tilesets/<name>/generated_anim_code.h` and hooks it into `src/tileset_anims.c`; the loop steps every 16 game frames. Two animated tiles that look alike in the key frame must animate alike, since the key frame is how frames find their tiles.
 
 ## Limits (include/fieldmap.h)
 

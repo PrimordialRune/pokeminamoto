@@ -32,63 +32,56 @@ struct MonCoords
 #define GET_MON_COORDS_WIDTH(size) ((size >> 4) * 8)
 #define GET_MON_COORDS_HEIGHT(size) ((size & 0xF) * 8)
 
-struct TrainerMonNoItemDefaultMoves
+// One Pokémon of a trainer's party. src/data/trainers.h is generated from
+// src/data/trainers.party by tools/trainerproc, which documents every field.
+// All of pokeemerald-expansion's fields are here. CreateNPCTrainerParty applies
+// nickname, ev, iv, moves, species, heldItem, ability, lvl, ball, friendship,
+// nature, gender and isShiny; teraType, the Dynamax fields and tags are stored
+// for features this engine does not have yet.
+struct TrainerMon
 {
-    u16 iv;
-    u8 lvl;
-    u16 species;
-};
-
-struct TrainerMonItemDefaultMoves
-{
-    u16 iv;
-    u8 lvl;
-    u16 species;
-    u16 heldItem;
-};
-
-struct TrainerMonNoItemCustomMoves
-{
-    u16 iv;
-    u8 lvl;
-    u16 species;
-    u16 moves[MAX_MON_MOVES];
-};
-
-struct TrainerMonItemCustomMoves
-{
-    u16 iv;
-    u8 lvl;
+    const u8 *nickname;
+    const u8 *ev;                   // TRAINER_PARTY_EVS; NULL = no EVs
+    u32 iv;                         // TRAINER_PARTY_IVS
+    u16 moves[MAX_MON_MOVES];       // all MOVE_NONE = the moves learned by level-up
     u16 species;
     u16 heldItem;
-    u16 moves[MAX_MON_MOVES];
+    u16 ability;                    // ABILITY_NONE = the slot the personality picks
+    u8 lvl;
+    u8 ball;                        // ITEM_*_BALL; ITEM_NONE = Poké Ball
+    u8 friendship;                  // 0 = the species' base friendship
+    u8 nature:5;                    // TRAINER_MON_NATURE_DEFAULT = from the personality
+    u8 gender:2;                    // TRAINER_MON_RANDOM_GENDER, _MALE or _FEMALE
+    u8 isShiny:1;
+    u8 teraType:5;
+    u8 gigantamaxFactor:1;
+    u8 shouldUseDynamax:1;
+    u8 padding1:1;
+    u8 dynamaxLevel:4;
+    u8 padding2:4;
+    u32 tags;
 };
 
-#define NO_ITEM_DEFAULT_MOVES(party) { .NoItemDefaultMoves = party }, .partySize = ARRAY_COUNT(party), .partyFlags = 0
-#define NO_ITEM_CUSTOM_MOVES(party) { .NoItemCustomMoves = party }, .partySize = ARRAY_COUNT(party), .partyFlags = F_TRAINER_PARTY_CUSTOM_MOVESET
-#define ITEM_DEFAULT_MOVES(party) { .ItemDefaultMoves = party }, .partySize = ARRAY_COUNT(party), .partyFlags = F_TRAINER_PARTY_HELD_ITEM
-#define ITEM_CUSTOM_MOVES(party) { .ItemCustomMoves = party }, .partySize = ARRAY_COUNT(party), .partyFlags = F_TRAINER_PARTY_CUSTOM_MOVESET | F_TRAINER_PARTY_HELD_ITEM
-
-union TrainerMonPtr
-{
-    const struct TrainerMonNoItemDefaultMoves *NoItemDefaultMoves;
-    const struct TrainerMonNoItemCustomMoves *NoItemCustomMoves;
-    const struct TrainerMonItemDefaultMoves *ItemDefaultMoves;
-    const struct TrainerMonItemCustomMoves *ItemCustomMoves;
-};
+// EVs and IVs in the order HP, Attack, Defense, Speed, Sp. Attack, Sp. Defense
+#define TRAINER_PARTY_EVS(hp, atk, def, speed, spatk, spdef) \
+    ((const u8[NUM_STATS]){hp, atk, def, speed, spatk, spdef})
+#define TRAINER_PARTY_IVS(hp, atk, def, speed, spatk, spdef) \
+    ((hp) | ((atk) << 5) | ((def) << 10) | ((speed) << 15) | ((spatk) << 20) | ((spdef) << 25))
+#define TRAINER_PARTY_IV(iv, stat) (((iv) >> ((stat) * 5)) & MAX_PER_STAT_IVS)
 
 struct Trainer
 {
-    /*0x00*/ u8 partyFlags;
-    /*0x01*/ u8 trainerClass;
-    /*0x02*/ u8 encounterMusic_gender; // last bit is gender
-    /*0x03*/ u8 trainerPic;
-    /*0x04*/ u8 trainerName[TRAINER_NAME_LENGTH + 1];
-    /*0x10*/ u16 items[MAX_TRAINER_ITEMS];
-    /*0x18*/ bool8 doubleBattle;
-    /*0x1C*/ u32 aiFlags;
-    /*0x20*/ u8 partySize;
-    /*0x24*/ union TrainerMonPtr party;
+    /*0x00*/ u8 trainerClass;
+    /*0x01*/ u8 encounterMusic_gender; // last bit is gender
+    /*0x02*/ u8 trainerPic;
+    /*0x03*/ u8 trainerName[TRAINER_NAME_LENGTH + 1];
+    /*0x0E*/ u16 items[MAX_TRAINER_ITEMS];
+    /*0x16*/ bool8 doubleBattle;
+    /*0x17*/ u8 partySize;
+    /*0x18*/ u32 aiFlags;
+    /*0x1C*/ const struct TrainerMon *party;
+    // Minamoto trainer data (Talk lines, a starting Trainer State, TP rules)
+    // goes here once docs/design defines it; see tools/trainerproc/README.md.
 };
 
 #define TRAINER_ENCOUNTER_MUSIC(trainer) ((gTrainers[trainer].encounterMusic_gender & 0x7F))
@@ -137,6 +130,5 @@ extern const struct CompressedSpriteSheet gMonFrontPicTable[];
 extern const struct Trainer gTrainers[];
 extern const u8 gTrainerClassNames[][13];
 extern const u8 gSpeciesNames[][POKEMON_NAME_LENGTH + 1];
-extern const u8 gMoveNames[MOVES_COUNT][MOVE_NAME_LENGTH + 1];
 
 #endif // GUARD_DATA_H

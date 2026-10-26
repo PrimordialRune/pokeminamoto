@@ -13,6 +13,7 @@
 #include "starter_choose.h"
 #include "gba/flash_internal.h"
 #include "text_window.h"
+#include "malloc.h"
 #include "constants/rgb.h"
 
 #define MSG_WIN_TOP 12
@@ -39,11 +40,16 @@ enum
     CLOCK_WIN_ID
 };
 
+// The screen's tilemap and window pixels: 0x800 + 0x1500 + 0x80 bytes.
+#define SCREEN_TILEMAP   0
+#define SCREEN_TEXT_WIN  0x800
+#define SCREEN_CLOCK_WIN 0x1D00
+#define SCREEN_BUFFER_SIZE 0x1D80
+
 static EWRAM_DATA u16 sSaveFailedType = {0};
 static EWRAM_DATA u16 sClockInfo[2] = {0};
-static EWRAM_DATA u8 sUnused1[12] = {0};
 static EWRAM_DATA u8 sWindowIds[2] = {0};
-static EWRAM_DATA u8 sUnused2[4] = {0};
+static EWRAM_DATA u8 *sScreenBuffer = NULL;
 
 static const struct OamData sClockOamData =
 {
@@ -202,14 +208,27 @@ static void CB2_SaveFailedScreen(void)
         LZ77UnCompVram(sSaveFailedClockGfx, (void *)(OBJ_VRAM0 + 0x20));
         ResetBgsAndClearDma3BusyFlags(0);
         InitBgsFromTemplates(0, sBgTemplates, ARRAY_COUNT(sBgTemplates));
-        SetBgTilemapBuffer(0, (void *)&gDecompressionBuffer[0x2000]);
-        CpuFill32(0, &gDecompressionBuffer[0x2000], 0x800);
+        // A Hall of Fame save keeps the record in gDecompressionBuffer and
+        // writes it again from there, so the screen goes on the heap then.
+        sScreenBuffer = NULL;
+        if (sSaveFailedType == SAVE_HALL_OF_FAME)
+        {
+            sScreenBuffer = TryAlloc(SCREEN_BUFFER_SIZE);
+            // No room: save the game without the record rather than save
+            // the screen's pixels as the record.
+            if (sScreenBuffer == NULL)
+                sSaveFailedType = SAVE_NORMAL;
+        }
+        if (sScreenBuffer == NULL)
+            sScreenBuffer = gDecompressionBuffer;
+        SetBgTilemapBuffer(0, &sScreenBuffer[SCREEN_TILEMAP]);
+        CpuFill32(0, &sScreenBuffer[SCREEN_TILEMAP], 0x800);
         LoadBgTiles(0, gTextWindowFrame1_Gfx, 0x120, 0x214);
         InitWindows(sDummyWindowTemplate);
         sWindowIds[TEXT_WIN_ID] = AddWindowWithoutTileMap(sWindowTemplate_Text);
-        SetWindowAttribute(sWindowIds[TEXT_WIN_ID], 7, (u32)&gDecompressionBuffer[0x2800]);
+        SetWindowAttribute(sWindowIds[TEXT_WIN_ID], WINDOW_TILE_DATA, (u32)&sScreenBuffer[SCREEN_TEXT_WIN]);
         sWindowIds[CLOCK_WIN_ID] = AddWindowWithoutTileMap(sWindowTemplate_Clock);
-        SetWindowAttribute(sWindowIds[CLOCK_WIN_ID], 7, (u32)&gDecompressionBuffer[0x3D00]);
+        SetWindowAttribute(sWindowIds[CLOCK_WIN_ID], WINDOW_TILE_DATA, (u32)&sScreenBuffer[SCREEN_CLOCK_WIN]);
         DeactivateAllTextPrinters();
         ResetSpriteData();
         ResetTasks();
@@ -326,6 +345,14 @@ static void CB2_ReturnToTitleScreen(void)
         }
         else
         {
+            if (sScreenBuffer != gDecompressionBuffer)
+            {
+                // The windows point into the buffer; clear them so nothing frees it twice.
+                SetWindowAttribute(sWindowIds[TEXT_WIN_ID], WINDOW_TILE_DATA, 0);
+                SetWindowAttribute(sWindowIds[CLOCK_WIN_ID], WINDOW_TILE_DATA, 0);
+                Free(sScreenBuffer);
+            }
+            sScreenBuffer = NULL;
             SetMainCallback2(gGameContinueCallback);
             gGameContinueCallback = NULL;
         }

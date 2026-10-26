@@ -62,6 +62,16 @@ enum {
     B_TRANSITION_FRONTIER_CIRCLES_CROSS_IN_SEQ,
     B_TRANSITION_FRONTIER_CIRCLES_ASYMMETRIC_SPIRAL_IN_SEQ,
     B_TRANSITION_FRONTIER_CIRCLES_SYMMETRIC_SPIRAL_IN_SEQ,
+    // Gen 1 (Red/Green) transitions, the defaults for wild and trainer battles.
+    // They have no Emerald intro: the circles start with Gen 1's screen flash.
+    B_TRANSITION_GEN1_DOUBLE_CIRCLE,      // wild, outdoors, weaker foe
+    B_TRANSITION_GEN1_CIRCLE,             // wild, outdoors, foe 3+ levels higher
+    B_TRANSITION_GEN1_SPIRAL_IN,          // trainer, outdoors, weaker foe
+    B_TRANSITION_GEN1_SPIRAL_OUT,         // trainer, outdoors, foe 3+ levels higher
+    B_TRANSITION_GEN1_HORIZONTAL_STRIPES, // wild, dungeon, weaker foe
+    B_TRANSITION_GEN1_VERTICAL_STRIPES,   // wild, dungeon, foe 3+ levels higher
+    B_TRANSITION_GEN1_SHRINK,             // trainer, dungeon, weaker foe
+    B_TRANSITION_GEN1_SPLIT,              // trainer, dungeon, foe 3+ levels higher
     B_TRANSITION_COUNT
 };
 
@@ -74,9 +84,7 @@ enum {
     B_TRANSITION_GROUP_B_FACTORY,
     B_TRANSITION_GROUP_B_PIKE,
     B_TRANSITION_GROUP_B_PYRAMID = 10,
-    B_TRANSITION_GROUP_TRAINER_HILL,
     B_TRANSITION_GROUP_SECRET_BASE,
-    B_TRANSITION_GROUP_E_READER,
 };
 
 #endif // GUARD_BATTLE_TRANSITION_H

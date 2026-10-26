@@ -66,12 +66,7 @@ struct RouletteFlashUtil
     struct RouletteFlashPalette palettes[16];
 };
 
-int InitPulseBlendPaletteSettings(struct PulseBlend *pulseBlend, const struct PulseBlendSettings *settings);
-void InitPulseBlend(struct PulseBlend *pulseBlend);
-void MarkUsedPulseBlendPalettes(struct PulseBlend *pulseBlend, u16 pulseBlendPaletteSelector, u8 multiSelection);
-void UnloadUsedPulseBlendPalettes(struct PulseBlend *pulseBlend, u16 pulseBlendPaletteSelector, u8 multiSelection);
 void UnmarkUsedPulseBlendPalettes(struct PulseBlend *pulseBlend, u16 pulseBlendPaletteSelector, u8 multiSelection);
-void UpdatePulseBlend(struct PulseBlend *pulseBlend);
 void FillTilemapRect(u16 *dest, u16 value, u8 left, u8 top, u8 width, u8 height);
 void SetTilemapRect(u16 *dest, u16 *src, u8 left, u8 top, u8 width, u8 height);
 void RouletteFlash_Run(struct RouletteFlashUtil *flash);

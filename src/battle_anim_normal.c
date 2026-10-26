@@ -1040,7 +1040,7 @@ static void AnimHitSplatHandleInvert(struct Sprite *sprite)
     // Matches AnimHitSplatBasic.
     CMD_ARGS(x, y, relativeTo, animation);
 
-    if (GetBattlerSide(gBattleAnimAttacker) != B_SIDE_PLAYER && !IsContest())
+    if (GetBattlerSide(gBattleAnimAttacker) != B_SIDE_PLAYER)
         cmd->y = -cmd->y;
 
     AnimHitSplatBasic(sprite);

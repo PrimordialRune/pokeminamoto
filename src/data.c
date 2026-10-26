@@ -5,7 +5,9 @@
 #include "graphics.h"
 #include "constants/items.h"
 #include "constants/moves.h"
+#include "constants/pokemon.h"
 #include "constants/trainers.h"
+#include "constants/abilities.h"
 #include "constants/battle_ai.h"
 
 const u16 gMinigameDigits_Pal[] = INCBIN_U16("graphics/link/minigame_digits.gbapal");
@@ -291,7 +293,8 @@ static const union AnimCmd sAnim_MonPic_3[] =
     ANIMCMD_END,
 };
 
-const union AnimCmd *const gAnims_MonPic[MAX_MON_PIC_FRAMES] =
+// Only the first MAX_MON_PIC_FRAMES are backed by frame images.
+const union AnimCmd *const gAnims_MonPic[] =
 {
     sAnim_MonPic_0,
     sAnim_MonPic_1,
@@ -303,7 +306,6 @@ const union AnimCmd *const gAnims_MonPic[MAX_MON_PIC_FRAMES] =
 #define SPECIES_PAL(species, pal) [SPECIES_##species] = {pal, SPECIES_##species}
 #define SPECIES_SHINY_PAL(species, pal) [SPECIES_##species] = {pal, SPECIES_##species + SPECIES_SHINY_TAG}
 
-#include "data/pokemon_graphics/unused_anims.h"
 #include "data/pokemon_graphics/front_pic_coordinates.h"
 #include "data/pokemon_graphics/still_front_pic_table.h"
 #include "data/pokemon_graphics/back_pic_coordinates.h"
@@ -320,10 +322,12 @@ const union AnimCmd *const gAnims_MonPic[MAX_MON_PIC_FRAMES] =
 #include "data/pokemon_graphics/enemy_mon_elevation.h"
 #include "data/pokemon_graphics/front_pic_anims.h"
 #include "data/pokemon_graphics/front_pic_table.h"
-#include "data/pokemon_graphics/unknown_table.h"
 
-#include "data/trainer_parties.h"
 #include "data/text/trainer_class_names.h"
+
+// Generated from src/data/trainers.party by tools/trainerproc
+const struct Trainer gTrainers[TRAINERS_COUNT] =
+{
 #include "data/trainers.h"
+};
 #include "data/text/species_names.h"
-#include "data/text/move_names.h"

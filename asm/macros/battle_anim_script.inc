@@ -203,11 +203,6 @@
 	.byte \battler
 	.endm
 
-	.macro jumpifcontest ptr:req
-	.byte 0x24
-	.4byte \ptr
-	.endm
-
 	.macro fadetobgfromset bgOpponent:req, bgPlayer:req, bgContest:req
 	.byte 0x25
 	.byte \bgOpponent

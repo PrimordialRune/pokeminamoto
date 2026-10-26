@@ -152,26 +152,6 @@
       "blockdata_filepath": "data/layouts/TradeCenter/map.bin"
     },
     {
-      "id": "LAYOUT_RECORD_CORNER",
-      "name": "RecordCorner_Layout",
-      "width": 20,
-      "height": 10,
-      "primary_tileset": "gTileset_Building",
-      "secondary_tileset": "gTileset_CableClub",
-      "border_filepath": "data/layouts/RecordCorner/border.bin",
-      "blockdata_filepath": "data/layouts/RecordCorner/map.bin"
-    },
-    {
-      "id": "LAYOUT_BATTLE_COLOSSEUM_4P",
-      "name": "BattleColosseum_4P_Layout",
-      "width": 14,
-      "height": 9,
-      "primary_tileset": "gTileset_Building",
-      "secondary_tileset": "gTileset_CableClub",
-      "border_filepath": "data/layouts/BattleColosseum_4P/border.bin",
-      "blockdata_filepath": "data/layouts/BattleColosseum_4P/map.bin"
-    },
-    {
       "id": "LAYOUT_INSIDE_OF_TRUCK",
       "name": "InsideOfTruck_Layout",
       "width": 5,
@@ -182,16 +162,6 @@
       "blockdata_filepath": "data/layouts/InsideOfTruck/map.bin"
     },
     {
-      "id": "LAYOUT_UNION_ROOM",
-      "name": "UnionRoom_Layout",
-      "width": 15,
-      "height": 12,
-      "primary_tileset": "gTileset_Building",
-      "secondary_tileset": "gTileset_UnionRoom",
-      "border_filepath": "data/layouts/UnionRoom/border.bin",
-      "blockdata_filepath": "data/layouts/UnionRoom/map.bin"
-    },
-    {
       "id": "LAYOUT_LITTLEROOT_TOWN_PROFESSOR_BIRCHS_LAB_WITH_TABLE",
       "name": "LittlerootTown_ProfessorBirchsLabWithTable_Layout",
       "width": 13,
@@ -200,6 +170,16 @@
       "secondary_tileset": "gTileset_Lab",
       "border_filepath": "data/layouts/LittlerootTown_ProfessorBirchsLabWithTable/border.bin",
       "blockdata_filepath": "data/layouts/LittlerootTown_ProfessorBirchsLabWithTable/map.bin"
+    },
+    {
+      "id": "LAYOUT_MASARA_TOWN",
+      "name": "MasaraTown_Layout",
+      "width": 40,
+      "height": 36,
+      "primary_tileset": "gTileset_Kanto",
+      "secondary_tileset": "gTileset_MasaraTown",
+      "border_filepath": "data/layouts/MasaraTown/border.bin",
+      "blockdata_filepath": "data/layouts/MasaraTown/map.bin"
     }
   ]
 }

@@ -29,7 +29,6 @@
 #include "constants/moves.h"
 #include "constants/songs.h"
 #include "constants/trainer_types.h"
-#include "constants/removed_maps.h"
 
 #define NUM_FORCED_MOVEMENTS 18
 #define NUM_ACRO_BIKE_COLLISIONS 5
@@ -94,7 +93,6 @@ static bool8 PlayerCheckIfAnimFinishedOrInactive(void);
 
 static void PlayerRun(u8);
 static void PlayerNotOnBikeCollide(u8);
-static void PlayerNotOnBikeCollideWithFarawayIslandMew(u8);
 
 static void PlayCollisionSoundIfNotFacingWarp(u8);
 
@@ -617,11 +615,6 @@ static void PlayerNotOnBikeMoving(u8 direction, u16 heldKeys)
             PlayerJumpLedge(direction);
             return;
         }
-        else if (collision == COLLISION_OBJECT_EVENT && IsPlayerCollidingWithFarawayIslandMew(direction))
-        {
-            PlayerNotOnBikeCollideWithFarawayIslandMew(direction);
-            return;
-        }
         else
         {
             // Player collided with something. Certain collisions have special handling that precludes the normal collision effect.
@@ -785,40 +778,6 @@ static void CheckAcroBikeCollision(s16 x, s16 y, u8 metatileBehavior, u8 *collis
             return;
         }
     }
-}
-
-bool8 IsPlayerCollidingWithFarawayIslandMew(u8 direction)
-{
-    u8 mewObjectId;
-    struct ObjectEvent *object;
-    s16 playerX;
-    s16 playerY;
-    s16 mewPrevX;
-
-    object = &gObjectEvents[gPlayerAvatar.objectEventId];
-    playerX = object->currentCoords.x;
-    playerY = object->currentCoords.y;
-
-    MoveCoords(direction, &playerX, &playerY);
-    mewObjectId = GetObjectEventIdByLocalIdAndMap(LOCALID_FARAWAY_ISLAND_MEW, MAP_NUM(MAP_FARAWAY_ISLAND_INTERIOR), MAP_GROUP(MAP_FARAWAY_ISLAND_INTERIOR));
-    if (mewObjectId == OBJECT_EVENTS_COUNT)
-        return FALSE;
-
-    object = &gObjectEvents[mewObjectId];
-    mewPrevX = object->previousCoords.x;
-
-    if (mewPrevX == playerX)
-    {
-        if (object->previousCoords.y != playerY
-            || object->currentCoords.x != mewPrevX
-            || object->currentCoords.y != object->previousCoords.y)
-        {
-            if (object->previousCoords.x == playerX &&
-                object->previousCoords.y == playerY)
-                return TRUE;
-        }
-    }
-    return FALSE;
 }
 
 void SetPlayerAvatarTransitionFlags(u16 transitionFlags)
@@ -1005,19 +964,9 @@ void PlayerOnBikeCollide(u8 direction)
     PlayerSetAnimId(GetWalkInPlaceNormalMovementAction(direction), COPY_MOVE_WALK);
 }
 
-void PlayerOnBikeCollideWithFarawayIslandMew(u8 direction)
-{
-    PlayerSetAnimId(GetWalkInPlaceNormalMovementAction(direction), COPY_MOVE_WALK);
-}
-
 static void PlayerNotOnBikeCollide(u8 direction)
 {
     PlayCollisionSoundIfNotFacingWarp(direction);
-    PlayerSetAnimId(GetWalkInPlaceSlowMovementAction(direction), COPY_MOVE_WALK);
-}
-
-static void PlayerNotOnBikeCollideWithFarawayIslandMew(u8 direction)
-{
     PlayerSetAnimId(GetWalkInPlaceSlowMovementAction(direction), COPY_MOVE_WALK);
 }
 
@@ -1146,40 +1095,6 @@ void PlayerGetDestCoords(s16 *x, s16 *y)
     *y = gObjectEvents[gPlayerAvatar.objectEventId].currentCoords.y;
 }
 
-u8 player_get_pos_including_state_based_drift(s16 *x, s16 *y)
-{
-    struct ObjectEvent *object = &gObjectEvents[gPlayerAvatar.objectEventId];
-
-    if (object->heldMovementActive && !object->heldMovementFinished && !gSprites[object->spriteId].data[2])
-    {
-        *x = object->currentCoords.x;
-        *y = object->currentCoords.y;
-
-        switch (object->movementActionId)
-        {
-        case MOVEMENT_ACTION_WALK_NORMAL_DOWN:
-        case MOVEMENT_ACTION_PLAYER_RUN_DOWN:
-            (*y)++;
-            return TRUE;
-        case MOVEMENT_ACTION_WALK_NORMAL_UP:
-        case MOVEMENT_ACTION_PLAYER_RUN_UP:
-            (*y)--;
-            return TRUE;
-        case MOVEMENT_ACTION_WALK_NORMAL_LEFT:
-        case MOVEMENT_ACTION_PLAYER_RUN_LEFT:
-            (*x)--;
-            return TRUE;
-        case MOVEMENT_ACTION_WALK_NORMAL_RIGHT:
-        case MOVEMENT_ACTION_PLAYER_RUN_RIGHT:
-            (*x)++;
-            return TRUE;
-        }
-    }
-
-    *x = -1;
-    *y = -1;
-    return FALSE;
-}
 
 u8 GetPlayerFacingDirection(void)
 {
@@ -1196,11 +1111,6 @@ u8 PlayerGetElevation(void)
     return gObjectEvents[gPlayerAvatar.objectEventId].previousElevation;
 }
 
-// unused
-void MovePlayerToMapCoords(s16 x, s16 y)
-{
-    MoveObjectEventToMapCoords(&gObjectEvents[gPlayerAvatar.objectEventId], x, y);
-}
 
 u8 TestPlayerAvatarFlags(u8 flag)
 {
@@ -1260,23 +1170,6 @@ u8 GetPlayerAvatarGraphicsIdByStateId(u8 state)
     return GetPlayerAvatarGraphicsIdByStateIdAndGender(state, gPlayerAvatar.gender);
 }
 
-u8 unref_GetRivalAvatarGenderByGraphicsId(u8 gfxId)
-{
-    switch (gfxId)
-    {
-    case OBJ_EVENT_GFX_RIVAL_MAY_NORMAL:
-    case OBJ_EVENT_GFX_RIVAL_MAY_MACH_BIKE:
-    case OBJ_EVENT_GFX_RIVAL_MAY_ACRO_BIKE:
-    case OBJ_EVENT_GFX_RIVAL_MAY_SURFING:
-    case OBJ_EVENT_GFX_RIVAL_MAY_FIELD_MOVE:
-    case OBJ_EVENT_GFX_MAY_UNDERWATER:
-    case OBJ_EVENT_GFX_MAY_FISHING:
-    case OBJ_EVENT_GFX_MAY_WATERING:
-        return FEMALE;
-    default:
-        return MALE;
-    }
-}
 
 u8 GetPlayerAvatarGenderByGraphicsId(u8 gfxId)
 {
@@ -1974,7 +1867,6 @@ static bool8 Fishing_StartEncounter(struct Task *task)
         gPlayerAvatar.preventStep = FALSE;
         UnlockPlayerFieldControls();
         FishingWildEncounter(task->tFishingRod);
-        RecordFishingAttemptForTV(TRUE);
         DestroyTask(FindTaskIdByFunc(Task_Fishing));
     }
     return FALSE;
@@ -2034,7 +1926,6 @@ static bool8 Fishing_EndNoMon(struct Task *task)
         UnlockPlayerFieldControls();
         UnfreezeObjectEvents();
         ClearDialogWindowAndFrame(0, TRUE);
-        RecordFishingAttemptForTV(FALSE);
         DestroyTask(FindTaskIdByFunc(Task_Fishing));
     }
     return FALSE;

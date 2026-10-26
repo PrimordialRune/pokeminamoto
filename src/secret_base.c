@@ -46,7 +46,6 @@
 #include "constants/secret_bases.h"
 #include "constants/songs.h"
 #include "constants/trainers.h"
-#include "constants/removed_maps.h"
 
 #define TAG_SCROLL_ARROW 5112
 
@@ -108,33 +107,34 @@ static const struct SecretBaseEntranceMetatiles sSecretBaseEntranceMetatiles[] =
 };
 
 // mapNum, warpId, x, y
+// The secret base maps are not in this build, so the mapNum column is a placeholder.
 // x, y positions are for when the player warps in for the first time (in front of the computer)
 static const u8 sSecretBaseEntrancePositions[NUM_SECRET_BASE_GROUPS * 4] =
 {
-    [SECRET_BASE_RED_CAVE1]    = MAP_NUM(MAP_SECRET_BASE_RED_CAVE1),    0,  1,  3,
-    [SECRET_BASE_RED_CAVE2]    = MAP_NUM(MAP_SECRET_BASE_RED_CAVE2),    0,  5,  9,
-    [SECRET_BASE_RED_CAVE3]    = MAP_NUM(MAP_SECRET_BASE_RED_CAVE3),    0,  1,  3,
-    [SECRET_BASE_RED_CAVE4]    = MAP_NUM(MAP_SECRET_BASE_RED_CAVE4),    0,  7, 13,
-    [SECRET_BASE_BROWN_CAVE1]  = MAP_NUM(MAP_SECRET_BASE_BROWN_CAVE1),  0,  2,  3,
-    [SECRET_BASE_BROWN_CAVE2]  = MAP_NUM(MAP_SECRET_BASE_BROWN_CAVE2),  0,  9,  2,
-    [SECRET_BASE_BROWN_CAVE3]  = MAP_NUM(MAP_SECRET_BASE_BROWN_CAVE3),  0, 13,  4,
-    [SECRET_BASE_BROWN_CAVE4]  = MAP_NUM(MAP_SECRET_BASE_BROWN_CAVE4),  0,  1,  2,
-    [SECRET_BASE_BLUE_CAVE1]   = MAP_NUM(MAP_SECRET_BASE_BLUE_CAVE1),   0,  1,  3,
-    [SECRET_BASE_BLUE_CAVE2]   = MAP_NUM(MAP_SECRET_BASE_BLUE_CAVE2),   0,  1,  2,
-    [SECRET_BASE_BLUE_CAVE3]   = MAP_NUM(MAP_SECRET_BASE_BLUE_CAVE3),   0,  3, 15,
-    [SECRET_BASE_BLUE_CAVE4]   = MAP_NUM(MAP_SECRET_BASE_BLUE_CAVE4),   0,  3, 14,
-    [SECRET_BASE_YELLOW_CAVE1] = MAP_NUM(MAP_SECRET_BASE_YELLOW_CAVE1), 0,  9,  3,
-    [SECRET_BASE_YELLOW_CAVE2] = MAP_NUM(MAP_SECRET_BASE_YELLOW_CAVE2), 0,  8,  7,
-    [SECRET_BASE_YELLOW_CAVE3] = MAP_NUM(MAP_SECRET_BASE_YELLOW_CAVE3), 0,  3,  6,
-    [SECRET_BASE_YELLOW_CAVE4] = MAP_NUM(MAP_SECRET_BASE_YELLOW_CAVE4), 0,  5,  9,
-    [SECRET_BASE_TREE1]        = MAP_NUM(MAP_SECRET_BASE_TREE1),        0,  2,  3,
-    [SECRET_BASE_TREE2]        = MAP_NUM(MAP_SECRET_BASE_TREE2),        0,  5,  6,
-    [SECRET_BASE_TREE3]        = MAP_NUM(MAP_SECRET_BASE_TREE3),        0, 15,  3,
-    [SECRET_BASE_TREE4]        = MAP_NUM(MAP_SECRET_BASE_TREE4),        0,  4, 10,
-    [SECRET_BASE_SHRUB1]       = MAP_NUM(MAP_SECRET_BASE_SHRUB1),       0,  3,  3,
-    [SECRET_BASE_SHRUB2]       = MAP_NUM(MAP_SECRET_BASE_SHRUB2),       0,  1,  2,
-    [SECRET_BASE_SHRUB3]       = MAP_NUM(MAP_SECRET_BASE_SHRUB3),       0,  7,  8,
-    [SECRET_BASE_SHRUB4]       = MAP_NUM(MAP_SECRET_BASE_SHRUB4),       0,  9,  6,
+    [SECRET_BASE_RED_CAVE1]    = 0, 0,  1,  3,
+    [SECRET_BASE_RED_CAVE2]    = 0, 0,  5,  9,
+    [SECRET_BASE_RED_CAVE3]    = 0, 0,  1,  3,
+    [SECRET_BASE_RED_CAVE4]    = 0, 0,  7, 13,
+    [SECRET_BASE_BROWN_CAVE1]  = 0, 0,  2,  3,
+    [SECRET_BASE_BROWN_CAVE2]  = 0, 0,  9,  2,
+    [SECRET_BASE_BROWN_CAVE3]  = 0, 0, 13,  4,
+    [SECRET_BASE_BROWN_CAVE4]  = 0, 0,  1,  2,
+    [SECRET_BASE_BLUE_CAVE1]   = 0, 0,  1,  3,
+    [SECRET_BASE_BLUE_CAVE2]   = 0, 0,  1,  2,
+    [SECRET_BASE_BLUE_CAVE3]   = 0, 0,  3, 15,
+    [SECRET_BASE_BLUE_CAVE4]   = 0, 0,  3, 14,
+    [SECRET_BASE_YELLOW_CAVE1] = 0, 0,  9,  3,
+    [SECRET_BASE_YELLOW_CAVE2] = 0, 0,  8,  7,
+    [SECRET_BASE_YELLOW_CAVE3] = 0, 0,  3,  6,
+    [SECRET_BASE_YELLOW_CAVE4] = 0, 0,  5,  9,
+    [SECRET_BASE_TREE1]        = 0, 0,  2,  3,
+    [SECRET_BASE_TREE2]        = 0, 0,  5,  6,
+    [SECRET_BASE_TREE3]        = 0, 0, 15,  3,
+    [SECRET_BASE_TREE4]        = 0, 0,  4, 10,
+    [SECRET_BASE_SHRUB1]       = 0, 0,  3,  3,
+    [SECRET_BASE_SHRUB2]       = 0, 0,  1,  2,
+    [SECRET_BASE_SHRUB3]       = 0, 0,  7,  8,
+    [SECRET_BASE_SHRUB4]       = 0, 0,  9,  6,
 };
 
 #define GET_BASE_MAP_NUM(group)    (sSecretBaseEntrancePositions[(group) + 0])
@@ -413,7 +413,7 @@ void SetOccupiedSecretBaseEntranceMetatiles(struct MapEvents const *events)
 static void SetSecretBaseWarpDestination(void)
 {
     s8 secretBaseGroup = SECRET_BASE_ID_TO_GROUP(sCurSecretBaseId);
-    SetWarpDestinationToMapWarp(MAP_GROUP(MAP_SECRET_BASE_RED_CAVE1), GET_BASE_MAP_NUM(secretBaseGroup), GET_BASE_WARP_ID(secretBaseGroup));
+    SetWarpDestinationToMapWarp(MAP_GROUP(MAP_UNDEFINED), GET_BASE_MAP_NUM(secretBaseGroup), GET_BASE_WARP_ID(secretBaseGroup));
 }
 
 #define tState data[0]
@@ -510,11 +510,8 @@ void EnterNewlyCreatedSecretBase(void)
 
 bool8 CurMapIsSecretBase(void)
 {
-    if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(MAP_SECRET_BASE_RED_CAVE1)
-     && (u8)gSaveBlock1Ptr->location.mapNum <= MAP_NUM(MAP_SECRET_BASE_SHRUB4))
-        return TRUE;
-    else
-        return FALSE;
+    // No secret base maps exist in this build.
+    return FALSE;
 }
 
 void InitSecretBaseAppearance(bool8 hidePC)
@@ -757,56 +754,7 @@ static bool8 IsSecretBaseRegistered(u8 secretBaseIdx)
     return FALSE;
 }
 
-static u8 GetAverageEVs(struct Pokemon *pokemon)
-{
-    u16 evTotal;
-    evTotal  = GetMonData(pokemon, MON_DATA_HP_EV);
-    evTotal += GetMonData(pokemon, MON_DATA_ATK_EV);
-    evTotal += GetMonData(pokemon, MON_DATA_DEF_EV);
-    evTotal += GetMonData(pokemon, MON_DATA_SPEED_EV);
-    evTotal += GetMonData(pokemon, MON_DATA_SPATK_EV);
-    evTotal += GetMonData(pokemon, MON_DATA_SPDEF_EV);
-    return evTotal / 6;
-}
 
-void SetPlayerSecretBaseParty(void)
-{
-    u16 i;
-    u16 moveIndex;
-    u16 partyId;
-    struct SecretBaseParty *party;
-
-    partyId = 0;
-    party = &gSaveBlock1Ptr->secretBases[0].party;
-    if (gSaveBlock1Ptr->secretBases[0].secretBaseId)
-    {
-        for (i = 0; i < PARTY_SIZE; i++)
-        {
-            for (moveIndex = 0; moveIndex < MAX_MON_MOVES; moveIndex++)
-                party->moves[i * MAX_MON_MOVES + moveIndex] = MOVE_NONE;
-
-            party->species[i] = SPECIES_NONE;
-            party->heldItems[i] = ITEM_NONE;
-            party->levels[i] = 0;
-            party->personality[i] = 0;
-            party->EVs[i] = 0;
-
-            if (GetMonData(&gPlayerParty[i], MON_DATA_SPECIES) != SPECIES_NONE
-            && !GetMonData(&gPlayerParty[i], MON_DATA_IS_EGG))
-            {
-                for (moveIndex = 0; moveIndex < MAX_MON_MOVES; moveIndex++)
-                    party->moves[partyId * MAX_MON_MOVES + moveIndex] = GetMonData(&gPlayerParty[i], MON_DATA_MOVE1 + moveIndex);
-
-                party->species[partyId] = GetMonData(&gPlayerParty[i], MON_DATA_SPECIES);
-                party->heldItems[partyId] = GetMonData(&gPlayerParty[i], MON_DATA_HELD_ITEM);
-                party->levels[partyId] = GetMonData(&gPlayerParty[i], MON_DATA_LEVEL);
-                party->personality[partyId] = GetMonData(&gPlayerParty[i], MON_DATA_PERSONALITY);
-                party->EVs[partyId] = GetAverageEVs(&gPlayerParty[i]);
-                partyId++;
-            }
-        }
-    }
-}
 
 void ClearAndLeaveSecretBase(void)
 {
@@ -1334,389 +1282,30 @@ void SecretBasePerStepCallback(u8 taskId)
 #undef tPlayerY
 #undef tFldEff
 
-static void SaveSecretBase(u8 secretBaseIdx, struct SecretBase *secretBase, u32 version, u32 language)
-{
-    int stringLength;
-    u8 *name;
 
-    gSaveBlock1Ptr->secretBases[secretBaseIdx] = *secretBase;
-    gSaveBlock1Ptr->secretBases[secretBaseIdx].registryStatus = NEW;
-    if (version == VERSION_SAPPHIRE || version == VERSION_RUBY)
-        gSaveBlock1Ptr->secretBases[secretBaseIdx].language = GAME_LANGUAGE;
 
-    if (version == VERSION_EMERALD && language == LANGUAGE_JAPANESE)
-    {
-        name = gSaveBlock1Ptr->secretBases[secretBaseIdx].trainerName;
-        for (stringLength = 0; stringLength < PLAYER_NAME_LENGTH; stringLength++)
-        {
-            if (name[stringLength] == EOS)
-                break;
-        }
 
-        if (stringLength > 5)
-            gSaveBlock1Ptr->secretBases[secretBaseIdx].language = GAME_LANGUAGE;
-    }
-}
 
-static bool8 SecretBasesHaveSameTrainerId(struct SecretBase *secretBase1, struct SecretBase *secretBase2)
-{
-    u8 i;
-    for (i = 0; i < TRAINER_ID_LENGTH; i++)
-    {
-        if (secretBase1->trainerId[i] != secretBase2->trainerId[i])
-            return FALSE;
-    }
 
-    return TRUE;
-}
 
-static bool8 SecretBasesHaveSameTrainerName(struct SecretBase *sbr1, struct SecretBase *sbr2)
-{
-    u8 i;
-    for (i = 0; i < PLAYER_NAME_LENGTH && (sbr1->trainerName[i] != EOS || sbr2->trainerName[i] != EOS); i++)
-    {
-        if (sbr1->trainerName[i] != sbr2->trainerName[i])
-            return FALSE;
-    }
 
-    return TRUE;
-}
 
-static bool8 SecretBasesBelongToSamePlayer(struct SecretBase *secretBase1, struct SecretBase *secretBase2)
-{
-    if (secretBase1->gender == secretBase2->gender
-     && SecretBasesHaveSameTrainerId(secretBase1, secretBase2)
-     && SecretBasesHaveSameTrainerName(secretBase1, secretBase2))
-    {
-        return TRUE;
-    }
 
-    return FALSE;
-}
 
-static s16 GetSecretBaseIndexFromId(u8 secretBaseId)
-{
-    s16 i;
-    for (i = 0; i < SECRET_BASES_COUNT; i++)
-    {
-        if (gSaveBlock1Ptr->secretBases[i].secretBaseId == secretBaseId)
-            return i;
-    }
-
-    return -1;
-}
-
-static u8 FindAvailableSecretBaseIndex(void)
-{
-    s16 i;
-    for (i = 1; i < SECRET_BASES_COUNT; i++)
-    {
-        if (gSaveBlock1Ptr->secretBases[i].secretBaseId == 0)
-            return i;
-    }
-
-    return 0;
-}
-
-static u8 FindUnregisteredSecretBaseIndex(void)
-{
-    s16 i;
-    for (i = 1; i < SECRET_BASES_COUNT; i++)
-    {
-        if (gSaveBlock1Ptr->secretBases[i].registryStatus == UNREGISTERED && gSaveBlock1Ptr->secretBases[i].toRegister == FALSE)
-            return i;
-    }
-
-    return 0;
-}
-
-static u8 TrySaveFriendsSecretBase(struct SecretBase *secretBase, u32 version, u32 language)
-{
-    s16 index;
-
-    // Secret base has no location
-    if (!secretBase->secretBaseId)
-        return 0;
-
-    index = GetSecretBaseIndexFromId(secretBase->secretBaseId);
-    if (index != 0)
-    {
-        // An existing secret base is using this location
-        if (index != -1)
-        {
-            if (gSaveBlock1Ptr->secretBases[index].toRegister == TRUE)
-                return 0;
-
-            if (gSaveBlock1Ptr->secretBases[index].registryStatus != NEW || secretBase->toRegister == TRUE)
-            {
-                // Overwrite unregistered base at this location
-                SaveSecretBase(index, secretBase, version, language);
-                return index;
-            }
-        }
-        // No secret base is using this location, find a spot to save it
-        else
-        {
-            index = FindAvailableSecretBaseIndex();
-            if (index != 0)
-            {
-                // Save in empty space
-                SaveSecretBase(index, secretBase, version, language);
-                return index;
-            }
-
-            index = FindUnregisteredSecretBaseIndex();
-            if (index != 0)
-            {
-                // Overwrite unregistered base
-                SaveSecretBase(index, secretBase, version, language);
-                return index;
-            }
-        }
-    }
-
-    // Unable to save. Either...
-    // - This was the player's base
-    // - A registered base exists at this location
-    // - The secret base limit has been filled with registered bases
-    return 0;
-}
-
-// Moves the registered secret bases to the beginning of the array, so that
-// they won't be forgotten during record mixing.
-static void SortSecretBasesByRegistryStatus(void)
-{
-    u8 i;
-    u8 j;
-    struct SecretBase *secretBases;
-
-    secretBases = gSaveBlock1Ptr->secretBases;
-    for (i = 1; i < SECRET_BASES_COUNT - 1; i++)
-    {
-        for (j = i + 1; j < SECRET_BASES_COUNT; j++)
-        {
-            if ((secretBases[i].registryStatus == UNREGISTERED && secretBases[j].registryStatus == REGISTERED)
-             || (secretBases[i].registryStatus == NEW && secretBases[j].registryStatus != NEW))
-            {
-                struct SecretBase temp;
-                SWAP(secretBases[i], secretBases[j], temp)
-            }
-        }
-    }
-}
-
-// Used to save a record mixing friends' bases other than their own
-// registryStatus is so registered bases can be attempted first
-static void TrySaveFriendsSecretBases(struct SecretBaseRecordMixer *mixer, u8 registryStatus)
-{
-    u16 i;
-    for (i = 1; i < SECRET_BASES_COUNT; i++)
-    {
-        if (mixer->secretBases[i].registryStatus == registryStatus)
-            TrySaveFriendsSecretBase(&mixer->secretBases[i], mixer->version, mixer->language);
-    }
-}
-
-static bool8 SecretBaseBelongsToPlayer(struct SecretBase *secretBase)
-{
-    u8 i;
-
-    if (secretBase->secretBaseId == 0)
-        return FALSE;
-
-    if (secretBase->secretBaseId && secretBase->gender != gSaveBlock2Ptr->playerGender)
-        return FALSE;
-
-    // Check if the player's trainer Id matches the secret base's id.
-    for (i = 0; i < TRAINER_ID_LENGTH; i++)
-    {
-        if (secretBase->trainerId[i] != gSaveBlock2Ptr->playerTrainerId[i])
-            return FALSE;
-    }
-
-    for (i = 0; i < PLAYER_NAME_LENGTH && (secretBase->trainerName[i] != EOS || gSaveBlock2Ptr->playerName[i] != EOS); i++)
-    {
-        if (secretBase->trainerName[i] != gSaveBlock2Ptr->playerName[i])
-            return FALSE;
-    }
-
-    return TRUE;
-}
 
 #define DELETED_BASE_A  (1 << 0)
 #define DELETED_BASE_B  (1 << 1)
 #define DELETED_BASE_C  (1 << 2)
 
-static void DeleteFirstOldBaseFromPlayerInRecordMixingFriendsRecords(struct SecretBase *basesA, struct SecretBase *basesB, struct SecretBase *basesC)
-{
-    u8 i;
-    u8 sbFlags = 0;
-
-    for (i = 0; i < SECRET_BASES_COUNT; i++)
-    {
-        if (!(sbFlags & DELETED_BASE_A))
-        {
-            if (SecretBaseBelongsToPlayer(&basesA[i]) == TRUE)
-            {
-                ClearSecretBase(&basesA[i]);
-                sbFlags |= DELETED_BASE_A;
-            }
-        }
-
-        if (!(sbFlags & DELETED_BASE_B))
-        {
-            if (SecretBaseBelongsToPlayer(&basesB[i]) == TRUE)
-            {
-                ClearSecretBase(&basesB[i]);
-                sbFlags |= DELETED_BASE_B;
-            }
-        }
-
-        if (!(sbFlags & DELETED_BASE_C))
-        {
-            if (SecretBaseBelongsToPlayer(&basesC[i]) == TRUE)
-            {
-                ClearSecretBase(&basesC[i]);
-                sbFlags |= DELETED_BASE_C;
-            }
-        }
-
-        if (sbFlags == (DELETED_BASE_A | DELETED_BASE_B | DELETED_BASE_C))
-        {
-            break;
-        }
-    }
-}
 
 #undef DELETED_BASE_A
 #undef DELETED_BASE_B
 #undef DELETED_BASE_C
 
-// returns TRUE if secretBase was deleted, FALSE otherwise
-static bool8 ClearDuplicateOwnedSecretBase(struct SecretBase *secretBase, struct SecretBase *secretBases, u8 idx)
-{
-    u8 i;
 
-    for (i = 0; i < SECRET_BASES_COUNT; i++)
-    {
-        if (secretBases[i].secretBaseId != 0)
-        {
-            if (SecretBasesBelongToSamePlayer(secretBase, &secretBases[i]) == TRUE)
-            {
-                if (idx == 0)
-                {
-                    ClearSecretBase(&secretBases[i]);
-                    return FALSE;
-                }
 
-                if (secretBase->numSecretBasesReceived > secretBases[i].numSecretBasesReceived)
-                {
-                    ClearSecretBase(&secretBases[i]);
-                    return FALSE;
-                }
 
-                secretBases[i].toRegister = secretBase->toRegister;
-                ClearSecretBase(secretBase);
-                return TRUE;
-            }
-        }
-    }
 
-    return FALSE;
-}
-
-static void ClearDuplicateOwnedSecretBases(struct SecretBase *playersBases, struct SecretBase *friendsBasesA, struct SecretBase *friendsBasesB, struct SecretBase *friendsBasesC)
-{
-    u8 i;
-
-    for (i = 1; i < SECRET_BASES_COUNT; i++)
-    {
-        if (playersBases[i].secretBaseId)
-        {
-            if (playersBases[i].registryStatus == REGISTERED)
-            {
-                // Mark registered bases, so if they're deleted as a duplicate they
-                // will be re-registered later
-                playersBases[i].toRegister = TRUE;
-            }
-            if (!ClearDuplicateOwnedSecretBase(&playersBases[i], friendsBasesA, i))
-            {
-                if (!ClearDuplicateOwnedSecretBase(&playersBases[i], friendsBasesB, i))
-                {
-                    ClearDuplicateOwnedSecretBase(&playersBases[i], friendsBasesC, i);
-                }
-            }
-        }
-    }
-    for (i = 0; i < SECRET_BASES_COUNT; i++)
-    {
-        if (friendsBasesA[i].secretBaseId)
-        {
-            friendsBasesA[i].battledOwnerToday = 0;
-            if (!ClearDuplicateOwnedSecretBase(&friendsBasesA[i], friendsBasesB, i))
-            {
-                ClearDuplicateOwnedSecretBase(&friendsBasesA[i], friendsBasesC, i);
-            }
-        }
-    }
-    for (i = 0; i < SECRET_BASES_COUNT; i++)
-    {
-        if (friendsBasesB[i].secretBaseId)
-        {
-            friendsBasesB[i].battledOwnerToday = 0;
-            ClearDuplicateOwnedSecretBase(&friendsBasesB[i], friendsBasesC, i);
-        }
-        if (friendsBasesC[i].secretBaseId)
-        {
-            friendsBasesC[i].battledOwnerToday = 0;
-        }
-    }
-}
-
-static void TrySaveRegisteredDuplicate(struct SecretBase *base, u32 version, u32 language)
-{
-    if (base->toRegister == TRUE)
-    {
-        TrySaveFriendsSecretBase(base, version, language);
-        ClearSecretBase(base);
-    }
-}
-
-static void TrySaveRegisteredDuplicates(struct SecretBaseRecordMixer *mixers)
-{
-    u16 i;
-
-    for (i = 0; i < SECRET_BASES_COUNT; i++)
-    {
-        TrySaveRegisteredDuplicate(&mixers[0].secretBases[i], mixers[0].version, mixers[0].language);
-        TrySaveRegisteredDuplicate(&mixers[1].secretBases[i], mixers[1].version, mixers[1].language);
-        TrySaveRegisteredDuplicate(&mixers[2].secretBases[i], mixers[2].version, mixers[2].language);
-    }
-}
-
-static void SaveRecordMixBases(struct SecretBaseRecordMixer *mixers)
-{
-    DeleteFirstOldBaseFromPlayerInRecordMixingFriendsRecords(mixers[0].secretBases, mixers[1].secretBases, mixers[2].secretBases);
-    ClearDuplicateOwnedSecretBases(gSaveBlock1Ptr->secretBases, mixers[0].secretBases, mixers[1].secretBases, mixers[2].secretBases);
-
-    // First, save any registered secret bases that were deleted as duplicates
-    TrySaveRegisteredDuplicates(mixers);
-
-    // Then try to save the record mixing friends' own bases
-    TrySaveFriendsSecretBase(mixers[0].secretBases, mixers[0].version, mixers[0].language);
-    TrySaveFriendsSecretBase(mixers[1].secretBases, mixers[1].version, mixers[1].language);
-    TrySaveFriendsSecretBase(mixers[2].secretBases, mixers[2].version, mixers[2].language);
-
-    // Then try to save as many of their registered bases as possible
-    TrySaveFriendsSecretBases(&mixers[0], REGISTERED);
-    TrySaveFriendsSecretBases(&mixers[1], REGISTERED);
-    TrySaveFriendsSecretBases(&mixers[2], REGISTERED);
-
-    // Lastly save as many of their unregistered bases as possible
-    TrySaveFriendsSecretBases(&mixers[0], UNREGISTERED);
-    TrySaveFriendsSecretBases(&mixers[1], UNREGISTERED);
-    TrySaveFriendsSecretBases(&mixers[2], UNREGISTERED);
-}
 
 #define INIT_SECRET_BASE_RECORD_MIXER(linkId1, linkId2, linkId3)        \
             mixers[0].secretBases = secretBases + linkId1 * recordSize; \
@@ -1729,78 +1318,7 @@ static void SaveRecordMixBases(struct SecretBaseRecordMixer *mixers)
             mixers[2].version = gLinkPlayers[linkId3].version & 0xFF;   \
             mixers[2].language = gLinkPlayers[linkId3].language;
 
-void ReceiveSecretBasesData(void *secretBases, size_t recordSize, u8 linkIdx)
-{
-    struct SecretBaseRecordMixer mixers[3];
-    u16 i;
 
-    if (FlagGet(FLAG_RECEIVED_SECRET_POWER))
-    {
-        switch (GetLinkPlayerCount())
-        {
-        case 2:
-            memset(secretBases + 2 * recordSize, 0, recordSize);
-            memset(secretBases + 3 * recordSize, 0, recordSize);
-            break;
-        case 3:
-            memset(secretBases + 3 * recordSize, 0, recordSize);
-            break;
-        }
-
-        switch (linkIdx)
-        {
-        case 0:
-            INIT_SECRET_BASE_RECORD_MIXER(1, 2, 3)
-            break;
-        case 1:
-            INIT_SECRET_BASE_RECORD_MIXER(2, 3, 0)
-            break;
-        case 2:
-            INIT_SECRET_BASE_RECORD_MIXER(3, 0, 1)
-            break;
-        case 3:
-            INIT_SECRET_BASE_RECORD_MIXER(0, 1, 2)
-            break;
-        }
-
-        SaveRecordMixBases(mixers);
-
-        for (i = 1; i < SECRET_BASES_COUNT; i++)
-        {
-            // In the process of deleting duplicate bases, if a base the player has registered is deleted it is
-            // flagged with the temporary toRegister flag, so it can be re-registered after it has been newly saved
-            if (gSaveBlock1Ptr->secretBases[i].toRegister == TRUE)
-            {
-                gSaveBlock1Ptr->secretBases[i].registryStatus = REGISTERED;
-                gSaveBlock1Ptr->secretBases[i].toRegister = FALSE;
-            }
-        }
-
-        SortSecretBasesByRegistryStatus();
-        for (i = 1; i < SECRET_BASES_COUNT; i++)
-        {
-            // Unmark "new" bases, they've been saved now and are no longer important
-            if (gSaveBlock1Ptr->secretBases[i].registryStatus == NEW)
-                gSaveBlock1Ptr->secretBases[i].registryStatus = UNREGISTERED;
-        }
-
-        if (gSaveBlock1Ptr->secretBases[0].secretBaseId != 0
-         && gSaveBlock1Ptr->secretBases[0].numSecretBasesReceived != 0xFFFF)
-        {
-            gSaveBlock1Ptr->secretBases[0].numSecretBasesReceived++;
-        }
-    }
-}
-
-void ClearJapaneseSecretBases(struct SecretBase *bases)
-{
-    u32 i;
-    for (i = 0; i < SECRET_BASES_COUNT; i++)
-    {
-        if (bases[i].language == LANGUAGE_JAPANESE)
-            ClearSecretBase(&bases[i]);
-    }
-}
 
 void InitSecretBaseVars(void)
 {
@@ -1822,7 +1340,6 @@ void CheckLeftFriendsSecretBase(void)
     {
         VarSet(VAR_SECRET_BASE_IS_NOT_LOCAL, FALSE);
         sInFriendSecretBase = FALSE;
-        TryPutSecretBaseSecretsOnAir();
         VarSet(VAR_SECRET_BASE_STEP_COUNTER, 0);
         VarSet(VAR_SECRET_BASE_LAST_ITEM_USED, 0);
         VarSet(VAR_SECRET_BASE_LOW_TV_FLAGS, 0);

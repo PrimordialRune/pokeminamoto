@@ -1,10 +1,12 @@
 """Read battle data straight from the decomp sources so the model never drifts from the ROM.
 
-Parsed: base stats, types, growth rates, EXP yield and abilities (species_info.h), moves with
-tpCost (battle_moves.h), level-up learnsets, level evolutions, the type chart (battle_main.c)
+Parsed: base stats, types, growth rates, EXP yield, abilities, level-up learnsets and level
+evolutions (the species records, src/data/species/), moves with
+tpCost (moves_info.h), the type chart (battle_main.c)
 and Minamoto species names (docs/design/data/species.csv).
 """
 import csv
+import json
 import os
 import re
 import unicodedata
@@ -92,29 +94,50 @@ class GameData:
         self._load_ranks()
         self._load_families()
 
+    def _records(self):
+        """The species records (src/data/species/, see tools/speciesgen/README.md), in id order."""
+        if not hasattr(self, "_recs"):
+            base = os.path.join(ROOT, "src", "data", "species")
+            with open(os.path.join(base, "species.txt"), encoding="utf-8") as f:
+                names = [l.split("#")[0].strip() for l in f]
+            self._recs = {}
+            for n in filter(None, names):
+                with open(os.path.join(base, n + ".json"), encoding="utf-8") as f:
+                    r = json.load(f)
+                self._recs[r["species"]] = r
+        return self._recs
+
+    def _record_field(self, name, field):
+        """A record's field, following "@SPECIES" links to shared data."""
+        v = self._records()[name].get(field)
+        while isinstance(v, str) and v.startswith("@"):
+            v = self._records()[v[1:]].get(field)
+        return v["data"] if isinstance(v, dict) and "data" in v else v
+
     def _load_species(self):
-        for name, body in _blocks(_read("src/data/pokemon/species_info.h"), "SPECIES"):
-            hp = _field(body, "baseHP")
-            if hp is None or not hp.isdigit():
+        for name, r in self._records().items():
+            if "baseStats" not in r:
                 continue
-            types = re.search(r"\.types\s*=\s*\{\s*TYPE_(\w+)\s*,\s*TYPE_(\w+)", body).groups()
-            ability = re.search(r"\.abilities\s*=\s*\{\s*ABILITY_(\w+)", body)
+            b = r["baseStats"]
             self.species[name] = {
                 "name": name,
-                "hp": int(hp),
-                "atk": int(_field(body, "baseAttack")),
-                "def": int(_field(body, "baseDefense")),
-                "spe": int(_field(body, "baseSpeed")),
-                "spa": int(_field(body, "baseSpAttack")),
-                "spd": int(_field(body, "baseSpDefense")),
-                "types": tuple(dict.fromkeys(types)),
-                "exp_yield": int(_field(body, "expYield")),
-                "growth": _field(body, "growthRate").replace("GROWTH_", ""),
-                "ability": ability.group(1) if ability else "NONE",
+                "hp": b["hp"],
+                "atk": b["attack"],
+                "def": b["defense"],
+                "spe": b["speed"],
+                "spa": b["spAttack"],
+                "spd": b["spDefense"],
+                "types": tuple(dict.fromkeys(r["types"])),
+                "exp_yield": r["expYield"],
+                "growth": r["growthRate"],
+                "ability": r["abilities"][0],
             }
 
     def _load_moves(self):
-        for name, body in _blocks(_read("src/data/battle_moves.h"), "MOVE"):
+        # PP left the ROM (TP replaced it); the Gen 1/3 PP values the TP formulas can
+        # use are kept in tools/balance/move_pp.csv.
+        legacy_pp = dict(line.split(",") for line in _read("tools/balance/move_pp.csv").split()[1:])
+        for name, body in _blocks(_read("src/data/moves_info.h"), "MOVE"):
             if _field(body, "effect") is None:
                 continue
             self.moves[name] = {
@@ -124,32 +147,34 @@ class GameData:
                 "type": _field(body, "type").replace("TYPE_", ""),
                 "acc": int(_field(body, "accuracy", "0")),
                 "tp": int(_field(body, "tpCost", "0")),
-                "pp": int(_field(body, "pp", "0")),
+                "pp": int(legacy_pp.get(name, "0")),
                 "chance": int(_field(body, "secondaryEffectChance", "0")),
                 "priority": int(_field(body, "priority", "0")),
             }
 
     def _load_learnsets(self):
-        arrays = {}
-        text = _read("src/data/pokemon/level_up_learnsets.h")
-        for m in re.finditer(r"static const u16 (\w+)\[\] = \{(.*?)\};", text, re.S):
-            arrays[m.group(1)] = [(int(l), mv) for l, mv in re.findall(r"LEVEL_UP_MOVE\(\s*(\d+),\s*MOVE_(\w+)\)", m.group(2))]
-        for sp, arr in re.findall(r"\[SPECIES_(\w+)\]\s*=\s*(\w+)", _read("src/data/pokemon/level_up_learnset_pointers.h")):
-            if sp != "NONE" and arr in arrays:
-                self.learnsets[sp] = arrays[arr]
+        for sp in self._records():
+            moves = self._record_field(sp, "levelUpMoves")
+            if sp != "NONE" and moves:
+                self.learnsets[sp] = [(lvl, mv) for lvl, mv in moves]
 
     def _load_evolutions(self):
-        for sp, body in _blocks(_read("src/data/pokemon/evolution.h"), "SPECIES"):
-            for lvl, target in re.findall(r"EVO_LEVEL\w*,\s*(\d+),\s*SPECIES_(\w+)", body):
-                self.evolutions.setdefault(sp, (int(lvl), target))
+        for sp, r in self._records().items():
+            for e in r.get("evolutions", []):
+                if e["method"].startswith("LEVEL"):
+                    self.evolutions.setdefault(sp, (e["param"], e["into"]))
+                    break
 
     def _load_type_chart(self):
         text = _read("src/battle_main.c")
         body = text[text.index("gTypeEffectiveness["):]
-        body = body[:body.index("TYPE_FORESIGHT")]
+        # The rows after TYPE_FORESIGHT (Normal/Fighting vs Ghost) are immunities that only
+        # Foresight lifts, so they count; the table ends at TYPE_ENDTABLE.
+        body = re.sub(r"//.*|/\*.*?\*/", "", body[:body.index("TYPE_ENDTABLE")], flags=re.S)
         mul = {"NO_EFFECT": 0, "NOT_EFFECTIVE": 5, "SUPER_EFFECTIVE": 20}
         for atk, dfn, m in re.findall(r"TYPE_(\w+),\s*TYPE_(\w+),\s*TYPE_MUL_(\w+)", body):
-            self.type_chart[(atk, dfn)] = mul[m]
+            if atk != "FORESIGHT":
+                self.type_chart[(atk, dfn)] = mul[m]
 
     # Minamoto names the Notion species table lacks (it has 180 rows with betas, not every ROM species)
     EXTRA_ALIASES = {"ONISUZUME": "SPEAROW"}

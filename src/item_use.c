@@ -28,7 +28,6 @@
 #include "overworld.h"
 #include "palette.h"
 #include "party_menu.h"
-#include "pokeblock.h"
 #include "pokemon.h"
 #include "script.h"
 #include "sound.h"
@@ -53,14 +52,11 @@ static bool8 ItemfinderCheckForHiddenItems(const struct MapEvents *, u8);
 static u8 GetDirectionToHiddenItem(s16, s16);
 static void PlayerFaceHiddenItem(u8);
 static void CheckForHiddenItemsInMapConnection(u8);
-static void Task_OpenRegisteredPokeblockCase(u8);
 static void ItemUseOnFieldCB_Bike(u8);
 static void ItemUseOnFieldCB_Rod(u8);
 static void ItemUseOnFieldCB_Itemfinder(u8);
 static void ItemUseOnFieldCB_Berry(u8);
 static void ItemUseOnFieldCB_WailmerPailBerry(u8);
-static void ItemUseOnFieldCB_WailmerPailSudowoodo(u8);
-static bool8 TryToWaterSudowoodo(void);
 static void BootUpSoundTMHM(u8);
 static void Task_ShowTMHMContainedMessage(u8);
 static void UseTMHMYesNo(u8);
@@ -69,7 +65,6 @@ static void Task_StartUseRepel(u8);
 static void Task_UseRepel(u8);
 static void Task_CloseCantUseKeyItemMessage(u8);
 static void SetDistanceOfClosestHiddenItem(u8, s16, s16);
-static void CB2_OpenPokeblockFromBag(void);
 
 // EWRAM variables
 EWRAM_DATA static TaskFunc sItemUseOnFieldCB = NULL;
@@ -617,40 +612,6 @@ static void Task_StandingOnHiddenItem(u8 taskId)
 #undef tItemfinderBeeps
 #undef tFacingDir
 
-void ItemUseOutOfBattle_PokeblockCase(u8 taskId)
-{
-    if (MenuHelpers_IsLinkActive() == TRUE)
-    {
-        DisplayDadsAdviceCannotUseItemMessage(taskId, gTasks[taskId].tUsingRegisteredKeyItem);
-    }
-    else if (gTasks[taskId].tUsingRegisteredKeyItem != TRUE)
-    {
-        gBagMenu->newScreenCallback = CB2_OpenPokeblockFromBag;
-        Task_FadeAndCloseBagMenu(taskId);
-    }
-    else
-    {
-        gFieldCallback = FieldCB_ReturnToFieldNoScript;
-        FadeScreen(FADE_TO_BLACK, 0);
-        gTasks[taskId].func = Task_OpenRegisteredPokeblockCase;
-    }
-}
-
-static void CB2_OpenPokeblockFromBag(void)
-{
-    OpenPokeblockCase(PBLOCK_CASE_FIELD, CB2_ReturnToBagMenuPocket);
-}
-
-static void Task_OpenRegisteredPokeblockCase(u8 taskId)
-{
-    if (!gPaletteFade.active)
-    {
-        CleanupOverworldWindowsAndTilemaps();
-        OpenPokeblockCase(PBLOCK_CASE_FIELD, CB2_ReturnToField);
-        DestroyTask(taskId);
-    }
-}
-
 void ItemUseOutOfBattle_CoinCase(u8 taskId)
 {
     ConvertIntToDecimalStringN(gStringVar1, GetCoins(), STR_CONV_MODE_LEFT_ALIGN, 4);
@@ -706,12 +667,7 @@ static void ItemUseOnFieldCB_Berry(u8 taskId)
 
 void ItemUseOutOfBattle_WailmerPail(u8 taskId)
 {
-    if (TryToWaterSudowoodo() == TRUE)
-    {
-        sItemUseOnFieldCB = ItemUseOnFieldCB_WailmerPailSudowoodo;
-        SetUpItemUseOnFieldCallback(taskId);
-    }
-    else if (TryToWaterBerryTree() == TRUE)
+    if (TryToWaterBerryTree() == TRUE)
     {
         sItemUseOnFieldCB = ItemUseOnFieldCB_WailmerPailBerry;
         SetUpItemUseOnFieldCallback(taskId);
@@ -726,27 +682,6 @@ static void ItemUseOnFieldCB_WailmerPailBerry(u8 taskId)
 {
     LockPlayerFieldControls();
     ScriptContext_SetupScript(BerryTree_EventScript_ItemUseWailmerPail);
-    DestroyTask(taskId);
-}
-
-static bool8 TryToWaterSudowoodo(void)
-{
-    s16 x, y;
-    u8 elevation;
-    u8 objId;
-    GetXYCoordsOneStepInFrontOfPlayer(&x, &y);
-    elevation = PlayerGetElevation();
-    objId = GetObjectEventIdByPosition(x, y, elevation);
-    if (objId == OBJECT_EVENTS_COUNT || gObjectEvents[objId].graphicsId != OBJ_EVENT_GFX_SUDOWOODO)
-        return FALSE;
-    else
-        return TRUE;
-}
-
-static void ItemUseOnFieldCB_WailmerPailSudowoodo(u8 taskId)
-{
-    LockPlayerFieldControls();
-    ScriptContext_SetupScript(BattleFrontier_OutsideEast_EventScript_WaterSudowoodo);
     DestroyTask(taskId);
 }
 
@@ -765,18 +700,6 @@ void ItemUseOutOfBattle_ReduceEV(u8 taskId)
 void ItemUseOutOfBattle_SacredAsh(u8 taskId)
 {
     gItemUseCB = ItemUseCB_SacredAsh;
-    SetUpItemUseCallback(taskId);
-}
-
-void ItemUseOutOfBattle_PPRecovery(u8 taskId)
-{
-    gItemUseCB = ItemUseCB_PPRecovery;
-    SetUpItemUseCallback(taskId);
-}
-
-void ItemUseOutOfBattle_PPUp(u8 taskId)
-{
-    gItemUseCB = ItemUseCB_PPUp;
     SetUpItemUseCallback(taskId);
 }
 
@@ -804,7 +727,7 @@ static void Task_ShowTMHMContainedMessage(u8 taskId)
 {
     if (JOY_NEW(A_BUTTON | B_BUTTON))
     {
-        StringCopy(gStringVar1, gMoveNames[ItemIdToBattleMoveId(gSpecialVar_ItemId)]);
+        StringCopy(gStringVar1, gMovesInfo[ItemIdToBattleMoveId(gSpecialVar_ItemId)].name);
         StringExpandPlaceholders(gStringVar4, gText_TMHMContainedVar1);
         DisplayItemMessage(taskId, FONT_NORMAL, gStringVar4, UseTMHMYesNo);
     }
@@ -1029,16 +952,10 @@ void ItemUseInBattle_Medicine(u8 taskId)
     ItemUseInBattle_ShowPartyMenu(taskId);
 }
 
-// Unused. Sacred Ash cannot be used in battle
-void ItemUseInBattle_SacredAsh(u8 taskId)
-{
-    gItemUseCB = ItemUseCB_SacredAsh;
-    ItemUseInBattle_ShowPartyMenu(taskId);
-}
 
-void ItemUseInBattle_PPRecovery(u8 taskId)
+void ItemUseInBattle_TPRecovery(u8 taskId)
 {
-    gItemUseCB = ItemUseCB_PPRecovery;
+    gItemUseCB = ItemUseCB_TPRecovery;
     ItemUseInBattle_ShowPartyMenu(taskId);
 }
 
@@ -1088,15 +1005,6 @@ void ItemUseOutOfBattle_EnigmaBerry(u8 taskId)
         gTasks[taskId].tEnigmaBerryType = ITEM_USE_PARTY_MENU;
         ItemUseOutOfBattle_RareCandy(taskId);
         break;
-    case ITEM_EFFECT_PP_UP:
-    case ITEM_EFFECT_PP_MAX:
-        gTasks[taskId].tEnigmaBerryType = ITEM_USE_PARTY_MENU;
-        ItemUseOutOfBattle_PPUp(taskId);
-        break;
-    case ITEM_EFFECT_HEAL_PP:
-        gTasks[taskId].tEnigmaBerryType = ITEM_USE_PARTY_MENU;
-        ItemUseOutOfBattle_PPRecovery(taskId);
-        break;
     default:
         gTasks[taskId].tEnigmaBerryType = ITEM_USE_BAG_MENU;
         ItemUseOutOfBattle_CannotUse(taskId);
@@ -1122,8 +1030,8 @@ void ItemUseInBattle_EnigmaBerry(u8 taskId)
     case ITEM_EFFECT_CURE_INFATUATION:
         ItemUseInBattle_Medicine(taskId);
         break;
-    case ITEM_EFFECT_HEAL_PP:
-        ItemUseInBattle_PPRecovery(taskId);
+    case ITEM_EFFECT_HEAL_TP:
+        ItemUseInBattle_TPRecovery(taskId);
         break;
     default:
         ItemUseOutOfBattle_CannotUse(taskId);

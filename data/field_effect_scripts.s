@@ -70,8 +70,8 @@ gFieldEffectScriptPointers::
 	.4byte gFieldEffectScript_HallOfFameRecord          @ FLDEFF_HALL_OF_FAME_RECORD
 	.4byte gFieldEffectScript_UseTeleport               @ FLDEFF_USE_TELEPORT
 	.4byte gFieldEffectScript_RayquazaSpotlight         @ FLDEFF_RAYQUAZA_SPOTLIGHT
-	.4byte gFieldEffectScript_DestroyDeoxysRock         @ FLDEFF_DESTROY_DEOXYS_ROCK
-	.4byte gFieldEffectScript_MoveDeoxysRock            @ FLDEFF_MOVE_DEOXYS_ROCK
+	.4byte 0                                         @ FLDEFF_DESTROY_DEOXYS_ROCK (removed)
+	.4byte 0                                         @ FLDEFF_MOVE_DEOXYS_ROCK (removed)
 
 gFieldEffectScript_ExclamationMarkIcon1::
 	field_eff_callnative FldEff_ExclamationMarkIcon
@@ -316,7 +316,6 @@ gFieldEffectScript_FieldMoveShowMonInit::
 	field_eff_end
 
 gFieldEffectScript_UsePuzzleEffect::
-	field_eff_callnative FldEff_UsePuzzleEffect
 	field_eff_end
 
 gFieldEffectScript_SecretBaseBootPC::
@@ -336,10 +335,4 @@ gFieldEffectScript_RayquazaSpotlight::
 	field_eff_callnative FldEff_RayquazaSpotlight
 	field_eff_end
 
-gFieldEffectScript_DestroyDeoxysRock::
-	field_eff_callnative FldEff_DestroyDeoxysRock
-	field_eff_end
 
-gFieldEffectScript_MoveDeoxysRock::
-	field_eff_callnative FldEff_MoveDeoxysRock
-	field_eff_end

@@ -2,7 +2,7 @@
 #define GUARD_BATTLE_UTIL_H
 
 #define MOVE_LIMITATION_ZEROMOVE                (1 << 0)
-#define MOVE_LIMITATION_PP                      (1 << 1)
+#define MOVE_LIMITATION_TP                      (1 << 1)
 #define MOVE_LIMITATION_DISABLED                (1 << 2)
 #define MOVE_LIMITATION_TORMENTED               (1 << 3)
 #define MOVE_LIMITATION_TAUNT                   (1 << 4)
@@ -53,7 +53,6 @@ void HandleAction_UseItem(void);
 void HandleAction_Run(void);
 void HandleAction_WatchesCarefully(void);
 void HandleAction_SafariZoneBallThrow(void);
-void HandleAction_ThrowPokeblock(void);
 void HandleAction_GoNear(void);
 void HandleAction_SafariZoneRun(void);
 void HandleAction_WallyBallThrow(void);
@@ -61,9 +60,9 @@ void HandleAction_TryFinish(void);
 void HandleAction_NothingIsFainted(void);
 void HandleAction_ActionFinished(void);
 u8 GetBattlerForBattleScript(u8 caseId);
-void PressurePPLose(u8 target, u8 attacker, u16 move);
-void PressurePPLoseOnUsingPerishSong(u8 attacker);
-void PressurePPLoseOnUsingImprison(u8 attacker);
+void PressureTPLose(u8 target, u8 attacker, u16 move);
+void PressureTPLoseOnUsingPerishSong(u8 attacker);
+void PressureTPLoseOnUsingImprison(u8 attacker);
 void MarkBattlerForControllerExec(u8 battler);
 void MarkBattlerReceivedLinkData(u8 battler);
 void CancelMultiTurnMoves(u8 battler);

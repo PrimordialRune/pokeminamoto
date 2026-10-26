@@ -1,0 +1,16 @@
+{
+    "species": "EGG",
+    "graphics": {
+        "frontPic": "graphics/pokemon/egg/anim_front.4bpp.lz",
+        "stillFrontPic": "graphics/pokemon/egg/front.4bpp.lz",
+        "backPic": {"symbol": "gMonStillFrontPic_Egg", "data": "graphics/pokemon/egg/front.4bpp.lz"},
+        "palette": "graphics/pokemon/egg/normal.gbapal.lz",
+        "shinyPalette": {"symbol": "gMonPalette_Egg", "data": "graphics/pokemon/egg/normal.gbapal.lz"},
+        "icon": "graphics/pokemon/egg/icon.4bpp",
+        "iconPalette": 1,
+        "footprint": "@BULBASAUR",
+        "frontCoords": [24, 24, 20],
+        "backCoords": [24, 48, 10],
+        "frontAnimFrames": [[[0, 6], [1, 6], [2, 6], [3, 6]]]
+    }
+}

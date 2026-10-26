@@ -168,4 +168,44 @@
 
 #define NUM_SECRET_BASE_GROUPS 24
 
+// Bits set in VAR_SECRET_BASE_LOW_TV_FLAGS / VAR_SECRET_BASE_HIGH_TV_FLAGS when interacting
+// with objects in a friend's secret base (spread across two vars, 32 flags)
+
+// VAR_SECRET_BASE_LOW_TV_FLAGS
+#define SECRET_BASE_USED_CHAIR          (1 << 0)
+#define SECRET_BASE_USED_BALLOON        (1 << 1)
+#define SECRET_BASE_USED_TENT           (1 << 2)
+#define SECRET_BASE_USED_PLANT          (1 << 3)
+#define SECRET_BASE_USED_GOLD_SHIELD    (1 << 4)
+#define SECRET_BASE_USED_SILVER_SHIELD  (1 << 5)
+#define SECRET_BASE_USED_GLASS_ORNAMENT (1 << 6)
+#define SECRET_BASE_USED_TV             (1 << 7)
+#define SECRET_BASE_USED_MUD_BALL       (1 << 8)
+#define SECRET_BASE_USED_BAG            (1 << 9)
+#define SECRET_BASE_USED_CUSHION        (1 << 10)
+#define SECRET_BASE_BATTLED_WON         (1 << 11)
+#define SECRET_BASE_BATTLED_LOST        (1 << 12)
+#define SECRET_BASE_DECLINED_BATTLE     (1 << 13)
+#define SECRET_BASE_USED_POSTER         (1 << 14)
+#define SECRET_BASE_USED_NOTE_MAT       (1 << 15)
+
+// VAR_SECRET_BASE_HIGH_TV_FLAGS
+#define SECRET_BASE_BATTLED_DRAW        (1 << 0)
+#define SECRET_BASE_USED_SPIN_MAT       (1 << 1)
+#define SECRET_BASE_USED_SAND_ORNAMENT  (1 << 2)
+#define SECRET_BASE_USED_DESK           (1 << 3)
+#define SECRET_BASE_USED_BRICK          (1 << 4)
+#define SECRET_BASE_USED_SOLID_BOARD    (1 << 5)
+#define SECRET_BASE_USED_FENCE          (1 << 6)
+#define SECRET_BASE_USED_GLITTER_MAT    (1 << 7)
+#define SECRET_BASE_USED_TIRE           (1 << 8)
+#define SECRET_BASE_USED_STAND          (1 << 9)
+#define SECRET_BASE_USED_BREAKABLE_DOOR (1 << 10)
+#define SECRET_BASE_USED_DOLL           (1 << 11)
+#define SECRET_BASE_USED_SLIDE          (1 << 12)
+#define SECRET_BASE_DECLINED_SLIDE      (1 << 13)
+#define SECRET_BASE_USED_JUMP_MAT       (1 << 14)
+#define SECRET_BASE_UNUSED_FLAG         (1 << 15)
+
+
 #endif  // GUARD_CONSTANTS_SECRET_BASES_H

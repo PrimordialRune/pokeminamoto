@@ -1,11 +1,10 @@
-# Pokémon Emerald
+# pokeminamoto
 
-This is a decompilation of Pokémon Emerald.
+A Gen 1-only fork of the [pokeemerald](https://github.com/pret/pokeemerald) GBA decompilation: a playable
+Pokémon Emerald ROM with the original 151 Pokémon, heading towards the Minamoto design (`docs/design/`).
 
-It builds the following ROM:
+Build: `tools/setup-cloud.sh` on a fresh Debian/Ubuntu box (or WSL2), then `make -j$(nproc)` for
+`pokeemerald_modern.gba`. There is no original-ROM checksum to match any more. See [CLAUDE.md](CLAUDE.md)
+for the layout, build variants, debugging and the regression harness (`tools/regress`).
 
-* [**pokeemerald.gba**](https://datomatic.no-intro.org/index.php?page=show_record&s=23&n=1961) `sha1: f3ae088181bf583e55daf962a92bb46f4f1d07b7`
-
-To set up the repository, see [INSTALL.md](INSTALL.md).
-
-For contacts and other pret projects, see [pret.github.io](https://pret.github.io/).
+Upstream credit: [pret](https://pret.github.io/) and everyone behind pokeemerald.

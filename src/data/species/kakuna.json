@@ -1,0 +1,69 @@
+{
+    "species": "KAKUNA",
+    "name": "KAKUNA",
+    "nationalDex": 14,
+    "dex": 14,
+    "baseStats": {"hp": 45, "attack": 25, "defense": 50, "speed": 35, "spAttack": 25, "spDefense": 25},
+    "types": ["BUG", "POISON"],
+    "catchRate": 120,
+    "expYield": 71,
+    "evYield": {"defense": 2},
+    "genderRatio": 50,
+    "eggCycles": 15,
+    "friendship": 70,
+    "growthRate": "MEDIUM_FAST",
+    "eggGroups": ["BUG", "BUG"],
+    "abilities": ["SHED_SKIN", "NONE"],
+    "safariZoneFleeRate": 0,
+    "bodyColor": "YELLOW",
+    "cry": "sound/direct_sound_samples/cries/kakuna.bin",
+    "evolutions": [{"method": "LEVEL", "param": 10, "into": "BEEDRILL"}],
+    "levelUpMoves": [[1, "HARDEN"], [7, "HARDEN"]],
+    "tmhm": [],
+    "tutor": [],
+    "pokedex": {
+        "category": "COCOON",
+        "height": 6,
+        "weight": 100,
+        "text": [
+            "It remains virtually immobile while it",
+            "clings to a tree. However, on the inside,",
+            "it busily prepares for evolution. This is",
+            "evident from how hot its shell becomes."
+        ],
+        "pokemonScale": 424,
+        "pokemonOffset": 17,
+        "trainerScale": 256,
+        "trainerOffset": 0
+    },
+    "graphics": {
+        "frontPic": "graphics/pokemon/kakuna/anim_front.4bpp.lz",
+        "stillFrontPic": "graphics/pokemon/kakuna/front.4bpp.lz",
+        "backPic": "graphics/pokemon/kakuna/back.4bpp.lz",
+        "palette": "graphics/pokemon/kakuna/normal.gbapal.lz",
+        "shinyPalette": "graphics/pokemon/kakuna/shiny.gbapal.lz",
+        "icon": "graphics/pokemon/kakuna/icon.4bpp",
+        "iconPalette": 2,
+        "footprint": "graphics/pokemon/kakuna/footprint.1bpp",
+        "frontCoords": [32, 40, 14],
+        "backCoords": [32, 48, 10],
+        "frontAnimFrames": [
+            [
+                [0, 5],
+                [1, 5],
+                [0, 5],
+                [1, 5],
+                [0, 5],
+                [1, 5],
+                [0, 20],
+                [1, 5],
+                [0, 5],
+                [1, 5],
+                [0, 5]
+            ]
+        ],
+        "frontAnim": "GLOW_ORANGE",
+        "frontAnimDelay": 20,
+        "backAnim": "DIP_RIGHT_SIDE"
+    }
+}

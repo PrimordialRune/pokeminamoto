@@ -15,6 +15,7 @@
 #include "constants/songs.h"
 #include "constants/rgb.h"
 #include "random.h"
+#ifndef FREE_HOENN_SET_PIECES
 
 /*
     This file handles the cutscene showing Rayquaza arriving to settle the Groudon/Kyogre fight
@@ -3188,3 +3189,14 @@ static void Task_ChasesAway_AnimateRing(u8 taskId)
         break;
     }
 }
+
+#else // FREE_HOENN_SET_PIECES
+
+// Rayquaza cutscene (Sky Pillar), gone with its map
+
+void DoRayquazaScene(u8 animId, bool8 endEarly, MainCallback exitCallback)
+{
+    SetMainCallback2(exitCallback);
+}
+
+#endif // FREE_HOENN_SET_PIECES

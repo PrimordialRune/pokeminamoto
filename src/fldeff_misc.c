@@ -18,6 +18,7 @@
 #include "event_object_movement.h"
 #include "metatile_behavior.h"
 #include "string_util.h"
+#include "constants/secret_bases.h"
 #include "constants/field_effects.h"
 #include "constants/metatile_behaviors.h"
 #include "constants/metatile_labels.h"
@@ -1024,7 +1025,7 @@ void DoSecretBaseGlitterMatSparkle(void)
     {
         gSprites[spriteId].coordOffsetEnabled = TRUE;
         gSprites[spriteId].oam.priority = 1;
-        gSprites[spriteId].oam.paletteNum = 5;
+        gSprites[spriteId].oam.paletteNum = LoadObjectPaletteForLegacySlot(PALSLOT_NPC_4);
         gSprites[spriteId].callback = SpriteCB_GlitterMatSparkle;
         gSprites[spriteId].data[0] = 0;
     }
@@ -1287,40 +1288,4 @@ void DoWateringBerryTreeAnim(void)
     CreateTask(Task_WateringBerryTreeAnim, 80);
 }
 
-// The lights that blink on the counter when mixing records in the cable club
-u8 CreateRecordMixingLights(void)
-{
-    u8 spriteId;
 
-    LoadSpritePalette(&sSpritePalette_RecordMixLights);
-
-    spriteId = CreateSprite(&sSpriteTemplate_RecordMixLights, 0, 0, 82);
-
-    if (spriteId == MAX_SPRITES)
-    {
-        return MAX_SPRITES;
-    }
-    else
-    {
-        struct Sprite *sprite = &gSprites[spriteId];
-        GetMapCoordsFromSpritePos(16, 13, &sprite->x, &sprite->y);
-        sprite->coordOffsetEnabled = TRUE;
-        sprite->x += 16;
-        sprite->y += 2;
-    }
-    return spriteId;
-}
-
-void DestroyRecordMixingLights(void)
-{
-    int i;
-
-    for (i = 0; i < MAX_SPRITES; i++)
-    {
-        if (gSprites[i].template == &sSpriteTemplate_RecordMixLights)
-        {
-            FreeSpritePalette(&gSprites[i]);
-            DestroySprite(&gSprites[i]);
-        }
-    }
-}

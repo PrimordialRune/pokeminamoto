@@ -12,6 +12,7 @@
 #include "item_use.h"
 #include "battle_pyramid.h"
 #include "battle_pyramid_bag.h"
+#include "constants/secret_bases.h"
 #include "constants/items.h"
 #include "constants/hold_effects.h"
 
@@ -22,6 +23,8 @@ EWRAM_DATA struct BagPocket gBagPockets[POCKETS_COUNT] = {0};
 
 #include "data/text/item_descriptions.h"
 #include "data/items.h"
+
+STATIC_ASSERT(BAG_TMHM_COUNT >= NUM_TECHNICAL_MACHINES + NUM_HIDDEN_MACHINES, TMHMPocketFits);
 
 static u16 GetBagItemQuantity(u16 *quantity)
 {
@@ -876,11 +879,6 @@ const u8 *GetItemName(u16 itemId)
     return gItems[SanitizeItemId(itemId)].name;
 }
 
-// Unused
-u16 GetItemId(u16 itemId)
-{
-    return gItems[SanitizeItemId(itemId)].itemId;
-}
 
 u16 GetItemPrice(u16 itemId)
 {
@@ -907,11 +905,6 @@ u8 GetItemImportance(u16 itemId)
     return gItems[SanitizeItemId(itemId)].importance;
 }
 
-// Unused
-u8 GetItemRegistrability(u16 itemId)
-{
-    return gItems[SanitizeItemId(itemId)].registrability;
-}
 
 u8 GetItemPocket(u16 itemId)
 {

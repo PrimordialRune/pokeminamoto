@@ -29,9 +29,9 @@ In a cloud session or a native Linux shell, run `make`/`git` directly.
 
 ### Prerequisites
 
-Fresh Debian/Ubuntu box (cloud session, CI, new machine): run `tools/setup-cloud.sh`. It installs `build-essential git libpng-dev binutils-arm-none-eabi gcc-arm-none-eabi libnewlib-arm-none-eabi`, marks the committed poryscript binary executable and runs `npm ci` for the MCP servers when node is present. It is idempotent. It skips pret `agbcc` unless you pass `CLASSIC=1` (only `make classic` needs it; it builds into `tools/agbcc/`, not committed).
+Fresh Debian/Ubuntu box (cloud session, CI, new machine): run `tools/setup-cloud.sh`. It installs `build-essential git libpng-dev binutils-arm-none-eabi gcc-arm-none-eabi libnewlib-arm-none-eabi`, downloads the pinned Poryscript binary (`tools/poryscript/fetch.sh`, sha256-checked; `make` runs it too when the binary is missing) and runs `npm ci` for the MCP servers when node is present. It is idempotent. `LEAN=1` installs only the build toolchain (CI uses it): no emulator, MCP deps, Porytiles or pip.
 
-On the home WSL box everything is already installed: apt `arm-none-eabi` binutils + gcc 10.3, devkitARM at `/opt/devkitpro` (the modern build picks up its gcc 12.2 and `arm-none-eabi-gdb`), and `tools/agbcc/`.
+On the home WSL box everything is already installed: apt `arm-none-eabi` binutils + gcc 10.3, devkitARM at `/opt/devkitpro` (the modern build picks up its gcc 12.2 and `arm-none-eabi-gdb`).
 
 ### Build Targets
 
@@ -39,13 +39,19 @@ On the home WSL box everything is already installed: apt `arm-none-eabi` binutil
 make -j$(nproc)          # Main build: pokeemerald_modern.gba (arm-none-eabi-gcc)
 make modern -j$(nproc)   # Same as above (kept as an alias)
 make DINFO=1 -j$(nproc)  # Modern build with debug symbols (for GDB)
-make classic -j$(nproc)  # Optional: pokeemerald.gba with agbcc (needs CLASSIC=1 tools/setup-cloud.sh)
-make compare             # Verify ROM matches original sha1 (only useful pre-modification)
 make clean               # Full clean (tools + objects + assets)
 make tidy                # Remove ROM/ELF/objects only (keeps tools and assets)
 make syms                # Generate symbol file from ELF
 make release -j$(nproc)  # Shipping ROM without debug menus: pokeemerald_modern_release.gba
+make check               # Data checks (tools/check_data.py) + the in-ROM test runner (TEST=1) in gbaemu
+make release REGRESS=1 DINFO=1 -j$(nproc)  # ROM with the hooks tools/regress drives
 ```
+
+The classic agbcc build and the `MODERN` switch are gone; gcc is the only compiler. Build-time options: `REGRESS=1` (regression hooks, `include/regress.h`), `TEST=1` (in-ROM tests, `src/test/`), `DINFO=1` (debug symbols), `STRICT_WARNINGS` (`-Wundef`, `-Werror=array-bounds`).
+
+### Regression harness
+
+`tools/regress/` drives a `REGRESS=1` ROM in the headless emulator and compares against baselines: `run.py` (main route: boot, new game, battle, save round trip, heap leak and stack checks), `scene_check.py` (each scene's heap/OAM/palette limits), `cable_check.py` (two-GBA link), `save_check.py` (power cuts, partial saves, incompatible saves), `sleep_check.py`, `transition_check.py`, `town_map_check.py`, `compare.py`, `profile.py` (scanlines per frame), `record_av.py`/`record_song.py` (videos). Their offsets into `struct RegressState` are hard-coded: append new fields at the end only. `gbaemu` is an untracked binary; copy `tools/gba-emu/gbaemu` into each new worktree.
 
 ### Single-file rebuild
 
@@ -59,7 +65,6 @@ rm build/modern/src/<filename>.o && make -j$(nproc)
 - `pokeemerald_modern.gba` — main ROM (modern build)
 - `pokeemerald_modern.elf` — ELF with symbols
 - `pokeemerald_modern.map` — linker map
-- `pokeemerald.gba` / `.elf` / `.map` — only from `make classic`
 
 ## Debugging
 
@@ -142,10 +147,10 @@ Build with `make DINFO=1 -j$(nproc)`, then press F5 in VSCode to debug. The ELF 
 C sources go through a 4-stage pipeline:
 1. `cpp` — C preprocessor (expands `#include`, `#define`)
 2. `preproc` — custom tool expanding Pokémon-specific string escapes (charmap.txt)
-3. `arm-none-eabi-gcc` (main build) or `agbcc`, the GCC 2.95-based compiler (optional `make classic`) → ARM assembly
+3. `arm-none-eabi-gcc` → ARM assembly
 4. `as` (arm-none-eabi) → object files, then `ld` → ELF → `objcopy` → `.gba`
 
-The modern build is the main one since 2026-10-23 and adds `-Wall` plus `-Werror` for return-type, implicit declarations, int/pointer conversions and parentheses. Classic agbcc builds are optional and non-blocking in CI.
+The modern build is the main one since 2026-10-23 and adds `-Wall` plus `-Werror` for return-type, implicit declarations, int/pointer conversions and parentheses.
 
 ### Directory Layout
 
@@ -161,31 +166,18 @@ The modern build is the main one since 2026-10-23 and adds `-Wall` plus `-Werror
 | `data/maps/` | Per-map event/header data (JSON-based, generated via `mapjson`) |
 | `graphics/` | PNG source graphics (converted to GBA formats at build time) |
 | `sound/` | Music and sound effects |
-| `tools/` | Build tools (C programs built from source, except `agbcc`) |
+| `tools/` | Build tools (C programs built from source) |
 
-### Key Data Files (Gen 1 Modified)
-
-These files were bulk-modified from the original pokeemerald to replace Gen 2/3 content:
+### Key Data Files
 
 | File | What it contains |
 |------|-----------------|
+| `src/data/species/<name>.json`, `species.txt` | One record per species (stats, learnsets, evolutions, dex, graphics). `tools/speciesgen` generates `include/constants/species.h` and the `src/data/pokemon/` tables on every build; edit the records, never the generated headers. See `tools/speciesgen/README.md`. |
+| `src/data/moves_info.h` | `gMovesInfo[]`, the one move table (power, type, TP cost, effect, names, descriptions, contest data). PP is gone: TP only. |
+| `src/data/trainers.party` | Every trainer and party, compiled by `tools/trainerproc`. Removed trainers keep their ids through `include/constants/removed_trainers.h`. |
 | `src/data/wild_encounters.json` | Wild encounter tables per route/area |
-| `src/data/trainer_parties.h` | Every trainer's party definition |
-| `src/data/battle_frontier/*.h` | Battle Frontier pools (mons, moves, apprentice data) |
-| `src/data/pokemon/level_up_learnsets.h` | Level-up moves per species |
-| `src/data/pokemon/tutor_learnsets.h` | Move tutor compatibility bitfields |
-| `src/data/pokemon/egg_moves.h` | Egg move tables |
-| `src/data/contest_opponents.h` | Contest NPC data |
 
-### Species Constants
-
-`include/constants/species.h` defines all species. Gen 2/3 entries are still present (commented with `TODO: GEN2/3_REMOVED`) for array index compatibility — removing them would break hundreds of array accesses. The Gen 1 build simply never instantiates them in gameplay data.
-
-Helper macro in `species.h`:
-```c
-#define IS_SPECIES_GEN1(species) ((species) >= SPECIES_BULBASAUR && (species) <= SPECIES_MEW)
-#define SPECIES_GEN1_MAX SPECIES_MEW
-```
+`NUM_SPECIES` is 152 (none + the 151); removed Gen 2/3 names resolve through `include/constants/removed_species.h`. `BoxPokemon` is 80 B and `Pokemon` 100 B, held by static asserts: new per-mon data goes in the freed PP/contest bytes (`docs/engineering/per-mon-data.md`).
 
 ### Move Tutor System
 
@@ -201,11 +193,12 @@ Map and shared scripts are written in [Poryscript](https://github.com/huderlem/p
 
 ### Memory Layout
 
-Defined by `ld_script.ld` (classic) / `ld_script_modern.ld` (modern):
-Measured 2026-10-15 (classic / modern):
-- ROM: 32 MB limit (44.5% / 39.7% used)
-- EWRAM: 256 KB (95.3% used — **nearly full**; flag anything that adds RAM or save data)
-- IWRAM: 32 KB (94.3% / 92.8% used)
+Defined by `ld_script_modern.ld`. Measured 2026-10-25 (release build):
+- ROM: 32 MB limit (about 8.6 MB used)
+- EWRAM: 256 KB (about 76% used). Still flag anything that adds RAM or save data: the save sectors and the battle heap are the tighter limits now.
+- IWRAM: 32 KB (about 72% used). The linker asserts a 6 KB stack reserve, and hot ARM code goes in the `IWRAM_CODE` section (4 KB cap).
+
+Saves are copy-on-write (`SAVE_COPY_ON_WRITE` in `include/config.h`): each sector has two homes and a commit record, so a power cut keeps the last good save. The footer stores a format version and a layout hash; changing any saved struct changes the hash and makes old saves load as incompatible. The frame loop halts in `VBlankIntrWait`, and debug/regress builds show a red screen on heap failure.
 
 ### Task System
 
@@ -213,18 +206,19 @@ The game uses a cooperative multitasking system (`include/task.h`). Nearly all g
 
 ## Gen 1-Only Build Notes
 
-- **Species arrays** (stats, graphics, evolution, learnsets) retain all entries for array-index compatibility; Gen 2/3 data simply goes unreferenced in gameplay.
-- **Designated initializer arrays** (like `sValidApprenticeMoves` in `src/data/battle_frontier/apprentice.h`) cannot have duplicate keys (agbcc errors, gcc warns with `-Woverride-init`) — if adding move references, check for pre-existing entries.
+- **Tilesets:** only the tilesets the remaining layouts use are built in, plus `SecretBase`/`SecretBaseRedCave` (bedroom decorations), `Cave` and `MirageTower` (named in code). The Hoenn tilesets' animation code in `src/tileset_anims.c` is still there (about 50 KB). `FREE_HOENN_SET_PIECES` switches off the Rayquaza cutscene, cable car and Mirage Tower.
+- **Designated initializer arrays** (like `sValidApprenticeMoves` in `src/data/battle_frontier/apprentice.h`) cannot have duplicate keys (gcc warns with `-Woverride-init`) — if adding move references, check for pre-existing entries.
 - **Tutor bitfields** in `sTutorLearnsets[]` use `TUTOR_MOVE_xxx` slot names (defined in `include/constants/party_menu.h`), never Gen 1 move names directly.
 - The starters are `SPECIES_BULBASAUR`, `SPECIES_CHARMANDER`, `SPECIES_SQUIRTLE` (set in `src/starter_choose.c`).
 - See `GEN1_ONLY_CHANGES.md` for the full replacement mapping reference.
-- **Save-block cleanup:** the `FREE_*` defines in `include/config.h` drop save data for unreachable Hoenn/e-Reader systems (Mystery Event/Gift, Enigma Berry, e-Reader trainer, Frontier hall records, Union Room chat texts, extra dex copies), about 3.85 KB of EWRAM. Reads go through `ENIGMA_BERRY` / `EREADER_TRAINER` (empty ROM copies when freed). Changing any of them changes the save layout.
+- **Save-block cleanup:** the `FREE_*` defines in `include/config.h` drop save data for unreachable Hoenn/e-Reader systems (Mystery Event/Gift, Enigma Berry, e-Reader trainer, Frontier hall records, Union Room chat texts, extra dex copies, Apprentice, GameCube link, editable easy chat phrases, Walda, Dewford trends, TV/PokeNews/outbreaks/Gabby & Ty, Mauville old man, Lilycove lady, battle recorder, Trainer Hill, Pokéblocks and Blender records, contest winners, gift ribbons). `FREE_WIRELESS` removes the Wireless Adapter stack (librfu, `link_rfu_*`: Union Room and the wireless minigames can't start; cable link works, its functions are stubs) and the saved names of wirelessly linked trainers; `FREE_FOUR_PLAYER_LINK` sizes the cable receive queue for 2 players, and the Cable Club refuses to start a link with more. Reads go through macros such as `ENIGMA_BERRY`, `EREADER_TRAINER`, `DEWFORD_TRENDS`, `SAVED_APPRENTICES`, `CONTEST_WINNERS`, `GIFT_RIBBONS`, `SAVED_POKEBLOCK()` (empty ROM copies when freed); whole systems that are gone (TV, old man, Lilycove lady, battle recorder, Trainer Hill, Pokéblock case) keep their specials as stubs at the end of their file, and record mixing sends empty data for them. Changing any of them changes the save layout.
 - **Debug menus:** every modern build except `make release` has them (`DEBUG_MENUS` in `include/config.h`). Overworld: hold R and press START (`src/debug_menu.c`: heal, warp, give mons/items, flags/vars, battles, sound, no-clip/encounter/trainer-sight toggles, `Debug_Script_1-4` in `data/scripts/debug.pory`). Battle: hold L and press SELECT on the action menu (`src/battle_debug.c`: HP, TP, status, stat stages). Keep debug code inside `#ifdef DEBUG_MENUS`; release builds must add no RAM.
+- **Hardware features:** L+R+SELECT in the overworld puts the GBA to sleep (BIOS Stop, `src/sleep_mode.c`), any key wakes it. Options has an LCD profile (GBA/SP/IPS, default IPS, `include/palette_tone.h`). Day/night is in `src/day_night.c` (`VAR_TIME_OF_DAY_OVERRIDE` forces a phase).
 
 ## Working remotely
 
 - **Remote Control (home PC):** sessions started in the Claude desktop app on the PC connect to Remote Control automatically, so they can be driven from the phone or claude.ai/code. The PC must be on and not asleep (the app keeps it awake only while Claude is working). Claude on Windows reaches the repo through the symlink and runs git/make via `wsl.exe` (the WSL rule above). mGBA, GDB and the `gba-debug` GDB tools only work here.
-- **Cloud sessions (claude.ai/code, from GitHub):** the repo is cloned fresh into an Ubuntu container. Set the environment's setup script to `tools/setup-cloud.sh` (it skips agbcc unless `CLASSIC=1`). `make` (modern, apt gcc 13) builds there, and `make classic` too after `CLASSIC=1 tools/setup-cloud.sh`. The headless emulator (`emu_*` tools) runs there too, so agents can boot the ROM, debug and screenshot it; play-feel checks still happen on the PC. Commit and push before the session ends; the container is discarded.
+- **Cloud sessions (claude.ai/code, from GitHub):** the repo is cloned fresh into an Ubuntu container. Set the environment's setup script to `tools/setup-cloud.sh`. `make` (apt gcc 13) builds there. The headless emulator (`emu_*` tools) runs there too, so agents can boot the ROM, debug and screenshot it; play-feel checks still happen on the PC. Commit and push before the session ends; the container is discarded.
 - **MCP servers** (`.mcp.json`): `porymap` (maps, scripts, palettes, builds) and `gba-debug` (headless emulator `emu_*` tools, disassembly, symbols, addr2line, map lookup; its `gdb_*` tools attach to an external mGBA, e.g. the desktop one on the PC). Both run with `node`; `tools/setup-cloud.sh` installs their deps.
 
 ## Agents
@@ -243,10 +237,9 @@ Default to Sonnet; use the lead only when the task can't be specified up front.
 
 Game design (story, region, roster, mechanics, art direction, open questions) is summarised in `docs/design/` from the GDD, story doc, arena ecology and city framework. The originals stay the source of truth; see `docs/design/README.md` for where they live.
 
-## Where things stand (2026-10-15)
+## Where things stand (2026-10-25)
 
-- Gen-1 data pass done on `develop`: Gen 2/3 species and moves replaced in data, map scripts converted to Poryscript, Gen1 Researcher NPC added. See `GEN1_ONLY_CHANGES.md`.
-- Hoenn maps removed: only the opening (truck, Littleroot, Route 101, Oldale, Route 103) and the link rooms remain so the ROM boots. Dead Emerald systems still name old maps through `include/constants/removed_maps.h` and `data/scripts/removed_maps.pory`; shrink both as systems are deleted. See `GEN1_ONLY_CHANGES.md`.
-- The game is still Emerald's story and battle engine. None of the Minamoto design (Kanto remake, TP instead of PP, move ranks, signature moves, Talk/AI states, Charisma) is implemented yet.
-- Both builds pass locally and in a fresh Ubuntu 24.04 container.
-- RAM is the main constraint (EWRAM 95%, IWRAM ~93-94%). Mechanics that add per-mon or per-battle state need a RAM/save plan first.
+- Gen-1 data on `develop`; only the opening maps (truck, Littleroot, Route 101, Oldale, Route 103) and the link rooms remain. Old map ids still named by dead code go through `include/constants/parked_maps.h`. See `GEN1_ONLY_CHANGES.md`.
+- Hoenn-only systems (Frontier, contests, berries, Secret Bases, TV, e-Reader, wireless and more) are being deleted behind the `FREE_*` switches.
+- TP replaces PP, with the Minamoto battle UI. Move ranks, signature moves, Talk/AI states and Charisma are not implemented yet.
+- `make check` and the `tools/regress` scripts are the regression gate; run them before merging engine changes.

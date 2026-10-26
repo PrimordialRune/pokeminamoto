@@ -2,6 +2,8 @@
 #include "sprite.h"
 #include "main.h"
 #include "palette.h"
+#include "regress.h"
+#include "fieldmap.h"
 
 #define MAX_SPRITE_COPY_REQUESTS 64
 
@@ -46,11 +48,11 @@ struct OamDimensions
     s8 height;
 };
 
-static void UpdateOamCoords(void);
+IWRAM_CODE static void UpdateOamCoords(void);
 static void BuildSpritePriorities(void);
-static void SortSprites(void);
+IWRAM_CODE static void SortSprites(void);
 static void CopyMatricesToOamBuffer(void);
-static void AddSpritesToOamBuffer(void);
+IWRAM_CODE static void AddSpritesToOamBuffer(void);
 static u8 CreateSpriteAt(u8 index, const struct SpriteTemplate *template, s16 x, s16 y, u8 subpriority);
 static void ResetOamMatrices(void);
 static void ResetSprite(struct Sprite *sprite);
@@ -278,8 +280,8 @@ COMMON_DATA u32 gOamMatrixAllocBitmap = 0;
 COMMON_DATA u8 gReservedSpritePaletteCount = 0;
 
 EWRAM_DATA struct Sprite gSprites[MAX_SPRITES + 1] = {0};
-EWRAM_DATA static u16 sSpritePriorities[MAX_SPRITES] = {0};
-EWRAM_DATA static u8 sSpriteOrder[MAX_SPRITES] = {0};
+static u16 sSpritePriorities[MAX_SPRITES] = {0};
+static u8 sSpriteOrder[MAX_SPRITES] = {0};
 EWRAM_DATA static bool8 sShouldProcessSpriteCopyRequests = 0;
 EWRAM_DATA static u8 sSpriteCopyRequestCount = 0;
 EWRAM_DATA static struct SpriteCopyRequest sSpriteCopyRequests[MAX_SPRITES] = {0};
@@ -301,6 +303,7 @@ void ResetSpriteData(void)
     gOamLimit = 64;
     gReservedSpriteTileCount = 0;
     AllocSpriteTiles(0);
+    REGRESS_SPRITE_STATICS(sSpriteTileAllocBitmap, sSpritePaletteTags);
     gSpriteCoordOffsetX = 0;
     gSpriteCoordOffsetY = 0;
 }
@@ -507,7 +510,7 @@ u8 CreateSprite(const struct SpriteTemplate *template, s16 x, s16 y, u8 subprior
         if (!gSprites[i].inUse)
             return CreateSpriteAt(i, template, x, y, subpriority);
 
-    return MAX_SPRITES;
+    return REGRESS_NOTE_FAIL(REGRESS_FAIL_SPRITE, MAX_SPRITES);
 }
 
 u8 CreateSpriteAtEnd(const struct SpriteTemplate *template, s16 x, s16 y, u8 subpriority)
@@ -518,7 +521,7 @@ u8 CreateSpriteAtEnd(const struct SpriteTemplate *template, s16 x, s16 y, u8 sub
         if (!gSprites[i].inUse)
             return CreateSpriteAt(i, template, x, y, subpriority);
 
-    return MAX_SPRITES;
+    return REGRESS_NOTE_FAIL(REGRESS_FAIL_SPRITE, MAX_SPRITES);
 }
 
 u8 CreateInvisibleSprite(void (*callback)(struct Sprite *))
@@ -567,7 +570,7 @@ u8 CreateSpriteAt(u8 index, const struct SpriteTemplate *template, s16 x, s16 y,
         if (tileNum == -1)
         {
             ResetSprite(sprite);
-            return MAX_SPRITES;
+            return REGRESS_NOTE_FAIL(REGRESS_FAIL_SPRITE, MAX_SPRITES);
         }
         sprite->oam.tileNum = tileNum;
         sprite->usingSheet = FALSE;
@@ -612,7 +615,7 @@ u8 CreateSpriteAndAnimate(const struct SpriteTemplate *template, s16 x, s16 y, u
         }
     }
 
-    return MAX_SPRITES;
+    return REGRESS_NOTE_FAIL(REGRESS_FAIL_SPRITE, MAX_SPRITES);
 }
 
 void DestroySprite(struct Sprite *sprite)
@@ -723,7 +726,7 @@ s16 AllocSpriteTiles(u16 tileCount)
             i++;
 
             if (i == TOTAL_OBJ_TILE_COUNT)
-                return -1;
+                return REGRESS_NOTE_FAIL(REGRESS_FAIL_TILES, -1);
         }
 
         start = i;
@@ -734,7 +737,7 @@ s16 AllocSpriteTiles(u16 tileCount)
             i++;
 
             if (i == TOTAL_OBJ_TILE_COUNT)
-                return -1;
+                return REGRESS_NOTE_FAIL(REGRESS_FAIL_TILES, -1);
 
             if (!SPRITE_TILE_IS_ALLOCATED(i))
                 numTilesFound++;
@@ -749,6 +752,7 @@ s16 AllocSpriteTiles(u16 tileCount)
     for (i = start; i < tileCount + start; i++)
         ALLOC_SPRITE_TILE(i);
 
+    REGRESS_NOTE_TILES(start, tileCount);
     return start;
 }
 
@@ -1581,6 +1585,7 @@ void AllocSpriteTileRange(u16 tag, u16 start, u16 count)
 void FreeAllSpritePalettes(void)
 {
     u8 i;
+    DayNight_ResetSpriteTint();
     gReservedSpritePaletteCount = 0;
     for (i = 0; i < 16; i++)
         sSpritePaletteTags[i] = TAG_NONE;
@@ -1597,7 +1602,7 @@ u8 LoadSpritePalette(const struct SpritePalette *palette)
 
     if (index == 0xFF)
     {
-        return 0xFF;
+        return REGRESS_NOTE_FAIL(REGRESS_FAIL_PALETTE, 0xFF);
     }
     else
     {
@@ -1618,6 +1623,8 @@ void LoadSpritePalettes(const struct SpritePalette *palettes)
 void DoLoadSpritePalette(const u16 *src, u16 paletteOffset)
 {
     LoadPalette(src, OBJ_PLTT_OFFSET + paletteOffset, PLTT_SIZE_4BPP);
+    if (gTintFieldSprites)
+        ApplyTimeOfDayTint(OBJ_PLTT_OFFSET + paletteOffset, 16);
 }
 
 u8 AllocSpritePalette(u16 tag)
@@ -1625,7 +1632,7 @@ u8 AllocSpritePalette(u16 tag)
     u8 index = IndexOfSpritePaletteTag(TAG_NONE);
     if (index == 0xFF)
     {
-        return 0xFF;
+        return REGRESS_NOTE_FAIL(REGRESS_FAIL_PALETTE, 0xFF);
     }
     else
     {

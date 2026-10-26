@@ -6,13 +6,12 @@
 #include "event_data.h"
 #include "event_object_movement.h"
 #include "event_scripts.h"
-#include "faraway_island.h"
 #include "field_camera.h"
 #include "field_effect.h"
 #include "field_effect_helpers.h"
 #include "field_player_avatar.h"
 #include "fieldmap.h"
-#include "mauville_old_man.h"
+#include "field_weather.h"
 #include "metatile_behavior.h"
 #include "overworld.h"
 #include "palette.h"
@@ -20,20 +19,15 @@
 #include "sprite.h"
 #include "task.h"
 #include "trainer_see.h"
-#include "trainer_hill.h"
 #include "util.h"
 #include "debug_menu.h"
 #include "constants/event_object_movement.h"
 #include "constants/event_objects.h"
 #include "constants/field_effects.h"
 #include "constants/items.h"
-#include "constants/mauville_old_man.h"
 #include "constants/trainer_types.h"
-#include "constants/union_room.h"
 
-#define SPECIAL_LOCALIDS_START (min(LOCALID_CAMERA, \
-                                min(LOCALID_PLAYER, \
-                                    LOCALID_BERRY_BLENDER_PLAYER_END - MAX_RFU_PLAYERS + 1)))
+#define SPECIAL_LOCALIDS_START LOCALID_CAMERA
 
 // The object event templates on a map cannot use the special IDs listed above or they can behave unexpectedly.
 // For more details on these special IDs see their definitions in 'include/constants/event_objects.h'.
@@ -122,7 +116,6 @@ static void GetGroundEffectFlags_Seaweed(struct ObjectEvent *, u32 *);
 static void GetGroundEffectFlags_JumpLanding(struct ObjectEvent *, u32 *);
 static u8 ObjectEventGetNearbyReflectionType(struct ObjectEvent *);
 static u8 GetReflectionTypeByMetatileBehavior(u32);
-static void InitObjectPriorityByElevation(struct Sprite *, u8);
 static void ObjectEventUpdateSubpriority(struct ObjectEvent *, struct Sprite *);
 static void DoTracksGroundEffect_None(struct ObjectEvent *, struct Sprite *, u8);
 static void DoTracksGroundEffect_Footprints(struct ObjectEvent *, struct Sprite *, u8);
@@ -131,7 +124,6 @@ static void DoRippleFieldEffect(struct ObjectEvent *, struct Sprite *);
 static void DoGroundEffects_OnSpawn(struct ObjectEvent *, struct Sprite *);
 static void DoGroundEffects_OnBeginStep(struct ObjectEvent *, struct Sprite *);
 static void DoGroundEffects_OnFinishStep(struct ObjectEvent *, struct Sprite *);
-static void VirtualObject_UpdateAnim(struct Sprite *);
 static void ApplyLevitateMovement(u8);
 static bool8 MovementType_Disguise_Callback(struct ObjectEvent *, struct Sprite *);
 static bool8 MovementType_Buried_Callback(struct ObjectEvent *, struct Sprite *);
@@ -153,7 +145,8 @@ static void SetPlayerAvatarObjectEventIdAndObjectId(u8, u8);
 static void ResetObjectEventFldEffData(struct ObjectEvent *);
 static u8 LoadSpritePaletteIfTagExists(const struct SpritePalette *);
 static u8 FindObjectEventPaletteIndexByTag(u16);
-static void _PatchObjectPalette(u16, u8);
+static u8 LoadObjectEventGraphicsPalette(const struct ObjectEventGraphicsInfo *);
+static void FreeObjectEventPaletteIfUnused(u16, u8);
 static bool8 ObjectEventDoesElevationMatch(struct ObjectEvent *, u8);
 static void SpriteCB_CameraObject(struct Sprite *);
 static void CameraObject_Init(struct Sprite *);
@@ -165,7 +158,6 @@ static void ObjectEventSetSingleMovement(struct ObjectEvent *, struct Sprite *, 
 static void SetSpriteDataForNormalStep(struct Sprite *, u8, u8);
 static void InitSpriteForFigure8Anim(struct Sprite *);
 static bool8 AnimateSpriteInFigure8(struct Sprite *);
-static void SpriteCB_VirtualObject(struct Sprite *);
 static void DoShadowFieldEffect(struct ObjectEvent *);
 static void SetJumpSpriteData(struct Sprite *, u8, u8, u8);
 static void SetWalkSlowSpriteData(struct Sprite *, u8);
@@ -1331,30 +1323,6 @@ static u8 InitObjectEventStateFromTemplate(const struct ObjectEventTemplate *tem
     return objectEventId;
 }
 
-u8 Unref_TryInitLocalObjectEvent(u8 localId)
-{
-    u8 i;
-    u8 objectEventCount;
-    struct ObjectEventTemplate *template;
-
-    if (gMapHeader.events != NULL)
-    {
-        if (CurrentBattlePyramidLocation() != PYRAMID_LOCATION_NONE)
-            objectEventCount = GetNumBattlePyramidObjectEvents();
-        else if (InTrainerHill())
-            objectEventCount = HILL_TRAINERS_PER_FLOOR;
-        else
-            objectEventCount = gMapHeader.events->objectEventCount;
-
-        for (i = 0; i < objectEventCount; i++)
-        {
-            template = &gSaveBlock1Ptr->objectEventTemplates[i];
-            if (template->localId == localId && !FlagGet(template->flagId))
-                return InitObjectEventStateFromTemplate(template, gSaveBlock1Ptr->location.mapNum, gSaveBlock1Ptr->location.mapGroup);
-        }
-    }
-    return OBJECT_EVENTS_COUNT;
-}
 
 static bool8 GetAvailableObjectEventId(u16 localId, u8 mapNum, u8 mapGroup, u8 *objectEventId)
 // Looks for an empty slot.
@@ -1403,18 +1371,9 @@ static void RemoveObjectEventInternal(struct ObjectEvent *objectEvent)
     image.size = GetObjectEventGraphicsInfo(objectEvent->graphicsId)->size;
     gSprites[objectEvent->spriteId].images = &image;
     DestroySprite(&gSprites[objectEvent->spriteId]);
+    FreeObjectEventPaletteIfUnused(GetObjectEventGraphicsInfo(objectEvent->graphicsId)->paletteTag, objectEvent->spriteId);
 }
 
-void RemoveAllObjectEventsExceptPlayer(void)
-{
-    u8 i;
-
-    for (i = 0; i < OBJECT_EVENTS_COUNT; i++)
-    {
-        if (i != gPlayerAvatar.objectEventId)
-            RemoveObjectEvent(&gObjectEvents[i]);
-    }
-}
 
 static u8 TrySetupObjectEventSprite(const struct ObjectEventTemplate *objectEventTemplate, struct SpriteTemplate *spriteTemplate, u8 mapNum, u8 mapGroup, s16 cameraX, s16 cameraY)
 {
@@ -1431,20 +1390,7 @@ static u8 TrySetupObjectEventSprite(const struct ObjectEventTemplate *objectEven
 
     objectEvent = &gObjectEvents[objectEventId];
     graphicsInfo = GetObjectEventGraphicsInfo(objectEvent->graphicsId);
-    paletteSlot = graphicsInfo->paletteSlot;
-    if (paletteSlot == PALSLOT_PLAYER)
-    {
-        LoadPlayerObjectReflectionPalette(graphicsInfo->paletteTag, paletteSlot);
-    }
-    else if (paletteSlot == PALSLOT_NPC_SPECIAL)
-    {
-        LoadSpecialObjectReflectionPalette(graphicsInfo->paletteTag, paletteSlot);
-    }
-    else if (paletteSlot >= 16)
-    {
-        paletteSlot -= 16;
-        _PatchObjectPalette(graphicsInfo->paletteTag, paletteSlot);
-    }
+    paletteSlot = LoadObjectEventGraphicsPalette(graphicsInfo);
 
     if (objectEvent->movementType == MOVEMENT_TYPE_INVISIBLE)
         objectEvent->invisible = TRUE;
@@ -1590,59 +1536,6 @@ u8 CreateObjectGraphicsSprite(u16 graphicsId, void (*callback)(struct Sprite *),
     return spriteId;
 }
 
-#define sVirtualObjId   data[0]
-#define sVirtualObjElev data[1]
-
-// "Virtual Objects" are a class of sprites used instead of a full object event.
-// Used when more objects are needed than the object event limit (for Contest / Battle Dome audiences and group members in Union Room).
-// A unique id is given as an argument and stored in the sprite data to allow referring back to the same virtual object.
-// They can be turned (and, in the case of the Union Room, animated teleporting in and out) but do not have movement types
-// or any of the other data normally associated with object events.
-u8 CreateVirtualObject(u8 graphicsId, u8 virtualObjId, s16 x, s16 y, u8 elevation, u8 direction)
-{
-    u8 spriteId;
-    struct Sprite *sprite;
-    struct SpriteTemplate spriteTemplate;
-    const struct SubspriteTable *subspriteTables;
-    const struct ObjectEventGraphicsInfo *graphicsInfo;
-
-    graphicsInfo = GetObjectEventGraphicsInfo(graphicsId);
-    CopyObjectGraphicsInfoToSpriteTemplate(graphicsId, SpriteCB_VirtualObject, &spriteTemplate, &subspriteTables);
-    *(u16 *)&spriteTemplate.paletteTag = TAG_NONE;
-    x += MAP_OFFSET;
-    y += MAP_OFFSET;
-    SetSpritePosToOffsetMapCoords(&x, &y, 8, 16);
-    spriteId = CreateSpriteAtEnd(&spriteTemplate, x, y, 0);
-    if (spriteId != MAX_SPRITES)
-    {
-        sprite = &gSprites[spriteId];
-        sprite->centerToCornerVecX = -(graphicsInfo->width >> 1);
-        sprite->centerToCornerVecY = -(graphicsInfo->height >> 1);
-        sprite->y += sprite->centerToCornerVecY;
-        sprite->oam.paletteNum = graphicsInfo->paletteSlot;
-        if (sprite->oam.paletteNum >= 16)
-            sprite->oam.paletteNum -= 16;
-
-        sprite->coordOffsetEnabled = TRUE;
-        sprite->sVirtualObjId = virtualObjId;
-        sprite->sVirtualObjElev = elevation;
-        if (graphicsInfo->paletteSlot == PALSLOT_NPC_SPECIAL)
-            LoadSpecialObjectReflectionPalette(graphicsInfo->paletteTag, graphicsInfo->paletteSlot);
-        else if (graphicsInfo->paletteSlot >= 16)
-            _PatchObjectPalette(graphicsInfo->paletteTag, graphicsInfo->paletteSlot | 0xf0);
-
-        if (subspriteTables != NULL)
-        {
-            SetSubspriteTables(sprite, subspriteTables);
-            sprite->subspriteMode = SUBSPRITES_IGNORE_PRIORITY;
-        }
-        InitObjectPriorityByElevation(sprite, elevation);
-        SetObjectSubpriorityByElevation(elevation, sprite, 1);
-        StartSpriteAnim(sprite, GetFaceDirectionAnimNum(direction));
-    }
-    return spriteId;
-}
-
 void TrySpawnObjectEvents(s16 cameraX, s16 cameraY)
 {
     u8 i;
@@ -1657,10 +1550,7 @@ void TrySpawnObjectEvents(s16 cameraX, s16 cameraY)
 
         if (CurrentBattlePyramidLocation() != PYRAMID_LOCATION_NONE)
             objectCount = GetNumBattlePyramidObjectEvents();
-        else if (InTrainerHill())
-            objectCount = HILL_TRAINERS_PER_FLOOR;
-        else
-            objectCount = gMapHeader.events->objectEventCount;
+        else objectCount = gMapHeader.events->objectEventCount;
 
         for (i = 0; i < objectCount; i++)
         {
@@ -1751,20 +1641,7 @@ static void SpawnObjectEventOnReturnToField(u8 objectEventId, s16 x, s16 y)
     spriteTemplate.images = &spriteFrameImage;
 
     *(u16 *)&spriteTemplate.paletteTag = TAG_NONE;
-    paletteSlot = graphicsInfo->paletteSlot;
-    if (paletteSlot == PALSLOT_PLAYER)
-    {
-        LoadPlayerObjectReflectionPalette(graphicsInfo->paletteTag, graphicsInfo->paletteSlot);
-    }
-    else if (paletteSlot == PALSLOT_NPC_SPECIAL)
-    {
-        LoadSpecialObjectReflectionPalette(graphicsInfo->paletteTag, graphicsInfo->paletteSlot);
-    }
-    else if (paletteSlot >= 16)
-    {
-        paletteSlot -= 16;
-        _PatchObjectPalette(graphicsInfo->paletteTag, paletteSlot);
-    }
+    paletteSlot = LoadObjectEventGraphicsPalette(graphicsInfo);
     *(u16 *)&spriteTemplate.paletteTag = TAG_NONE;
 
     i = CreateSprite(&spriteTemplate, 0, 0, 0);
@@ -1826,19 +1703,20 @@ void ObjectEventSetGraphicsId(struct ObjectEvent *objectEvent, u8 graphicsId)
 
     graphicsInfo = GetObjectEventGraphicsInfo(graphicsId);
     sprite = &gSprites[objectEvent->spriteId];
-    paletteSlot = graphicsInfo->paletteSlot;
-    if (paletteSlot == PALSLOT_PLAYER)
+    if (graphicsInfo->paletteSlot == PALSLOT_PLAYER)
     {
-        PatchObjectPalette(graphicsInfo->paletteTag, graphicsInfo->paletteSlot);
+        PatchObjectPalette(graphicsInfo->paletteTag, PALSLOT_PLAYER);
+        paletteSlot = PALSLOT_PLAYER;
     }
-    else if (paletteSlot == PALSLOT_NPC_SPECIAL)
+    else
     {
-        LoadSpecialObjectReflectionPalette(graphicsInfo->paletteTag, graphicsInfo->paletteSlot);
-    }
-    else if (paletteSlot >= 16)
-    {
-        paletteSlot -= 16;
-        _PatchObjectPalette(graphicsInfo->paletteTag, paletteSlot);
+        u16 oldTag = GetObjectEventGraphicsInfo(objectEvent->graphicsId)->paletteTag;
+        paletteSlot = LoadObjectEventGraphicsPalette(graphicsInfo);
+        if (oldTag != graphicsInfo->paletteTag)
+        {
+            sprite->oam.paletteNum = paletteSlot;
+            FreeObjectEventPaletteIfUnused(oldTag, MAX_SPRITES);
+        }
     }
     sprite->oam.shape = graphicsInfo->oam->shape;
     sprite->oam.size = graphicsInfo->oam->size;
@@ -1857,13 +1735,6 @@ void ObjectEventSetGraphicsId(struct ObjectEvent *objectEvent, u8 graphicsId)
         CameraObjectReset();
 }
 
-void ObjectEventSetGraphicsIdByLocalIdAndMap(u8 localId, u8 mapNum, u8 mapGroup, u8 graphicsId)
-{
-    u8 objectEventId;
-
-    if (!TryGetObjectEventIdByLocalIdAndMap(localId, mapNum, mapGroup, &objectEventId))
-        ObjectEventSetGraphicsId(&gObjectEvents[objectEventId], graphicsId);
-}
 
 void ObjectEventTurn(struct ObjectEvent *objectEvent, u8 direction)
 {
@@ -1883,10 +1754,6 @@ void ObjectEventTurnByLocalIdAndMap(u8 localId, u8 mapNum, u8 mapGroup, u8 direc
         ObjectEventTurn(&gObjectEvents[objectEventId], direction);
 }
 
-void PlayerObjectTurn(struct PlayerAvatar *playerAvatar, u8 direction)
-{
-    ObjectEventTurn(&gObjectEvents[playerAvatar->objectEventId], direction);
-}
 
 static void SetBerryTreeGraphics(struct ObjectEvent *objectEvent, struct Sprite *sprite)
 {
@@ -1914,16 +1781,8 @@ static void SetBerryTreeGraphics(struct ObjectEvent *objectEvent, struct Sprite 
 
 const struct ObjectEventGraphicsInfo *GetObjectEventGraphicsInfo(u8 graphicsId)
 {
-    u8 bard;
-
     if (graphicsId >= OBJ_EVENT_GFX_VARS)
         graphicsId = VarGetObjectEventGraphicsId(graphicsId - OBJ_EVENT_GFX_VARS);
-
-    if (graphicsId == OBJ_EVENT_GFX_BARD)
-    {
-        bard = GetCurrentMauvilleOldMan();
-        return gMauvilleOldManGraphicsInfoPointers[bard];
-    }
 
     if (graphicsId >= NUM_OBJ_EVENT_GFX)
         graphicsId = OBJ_EVENT_GFX_NINJA_BOY;
@@ -2009,7 +1868,66 @@ void SetObjectEventSpritePosByLocalIdAndMap(u8 localId, u8 mapNum, u8 mapGroup, 
 void FreeAndReserveObjectSpritePalettes(void)
 {
     FreeAllSpritePalettes();
-    gReservedSpritePaletteCount = OBJ_PALSLOT_COUNT;
+    gReservedSpritePaletteCount = PALSLOT_PLAYER_REFLECTION + 1;
+}
+
+// Dynamic overworld palettes: an object event other than the player takes the
+// sprite palette already loaded for its tag, or the first free one, so every
+// NPC keeps its own colors as long as 14 palettes are enough for the screen.
+static u8 LoadDynamicObjectEventPalette(u16 paletteTag)
+{
+    u8 i = FindObjectEventPaletteIndexByTag(paletteTag);
+    u8 paletteNum;
+
+    if (i == 0xFF)
+        return PALSLOT_PLAYER;
+    paletteNum = IndexOfSpritePaletteTag(paletteTag);
+    if (paletteNum != 0xFF)
+        return paletteNum;
+    paletteNum = LoadSpritePalette(&sObjectEventSpritePalettes[i]);
+    if (paletteNum == 0xFF)
+        return PALSLOT_PLAYER; // all slots taken: borrow the player's colors
+    UpdateSpritePaletteWithWeather(paletteNum);
+    return paletteNum;
+}
+
+static u8 LoadObjectEventGraphicsPalette(const struct ObjectEventGraphicsInfo *graphicsInfo)
+{
+    if (graphicsInfo->paletteSlot == PALSLOT_PLAYER)
+    {
+        LoadPlayerObjectReflectionPalette(graphicsInfo->paletteTag, PALSLOT_PLAYER);
+        return PALSLOT_PLAYER;
+    }
+    return LoadDynamicObjectEventPalette(graphicsInfo->paletteTag);
+}
+
+// Field effects that drew with one of Emerald's fixed NPC palettes ask for it here.
+u8 LoadObjectPaletteForLegacySlot(u8 slot)
+{
+    if (slot <= PALSLOT_PLAYER_REFLECTION)
+        return slot;
+    return LoadDynamicObjectEventPalette(sObjectPaletteTagSets[0][slot]);
+}
+
+// Frees a dynamic palette once no sprite but skipSpriteId uses it.
+static void FreeObjectEventPaletteIfUnused(u16 paletteTag, u8 skipSpriteId)
+{
+    u8 i, paletteNum = IndexOfSpritePaletteTag(paletteTag);
+
+    if (paletteNum == 0xFF || paletteNum < gReservedSpritePaletteCount)
+        return;
+    for (i = 0; i < MAX_SPRITES; i++)
+    {
+        if (i != skipSpriteId && gSprites[i].inUse && gSprites[i].oam.paletteNum == paletteNum)
+            return;
+    }
+    FreeSpritePaletteByTag(paletteTag);
+}
+
+u8 GetReflectionPaletteNum(u8 paletteNum)
+{
+    // NPC reflections share their object's palette; only the player's is tinted.
+    return paletteNum == PALSLOT_PLAYER ? PALSLOT_PLAYER_REFLECTION : paletteNum;
 }
 
 static void LoadObjectEventPalette(u16 paletteTag)
@@ -2047,6 +1965,8 @@ void PatchObjectPalette(u16 paletteTag, u8 paletteSlot)
     u8 paletteIndex = FindObjectEventPaletteIndexByTag(paletteTag);
 
     LoadPalette(sObjectEventSpritePalettes[paletteIndex].data, OBJ_PLTT_ID(paletteSlot), PLTT_SIZE_4BPP);
+    if (gTintFieldSprites)
+        ApplyTimeOfDayTint(OBJ_PLTT_ID(paletteSlot), 16);
 }
 
 void PatchObjectPaletteRange(const u16 *paletteTags, u8 minSlot, u8 maxSlot)
@@ -2086,26 +2006,6 @@ void LoadPlayerObjectReflectionPalette(u16 tag, u8 slot)
     }
 }
 
-void LoadSpecialObjectReflectionPalette(u16 tag, u8 slot)
-{
-    u8 i;
-
-    sCurrentSpecialObjectPaletteTag = tag;
-    PatchObjectPalette(tag, slot);
-    for (i = 0; sSpecialObjectReflectionPaletteSets[i].tag != OBJ_EVENT_PAL_TAG_NONE; i++)
-    {
-        if (sSpecialObjectReflectionPaletteSets[i].tag == tag)
-        {
-            PatchObjectPalette(sSpecialObjectReflectionPaletteSets[i].data[sCurrentReflectionType], gReflectionEffectPaletteMap[slot]);
-            return;
-        }
-    }
-}
-
-static void _PatchObjectPalette(u16 tag, u8 slot)
-{
-    PatchObjectPalette(tag, slot);
-}
 
 static void UNUSED IncrementObjectEventCoords(struct ObjectEvent *objectEvent, s16 x, s16 y)
 {
@@ -2323,23 +2223,6 @@ void CameraObjectFreeze(void)
     camera->sCamera_State = CAMERA_STATE_FROZEN;
 }
 
-u8 CopySprite(struct Sprite *sprite, s16 x, s16 y, u8 subpriority)
-{
-    u8 i;
-
-    for (i = 0; i < MAX_SPRITES; i++)
-    {
-        if (!gSprites[i].inUse)
-        {
-            gSprites[i] = *sprite;
-            gSprites[i].x = x;
-            gSprites[i].y = y;
-            gSprites[i].subpriority = subpriority;
-            break;
-        }
-    }
-    return i;
-}
 
 u8 CreateCopySpriteAt(struct Sprite *sprite, s16 x, s16 y, u8 subpriority)
 {
@@ -2412,16 +2295,6 @@ static u8 UNUSED GetObjectTrainerTypeByObjectEventId(u8 objectEventId)
     return gObjectEvents[objectEventId].trainerType;
 }
 
-// Unused
-u8 GetObjectEventBerryTreeIdByLocalIdAndMap(u8 localId, u8 mapNum, u8 mapGroup)
-{
-    u8 objectEventId;
-
-    if (TryGetObjectEventIdByLocalIdAndMap(localId, mapNum, mapGroup, &objectEventId))
-        return 0xFF;
-
-    return gObjectEvents[objectEventId].trainerRange_berryTreeId;
-}
 
 u8 GetObjectEventBerryTreeId(u8 objectEventId)
 {
@@ -2535,31 +2408,12 @@ void InitObjectEventPalettes(u8 reflectionType)
     FreeAndReserveObjectSpritePalettes();
     sCurrentSpecialObjectPaletteTag = OBJ_EVENT_PAL_TAG_NONE;
     sCurrentReflectionType = reflectionType;
-    if (reflectionType == 1)
-    {
-        PatchObjectPaletteRange(sObjectPaletteTagSets[sCurrentReflectionType], PALSLOT_PLAYER, PALSLOT_NPC_4 + 1);
-        gReservedSpritePaletteCount = 8;
-    }
-    else
-    {
-        PatchObjectPaletteRange(sObjectPaletteTagSets[sCurrentReflectionType], PALSLOT_PLAYER, PALSLOT_NPC_4_REFLECTION + 1);
-    }
+    // Only the player and their reflection keep fixed slots; every other object
+    // event loads its palette on demand (dynamic overworld palettes).
+    PatchObjectPaletteRange(sObjectPaletteTagSets[sCurrentReflectionType], PALSLOT_PLAYER, PALSLOT_PLAYER_REFLECTION + 1);
+    gReservedSpritePaletteCount = PALSLOT_PLAYER_REFLECTION + 1;
 }
 
-u16 GetObjectPaletteTag(u8 palSlot)
-{
-    u8 i;
-
-    if (palSlot < PALSLOT_NPC_SPECIAL)
-        return sObjectPaletteTagSets[sCurrentReflectionType][palSlot];
-
-    for (i = 0; sSpecialObjectReflectionPaletteSets[i].tag != OBJ_EVENT_PAL_TAG_NONE; i++)
-    {
-        if (sSpecialObjectReflectionPaletteSets[i].tag == sCurrentSpecialObjectPaletteTag)
-            return sSpecialObjectReflectionPaletteSets[i].data[sCurrentReflectionType];
-    }
-    return OBJ_EVENT_PAL_TAG_NONE;
-}
 
 movement_type_empty_callback(MovementType_None)
 movement_type_def(MovementType_WanderAround, gMovementTypeFuncs_WanderAround)
@@ -4204,24 +4058,7 @@ bool8 CopyablePlayerMovement_WalkNormal(struct ObjectEvent *objectEvent, struct 
     s16 y;
 
     direction = playerDirection;
-    if (ObjectEventIsFarawayIslandMew(objectEvent))
-    {
-        direction = GetMewMoveDirection();
-        if (direction == DIR_NONE)
-        {
-            direction = playerDirection;
-            direction = GetCopyDirection(gInitialMovementTypeFacingDirections[objectEvent->movementType], objectEvent->directionSequenceIndex, direction);
-            ObjectEventMoveDestCoords(objectEvent, direction, &x, &y);
-            ObjectEventSetSingleMovement(objectEvent, sprite, GetFaceDirectionMovementAction(direction));
-            objectEvent->singleMovementActive = TRUE;
-            sprite->sTypeFuncId = 2;
-            return TRUE;
-        }
-    }
-    else
-    {
-        direction = GetCopyDirection(gInitialMovementTypeFacingDirections[objectEvent->movementType], objectEvent->directionSequenceIndex, direction);
-    }
+    direction = GetCopyDirection(gInitialMovementTypeFacingDirections[objectEvent->movementType], objectEvent->directionSequenceIndex, direction);
     ObjectEventMoveDestCoords(objectEvent, direction, &x, &y);
     ObjectEventSetSingleMovement(objectEvent, sprite, GetWalkNormalMovementAction(direction));
 
@@ -4528,10 +4365,6 @@ u8 GetAcroWheelieDirectionAnimNum(u8 direction)
     return sAcroWheelieDirectionAnimNums[direction];
 }
 
-u8 GetAcroUnusedDirectionAnimNum(u8 direction)
-{
-    return sAcroUnusedDirectionAnimNums[direction];
-}
 
 u8 GetAcroEndWheelieDirectionAnimNum(u8 direction)
 {
@@ -7751,12 +7584,6 @@ static void UpdateObjectEventElevationAndPriority(struct ObjectEvent *objEvent, 
     sprite->oam.priority = sElevationToPriority[objEvent->previousElevation];
 }
 
-static void InitObjectPriorityByElevation(struct Sprite *sprite, u8 elevation)
-{
-    sprite->subspriteTableNum = sElevationToSubspriteTableNum[elevation];
-    sprite->oam.priority = sElevationToPriority[elevation];
-}
-
 u8 ElevationToPriority(u8 elevation)
 {
     return sElevationToPriority[elevation];
@@ -8052,9 +7879,6 @@ static void (*const sGroundEffectFuncs[])(struct ObjectEvent *objEvent, struct S
 static void DoFlaggedGroundEffects(struct ObjectEvent *objEvent, struct Sprite *sprite, u32 flags)
 {
     u8 i;
-
-    if (ObjectEventIsFarawayIslandMew(objEvent) == TRUE && !ShouldMewShakeGrass(objEvent))
-        return;
 
     for (i = 0; i < ARRAY_COUNT(sGroundEffectFuncs); i++, flags >>= 1)
         if (flags & 1)
@@ -8590,181 +8414,6 @@ void UpdateObjectEventSpriteInvisibility(struct Sprite *sprite, bool8 invisible)
         sprite->invisible = TRUE;
     if ((s16)y >= DISPLAY_HEIGHT + 16 || y2 < -16)
         sprite->invisible = TRUE;
-}
-
-#define sInvisible     data[2]
-#define sAnimNum       data[3]
-#define sAnimState     data[4]
-
-static void SpriteCB_VirtualObject(struct Sprite *sprite)
-{
-    VirtualObject_UpdateAnim(sprite);
-    SetObjectSubpriorityByElevation(sprite->sVirtualObjElev, sprite, 1);
-    UpdateObjectEventSpriteInvisibility(sprite, sprite->sInvisible);
-}
-
-static void UNUSED DestroyVirtualObjects(void)
-{
-    int i;
-
-    for (i = 0; i < MAX_SPRITES; i++)
-    {
-        struct Sprite *sprite = &gSprites[i];
-        if(sprite->inUse && sprite->callback == SpriteCB_VirtualObject)
-            DestroySprite(sprite);
-    }
-}
-
-static int GetVirtualObjectSpriteId(u8 virtualObjId)
-{
-    int i;
-
-    for (i = 0; i < MAX_SPRITES; i++)
-    {
-        struct Sprite *sprite = &gSprites[i];
-        if (sprite->inUse && sprite->callback == SpriteCB_VirtualObject && (u8)sprite->sVirtualObjId == virtualObjId)
-            return i;
-    }
-    return MAX_SPRITES;
-}
-
-void TurnVirtualObject(u8 virtualObjId, u8 direction)
-{
-    u8 spriteId = GetVirtualObjectSpriteId(virtualObjId);
-
-    if (spriteId != MAX_SPRITES)
-        StartSpriteAnim(&gSprites[spriteId], GetFaceDirectionAnimNum(direction));
-}
-
-void SetVirtualObjectGraphics(u8 virtualObjId, u8 graphicsId)
-{
-    int spriteId = GetVirtualObjectSpriteId(virtualObjId);
-
-    if (spriteId != MAX_SPRITES)
-    {
-        struct Sprite *sprite = &gSprites[spriteId];
-        const struct ObjectEventGraphicsInfo *graphicsInfo = GetObjectEventGraphicsInfo(graphicsId);
-        u16 tileNum = sprite->oam.tileNum;
-
-        sprite->oam = *graphicsInfo->oam;
-        sprite->oam.tileNum = tileNum;
-        sprite->oam.paletteNum = graphicsInfo->paletteSlot;
-        sprite->images = graphicsInfo->images;
-
-        if (graphicsInfo->subspriteTables == NULL)
-        {
-            sprite->subspriteTables = NULL;
-            sprite->subspriteTableNum = 0;
-            sprite->subspriteMode = SUBSPRITES_OFF;
-        }
-        else
-        {
-            SetSubspriteTables(sprite, graphicsInfo->subspriteTables);
-            sprite->subspriteMode = SUBSPRITES_IGNORE_PRIORITY;
-        }
-        StartSpriteAnim(sprite, 0);
-    }
-}
-
-void SetVirtualObjectInvisibility(u8 virtualObjId, bool32 invisible)
-{
-    u8 spriteId = GetVirtualObjectSpriteId(virtualObjId);
-
-    if (spriteId == MAX_SPRITES)
-        return;
-
-    if (invisible)
-        gSprites[spriteId].sInvisible = TRUE;
-    else
-        gSprites[spriteId].sInvisible = FALSE;
-}
-
-bool32 IsVirtualObjectInvisible(u8 virtualObjId)
-{
-    u8 spriteId = GetVirtualObjectSpriteId(virtualObjId);
-
-    if (spriteId == MAX_SPRITES)
-        return FALSE;
-
-    return (gSprites[spriteId].sInvisible == TRUE);
-}
-
-void SetVirtualObjectSpriteAnim(u8 virtualObjId, u8 animNum)
-{
-    u8 spriteId = GetVirtualObjectSpriteId(virtualObjId);
-
-    if (spriteId != MAX_SPRITES)
-    {
-        gSprites[spriteId].sAnimNum = animNum;
-        gSprites[spriteId].sAnimState = 0;
-    }
-}
-
-static void MoveUnionRoomObjectUp(struct Sprite *sprite)
-{
-    switch(sprite->sAnimState)
-    {
-    case 0:
-        sprite->y2 = 0;
-        sprite->sAnimState++;
-    case 1:
-        sprite->y2 -= 8;
-        if (sprite->y2 == -DISPLAY_HEIGHT)
-        {
-            sprite->y2 = 0;
-            sprite->sInvisible = TRUE;
-            sprite->sAnimNum = 0;
-            sprite->sAnimState = 0;
-        }
-    }
-}
-
-static void MoveUnionRoomObjectDown(struct Sprite *sprite)
-{
-    switch(sprite->sAnimState)
-    {
-    case 0:
-        sprite->y2 = -DISPLAY_HEIGHT;
-        sprite->sAnimState++;
-    case 1:
-        sprite->y2 += 8;
-        if(sprite->y2 == 0)
-        {
-            sprite->sAnimNum = 0;
-            sprite->sAnimState = 0;
-        }
-    }
-}
-
-static void VirtualObject_UpdateAnim(struct Sprite *sprite)
-{
-    switch(sprite->sAnimNum)
-    {
-    case UNION_ROOM_SPAWN_IN:
-        MoveUnionRoomObjectDown(sprite);
-        break;
-    case UNION_ROOM_SPAWN_OUT:
-        MoveUnionRoomObjectUp(sprite);
-        break;
-    case 0:
-        break;
-    default:
-        sprite->sAnimNum = 0;
-        break;
-    }
-}
-
-bool32 IsVirtualObjectAnimating(u8 virtualObjId)
-{
-    u8 spriteId = GetVirtualObjectSpriteId(virtualObjId);
-
-    if (spriteId == MAX_SPRITES)
-        return FALSE;
-
-    if (gSprites[spriteId].sAnimNum != 0)
-        return TRUE;
-
-    return FALSE;
 }
 
 u32 StartFieldEffectForObjectEvent(u8 fieldEffectId, struct ObjectEvent *objectEvent)

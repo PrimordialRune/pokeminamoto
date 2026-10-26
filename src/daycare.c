@@ -119,31 +119,6 @@ u8 CountPokemonInDaycare(struct DayCare *daycare)
     return count;
 }
 
-void InitDaycareMailRecordMixing(struct DayCare *daycare, struct RecordMixingDaycareMail *mixMail)
-{
-    u8 i;
-    u8 numDaycareMons = 0;
-
-    for (i = 0; i < DAYCARE_MON_COUNT; i++)
-    {
-        if (GetBoxMonData(&daycare->mons[i].mon, MON_DATA_SPECIES) != SPECIES_NONE)
-        {
-            numDaycareMons++;
-            if (GetBoxMonData(&daycare->mons[i].mon, MON_DATA_HELD_ITEM) == ITEM_NONE)
-                mixMail->cantHoldItem[i] = FALSE;
-            else
-                mixMail->cantHoldItem[i] = TRUE;
-        }
-        else
-        {
-            // Daycare slot empty
-            mixMail->cantHoldItem[i] = TRUE;
-        }
-    }
-
-    mixMail->numDaycareMons = numDaycareMons;
-}
-
 static s8 Daycare_FindEmptySpot(struct DayCare *daycare)
 {
     u8 i;
@@ -174,7 +149,6 @@ static void StorePokemonInDaycare(struct Pokemon *mon, struct DaycareMon *daycar
     }
 
     daycareMon->mon = mon->box;
-    BoxMonRestorePP(&daycareMon->mon);
     daycareMon->steps = 0;
     ZeroMonData(mon);
     CompactPartySlots();

@@ -3,6 +3,11 @@
 
 #include "main.h"
 
+extern const u16 gDefaultEasyChatProfile[];
+extern const u16 gDefaultEasyChatBattleStart[];
+extern const u16 gDefaultEasyChatBattleWon[];
+extern const u16 gDefaultEasyChatBattleLost[];
+
 struct EasyChatScreenTemplate
 {
     u8 type;
@@ -123,16 +128,11 @@ struct EasyChatWordsByLetter
 void InitEasyChatPhrases(void);
 void ShowEasyChatScreen(void);
 u8 *CopyEasyChatWord(u8 *dest, u16 easyChatWord);
-bool32 IsEasyChatAnswerUnlocked(int easyChatWord);
 void InitializeEasyChatWordArray(u16 *words, u16 length);
 u8 *ConvertEasyChatWordsToString(u8 *dest, const u16 *src, u16 columns, u16 rows);
-bool8 IsBardWordInvalid(u16 easyChatWord);
 u16 GetRandomEasyChatWordFromGroup(u16 groupId);
-u16 UnlockRandomTrendySaying(void);
 u16 EasyChat_GetNumWordsInGroup(u8 groupId);
-u16 GetRandomEasyChatWordFromUnlockedGroup(u16 groupId);
 void DoEasyChatScreen(u8 type, u16 *words, MainCallback exitCallback, u8 displayedPersonType);
-void InitQuestionnaireWords(void);
 void UnlockTrendySaying(u8 wordIndex);
 
 #endif // GUARD_EASYCHAT_H

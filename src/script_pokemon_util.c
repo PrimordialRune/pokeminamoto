@@ -8,7 +8,6 @@
 #include "event_data.h"
 #include "international_string_util.h"
 #include "link.h"
-#include "link_rfu.h"
 #include "main.h"
 #include "menu.h"
 #include "overworld.h"
@@ -29,8 +28,7 @@ static void CB2_ReturnFromChooseBattleFrontierParty(void);
 
 void HealPlayerParty(void)
 {
-    u8 i, j;
-    u8 ppBonuses;
+    u8 i;
     u8 arg[4];
 
     // restore HP.
@@ -40,14 +38,6 @@ void HealPlayerParty(void)
         arg[0] = maxHP;
         arg[1] = maxHP >> 8;
         SetMonData(&gPlayerParty[i], MON_DATA_HP, arg);
-        ppBonuses = GetMonData(&gPlayerParty[i], MON_DATA_PP_BONUSES);
-
-        // restore PP.
-        for(j = 0; j < MAX_MON_MOVES; j++)
-        {
-            arg[0] = CalculatePPWithBonus(GetMonData(&gPlayerParty[i], MON_DATA_MOVE1 + j), ppBonuses, j);
-            SetMonData(&gPlayerParty[i], MON_DATA_PP1 + j, arg);
-        }
 
         // since status is u32, the four 0 assignments here are probably for safety to prevent undefined data from reaching SetMonData.
         arg[0] = 0;
@@ -110,28 +100,6 @@ void HasEnoughMonsForDoubleBattle(void)
         gSpecialVar_Result = PLAYER_HAS_ONE_USABLE_MON;
         break;
     }
-}
-
-static bool8 CheckPartyMonHasHeldItem(u16 item)
-{
-    int i;
-
-    for(i = 0; i < PARTY_SIZE; i++)
-    {
-        u16 species = GetMonData(&gPlayerParty[i], MON_DATA_SPECIES_OR_EGG);
-        if (species != SPECIES_NONE && species != SPECIES_EGG && GetMonData(&gPlayerParty[i], MON_DATA_HELD_ITEM) == item)
-            return TRUE;
-    }
-    return FALSE;
-}
-
-bool8 DoesPartyHaveEnigmaBerry(void)
-{
-    bool8 hasItem = CheckPartyMonHasHeldItem(ITEM_ENIGMA_BERRY);
-    if (hasItem == TRUE)
-        GetBerryNameByBerryType(ItemIdToBerryType(ITEM_ENIGMA_BERRY), gStringVar1);
-
-    return hasItem;
 }
 
 void CreateScriptedWildMon(u16 species, u8 level, u16 item)

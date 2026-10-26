@@ -44,25 +44,25 @@ void SetAnimBgAttribute(u8 bgId, u8 attributeId, u8 value)
         switch (attributeId)
         {
         case BG_ANIM_SCREEN_SIZE:
-            ((struct BgCnt *)&sBgCnt)->screenSize = value;
+            BGCNT_SET(sBgCnt, BGCNT_FIELD_SCREEN_SIZE, value);
             break;
         case BG_ANIM_AREA_OVERFLOW_MODE:
-            ((struct BgCnt *)&sBgCnt)->areaOverflowMode = value;
+            BGCNT_SET(sBgCnt, BGCNT_FIELD_AREA_OVERFLOW_MODE, value);
             break;
         case BG_ANIM_MOSAIC:
-            ((struct BgCnt *)&sBgCnt)->mosaic = value;
+            BGCNT_SET(sBgCnt, BGCNT_FIELD_MOSAIC, value);
             break;
         case BG_ANIM_CHAR_BASE_BLOCK:
-            ((struct BgCnt *)&sBgCnt)->charBaseBlock = value;
+            BGCNT_SET(sBgCnt, BGCNT_FIELD_CHAR_BASE_BLOCK, value);
             break;
         case BG_ANIM_PRIORITY:
-            ((struct BgCnt *)&sBgCnt)->priority = value;
+            BGCNT_SET(sBgCnt, BGCNT_FIELD_PRIORITY, value);
             break;
         case BG_ANIM_PALETTES_MODE:
-            ((struct BgCnt *)&sBgCnt)->palettes = value;
+            BGCNT_SET(sBgCnt, BGCNT_FIELD_PALETTES, value);
             break;
         case BG_ANIM_SCREEN_BASE_BLOCK:
-            ((struct BgCnt *)&sBgCnt)->screenBaseBlock = value;
+            BGCNT_SET(sBgCnt, BGCNT_FIELD_SCREEN_BASE_BLOCK, value);
             break;
         }
 
@@ -80,19 +80,19 @@ int GetAnimBgAttribute(u8 bgId, u8 attributeId)
         switch (attributeId)
         {
         case BG_ANIM_SCREEN_SIZE:
-            return ((struct BgCnt *)&bgCnt)->screenSize;
+            return BGCNT_GET(bgCnt, BGCNT_FIELD_SCREEN_SIZE);
         case BG_ANIM_AREA_OVERFLOW_MODE:
-            return ((struct BgCnt *)&bgCnt)->areaOverflowMode;
+            return BGCNT_GET(bgCnt, BGCNT_FIELD_AREA_OVERFLOW_MODE);
         case BG_ANIM_MOSAIC:
-            return ((struct BgCnt *)&bgCnt)->mosaic;
+            return BGCNT_GET(bgCnt, BGCNT_FIELD_MOSAIC);
         case BG_ANIM_CHAR_BASE_BLOCK:
-            return ((struct BgCnt *)&bgCnt)->charBaseBlock;
+            return BGCNT_GET(bgCnt, BGCNT_FIELD_CHAR_BASE_BLOCK);
         case BG_ANIM_PRIORITY:
-            return ((struct BgCnt *)&bgCnt)->priority;
+            return BGCNT_GET(bgCnt, BGCNT_FIELD_PRIORITY);
         case BG_ANIM_PALETTES_MODE:
-            return ((struct BgCnt *)&bgCnt)->palettes;
+            return BGCNT_GET(bgCnt, BGCNT_FIELD_PALETTES);
         case BG_ANIM_SCREEN_BASE_BLOCK:
-            return ((struct BgCnt *)&bgCnt)->screenBaseBlock;
+            return BGCNT_GET(bgCnt, BGCNT_FIELD_SCREEN_BASE_BLOCK);
         }
     }
 
@@ -360,7 +360,7 @@ static void BattleIntroSlide3(u8 taskId)
         SetGpuReg(REG_OFFSET_BLDALPHA, BLDALPHA_BLEND(8, 8));
         SetGpuReg(REG_OFFSET_BLDY, 0);
         gTasks[taskId].data[4] = BLDALPHA_BLEND(8, 8);
-        if (gBattleTypeFlags & (BATTLE_TYPE_LINK | BATTLE_TYPE_RECORDED_LINK))
+        if (gBattleTypeFlags & BATTLE_TYPE_LINK)
         {
             gTasks[taskId].data[2] = 16;
             gTasks[taskId].tState++;

@@ -1,0 +1,8 @@
+{
+ "moves_tp_and_types MOVE_BITE": 1,
+ "other_species_tables src/data/battle_frontier/battle_tent.h": 129,
+ "script_references data/scripts/field_move_scripts.pory": 4,
+ "script_references data/scripts/secret_base.pory": 4,
+ "species_base_data SPECIES_MAGNEMITE": 1,
+ "species_base_data SPECIES_MAGNETON": 1
+}

@@ -14,9 +14,6 @@
 #include "constants/event_object_movement.h"
 #include "constants/items.h"
 
-#ifndef FREE_ENIGMA_BERRY
-static u32 GetEnigmaBerryChecksum(struct EnigmaBerry *enigmaBerry);
-#endif
 static bool32 BerryTreeGrow(struct BerryTree *tree);
 static u16 BerryTypeToItemId(u16 berry);
 static u8 BerryTreeGetNumStagesWatered(struct BerryTree *tree);
@@ -939,76 +936,11 @@ const struct BerryCrushBerryData gBerryCrush_BerryData[] = {
 
 const struct BerryTree gBlankBerryTree = {};
 
-#ifdef FREE_ENIGMA_BERRY
-const struct EnigmaBerry gEmptyEnigmaBerry = {0};
-
-void ClearEnigmaBerries(void)
-{
-}
-
-void SetEnigmaBerry(u8 *src)
-{
-}
-
-bool32 IsEnigmaBerryValid(void)
-{
-    return FALSE;
-}
-#else
-// unused
-void ClearEnigmaBerries(void)
-{
-    CpuFill16(0, &gSaveBlock1Ptr->enigmaBerry, sizeof(gSaveBlock1Ptr->enigmaBerry));
-}
-
-void SetEnigmaBerry(u8 *src)
-{
-    u32 i;
-    u8 *dest = (u8 *)&gSaveBlock1Ptr->enigmaBerry;
-
-    for (i = 0; i < sizeof(gSaveBlock1Ptr->enigmaBerry); i++)
-        dest[i] = src[i];
-}
-
-static u32 GetEnigmaBerryChecksum(struct EnigmaBerry *enigmaBerry)
-{
-    u32 i;
-    u32 checksum;
-    u8 *dest;
-
-    dest = (u8 *)enigmaBerry;
-    checksum = 0;
-    for (i = 0; i < sizeof(gSaveBlock1Ptr->enigmaBerry) - sizeof(gSaveBlock1Ptr->enigmaBerry.checksum); i++)
-        checksum += dest[i];
-
-    return checksum;
-}
-
-bool32 IsEnigmaBerryValid(void)
-{
-    if (!gSaveBlock1Ptr->enigmaBerry.berry.stageDuration)
-        return FALSE;
-    if (!gSaveBlock1Ptr->enigmaBerry.berry.maxYield)
-        return FALSE;
-    if (GetEnigmaBerryChecksum(&gSaveBlock1Ptr->enigmaBerry) != gSaveBlock1Ptr->enigmaBerry.checksum)
-        return FALSE;
-    return TRUE;
-}
-
-#endif // FREE_ENIGMA_BERRY
-
 const struct Berry *GetBerryInfo(u8 berry)
 {
-    if (berry == ITEM_TO_BERRY(ITEM_ENIGMA_BERRY) && IsEnigmaBerryValid())
-    {
-        return (struct Berry *)(&ENIGMA_BERRY.berry);
-    }
-    else
-    {
-        if (berry == BERRY_NONE || berry > ITEM_TO_BERRY(LAST_BERRY_INDEX))
-            berry = ITEM_TO_BERRY(FIRST_BERRY_INDEX);
-        return &gBerries[berry - 1];
-    }
+    if (berry == BERRY_NONE || berry > ITEM_TO_BERRY(LAST_BERRY_INDEX))
+        berry = ITEM_TO_BERRY(FIRST_BERRY_INDEX);
+    return &gBerries[berry - 1];
 }
 
 struct BerryTree *GetBerryTreeInfo(u8 id)

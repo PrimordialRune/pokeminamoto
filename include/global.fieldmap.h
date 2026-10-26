@@ -61,6 +61,11 @@ struct Tileset
     /*0x0C*/ const u16 *metatiles;
     /*0x10*/ const u16 *metatileAttributes;
     /*0x14*/ TilesetCB callback;
+    // Optional palettes drawn for the morning and the night, laid out like
+    // `palettes` (a secondary uses entries NUM_PALS_IN_PRIMARY and up). A tileset
+    // without them gets the computed tint from day_night.c.
+    /*0x18*/ const u16 (*palettesMorn)[16];
+    /*0x1C*/ const u16 (*palettesNite)[16];
 };
 
 struct MapLayout

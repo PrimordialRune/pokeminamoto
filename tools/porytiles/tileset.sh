@@ -6,7 +6,9 @@
 #       transparent background), create both tilesets if they don't exist, copy the
 #       sheets into their porytiles_src folders and write the layout to
 #       build/porytiles/<secondary>/map.bin. Refuses to overwrite sheets you have
-#       already edited unless FORCE=1.
+#       already edited unless FORCE=1. SPLIT_MASK=mask.png is passed to
+#       map2porytiles.py --split-mask (red cells -> secondary, blue -> primary),
+#       BEHAVIORS=cells.csv to --behaviors.
 #
 #   tools/porytiles/tileset.sh compile gTileset_Kanto gTileset_MasaraTown
 #       Solve the minimum palette layout (palopt.py), write it as Porytiles palette
@@ -29,7 +31,7 @@ PT="${PORYTILES:-}"
 # gTileset_MasaraTown -> masara_town (the folder Porytiles creates)
 folder() { echo "${1#gTileset_}" | sed -E 's/([a-z0-9])([A-Z])/\1_\2/g' | tr 'A-Z' 'a-z'; }
 
-usage() { sed -n '2,17p' "$0" | sed 's/^# \{0,1\}//'; exit 1; }
+usage() { sed -n '2,19p' "$0" | sed 's/^# \{0,1\}//'; exit 1; }
 
 cmd="${1:-}"; shift || true
 case "$cmd" in
@@ -40,7 +42,8 @@ import)
     ssrc="data/tilesets/secondary/$(folder "$sec")/porytiles_src"
     out="build/porytiles/$(folder "$sec")"
     mkdir -p "$out"
-    python3 "$HERE/map2porytiles.py" "$map" --secondary-ref "$ref" --out "$out"
+    python3 "$HERE/map2porytiles.py" "$map" --secondary-ref "$ref" --out "$out" \
+        ${SPLIT_MASK:+--split-mask "$SPLIT_MASK"} ${BEHAVIORS:+--behaviors "$BEHAVIORS"}
     [ -d "$psrc" ] || "$PT" create-tileset "$prim"
     [ -d "$ssrc" ] || "$PT" create-tileset --secondary --primary-pairing-mode manual \
         --primary-pairing-partners="$prim" -- "$sec"

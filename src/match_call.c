@@ -1790,7 +1790,7 @@ static void PopulateSpeciesFromTrainerLocation(int matchCallId, u8 *destStr)
 static void PopulateSpeciesFromTrainerParty(int matchCallId, u8 *destStr)
 {
     u16 trainerId;
-    union TrainerMonPtr party;
+    const struct TrainerMon *party;
     u8 monId;
     const u8 *speciesName;
 
@@ -1798,22 +1798,7 @@ static void PopulateSpeciesFromTrainerParty(int matchCallId, u8 *destStr)
     party = gTrainers[trainerId].party;
     monId = Random() % gTrainers[trainerId].partySize;
 
-    switch (gTrainers[trainerId].partyFlags)
-    {
-    case 0:
-    default:
-        speciesName = gSpeciesNames[party.NoItemDefaultMoves[monId].species];
-        break;
-    case F_TRAINER_PARTY_CUSTOM_MOVESET:
-        speciesName = gSpeciesNames[party.NoItemCustomMoves[monId].species];
-        break;
-    case F_TRAINER_PARTY_HELD_ITEM:
-        speciesName = gSpeciesNames[party.ItemDefaultMoves[monId].species];
-        break;
-    case F_TRAINER_PARTY_CUSTOM_MOVESET | F_TRAINER_PARTY_HELD_ITEM:
-        speciesName = gSpeciesNames[party.ItemCustomMoves[monId].species];
-        break;
-    }
+    speciesName = gSpeciesNames[party[monId].species];
 
     StringCopy(destStr, speciesName);
 }
@@ -1877,7 +1862,6 @@ static bool32 ShouldTrainerRequestBattle(int matchCallId)
 {
     int dayCount;
     int otId;
-    u16 dewfordRand;
     int numRematchTrainersFought;
     int max, rand, n;
 
@@ -1887,10 +1871,9 @@ static bool32 ShouldTrainerRequestBattle(int matchCallId)
     dayCount = RtcGetLocalDayCount();
     otId = GetTrainerId(gSaveBlock2Ptr->playerTrainerId) & 0xFFFF;
 
-    dewfordRand = gSaveBlock1Ptr->dewfordTrends[0].rand;
     numRematchTrainersFought = GetNumRematchTrainersFought();
     max = (numRematchTrainersFought * 13) / 10;
-    rand = ((dayCount ^ dewfordRand) + (dewfordRand ^ GetGameStat(GAME_STAT_TRAINER_BATTLES))) ^ otId;
+    rand = (dayCount + GetGameStat(GAME_STAT_TRAINER_BATTLES)) ^ otId;
     n = rand % max;
     if (n < numRematchTrainersFought)
     {

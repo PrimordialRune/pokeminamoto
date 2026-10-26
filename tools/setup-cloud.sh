@@ -4,9 +4,9 @@
 #
 #   tools/setup-cloud.sh            # from anywhere inside the repo
 #   SKIP_APT=1 tools/setup-cloud.sh # toolchain already installed
-#   CLASSIC=1 tools/setup-cloud.sh  # also build agbcc, for the optional `make classic`
+#   LEAN=1 tools/setup-cloud.sh     # build toolchain only (CI): no emulator, MCP deps, Porytiles, pip
 #
-# Idempotent: skips apt packages and agbcc when they are already present.
+# Idempotent: skips apt packages and downloads that are already present.
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -18,9 +18,9 @@ if [ "$(id -u)" -ne 0 ] && command -v sudo >/dev/null 2>&1; then
 fi
 
 # --- 1. System packages -------------------------------------------------------
-APT_PKGS=(build-essential git libpng-dev pkg-config
-          binutils-arm-none-eabi gcc-arm-none-eabi libnewlib-arm-none-eabi
-          libmgba-dev gdb-multiarch)  # last two: headless emulator for gba-debug-mcp
+APT_PKGS=(build-essential git curl ca-certificates python3 libpng-dev pkg-config
+          binutils-arm-none-eabi gcc-arm-none-eabi libnewlib-arm-none-eabi)
+[ -n "${LEAN:-}" ] || APT_PKGS+=(libmgba-dev gdb-multiarch)  # headless emulator for gba-debug-mcp
 
 if [ -z "${SKIP_APT:-}" ]; then
     missing=()
@@ -37,21 +37,14 @@ if [ -z "${SKIP_APT:-}" ]; then
     fi
 fi
 
-# --- 2. agbcc (classic compiler, optional, not committed) ---------------------
-if [ -x tools/agbcc/bin/agbcc ] && [ -x tools/agbcc/bin/old_agbcc ]; then
-    echo ">> tools/agbcc already installed"
-elif [ -z "${CLASSIC:-}" ]; then
-    echo ">> skipping agbcc (only needed for \`make classic\`; rerun with CLASSIC=1)"
-else
-    echo ">> building pret/agbcc"
-    tmp="$(mktemp -d)"
-    trap 'rm -rf "$tmp"' EXIT
-    git clone --depth 1 https://github.com/pret/agbcc "$tmp/agbcc"
-    (cd "$tmp/agbcc" && ./build.sh >/dev/null && ./install.sh "$REPO_ROOT")
-fi
+# --- 2. Poryscript (script compiler, pinned download, not committed) ----------
+# Version and checksum live in tools/poryscript/fetch.sh; `make` runs it too if the binary is missing.
+tools/poryscript/fetch.sh
 
-# Committed prebuilt binaries must be executable (older commits stored them 644).
-chmod +x tools/poryscript/poryscript tools/poryscript/poryscript-pls 2>/dev/null || true
+if [ -n "${LEAN:-}" ]; then
+    echo ">> done (lean: build toolchain only)"
+    exit 0
+fi
 
 # --- 3. Headless emulator host (tools/gba-emu, used by gba-debug-mcp emu_*) ---
 if [ -f /usr/include/mgba/core/core.h ]; then
@@ -74,7 +67,7 @@ if command -v npm >/dev/null 2>&1; then
     done
 fi
 
-# --- 4. Porytiles (tileset compiler, not committed: the binary is ~100 MB) ------
+# --- 5. Porytiles (tileset compiler, not committed: the binary is ~100 MB) ------
 PORYTILES_VERSION=v2.0.0
 PORYTILES_SHA256=68c904c3ff707ed2d6de0372073f165e627ec3ee7855eedbb3363184cc9212a4
 if [ "$(uname -m)" = "x86_64" ] && ! [ -x tools/porytiles/bin/porytiles ]; then
@@ -98,4 +91,4 @@ python3 -c "import PIL, ortools" 2>/dev/null || \
     python3 -m pip install --quiet --break-system-packages pillow ortools 2>/dev/null || \
     echo "!! pip install pillow ortools failed; tools/porytiles/*.py will be unavailable"
 
-echo ">> done. Build with: make -j\$(nproc)   (optional classic build: CLASSIC=1 tools/setup-cloud.sh, then make classic)"
+echo ">> done. Build with: make -j\$(nproc)"
