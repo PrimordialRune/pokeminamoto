@@ -4343,8 +4343,8 @@ static void ItemEffectToStatString(u8 effectType, u8 *dest)
     }
 }
 
-// Ethers and Elixirs restore TP to the chosen mon. TP only exists in battle,
-// so the bag only offers them there.
+// Ethers and Elixirs restore TP to the chosen mon: its battle TP in battle,
+// its saved TP (MON_DATA_SAVED_TP) in the field.
 void ItemUseCB_TPRecovery(u8 taskId, TaskFunc task)
 {
     u16 item = gSpecialVar_ItemId;

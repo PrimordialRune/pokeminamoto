@@ -43,11 +43,11 @@
 #define TEMP_FLAGS_END   FLAG_TEMP_1F
 #define NUM_TEMP_FLAGS   (TEMP_FLAGS_END - TEMP_FLAGS_START + 1)
 
-#define FLAG_UNUSED_0x020    0x20 // Unused Flag
-#define FLAG_UNUSED_0x021    0x21 // Unused Flag
-#define FLAG_UNUSED_0x022    0x22 // Unused Flag
-#define FLAG_UNUSED_0x023    0x23 // Unused Flag
-#define FLAG_UNUSED_0x024    0x24 // Unused Flag
+#define FLAG_INN_MATSU_OPEN  0x20 // Placeholder story flag: the inn's Matsu room is open
+#define FLAG_HIDE_INN_TAKE_ITEM 0x21 // The item left in the inn's Take room (hidden until INN_TAKE_ITEM_STEPS after a Take stay)
+#define FLAG_HIDE_OLDALE_NIGHT_NPC 0x22 // Toolkit test: Oldale NPC shown only at night
+#define FLAG_HIDE_OLDALE_LATE_NPC 0x23 // Toolkit test: Oldale NPC shown only 22:00-23:00
+#define FLAG_SEEN_OLDALE_INN_BOWL 0x24 // Toolkit test: examined the bowl by the inn
 #define FLAG_UNUSED_0x025    0x25 // Unused Flag
 #define FLAG_UNUSED_0x026    0x26 // Unused Flag
 #define FLAG_UNUSED_0x027    0x27 // Unused Flag

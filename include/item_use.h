@@ -9,6 +9,7 @@ void ItemUseOutOfBattle_CoinCase(u8 taskId);
 void ItemUseOutOfBattle_PowderJar(u8 taskId);
 void ItemUseOutOfBattle_WailmerPail(u8 taskId);
 void ItemUseOutOfBattle_Medicine(u8 taskId);
+void ItemUseOutOfBattle_TPRecovery(u8 taskId);
 void ItemUseOutOfBattle_ReduceEV(u8 taskId);
 void ItemUseOutOfBattle_SacredAsh(u8 taskId);
 void ItemUseOutOfBattle_RareCandy(u8 taskId);

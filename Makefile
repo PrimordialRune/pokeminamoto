@@ -247,6 +247,7 @@ rom: $(ROM)
 .PHONY: check
 check:
 	python3 tools/check_data.py
+	python3 tools/balance/costcurve.py --check
 	$(MAKE) release TEST=1
 	python3 tools/test/run_tests.py $(FILE_NAME)_modern_release_test.gba
 

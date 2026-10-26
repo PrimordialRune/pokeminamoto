@@ -162,6 +162,21 @@ u8 GetTimeOfDay(void)
     return TIME_OF_DAY_NITE;
 }
 
+u8 GetCurrentHour(void)
+{
+    // A forced time of day stands for one hour inside it, so hour windows can be tested.
+    static const u8 sOverrideHours[TIME_OF_DAY_COUNT] = {
+        [TIME_OF_DAY_MORN] = 7,
+        [TIME_OF_DAY_DAY]  = 12,
+        [TIME_OF_DAY_NITE] = 22,
+    };
+    u16 override = VarGet(VAR_TIME_OF_DAY_OVERRIDE);
+
+    if (override != 0 && override <= TIME_OF_DAY_COUNT)
+        return sOverrideHours[override - 1];
+    return GetHour();
+}
+
 u8 GetFieldTimeOfDay(void)
 {
     return sTimeOfDay;

@@ -97,7 +97,7 @@ enum {
     MON_DATA_MOVE_RANKS,       // all four ranks packed, 3 bits each, slot 1 in bits 0-2
     MON_DATA_SPECIAL_AWAKENED, // the species' Special (signature) move is unsealed
     MON_DATA_SPECIAL_PROGRESS, // progress towards awakening the Special, 0-255
-    MON_DATA_SAVED_TP,         // TP kept between battles (unused: TP resets each battle for now)
+    MON_DATA_SAVED_TP,         // TP kept between battles, 0-TP_MAX (refilled by RestPlayerParty)
     MON_DATA_DVS,              // Gen 1 DVs, a view over the IVs (no storage of its own)
 };
 
@@ -112,8 +112,9 @@ enum {
 //   substruct1 bit  12     specialAwakened  1 bit: the Special (signature move) is unsealed.
 //                                           The Special itself comes from the species (ROM
 //                                           table), it is a fifth move, not one of the 4 slots.
-//   substruct1 bits 13-19  savedTp          7 bits, 0-TP_MAX. Unused while TP resets to
-//                                           TP_MAX each battle; reserved for TP that persists.
+//   substruct1 bits 13-19  tpSpent          7 bits, 0-TP_MAX: TP the mon has used since its
+//                                           last rest, so a new (zeroed) mon is full.
+//                                           MON_DATA_SAVED_TP reads and writes TP_MAX - tpSpent.
 //   substruct1 bits 20-31  reserved         12 bits
 //   substruct2 byte 6      specialProgress  8 bits: progress towards awakening (was cool)
 // Gen 1 DVs (MON_DATA_DVS) reuse the IVs: DV = IV >> 1, no extra bits.
@@ -150,7 +151,7 @@ struct PokemonSubstruct1
     u32 moveRank2:3;
     u32 moveRank3:3;
     u32 specialAwakened:1;
-    u32 savedTp:7;
+    u32 tpSpent:7;
     u32 reserved:12;
 };
 

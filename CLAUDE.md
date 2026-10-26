@@ -241,5 +241,5 @@ Game design (story, region, roster, mechanics, art direction, open questions) is
 
 - Gen-1 data on `develop`; only the opening maps (truck, Littleroot, Route 101, Oldale, Route 103) and the link rooms remain. Old map ids still named by dead code go through `include/constants/parked_maps.h`. See `GEN1_ONLY_CHANGES.md`.
 - Hoenn-only systems (Frontier, contests, berries, Secret Bases, TV, e-Reader, wireless and more) are being deleted behind the `FREE_*` switches.
-- TP replaces PP, with the Minamoto battle UI. Move ranks, signature moves, Talk/AI states and Charisma are not implemented yet.
+- TP replaces PP, with the Minamoto battle UI. TP persists between battles and only refills at an inn (`RestPlayerParty`); Pokémon Centers are out of the design. Inns, Charisma tiers, clock-windowed NPCs: `docs/engineering/town-life-toolkit.md`. Move ranks, signature moves and Talk/AI states are not implemented yet.
 - `make check` and the `tools/regress` scripts are the regression gate; run them before merging engine changes.
