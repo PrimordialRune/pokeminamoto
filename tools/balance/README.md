@@ -49,12 +49,12 @@ of its level-up learnset, like a wild or trainer mon in Emerald.
 | Rule | Default | Where it lives in the ROM |
 |---|---|---|
 | `tp_max` | 100 | `TP_MAX` |
-| `tp_regen_base`, `tp_int_div` | 5, 8 | `TP_REGEN_BASE`, `TP_REGEN_INT_DIVISOR`; INT = base Sp. Def; `tp_int_div=0` drops INT |
+| `tp_regen_base`, `tp_int_div` | 3, 32 | `TP_REGEN_BASE`, `TP_REGEN_INT_DIVISOR`, from `tp_model.json`; INT = base Sp. Def; `tp_int_div=0` drops INT |
 | `cplus`, `cplus_single_stage`, `cplus_wild_rank1` | off, 20/35, true | C+ move ranks: family slots, rank cap by evolution stage (FINDINGS section 9) |
 | `cplus_level_fallback`, `cplus_star1_cost` | off, 0 | e.g. `22,40`: two and three stars by level if evolution comes later; e.g. `5`: every one star costs 5 TP (section 9b) |
 | `tp_curve`, `curve_base`, `curve_k` | off, 1, 0.13 | continuous cost `round(base + k x value)` from power, accuracy and effects (`costcurve.py`, FINDINGS section 10) |
 | `special_power`, `special_cost`, `special_level`, `special_habit` | off, 30, 25, greedy | a STAB Special for player mons (`trainers` keeps it for trainer battles) |
-| `tp_persist` | false | TP carries over between battles and refills only on a heal (not in the ROM yet) |
+| `tp_persist` | true | TP carries over between battles and refills only on a rest, as in the ROM |
 | `tp_formula` | ROM `tpCost` | any Python expression of `power`, `acc`, `status`, `rank`, `pp` (the move's old PP, from `move_pp.csv`); `round5()` available |
 | `rank_costs`, `rank_status_costs` | off | cost by move rank, e.g. `5,15,40` and `10,20,30` (rank: Notion stars for family moves, else a power tier) |
 | `crit_table` | 16,8,4,2,1 | `sCriticalHitChance[]` (1 in N per stage) |
@@ -93,3 +93,11 @@ Omar's Pocket Monsters Green notes. Every number nobody has designed yet is mark
 (mostly Gen 1 Green/RB trainer teams and the number of wild battles per area). Steps are `area`
 (wild battles), `trainer`, `boss` (with `badge`, `sash`, `target` arrival levels), `catch` and `heal`.
 Gym leaders are retried after a loss, as a player would, and the report counts the tries.
+
+## Baking the TP rules into the ROM
+
+`tp_model.json` holds the TP rules the ROM ships: TP_MAX, the regen (base + INT / divisor) and the cost curve (`round(curve_base + curve_k x value)`). `Rules` takes its defaults from it. After changing it, run
+
+    python3 tools/balance/costcurve.py --write
+
+which writes `include/constants/tp_model.h` and the `.tpCost` of every move in `src/data/moves_info.h`. `make check` runs `costcurve.py --check` and fails if either is out of sync.

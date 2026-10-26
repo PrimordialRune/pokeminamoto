@@ -81,4 +81,6 @@ s32 MoveBattleBar(u8 battler, u8 healthboxSpriteId, u8 whichBar, u8 unused);
 u8 GetScaledHPFraction(s16 hp, s16 maxhp, u8 scale);
 u8 GetHPBarLevel(s16 hp, s16 maxhp);
 
+extern const u16 gTypeTextColors[NUMBER_OF_MON_TYPES];
+
 #endif // GUARD_BATTLE_INTERFACE_H

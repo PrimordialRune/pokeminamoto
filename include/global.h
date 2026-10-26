@@ -142,6 +142,11 @@
 // higher number as never seen. Raising it changes the save layout.
 #define POKEDEX_FLAG_COUNT 200
 #define NUM_DEX_FLAG_BYTES ROUND_BITS_TO_BYTES(POKEDEX_FLAG_COUNT)
+
+// The battle info screen (SEL.) counts battles against each species up to
+// FOE_BATTLE_COUNT_MAX, in 4 bits per species
+#define FOE_BATTLE_COUNT_MAX   15
+#define FOE_BATTLE_COUNT_BYTES DIV_ROUND_UP(NUM_SPECIES, 2)
 #define NUM_FLAG_BYTES ROUND_BITS_TO_BYTES(FLAGS_COUNT)
 #define NUM_TRENDY_SAYING_BYTES ROUND_BITS_TO_BYTES(NUM_TRENDY_SAYINGS)
 
@@ -436,6 +441,7 @@ struct SaveBlock2
     /*0xAC*/ u32 encryptionKey;
     /*0x1EC*/ struct BerryCrush berryCrush;
     /*0x64C*/ struct BattleFrontier frontier;
+             u8 foeBattleCounts[FOE_BATTLE_COUNT_BYTES]; // per species, 4 bits each: battles against it, for the SEL. info screen (save version 2)
 }; // sizeof=0xF2C
 
 extern struct SaveBlock2 *gSaveBlock2Ptr;

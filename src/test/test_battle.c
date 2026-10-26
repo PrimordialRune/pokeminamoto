@@ -123,6 +123,7 @@ static u8 Pick_GrowlTwiceThenFlamethrower(u32 turn, u32 frame)
 static void Check_TpSeries(void)
 {
     u8 p = 50, e = TP_MAX;
+    u32 i;
 
     CHECK_EQ(gBattleOutcome, B_OUTCOME_WON);
     CHECK_EQ(sLog[0].playerTp, p);
@@ -136,7 +137,11 @@ static void Check_TpSeries(void)
     e = AfterTurn(e, GetMoveTPCost(MOVE_SPLASH), SPECIES_MAGIKARP);
     CHECK_EQ(sLog[2].playerTp, p);
     CHECK_EQ(sLog[2].enemyTp, e);
-    CHECK_EQ(GetMonData(&gEnemyParty[0], MON_DATA_HP), 0); // the Flamethrower of the third turn killed it
+    CHECK_EQ(GetMonData(&gEnemyParty[0], MON_DATA_HP), 0); // a Flamethrower from the third turn on killed it
+    // TP persists: the party keeps what the last Flamethrower left (the battle ends before the regen)
+    for (i = 3; i < MAX_LOG_TURNS && sLog[i].valid; i++)
+        ;
+    CHECK_EQ(GetMonData(&gPlayerParty[0], MON_DATA_SAVED_TP), sLog[i - 1].playerTp - GetMoveTPCost(MOVE_FLAMETHROWER));
 }
 
 // --- scenario 1: no affordable move means Struggle -------------------------------
@@ -153,6 +158,15 @@ static void Tweak_ZeroTp(void)
 
 static u8 Pick_Slot0(u32 turn, u32 frame)
 {
+    return 0;
+}
+
+// The checks only read the TP the first turn leaves. After it, top the player's TP up so
+// Ember stays affordable (regen alone is below its cost) and the battle ends.
+static u8 Pick_Slot0ThenRefill(u32 turn, u32 frame)
+{
+    if (turn >= 1)
+        gBattleStruct->tp[B_SIDE_PLAYER][0] = TP_MAX;
     return 0;
 }
 
@@ -186,7 +200,9 @@ static void Tweak_EmberTp(void)
 
 static u8 Pick_BlockedThenAffordable(u32 turn, u32 frame)
 {
-    return frame < 400 ? 1 : 0;
+    if (frame >= 400)
+        return Pick_Slot0ThenRefill(turn, frame);
+    return 1;
 }
 
 static void Check_Blocked(void)
@@ -331,7 +347,7 @@ static void Check_SpecialSealed(void)
 static const struct Scenario sScenarios[] =
 {
     {"battle_tp_spend_and_regen",   Setup_TpSeries, Tweak_Tp50,   Pick_GrowlTwiceThenFlamethrower, Check_TpSeries},
-    {"battle_struggle_at_zero_tp",  Setup_Struggle, Tweak_ZeroTp, Pick_Slot0,                   Check_Struggle},
+    {"battle_struggle_at_zero_tp",  Setup_Struggle, Tweak_ZeroTp, Pick_Slot0ThenRefill,         Check_Struggle},
     {"battle_unaffordable_blocked", Setup_StruggleTanky, Tweak_EmberTp, Pick_BlockedThenAffordable,  Check_Blocked, 2},
     {"battle_exp_gain",             Setup_Exp,      NULL,         Pick_Slot0,                   Check_Exp},
     {"battle_special_deed_awakens", Setup_SpecialDeed, NULL,      Pick_Slot0,                   Check_SpecialDeed, 1},

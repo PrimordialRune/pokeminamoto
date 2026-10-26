@@ -2023,7 +2023,7 @@ u32 GetBoxMonData3(struct BoxPokemon *boxMon, s32 field, u8 *data)
         retVal = substruct2->specialProgress;
         break;
     case MON_DATA_SAVED_TP:
-        retVal = substruct1->savedTp;
+        retVal = TP_MAX - min(substruct1->tpSpent, TP_MAX);
         break;
     case MON_DATA_DVS:
         // Gen 1 order, 4 bits each: Attack 15-12, Defense 11-8, Speed 7-4, Special 3-0.
@@ -2439,7 +2439,7 @@ void SetBoxMonData(struct BoxPokemon *boxMon, s32 field, const void *dataArg)
         SET8(substruct2->specialProgress);
         break;
     case MON_DATA_SAVED_TP:
-        substruct1->savedTp = min(data[0], TP_MAX);
+        substruct1->tpSpent = TP_MAX - min(data[0], TP_MAX);
         break;
     case MON_DATA_DVS:
     {
@@ -3104,8 +3104,8 @@ bool8 PokemonUseItemEffects(struct Pokemon *mon, u16 item, u8 partyIndex, u8 mov
                         break;
 
                     case 3: // ITEM4_HEAL_TP
-                        // TP only exists in battle. It is kept per party slot, so the
-                        // mon doesn't have to be on the field.
+                        // In battle TP is kept per party slot, so the mon doesn't
+                        // have to be on the field. Outside it's the mon's saved TP.
                         if (gMain.inBattle)
                         {
                             u8 *tp = &gBattleStruct->tp[GetBattlerSide(gActiveBattler)][partyIndex];
@@ -3116,6 +3116,20 @@ bool8 PokemonUseItemEffects(struct Pokemon *mon, u16 item, u8 partyIndex, u8 mov
                                 if (dataUnsigned > TP_MAX)
                                     dataUnsigned = TP_MAX;
                                 *tp = dataUnsigned;
+                                retVal = FALSE;
+                            }
+                        }
+                        else
+                        {
+                            u8 tp = GetMonData(mon, MON_DATA_SAVED_TP, NULL);
+
+                            if (tp < TP_MAX)
+                            {
+                                dataUnsigned = tp + itemEffect[itemEffectParam];
+                                if (dataUnsigned > TP_MAX)
+                                    dataUnsigned = TP_MAX;
+                                tp = dataUnsigned;
+                                SetMonData(mon, MON_DATA_SAVED_TP, &tp);
                                 retVal = FALSE;
                             }
                         }

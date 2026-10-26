@@ -104,18 +104,20 @@ static void Test_TpCostTable(void)
 
 static void Test_TpCostSamples(void)
 {
-    // TP: placeholder costs (status 10, damaging power^2/320 rounded to 5, Notion has Pound = 5)
-    ASSERT_EQ(GetMoveTPCost(MOVE_POUND), 5);
-    ASSERT_EQ(GetMoveTPCost(MOVE_SPLASH), 10);
-    ASSERT_EQ(GetMoveTPCost(MOVE_FLAMETHROWER), 30);
-    ASSERT_TRUE(GetMoveTPCost(MOVE_HYPER_BEAM) > GetMoveTPCost(MOVE_FLAMETHROWER));
+    // TP: the balance model's cost curve, round(1 + 0.13 x value) (FINDINGS section 10)
+    ASSERT_EQ(GetMoveTPCost(MOVE_TACKLE), 5);
+    ASSERT_EQ(GetMoveTPCost(MOVE_GROWL), 4);
+    ASSERT_EQ(GetMoveTPCost(MOVE_EMBER), 7);
+    ASSERT_EQ(GetMoveTPCost(MOVE_FLAMETHROWER), 14);
+    ASSERT_TRUE(GetMoveTPCost(MOVE_HYPER_BEAM) < GetMoveTPCost(MOVE_FLAMETHROWER)); // recharge
 }
 
 static void Test_TpCostFollowsPower(void)
 {
     u32 move;
 
-    // TP: a stronger damaging move never costs less than a weaker one of the same type
+    // TP: a damaging move with more expected power (power x accuracy) never costs less
+    // than one with less, for the same type and effect
     for (move = MOVE_POUND; move < MOVE_STRUGGLE; move++)
     {
         u32 other;
@@ -124,7 +126,8 @@ static void Test_TpCostFollowsPower(void)
             continue;
         for (other = MOVE_POUND; other < MOVE_STRUGGLE; other++)
         {
-            if (gMovesInfo[other].power != 0 && gMovesInfo[other].power > gMovesInfo[move].power
+            if (gMovesInfo[other].power != 0
+             && gMovesInfo[other].power * gMovesInfo[other].accuracy > gMovesInfo[move].power * gMovesInfo[move].accuracy
              && gMovesInfo[other].type == gMovesInfo[move].type
              && gMovesInfo[other].effect == gMovesInfo[move].effect
              && GetMoveTPCost(other) < GetMoveTPCost(move))
@@ -155,7 +158,7 @@ static void Test_TpRegenFormula(void)
     // TP: +TP_REGEN_BASE + INT / TP_REGEN_INT_DIVISOR, INT = base Sp. Def
     expect = 40 + TP_REGEN_BASE + gSpeciesInfo[SPECIES_CHARMANDER].baseSpDefense / TP_REGEN_INT_DIVISOR;
     ASSERT_EQ(GetBattlerTP(0), expect);
-    ASSERT_EQ(GetBattlerTP(0), 40 + 5 + 50 / 8); // Charmander INT 50
+    ASSERT_EQ(GetBattlerTP(0), 40 + 3 + 50 / 32); // Charmander INT 50
     BattleTeardown();
 }
 

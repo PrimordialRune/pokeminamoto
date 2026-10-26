@@ -48,6 +48,18 @@ void HealPlayerParty(void)
     }
 }
 
+// A night's rest: HealPlayerParty plus full TP. TP only refills by resting
+// (inns, home, whiteout), not at a nurse.
+void RestPlayerParty(void)
+{
+    u8 i;
+    u8 tp = TP_MAX;
+
+    HealPlayerParty();
+    for (i = 0; i < gPlayerPartyCount; i++)
+        SetMonData(&gPlayerParty[i], MON_DATA_SAVED_TP, &tp);
+}
+
 u8 ScriptGiveMon(u16 species, u8 level, u16 item, u32 unused1, u32 unused2, u8 unused3)
 {
     u16 nationalDexNum;

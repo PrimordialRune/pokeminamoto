@@ -3,6 +3,8 @@ mapscripts MasaraTown_MapScripts {
         if (var(VAR_LITTLEROOT_INTRO_STATE) == 0) {
             call(MasaraTown_EventScript_NewGameSetup)
         }
+        // Kimura only goes out at night (MasaraTown_EventScript_KimuraNight).
+        showduringtime(FLAG_HIDE_MASARA_KIMURA_NIGHT, TIME_OF_DAY_NITE)
     }
 }
 
@@ -64,7 +66,220 @@ script MasaraTown_EventScript_RouteSign {
 
 script MasaraTown_EventScript_ToLittleroot {
     lockall
+    // Fiora leaves the same morning the player does, talked to or not.
+    setflag(FLAG_HIDE_MASARA_FIORA)
     warp(MAP_LITTLEROOT_TOWN, 10, 18)
     waitstate
     releaseall
+}
+
+// ---------------------------------------------------------------------------
+// Opening events (design: masara-tokiwa-events-v2.md). The scripts are here;
+// every line of dialogue is in the text blocks at the end of the file, so the
+// writing can change without touching the logic.
+//
+// Save cost: flags 0x493-0x498, no vars.
+// ---------------------------------------------------------------------------
+
+// Old Kimura: he won't open the door. The bowl, the leash and the photo are
+// the seeds; his payoff is a mid-game event.
+script MasaraTown_EventScript_KimuraDoor {
+    lockall
+    if (!flag(FLAG_HIDE_MASARA_KIMURA_NIGHT)) {
+        msgbox(MasaraTown_Text_KimuraDoorNight)
+    } elif (!flag(FLAG_MASARA_KNOCKED_KIMURA)) {
+        setflag(FLAG_MASARA_KNOCKED_KIMURA)
+        msgbox(MasaraTown_Text_Knock)
+        msgbox(MasaraTown_Text_KimuraGoAway)
+    } else {
+        msgbox(MasaraTown_Text_Knock)
+        msgbox(MasaraTown_Text_KimuraNoAnswer)
+    }
+    releaseall
+}
+
+script MasaraTown_EventScript_KimuraBowl {
+    setflag(FLAG_SEEN_KIMURA_BOWL)
+    msgbox(MasaraTown_Text_KimuraBowl, MSGBOX_SIGN)
+}
+
+script MasaraTown_EventScript_KimuraWindow {
+    setflag(FLAG_SEEN_KIMURA_PHOTO)
+    msgbox(MasaraTown_Text_KimuraWindow, MSGBOX_SIGN)
+}
+
+// At night he walks to Tokiwa for his magazine: shown only at night by
+// showduringtime in MAP_SCRIPT_ON_TRANSITION.
+script MasaraTown_EventScript_KimuraNight {
+    lock
+    faceplayer
+    msgbox(MasaraTown_Text_KimuraStaring)
+    if (flag(FLAG_SEEN_KIMURA_BOWL)) {
+        msgbox(MasaraTown_Text_KimuraDontPoke)
+    }
+    closemessage
+    applymovement(LOCALID_MASARA_KIMURA, Common_Movement_FaceOriginalDirection)
+    waitmovement(0)
+    release
+}
+
+// Fiora: leaving for the circuit the same morning. After the talk she walks
+// up the north road toward Route 1 and is gone.
+script MasaraTown_EventScript_Fiora {
+    lock
+    faceplayer
+    msgbox(MasaraTown_Text_Fiora)
+    closemessage
+    // Go round the player if they stand in her way north.
+    if (var(VAR_FACING) == DIR_SOUTH) {
+        applymovement(LOCALID_MASARA_FIORA, MasaraTown_Movement_FioraLeaveAround)
+    } else {
+        applymovement(LOCALID_MASARA_FIORA, MasaraTown_Movement_FioraLeave)
+    }
+    waitmovement(0)
+    removeobject(LOCALID_MASARA_FIORA)
+    setflag(FLAG_HIDE_MASARA_FIORA)
+    release
+}
+
+movement MasaraTown_Movement_FioraLeave {
+    walk_up * 7
+}
+
+movement MasaraTown_Movement_FioraLeaveAround {
+    walk_left
+    walk_up * 7
+}
+
+// Okido outside his institute. The "something sealed" line seeds the Special
+// (it belongs in the starter scene once the Kanto lab exists). He changes the
+// subject if the player has seen the photo in Kimura's window.
+script MasaraTown_EventScript_Okido {
+    lock
+    faceplayer
+    if (!flag(FLAG_MASARA_OKIDO_SEALED)) {
+        setflag(FLAG_MASARA_OKIDO_SEALED)
+        msgbox(MasaraTown_Text_OkidoSealed)
+    } else {
+        msgbox(MasaraTown_Text_OkidoSealedAgain)
+    }
+    if (flag(FLAG_SEEN_KIMURA_PHOTO)) {
+        msgbox(MasaraTown_Text_OkidoChangesSubject)
+    }
+    release
+}
+
+// Nanami tends her herbs by the Okido house. Once the player has seen
+// Kimura's bowl she remembers what he used to buy.
+script MasaraTown_EventScript_Nanami {
+    lock
+    faceplayer
+    msgbox(MasaraTown_Text_NanamiHerbs)
+    if (flag(FLAG_SEEN_KIMURA_BOWL)) {
+        msgbox(MasaraTown_Text_NanamiKimura)
+    }
+    closemessage
+    applymovement(LOCALID_MASARA_NANAMI, Common_Movement_FaceOriginalDirection)
+    waitmovement(0)
+    release
+}
+
+// Okada food shop: the mother outside asks after Fiora, the father answers
+// from inside and pretends not to care.
+script MasaraTown_EventScript_OkadaMother {
+    lock
+    faceplayer
+    if (flag(FLAG_SYS_POKEMON_GET)) {
+        msgbox(MasaraTown_Text_OkadaMotherTrainer)
+        msgbox(MasaraTown_Text_OkadaFatherTrainer)
+    } elif (!flag(FLAG_HIDE_MASARA_FIORA)) {
+        msgbox(MasaraTown_Text_OkadaMotherFioraHere)
+        msgbox(MasaraTown_Text_OkadaFatherFioraHere)
+    } else {
+        msgbox(MasaraTown_Text_OkadaMotherFioraGone)
+        msgbox(MasaraTown_Text_OkadaFatherFioraGone)
+    }
+    release
+}
+
+// --- Text ------------------------------------------------------------------
+
+text MasaraTown_Text_Knock {
+    format("(Knock, knock...)")
+}
+
+text MasaraTown_Text_KimuraGoAway {
+    format("...Go away. I'm not one of Okido's errand boys.")
+}
+
+text MasaraTown_Text_KimuraNoAnswer {
+    format("No answer. Someone is standing very still behind the door.")
+}
+
+text MasaraTown_Text_KimuraDoorNight {
+    format("The lights are off. Nobody answers.")
+}
+
+text MasaraTown_Text_KimuraBowl {
+    format("An empty POKéMON food bowl, and an old leash on a hook by the door.\pThe bowl is clean. Someone still washes it.")
+}
+
+text MasaraTown_Text_KimuraWindow {
+    format("A faded photo hangs inside the window.\pA young man with a POKéMON at his feet, and someone in a lab coat beside him. Both are smiling.")
+}
+
+text MasaraTown_Text_KimuraStaring {
+    format("What are you staring at.")
+}
+
+text MasaraTown_Text_KimuraDontPoke {
+    format("...Don't go poking around other people's doors.")
+}
+
+text MasaraTown_Text_Fiora {
+    format("Hm? You're {PLAYER}, from the red roof.\pI'm Fiora. The Okadas' daughter, from the food shop. I was home for two days, and I'm off again this morning.\pThe circuit doesn't wait. Miss the qualifier in TOKIWA and you've missed the season.\pTell the PROFESSOR his INDEX still has my ODDISH under the wrong habitat.\pAnd if SHIGERU's still asleep, tell him that at this rate he'll never catch me.\pSee you on the road. Maybe.")
+}
+
+text MasaraTown_Text_OkidoSealed {
+    format("Ah, {PLAYER}. Up early, unlike my grandson.\pForty years I've been filling the POKéMON INDEX. Habitats, weights, how they evolve. All of it measurable.\pBut every POKéMON I've examined has something in it I can't measure. Something sealed.\pI've never managed to document it. Perhaps you'll see it before I do.")
+}
+
+text MasaraTown_Text_OkidoSealedAgain {
+    format("Something sealed... One day I'll find a way to put it in the INDEX.")
+}
+
+text MasaraTown_Text_OkidoChangesSubject {
+    format("The photo in Kimura's window? ...Hm.\pHave you seen the sky this morning? Lovely weather. Off you go.")
+}
+
+text MasaraTown_Text_NanamiHerbs {
+    format("Morning, {PLAYER}. I'm drying herbs for the Okada shop.\pFood fills a POKéMON up. Herbs are different: they work on what's wrong, not on the hunger.\pGrandpa calls it folk medicine. He still drinks my tea.")
+}
+
+text MasaraTown_Text_NanamiKimura {
+    format("...Mr. Kimura's bowl? He used to buy calming herbs from me, for a POKéMON.\pThat POKéMON's been gone for years. He still keeps the bowl out.")
+}
+
+text MasaraTown_Text_OkadaMotherFioraHere {
+    format("Fiora's leaving again this morning. She's in the square saying goodbye to half the town.\pTo half the town, and not to her father.")
+}
+
+text MasaraTown_Text_OkadaFatherFioraHere {
+    format("(A voice from inside the shop)\nSomebody has to mind the shop!")
+}
+
+text MasaraTown_Text_OkadaMotherFioraGone {
+    format("She's gone already. She took a whole bag of rice crackers and didn't pay for one.")
+}
+
+text MasaraTown_Text_OkadaFatherFioraGone {
+    format("(A voice from inside the shop)\n...She'll be back when she's hungry.")
+}
+
+text MasaraTown_Text_OkadaMotherTrainer {
+    format("A POKéMON of your own! If you see Fiora on the road, tell her to eat something that isn't from a vending machine.")
+}
+
+text MasaraTown_Text_OkadaFatherTrainer {
+    format("(A voice from inside the shop)\nDon't tell her anything. ...Unless she asks.")
 }

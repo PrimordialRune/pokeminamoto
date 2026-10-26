@@ -22,6 +22,7 @@
 #include "battle_message.h"
 #include "battle_ai_script_commands.h"
 #include "battle_controllers.h"
+#include "battle_talk.h"
 #include "event_data.h"
 #include "link.h"
 #include "field_weather.h"
@@ -704,7 +705,7 @@ static void PressureSpendTP(u8 attacker, u16 move, s32 pressureCount)
     if (i == MAX_MON_MOVES || pressureCount == 0)
         return;
 
-    tpToSpend = GetMoveTPCost(move) * pressureCount;
+    tpToSpend = GetBattlerMoveTPCost(attacker, move) * pressureCount;
     if (tpToSpend > TP_MAX)
         tpToSpend = TP_MAX;
     SpendBattlerTP(attacker, tpToSpend);
@@ -1083,6 +1084,7 @@ enum
     ENDTURN_SANDSTORM,
     ENDTURN_SUN,
     ENDTURN_HAIL,
+    ENDTURN_TRAINER_STATE,
     ENDTURN_FIELD_COUNT,
 };
 
@@ -1333,6 +1335,14 @@ u8 DoFieldEndTurnEffects(void)
                 gBattleScripting.animArg1 = B_ANIM_HAIL_CONTINUES;
                 gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_HAIL;
                 BattleScriptExecute(gBattlescriptCurrInstr);
+                effect++;
+            }
+            gBattleStruct->turnCountersTracker++;
+            break;
+        case ENDTURN_TRAINER_STATE:
+            if (TrainerStateEndTurn())
+            {
+                BattleScriptExecute(BattleScript_TrainerStateEnds);
                 effect++;
             }
             gBattleStruct->turnCountersTracker++;
@@ -3874,6 +3884,13 @@ u8 IsMonDisobedient(void)
     }
 }
 
+// TP persists between the player's own battles. Link and Frontier battles use a
+// party that isn't the player's to keep, so they start full and don't write back.
+static bool32 BattleUsesSavedTP(void)
+{
+    return !(gBattleTypeFlags & (BATTLE_TYPE_LINK | BATTLE_TYPE_FRONTIER));
+}
+
 void InitBattleTP(void)
 {
     s32 side, i;
@@ -3882,6 +3899,28 @@ void InitBattleTP(void)
     {
         for (i = 0; i < PARTY_SIZE; i++)
             gBattleStruct->tp[side][i] = TP_MAX;
+    }
+    if (BattleUsesSavedTP())
+    {
+        for (i = 0; i < PARTY_SIZE; i++)
+            gBattleStruct->tp[B_SIDE_PLAYER][i] = GetMonData(&gPlayerParty[i], MON_DATA_SAVED_TP);
+    }
+}
+
+// End of battle: the party keeps the TP it has left (a mon caught this battle
+// sits in a slot that started at TP_MAX).
+void SaveBattleTP(void)
+{
+    s32 i;
+
+    if (!BattleUsesSavedTP())
+        return;
+    for (i = 0; i < PARTY_SIZE; i++)
+    {
+        u8 tp = gBattleStruct->tp[B_SIDE_PLAYER][i];
+
+        if (GetMonData(&gPlayerParty[i], MON_DATA_SPECIES) != SPECIES_NONE)
+            SetMonData(&gPlayerParty[i], MON_DATA_SAVED_TP, &tp);
     }
 }
 
@@ -3907,6 +3946,16 @@ u8 GetBattlerTP(u8 battler)
     return *GetBattlerTPPtr(battler);
 }
 
+// What a move costs this battler: double while its trainer is Resolute
+u8 GetBattlerMoveTPCost(u8 battler, u16 move)
+{
+    u32 cost = GetMoveTPCost(move);
+
+    if (GetBattlerTrainerState(battler) == TRAINER_STATE_RESOLUTE)
+        cost *= 2;
+    return (cost > 0xFF) ? 0xFF : cost;
+}
+
 // The move in a chosen move position: slots 0-3, or SPECIAL_MOVE_POS for the battler's Special
 u16 GetBattlerMoveAtPos(u8 battler, u8 movePos)
 {
@@ -3917,7 +3966,7 @@ u16 GetBattlerMoveAtPos(u8 battler, u8 movePos)
 
 bool8 CanBattlerAffordMoveSlot(u8 battler, u8 moveSlot)
 {
-    return GetBattlerTP(battler) >= GetMoveTPCost(GetBattlerMoveAtPos(battler, moveSlot));
+    return GetBattlerTP(battler) >= GetBattlerMoveTPCost(battler, GetBattlerMoveAtPos(battler, moveSlot));
 }
 
 void SpendBattlerTP(u8 battler, u8 amount)

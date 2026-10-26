@@ -345,6 +345,7 @@ static const u8 sText_SandstormSubsided[] = _("The sandstorm subsided.");
 static const u8 sText_SunlightGotBright[] = _("The sunlight got bright!");
 static const u8 sText_SunlightStrong[] = _("The sunlight is strong.");
 static const u8 sText_SunlightFaded[] = _("The sunlight faded.");
+static const u8 sText_TrainerStateEnds[] = _("{B_TRAINER1_CLASS} {B_TRAINER1_NAME}\ncalmed down.");
 static const u8 sText_StartedHail[] = _("It started to hail!");
 static const u8 sText_HailContinues[] = _("Hail continues to fall.");
 static const u8 sText_HailStopped[] = _("The hail stopped.");
@@ -878,6 +879,7 @@ const u8 *const gBattleStringsTable[BATTLESTRINGS_COUNT - BATTLESTRINGS_TABLE_ST
     [STRINGID_PKMNBOXLANETTESPCFULL - BATTLESTRINGS_TABLE_START] = gText_PkmnTransferredLanettesPCBoxFull,
     [STRINGID_TRAINER1WINTEXT - BATTLESTRINGS_TABLE_START] = sText_Trainer1WinText,
     [STRINGID_TRAINER2WINTEXT - BATTLESTRINGS_TABLE_START] = sText_Trainer2WinText,
+    [STRINGID_TRAINERSTATEENDS - BATTLESTRINGS_TABLE_START] = sText_TrainerStateEnds,
 };
 
 const u16 gMissStringIds[] =
@@ -1260,8 +1262,6 @@ const u8 gText_WhatWillWallyDo[] = _("What will\nWALLY do?");
 const u8 gText_LinkStandby[] = _("{PAUSE 16}Link standby…");
 const u8 gText_BattleMenu[] = _("FIGHT{CLEAR_TO 56}BAG\nPOKéMON{CLEAR_TO 56}RUN");
 // Action menu buttons, in cursor order: top left, top right, bottom left, bottom right
-// Placeholders until Talk (R) and the battle info screen (SELECT) exist
-const u8 gText_TalkStub[] = _("You call out…\nNo answer yet.");
 const u8 gText_BattleMenuFight[] = _("FIGHT");
 const u8 gText_BattleMenuPkmn[] = _("PKMN");
 const u8 gText_BattleMenuItem[] = _("ITEM");

@@ -238,7 +238,6 @@ extern const u8 gText_WhatWillPkmnDo2[];
 extern const u8 gText_WhatWillWallyDo[];
 extern const u8 gText_LinkStandby[];
 extern const u8 gText_BattleMenu[];
-extern const u8 gText_TalkStub[];
 extern const u8 gText_BattleMenuFight[];
 extern const u8 gText_BattleMenuPkmn[];
 extern const u8 gText_BattleMenuItem[];

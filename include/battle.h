@@ -344,7 +344,11 @@ struct BattleStruct
     u8 wishPerishSongBattlerId;
     bool8 overworldWeatherDone;
     u8 atkCancelerTracker;
-    u8 unused_7[0x28];
+    u8 trainerState:4;      // TRAINER_STATE_*, the foe trainer's mood (Talk)
+    u8 trainerStateTurns:3; // turns the state has left, counted down at the end of each turn
+    u8 talkedThisTurn:1;    // Talk can be used once per turn
+    u8 foeInfoCounted;      // enemy party slots already counted for the SEL. info screen this battle
+    u8 unused_7[0x26];
     u8 AI_monToSwitchIntoId[MAX_BATTLERS_COUNT];
     s8 arenaMindPoints[2];
     s8 arenaSkillPoints[2];

@@ -1,13 +1,7 @@
 #ifndef GUARD_DAY_NIGHT_H
 #define GUARD_DAY_NIGHT_H
 
-enum
-{
-    TIME_OF_DAY_MORN,
-    TIME_OF_DAY_DAY,
-    TIME_OF_DAY_NITE,
-    TIME_OF_DAY_COUNT
-};
+#include "constants/day_night.h"
 
 // TRUE while sprite palettes loaded in the field get the time-of-day tone.
 extern bool8 gTintFieldSprites;
@@ -15,6 +9,9 @@ extern bool8 gTintFieldSprites;
 // The time of day from the clock (or VAR_TIME_OF_DAY_OVERRIDE). Reads the
 // cartridge RTC at most once a second; without a working RTC it runs on play time.
 u8 GetTimeOfDay(void);
+// The hour, 0-23, from the same clock. With VAR_TIME_OF_DAY_OVERRIDE set it is a
+// fixed hour of that phase: morning 7, day 12, night 22.
+u8 GetCurrentHour(void);
 // The time of day the field palettes are tinted for (always day indoors).
 u8 GetFieldTimeOfDay(void);
 // Tints palette entries in both palette buffers for the field's time of day.

@@ -5,11 +5,13 @@
 #include "battle_arena.h"
 #include "battle_controllers.h"
 #include "battle_interface.h"
+#include "battle_foe_info.h"
 #include "battle_main.h"
 #include "battle_message.h"
 #include "battle_pyramid.h"
 #include "battle_scripts.h"
 #include "battle_setup.h"
+#include "battle_talk.h"
 #include "battle_tower.h"
 #include "battle_util.h"
 #include "berry.h"
@@ -91,6 +93,7 @@ static void BattleIntroPrepareBackgroundSlide(void);
 static void BattleIntroDrawTrainersOrMonsSprites(void);
 static void BattleIntroDrawPartySummaryScreens(void);
 static void BattleIntroPrintTrainerWantsToBattle(void);
+static bool32 CanPrintIntroText(u32 battler);
 static void BattleIntroPrintWildMonAttacked(void);
 static void BattleIntroPrintOpponentSendsOut(void);
 static void BattleIntroPrintPlayerSendsOut(void);
@@ -2184,7 +2187,10 @@ static void SpriteCB_MoveWildMonToRight(struct Sprite *sprite)
 {
     if ((gIntroSlideFlags & 1) == 0)
     {
-        sprite->x2 += 2;
+        u32 i;
+
+        for (i = 0; i < B_INTRO_SLIDE_SPEED && sprite->x2 != 0; i++)
+            sprite->x2 += 2;
         if (sprite->x2 == 0)
         {
             sprite->callback = SpriteCB_WildMonShowHealthbox;
@@ -2366,7 +2372,10 @@ static void SpriteCB_BattleSpriteSlideLeft(struct Sprite *sprite)
 {
     if (!(gIntroSlideFlags & 1))
     {
-        sprite->x2 -= 2;
+        u32 i;
+
+        for (i = 0; i < B_INTRO_SLIDE_SPEED && sprite->x2 != 0; i++)
+            sprite->x2 -= 2;
         if (sprite->x2 == 0)
         {
             sprite->callback = SpriteCB_Idle;
@@ -2945,6 +2954,7 @@ static void BattleIntroDrawTrainersOrMonsSprites(void)
                                       | BATTLE_TYPE_LINK)))
             {
                 HandleSetPokedexFlag(SpeciesToNationalPokedexNum(gBattleMons[gActiveBattler].species), FLAG_SET_SEEN, gBattleMons[gActiveBattler].personality);
+                RecordFoeBattled(gActiveBattler);
             }
         }
         else
@@ -2955,6 +2965,7 @@ static void BattleIntroDrawTrainersOrMonsSprites(void)
                                       | BATTLE_TYPE_LINK)))
                 {
                     HandleSetPokedexFlag(SpeciesToNationalPokedexNum(gBattleMons[gActiveBattler].species), FLAG_SET_SEEN, gBattleMons[gActiveBattler].personality);
+                    RecordFoeBattled(gActiveBattler);
                 }
                 BtlController_EmitLoadMonSprite(B_COMM_TO_CONTROLLER);
                 MarkBattlerForControllerExec(gActiveBattler);
@@ -2989,7 +3000,7 @@ static void BattleIntroDrawPartySummaryScreens(void)
     s32 i;
     struct HpAndStatus hpStatus[PARTY_SIZE];
 
-    if (gBattleControllerExecFlags)
+    if (gBattleTypeFlags & BATTLE_TYPE_TRAINER ? gBattleControllerExecFlags != 0 : !CanPrintIntroText(0))
         return;
 
     if (gBattleTypeFlags & BATTLE_TYPE_TRAINER)
@@ -3057,9 +3068,22 @@ static void BattleIntroDrawPartySummaryScreens(void)
     }
 }
 
+// The intro text goes to one battler's controller. Without B_FAST_INTRO_TEXT it
+// waits for every controller, so the foe has finished sliding in and crying;
+// with it, only for the controller that prints it. Link battles keep the
+// full wait so both GBAs stay in step.
+static bool32 CanPrintIntroText(u32 battler)
+{
+#ifdef B_FAST_INTRO_TEXT
+    if (!(gBattleTypeFlags & BATTLE_TYPE_LINK))
+        return !IS_BATTLE_CONTROLLER_ACTIVE_ON_LOCAL(battler);
+#endif
+    return gBattleControllerExecFlags == 0;
+}
+
 static void BattleIntroPrintTrainerWantsToBattle(void)
 {
-    if (gBattleControllerExecFlags == 0)
+    if (CanPrintIntroText(GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)))
     {
         gActiveBattler = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
         PrepareStringBattle(STRINGID_INTROMSG, gActiveBattler);
@@ -3069,7 +3093,7 @@ static void BattleIntroPrintTrainerWantsToBattle(void)
 
 static void BattleIntroPrintWildMonAttacked(void)
 {
-    if (gBattleControllerExecFlags == 0)
+    if (CanPrintIntroText(0))
     {
         gBattleMainFunc = BattleIntroPrintPlayerSendsOut;
         PrepareStringBattle(STRINGID_INTROMSG, 0);
@@ -3144,6 +3168,7 @@ static void BattleIntroRecordMonsToDex(void)
                                       | BATTLE_TYPE_LINK)))
             {
                 HandleSetPokedexFlag(SpeciesToNationalPokedexNum(gBattleMons[gActiveBattler].species), FLAG_SET_SEEN, gBattleMons[gActiveBattler].personality);
+                RecordFoeBattled(gActiveBattler);
             }
         }
         gBattleMainFunc = BattleIntroPrintPlayerSendsOut;
@@ -3608,7 +3633,7 @@ static void HandleTurnActionSelectionState(void)
                         for (i = 0; i < MAX_MON_MOVES; i++)
                         {
                             moveInfo.moves[i] = gBattleMons[gActiveBattler].moves[i];
-                            moveInfo.tpCost[i] = GetMoveTPCost(gBattleMons[gActiveBattler].moves[i]);
+                            moveInfo.tpCost[i] = GetBattlerMoveTPCost(gActiveBattler, gBattleMons[gActiveBattler].moves[i]);
                         }
                         moveInfo.currentTp = GetBattlerTP(gActiveBattler);
 
@@ -4008,6 +4033,12 @@ u8 GetWhoStrikesFirst(u8 battler1, u8 battler2, bool8 ignoreChosenMoves)
         speedBattler2 /= 4;
 
     if (holdEffect == HOLD_EFFECT_QUICK_CLAW && gRandomTurnNumber < (0xFFFF * holdEffectParam) / 100)
+        speedBattler2 = UINT_MAX;
+
+    // A Resolute trainer's mons move first (move priority still goes before this)
+    if (GetBattlerTrainerState(battler1) == TRAINER_STATE_RESOLUTE)
+        speedBattler1 = UINT_MAX;
+    if (GetBattlerTrainerState(battler2) == TRAINER_STATE_RESOLUTE)
         speedBattler2 = UINT_MAX;
 
     if (ignoreChosenMoves)
@@ -4442,6 +4473,7 @@ static void HandleEndTurn_FinishBattle(void)
             }
         }
 
+        SaveBattleTP();
         BeginFastPaletteFade(3);
         FadeOutMapMusic(5);
         gBattleMainFunc = FreeResetData_ReturnToOvOrDoEvolutions;

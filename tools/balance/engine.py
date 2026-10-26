@@ -6,7 +6,7 @@ import math
 import random
 from dataclasses import dataclass, field
 
-from costcurve import curve_cost
+from costcurve import TP_MODEL, curve_cost
 from gamedata import PHYSICAL_TYPES, exp_for_level
 
 # gStatStageRatios / sAccuracyStageRatios, index 0..12 = stage -6..+6
@@ -55,10 +55,10 @@ STRUGGLE = {"name": "STRUGGLE", "effect": "RECOIL", "power": 50, "type": "MYSTER
 
 @dataclass
 class Rules:
-    tp_max: int = 100
-    tp_regen_base: int = 5
-    tp_int_div: int = 8             # 0 = no INT term
-    tp_persist: bool = False        # TP carries over between battles and only refills on heal (rest)
+    tp_max: int = TP_MODEL["tp_max"]                # TP_MAX, TP_REGEN_*: what the ROM ships (tp_model.json)
+    tp_regen_base: int = TP_MODEL["tp_regen_base"]
+    tp_int_div: int = TP_MODEL["tp_int_div"]        # 0 = no INT term
+    tp_persist: bool = True         # TP carries over between battles and only refills on heal (rest), as in the ROM
     cplus: bool = False             # C+ move ranks: a slot holds a family, rank cap rises with evolution stage
     cplus_single_stage: list = field(default_factory=lambda: [20, 35])   # levels for 2 and 3 stars without evolutions
     cplus_wild_rank1: bool = True   # player uses one star against wild mons, highest affordable rank vs trainers
@@ -66,8 +66,8 @@ class Rules:
     cplus_star1_cost: int = 0       # e.g. 5: every family's one-star rank costs this, whatever its PP
     tp_formula: str = ""            # "" = the ROM's tpCost; else a Python expression of power/acc/status/rank
     tp_curve: bool = False          # continuous cost curve: round(curve_base + curve_k * value), see costcurve.py
-    curve_base: float = 1.0
-    curve_k: float = 0.13
+    curve_base: float = TP_MODEL["curve_base"]
+    curve_k: float = TP_MODEL["curve_k"]
     special_power: int = 0          # 0 = off; else every player mon gets a STAB Special of this power
     special_cost: int = 30          # TP per use of the Special
     special_level: int = 25         # level the Special is earned at

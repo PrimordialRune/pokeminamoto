@@ -2544,20 +2544,32 @@ s32 MoveBattleBar(u8 battler, u8 healthboxSpriteId, u8 whichBar, u8 unused)
 
     if (whichBar == HEALTH_BAR) // health bar
     {
+        u16 hpFraction = 1;
+#ifdef B_FAST_HP_DRAIN
+        // One pixel's worth of HP per frame. Below B_HEALTHBAR_PIXELS max HP
+        // CalcNewBarValue already moves a pixel per frame.
+        if (gBattleSpritesDataPtr->battleBars[battler].maxValue > B_HEALTHBAR_PIXELS)
+            hpFraction = gBattleSpritesDataPtr->battleBars[battler].maxValue / B_HEALTHBAR_PIXELS;
+#endif
         currentBarValue = CalcNewBarValue(gBattleSpritesDataPtr->battleBars[battler].maxValue,
                     gBattleSpritesDataPtr->battleBars[battler].oldValue,
                     gBattleSpritesDataPtr->battleBars[battler].receivedValue,
                     &gBattleSpritesDataPtr->battleBars[battler].currValue,
-                    B_HEALTHBAR_PIXELS / 8, 1);
+                    B_HEALTHBAR_PIXELS / 8, hpFraction);
     }
     else // exp bar
     {
+        u32 expPerFrame;
         u16 expFraction = GetScaledExpFraction(gBattleSpritesDataPtr->battleBars[battler].oldValue,
                     gBattleSpritesDataPtr->battleBars[battler].receivedValue,
                     gBattleSpritesDataPtr->battleBars[battler].maxValue, 8);
         if (expFraction == 0)
             expFraction = 1;
-        expFraction = abs(gBattleSpritesDataPtr->battleBars[battler].receivedValue / expFraction);
+        expPerFrame = abs(gBattleSpritesDataPtr->battleBars[battler].receivedValue / expFraction);
+#ifdef B_FAST_EXP_GROW
+        expPerFrame *= B_FAST_EXP_GROW;
+#endif
+        expFraction = min(expPerFrame, 0xFFFF);
 
         currentBarValue = CalcNewBarValue(gBattleSpritesDataPtr->battleBars[battler].maxValue,
                     gBattleSpritesDataPtr->battleBars[battler].oldValue,

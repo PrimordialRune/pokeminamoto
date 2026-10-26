@@ -397,7 +397,11 @@ void SpriteCB_TrainerSlideIn(struct Sprite *sprite)
 {
     if (!(gIntroSlideFlags & 1))
     {
-        sprite->x2 += sprite->sSpeedX;
+        u32 i;
+
+        // B_INTRO_SLIDE_SPEED steps a frame, as the background slide (battle_intro.c)
+        for (i = 0; i < B_INTRO_SLIDE_SPEED && sprite->x2 != 0; i++)
+            sprite->x2 += sprite->sSpeedX;
         if (sprite->x2 == 0)
         {
             if (sprite->y2 != 0)
