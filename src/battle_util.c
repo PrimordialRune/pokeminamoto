@@ -21,6 +21,7 @@
 #include "battle_message.h"
 #include "battle_ai_script_commands.h"
 #include "battle_controllers.h"
+#include "battle_talk.h"
 #include "event_data.h"
 #include "link.h"
 #include "field_weather.h"
@@ -696,7 +697,7 @@ static void PressureSpendTP(u8 attacker, u16 move, s32 pressureCount)
     if (i == MAX_MON_MOVES || pressureCount == 0)
         return;
 
-    tpToSpend = GetMoveTPCost(move) * pressureCount;
+    tpToSpend = GetBattlerMoveTPCost(attacker, move) * pressureCount;
     if (tpToSpend > TP_MAX)
         tpToSpend = TP_MAX;
     SpendBattlerTP(attacker, tpToSpend);
@@ -1075,6 +1076,7 @@ enum
     ENDTURN_SANDSTORM,
     ENDTURN_SUN,
     ENDTURN_HAIL,
+    ENDTURN_TRAINER_STATE,
     ENDTURN_FIELD_COUNT,
 };
 
@@ -1325,6 +1327,14 @@ u8 DoFieldEndTurnEffects(void)
                 gBattleScripting.animArg1 = B_ANIM_HAIL_CONTINUES;
                 gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_HAIL;
                 BattleScriptExecute(gBattlescriptCurrInstr);
+                effect++;
+            }
+            gBattleStruct->turnCountersTracker++;
+            break;
+        case ENDTURN_TRAINER_STATE:
+            if (TrainerStateEndTurn())
+            {
+                BattleScriptExecute(BattleScript_TrainerStateEnds);
                 effect++;
             }
             gBattleStruct->turnCountersTracker++;
@@ -3928,9 +3938,19 @@ u8 GetBattlerTP(u8 battler)
     return *GetBattlerTPPtr(battler);
 }
 
+// What a move costs this battler: double while its trainer is Resolute
+u8 GetBattlerMoveTPCost(u8 battler, u16 move)
+{
+    u32 cost = GetMoveTPCost(move);
+
+    if (GetBattlerTrainerState(battler) == TRAINER_STATE_RESOLUTE)
+        cost *= 2;
+    return (cost > 0xFF) ? 0xFF : cost;
+}
+
 bool8 CanBattlerAffordMoveSlot(u8 battler, u8 moveSlot)
 {
-    return GetBattlerTP(battler) >= GetMoveTPCost(gBattleMons[battler].moves[moveSlot]);
+    return GetBattlerTP(battler) >= GetBattlerMoveTPCost(battler, gBattleMons[battler].moves[moveSlot]);
 }
 
 void SpendBattlerTP(u8 battler, u8 amount)

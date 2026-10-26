@@ -9,6 +9,7 @@
 #include "pokemon.h"
 #include "random.h"
 #include "battle_controllers.h"
+#include "battle_foe_info.h"
 #include "battle_interface.h"
 #include "text.h"
 #include "sound.h"
@@ -1223,7 +1224,7 @@ static void Cmd_ppreduce(void)
     // PP is no longer spent in battle.
     if (!(gHitMarker & (HITMARKER_NO_TPDEDUCT | HITMARKER_NO_ATTACKSTRING)) && gCurrentMove != MOVE_STRUGGLE)
     {
-        s32 tpToSpend = GetMoveTPCost(gBattleMons[gBattlerAttacker].moves[gCurrMovePos]) * ppToDeduct;
+        s32 tpToSpend = GetBattlerMoveTPCost(gBattlerAttacker, gBattleMons[gBattlerAttacker].moves[gCurrMovePos]) * ppToDeduct;
 
         gProtectStructs[gBattlerAttacker].notFirstStrike = 1;
         if (tpToSpend > TP_MAX)
@@ -4612,6 +4613,7 @@ static void Cmd_switchinanim(void)
         && !(gBattleTypeFlags & (BATTLE_TYPE_LINK
                                  | BATTLE_TYPE_FRONTIER)))
         HandleSetPokedexFlag(SpeciesToNationalPokedexNum(gBattleMons[gActiveBattler].species), FLAG_SET_SEEN, gBattleMons[gActiveBattler].personality);
+    RecordFoeBattled(gActiveBattler);
 
     gAbsentBattlerFlags &= ~(gBitTable[gActiveBattler]);
 

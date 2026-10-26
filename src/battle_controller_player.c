@@ -7,6 +7,8 @@
 #include "battle_interface.h"
 #include "battle_message.h"
 #include "battle_setup.h"
+#include "battle_talk.h"
+#include "battle_foe_info.h"
 #include "bg.h"
 #include "data.h"
 #include "graphics.h"
@@ -106,14 +108,16 @@ static void MoveSelectionDisplayEffectiveness(void);
 static void MoveSelectionDrawMoveNames(void);
 static void MoveSelectionDisplaySwitchPrompt(void);
 static void RecolorWindowPixels(u8 windowId, u8 from, u8 to, u16 left, u16 top, u16 width, u16 height);
-static void ActionSelectionShowFoeInfo(void);
+static void ActionSelectionPrintPrompt(const u8 *text);
+static void HandleInputChooseTalk(void);
+static void OpenFoeInfoScreen(void);
+static void ReturnToChooseAction(void);
 static void HandleMoveSwitching(void);
 static void SwitchIn_HandleSoundAndEnd(void);
 static void WaitForMonSelection(void);
 static void CompleteWhenChoseItem(void);
 #ifdef DEBUG_MENUS
 static void OpenBattleDebugMenu(void);
-static void ReturnFromBattleDebugMenu(void);
 #endif
 static void Task_LaunchLvlUpAnim(u8);
 static void Task_PrepareToGiveExpWithExpBar(u8);
@@ -365,36 +369,59 @@ static void HandleInputChooseAction(void)
     }
     else if (JOY_NEW(R_BUTTON))
     {
-        // Talk: a stub until the Talk system exists. It doesn't use up the turn.
+        // Talk (src/battle_talk.c). It doesn't use up the turn.
+        u8 availability = GetTalkAvailability();
+
         PlaySE(SE_SELECT);
-        BattlePutTextOnWindow(gText_TalkStub, B_WIN_ACTION_PROMPT);
+        if (availability == TALK_AVAILABLE)
+        {
+            gMultiUsePlayerCursor = TALK_PROVOKE;
+            ActionSelectionPrintPrompt(GetTalkMenuText(gMultiUsePlayerCursor));
+            gBattlerControllerFuncs[gActiveBattler] = HandleInputChooseTalk;
+        }
+        else
+        {
+            ActionSelectionPrintPrompt(GetTalkUnavailableText(availability));
+        }
     }
     else if (JOY_NEW(SELECT_BUTTON))
     {
-        // SEL.: info about the foe. For now its name and types; the full screen,
-        // filled in by battling a species more, comes later.
+        // SEL.: the foe info screen (src/battle_foe_info.c)
         PlaySE(SE_SELECT);
-        ActionSelectionShowFoeInfo();
+        BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 16, RGB_BLACK);
+        gBattlerControllerFuncs[gActiveBattler] = OpenFoeInfoScreen;
     }
 }
 
-static void ActionSelectionShowFoeInfo(void)
+// Prints into the action menu's LCD, expanding battle placeholders
+static void ActionSelectionPrintPrompt(const u8 *text)
 {
-    u8 foe = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
-    u8 *txtPtr;
-
-    if (gAbsentBattlerFlags & gBitTable[foe])
-        foe = GetBattlerAtPosition(B_POSITION_OPPONENT_RIGHT);
-
-    txtPtr = StringCopy(gDisplayedStringBattle, gSpeciesNames[gBattleMons[foe].species]);
-    *(txtPtr)++ = CHAR_NEWLINE;
-    txtPtr = StringCopy(txtPtr, gTypeNames[gBattleMons[foe].types[0]]);
-    if (gBattleMons[foe].types[1] != gBattleMons[foe].types[0])
-    {
-        *(txtPtr)++ = CHAR_SLASH;
-        StringCopy(txtPtr, gTypeNames[gBattleMons[foe].types[1]]);
-    }
+    BattleStringExpandPlaceholdersToDisplayedString(text);
     BattlePutTextOnWindow(gDisplayedStringBattle, B_WIN_ACTION_PROMPT);
+}
+
+// The Talk lines are listed in the LCD while the action buttons stay up.
+// A says the line, B or R goes back.
+static void HandleInputChooseTalk(void)
+{
+    if (JOY_NEW(A_BUTTON))
+    {
+        PlaySE(SE_SELECT);
+        ActionSelectionPrintPrompt(DoBattleTalk(gMultiUsePlayerCursor));
+        gBattlerControllerFuncs[gActiveBattler] = HandleInputChooseAction;
+    }
+    else if (JOY_NEW(B_BUTTON | R_BUTTON))
+    {
+        PlaySE(SE_SELECT);
+        ActionSelectionPrintPrompt(gText_WhatWillPkmnDo);
+        gBattlerControllerFuncs[gActiveBattler] = HandleInputChooseAction;
+    }
+    else if (JOY_NEW(DPAD_UP | DPAD_DOWN))
+    {
+        PlaySE(SE_SELECT);
+        gMultiUsePlayerCursor ^= 1;
+        ActionSelectionPrintPrompt(GetTalkMenuText(gMultiUsePlayerCursor));
+    }
 }
 
 static void UNUSED UnusedEndBounceEffect(void)
@@ -1392,21 +1419,32 @@ static void OpenBattleDebugMenu(void)
 {
     if (!gPaletteFade.active)
     {
-        gBattlerControllerFuncs[gActiveBattler] = ReturnFromBattleDebugMenu;
+        gBattlerControllerFuncs[gActiveBattler] = ReturnToChooseAction;
         ReshowBattleScreenDummy();
         FreeAllWindowBuffers();
         SetMainCallback2(CB2_BattleDebugMenu);
     }
 }
+#endif
 
-// Back on the battle screen: show the action menu again, still answering the
-// same ChooseAction request.
-static void ReturnFromBattleDebugMenu(void)
+static void OpenFoeInfoScreen(void)
+{
+    if (!gPaletteFade.active)
+    {
+        gBattlerControllerFuncs[gActiveBattler] = ReturnToChooseAction;
+        ReshowBattleScreenDummy();
+        FreeAllWindowBuffers();
+        SetMainCallback2(CB2_FoeInfoScreen);
+    }
+}
+
+// Back on the battle screen from the debug menu or the foe info screen: show
+// the action menu again, still answering the same ChooseAction request.
+static void ReturnToChooseAction(void)
 {
     if (gMain.callback2 == BattleMainCB2 && !gPaletteFade.active)
         PlayerHandleChooseAction();
 }
-#endif
 
 static void CompleteWhenChoseItem(void)
 {
@@ -1553,7 +1591,8 @@ static void MoveSelectionDisplayTpCost(void)
 }
 
 // Type names are printed in a color for their type, in BG palette 5 slot B_UI_PAL_TYPE
-static const u16 sTypeTextColors[NUMBER_OF_MON_TYPES] =
+// (and on the foe info screen)
+const u16 gTypeTextColors[NUMBER_OF_MON_TYPES] =
 {
     [TYPE_NORMAL]   = RGB(24, 24, 27),
     [TYPE_FIGHTING] = RGB(30, 17, 13),
@@ -1583,8 +1622,8 @@ static void MoveSelectionDisplayMoveType(void)
     u8 fontId = FONT_SMALL;
 
     // The whole info box (rim, type tab, TP fields, icon) is drawn in the type's color
-    gPlttBufferUnfaded[BG_PLTT_ID(5) + B_UI_PAL_TYPE] = sTypeTextColors[type];
-    gPlttBufferFaded[BG_PLTT_ID(5) + B_UI_PAL_TYPE] = sTypeTextColors[type];
+    gPlttBufferUnfaded[BG_PLTT_ID(5) + B_UI_PAL_TYPE] = gTypeTextColors[type];
+    gPlttBufferFaded[BG_PLTT_ID(5) + B_UI_PAL_TYPE] = gTypeTextColors[type];
     if (GetStringWidth(fontId, gTypeNames[type], 0) > TYPE_NAME_MAX_WIDTH)
         fontId = FONT_SMALL_NARROW;
     MoveScreenWindowStart(B_WIN_MOVE_TYPE);

@@ -3233,6 +3233,11 @@ BattleScript_SunlightFaded::
 	waitmessage B_WAIT_TIME_LONG
 	end2
 
+BattleScript_TrainerStateEnds::
+	printstring STRINGID_TRAINERSTATEENDS
+	waitmessage B_WAIT_TIME_LONG
+	end2
+
 BattleScript_OverworldWeatherStarts::
 	printfromtable gWeatherStartsStringIds
 	waitmessage B_WAIT_TIME_LONG

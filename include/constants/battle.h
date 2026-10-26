@@ -56,6 +56,18 @@ enum BattlerId
 // TP_MAX, TP_REGEN_BASE, TP_REGEN_INT_DIVISOR: baked from tools/balance/tp_model.json
 #include "constants/tp_model.h"
 
+// Trainer states (GDD "Trainer AI states"): a mood of the foe trainer that
+// changes how it fights for a few turns. Talk (R on the action menu) sets them.
+// gBattleStruct->trainerState holds one of these in 4 bits.
+#define TRAINER_STATE_NONE      0
+#define TRAINER_STATE_RESOLUTE  1 // its mons move first, but every move costs double TP
+#define TRAINER_STATE_PANIC     2 // picks its moves at random, ignoring strategy
+#define TRAINER_STATE_COUNT     3
+
+// How many turns a trainer state lasts: TRAINER_STATE_TURNS_BASE + Charisma / TRAINER_STATE_TURNS_CHARISMA_DIV (2-6)
+#define TRAINER_STATE_TURNS_BASE          2
+#define TRAINER_STATE_TURNS_CHARISMA_DIV  25
+
 #define B_FLANK_LEFT  0
 #define B_FLANK_RIGHT 1
 

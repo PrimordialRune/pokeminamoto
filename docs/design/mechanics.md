@@ -150,6 +150,7 @@ An activatable modification of opposing trainer AI via moves or in-battle dialog
 | Envy | Trainer tries to lower the opponent's stats |
 | Careful | Trainer constantly uses healing items |
 
+- **In the game (2026-10-26):** Resolute and Panic, set by Talk (§7). `gBattleStruct->trainerState` / `trainerStateTurns` (heap, carved from unused bytes), helpers in `src/battle_talk.c`. Resolute: the foe's mons move first (after move priority) and every move costs double TP (`GetBattlerMoveTPCost`). Panic: the opponent controller skips the AI and picks an affordable move at random. A state lasts 2 + Charisma/25 turns; "<trainer> calmed down." when it ends.
 - **Engine impact (inferred):** `src/battle_ai_script_commands.c` / `battle_ai_switch_items.c`; a per-battle "trainer state" variable (1 byte) in battle RAM, and per-trainer-state AI flag changes in `include/constants/battle_ai.h`. Priority overrides (Analysis Paralysis / Resolute) hook turn-order calc in `battle_main.c` (`GetWhoStrikesFirst`). TP interplay (double TP recovery/consumption) depends on the TP system. No save data if transient. Small EWRAM use.
 
 ## 6. Charisma (player stat)
@@ -165,6 +166,7 @@ An activatable modification of opposing trainer AI via moves or in-battle dialog
 
 - Pressing **R** during the action-selection phase in battle opens a dialogue with the opposing trainer: gives hints about their behaviour/strategy, and can raise/lower Charisma; can activate Trainer States. Talk does not end the turn ("after an action, excluding conversation, the player's turn ends").
 - Battle menu: Fight, Switch, Talk, Bag, Run (mermaid diagram in GDD: Battle Start -> Call to Action -> Fight/Talk/Run/Bag/Switch).
+- **In the game (2026-10-26):** R on the action menu lists two lines in the LCD, once per turn, trainer battles only. PROVOKE (60% + Charisma/4) makes the trainer Resolute; UNNERVE (30% + Charisma/2) makes it Panic and turns it Resolute when it fails. Gym leaders, Elite Four, Champion and rival take 30 points off; odds stay in 5-95%. No Charisma change yet. Wild battles: "The wild X just stares at you." Tuning is in `src/battle_talk.c`.
 - **Engine impact (inferred):** new action in the battle action menu (`battle_controller_player.c` `HandleInputChooseAction`, `battle_interface.c`, action-selection window layout in `src/battle_bg.c`/`strings`), R-button handler (Emerald uses L/R for summary shortcuts), script/dialogue text for per-trainer talk lines (`src/data/trainers.h` + text), a new battle-script path (`BattleScript_...`). Text data is ROM. Wild-Pokemon Talk is not defined.
 
 ## 8. Other battle structure (GDD)
