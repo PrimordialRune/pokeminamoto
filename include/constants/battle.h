@@ -359,7 +359,7 @@ enum BattlerId
 #define B_WIN_MOVE_NAME_3         5 // Bottom left
 #define B_WIN_MOVE_NAME_4         6 // Bottom right
 #define B_WIN_TP_LABEL                  7 // "TP" label
-#define B_WIN_TP_LEFT             8 // the mon's current TP
+#define B_WIN_TP_LEFT             8 // the selected move's power and accuracy
 #define B_WIN_TP_COST        9 // TP cost of the selected move
 #define B_WIN_MOVE_TYPE          10
 #define B_WIN_SWITCH_PROMPT      11 // "Switch which?"

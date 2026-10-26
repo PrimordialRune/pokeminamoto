@@ -234,7 +234,7 @@ static const struct WindowTemplate sStandardBattleWindowTemplates[] =
         .paletteNum = 5,
         .baseBlock = 0x0290,
     },
-    [B_WIN_TP_LEFT] = { // the mon's current TP over TP_MAX
+    [B_WIN_TP_LEFT] = { // the selected move's power over its accuracy
         .bg = 0,
         .tilemapLeft = 24,
         .tilemapTop = 56,
@@ -455,7 +455,7 @@ static const struct WindowTemplate sBattleArenaWindowTemplates[] =
         .paletteNum = 5,
         .baseBlock = 0x0290,
     },
-    [B_WIN_TP_LEFT] = { // the mon's current TP over TP_MAX
+    [B_WIN_TP_LEFT] = { // the selected move's power over its accuracy
         .bg = 0,
         .tilemapLeft = 24,
         .tilemapTop = 56,

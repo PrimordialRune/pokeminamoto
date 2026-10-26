@@ -2,11 +2,14 @@
 #include "battle.h"
 #include "battle_anim.h"
 #include "battle_message.h"
+#include "battle_gfx_sfx_util.h"
 #include "battle_setup.h"
 #include "battle_talk.h"
 #include "data.h"
 #include "event_data.h"
+#include "malloc.h"
 #include "random.h"
+#include "sprite.h"
 #include "constants/battle.h"
 #include "constants/trainers.h"
 #include "constants/vars.h"
@@ -163,3 +166,86 @@ const u8 *DoBattleTalk(u8 line)
         return sText_TalkBackfired;
     }
 }
+
+// While the trainer answers, their sprite slides in where their mon stands and
+// slides back out after. The mon is hidden meanwhile. The trainer pic borrows
+// the mon's pic buffer (a single battle shares it between positions), so the
+// mon's pic is kept on the heap and put back afterwards.
+#define TALK_SLIDE_DISTANCE 96
+#define TALK_SLIDE_SPEED    4
+
+#define sTargetX2 data[0]
+
+static void SpriteCB_TalkTrainerSlide(struct Sprite *sprite)
+{
+    if (sprite->x2 > sprite->sTargetX2)
+        sprite->x2 -= TALK_SLIDE_SPEED;
+    else if (sprite->x2 < sprite->sTargetX2)
+        sprite->x2 += TALK_SLIDE_SPEED;
+    else
+        sprite->callback = SpriteCallbackDummy;
+}
+
+static u16 GetTalkTrainerPic(void)
+{
+    return gTrainers[gTrainerBattleOpponent_A].trainerPic;
+}
+
+void TalkTrainerSlideIn(void)
+{
+    u8 battler = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
+    u8 position = GetBattlerPosition(battler);
+    u16 trainerPicId = GetTalkTrainerPic();
+    struct Sprite *sprite;
+
+    gSprites[gBattlerSpriteIds[battler]].invisible = TRUE;
+    gMonSpritesGfxPtr->talkPicBackup = Alloc(MON_PIC_SIZE * MAX_MON_PIC_FRAMES);
+    if (gMonSpritesGfxPtr->talkPicBackup != NULL)
+        CpuCopy32(gMonSpritesGfxPtr->sprites.ptr[position], gMonSpritesGfxPtr->talkPicBackup, MON_PIC_SIZE * MAX_MON_PIC_FRAMES);
+
+    DecompressTrainerFrontPic(trainerPicId, battler);
+    SetMultiuseSpriteTemplateToTrainerBack(trainerPicId, position);
+    gBattleStruct->talkTrainerSpriteId = CreateSprite(&gMultiuseSpriteTemplate, 176 + 32, (8 - gTrainerFrontPicCoords[trainerPicId].size) * 4 + 40, 0x1E);
+    sprite = &gSprites[gBattleStruct->talkTrainerSpriteId];
+    sprite->oam.paletteNum = IndexOfSpritePaletteTag(gTrainerFrontPicPaletteTable[trainerPicId].tag);
+    sprite->oam.affineParam = trainerPicId;
+    sprite->x2 = TALK_SLIDE_DISTANCE;
+    sprite->sTargetX2 = 0;
+    sprite->callback = SpriteCB_TalkTrainerSlide;
+}
+
+void TalkTrainerSlideOut(void)
+{
+    struct Sprite *sprite = &gSprites[gBattleStruct->talkTrainerSpriteId];
+
+    sprite->sTargetX2 = TALK_SLIDE_DISTANCE;
+    sprite->callback = SpriteCB_TalkTrainerSlide;
+}
+
+bool8 IsTalkTrainerSlideDone(void)
+{
+    return gSprites[gBattleStruct->talkTrainerSpriteId].callback == SpriteCallbackDummy;
+}
+
+// Frees the trainer sprite and shows the mon again
+void TalkTrainerRemove(void)
+{
+    u8 battler = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
+    struct Sprite *sprite = &gSprites[gBattleStruct->talkTrainerSpriteId];
+
+    FreeTrainerFrontPicPalette(sprite->oam.affineParam);
+    FreeSpriteOamMatrix(sprite);
+    DestroySprite(sprite);
+    if (gMonSpritesGfxPtr->talkPicBackup != NULL)
+    {
+        CpuCopy32(gMonSpritesGfxPtr->talkPicBackup, gMonSpritesGfxPtr->sprites.ptr[GetBattlerPosition(battler)], MON_PIC_SIZE * MAX_MON_PIC_FRAMES);
+        FREE_AND_SET_NULL(gMonSpritesGfxPtr->talkPicBackup);
+    }
+    else
+    {
+        BattleLoadOpponentMonSpriteGfx(&gEnemyParty[gBattlerPartyIndexes[battler]], battler);
+    }
+    gSprites[gBattlerSpriteIds[battler]].invisible = FALSE;
+}
+
+#undef sTargetX2
