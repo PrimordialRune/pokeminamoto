@@ -53,6 +53,9 @@
 // back to the two slots; each scheme reads the other's saves as incompatible.
 #define SAVE_COPY_ON_WRITE
 
+// Rayquaza cutscene, Mt. Chimney cable car, Mirage Tower collapse: their maps are gone
+#define FREE_HOENN_SET_PIECES
+
 // Debug menus (overworld: hold R + START, battle: hold L + SELECT). Every modern
 // build has them except `make release`, which defines RELEASE. See include/debug_menu.h.
 #if !defined(RELEASE)

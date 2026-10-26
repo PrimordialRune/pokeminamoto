@@ -206,6 +206,7 @@ The game uses a cooperative multitasking system (`include/task.h`). Nearly all g
 
 ## Gen 1-Only Build Notes
 
+- **Tilesets:** only the tilesets the remaining layouts use are built in, plus `SecretBase`/`SecretBaseRedCave` (bedroom decorations), `Cave` and `MirageTower` (named in code). The Hoenn tilesets' animation code in `src/tileset_anims.c` is still there (about 50 KB). `FREE_HOENN_SET_PIECES` switches off the Rayquaza cutscene, cable car and Mirage Tower.
 - **Designated initializer arrays** (like `sValidApprenticeMoves` in `src/data/battle_frontier/apprentice.h`) cannot have duplicate keys (gcc warns with `-Woverride-init`) — if adding move references, check for pre-existing entries.
 - **Tutor bitfields** in `sTutorLearnsets[]` use `TUTOR_MOVE_xxx` slot names (defined in `include/constants/party_menu.h`), never Gen 1 move names directly.
 - The starters are `SPECIES_BULBASAUR`, `SPECIES_CHARMANDER`, `SPECIES_SQUIRTLE` (set in `src/starter_choose.c`).
