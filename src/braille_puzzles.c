@@ -12,6 +12,7 @@
 #include "fieldmap.h"
 #include "party_menu.h"
 #include "fldeff.h"
+#ifndef FREE_HOENN_SET_PIECES
 
 EWRAM_DATA static bool8 sIsRegisteelPuzzle = 0;
 
@@ -342,3 +343,63 @@ bool8 ShouldDoBrailleRegicePuzzle(void)
 
     return FALSE;
 }
+
+#else // FREE_HOENN_SET_PIECES
+
+// braille puzzles of the Regi caves, gone with their maps
+
+bool8 ShouldDoBrailleDigEffect(void)
+{
+    return 0;
+}
+
+void DoBrailleDigEffect(void)
+{
+}
+
+bool8 CheckRelicanthWailord(void)
+{
+    return 0;
+}
+
+void ShouldDoBrailleRegirockEffectOld(void)
+{
+}
+
+void DoSealedChamberShakingEffect_Long(void)
+{
+}
+
+void DoSealedChamberShakingEffect_Short(void)
+{
+}
+
+bool8 ShouldDoBrailleRegirockEffect(void)
+{
+    return 0;
+}
+
+void SetUpPuzzleEffectRegirock(void)
+{
+}
+
+bool8 ShouldDoBrailleRegisteelEffect(void)
+{
+    return 0;
+}
+
+void SetUpPuzzleEffectRegisteel(void)
+{
+}
+
+bool8 ShouldDoBrailleRegicePuzzle(void)
+{
+    return 0;
+}
+
+bool8 FldEff_UsePuzzleEffect(void)
+{
+    return FALSE;
+}
+
+#endif // FREE_HOENN_SET_PIECES

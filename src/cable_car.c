@@ -22,6 +22,7 @@
 #include "constants/rgb.h"
 #include "constants/songs.h"
 #include "constants/weather.h"
+#ifndef FREE_HOENN_SET_PIECES
 
 #define GOING_DOWN gSpecialVar_0x8004
 
@@ -1063,3 +1064,12 @@ static void InitGroundTilemapData(bool8 goingDown)
     sCableCar->groundTimer = 0;
 }
 
+#else // FREE_HOENN_SET_PIECES
+
+// Mt. Chimney cable car, gone with its map
+
+void CableCar(void)
+{
+}
+
+#endif // FREE_HOENN_SET_PIECES

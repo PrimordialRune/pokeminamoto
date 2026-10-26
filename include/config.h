@@ -74,6 +74,7 @@
 #define FREE_WIRELESS                   // Wireless Adapter (Union Room, wireless minigames) and saved names of wirelessly linked trainers (about 7 KB IWRAM, 240 B save); cable link stays
 #define FREE_CONTESTS                   // Pokémon Contests and their paintings: the halls are gone, so no script can start one; contest move effects stay in the move data
 #define FREE_BERRY_FIX_PROGRAM          // Ruby/Sapphire berry glitch fix sent over the cable (B+SELECT on the title screen)
+#define FREE_HOENN_SET_PIECES           // Rayquaza cutscene, Mt. Chimney cable car, Mirage Tower collapse, braille puzzles of the Regi caves: their maps are gone
 #define FREE_APPRENTICE                 // Battle Tower Apprentice and the 4 saved ones (316 B)
 
 // Debug menus (overworld: hold R + START, battle: hold L + SELECT). Every modern

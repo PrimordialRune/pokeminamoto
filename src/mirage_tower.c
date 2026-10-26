@@ -20,6 +20,7 @@
 #include "constants/songs.h"
 #include "constants/metatile_labels.h"
 #include "constants/removed_maps.h"
+#ifndef FREE_HOENN_SET_PIECES
 
 struct MirageTowerPulseBlend
 {
@@ -791,3 +792,45 @@ static void UpdateDisintegrationEffect(u8 *tiles, u16 randId, u8 c, u8 size, u8 
     tileMask = (c << (flag << 2)) | 15 << (((flag ^ 1) << 2));
     tiles[baseOffset + (offset * 32)] &= tileMask;
 }
+
+#else // FREE_HOENN_SET_PIECES
+
+// Mirage Tower effects, gone with its map
+
+void ClearMirageTowerPulseBlend(void)
+{
+}
+
+void TryStartMirageTowerPulseBlendEffect(void)
+{
+}
+
+void ClearMirageTowerPulseBlendEffect(void)
+{
+}
+
+void SetMirageTowerVisibility(void)
+{
+}
+
+void StartPlayerDescendMirageTower(void)
+{
+}
+
+void DoMirageTowerCeilingCrumble(void)
+{
+}
+
+void StartMirageTowerDisintegration(void)
+{
+}
+
+void StartMirageTowerShake(void)
+{
+}
+
+void StartMirageTowerFossilFallAndSink(void)
+{
+}
+
+#endif // FREE_HOENN_SET_PIECES
