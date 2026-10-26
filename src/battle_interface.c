@@ -878,6 +878,11 @@ static void UNUSED Debug_DrawNumberPair(s16 number1, s16 number2, u16 *dest)
 #define hTp_Shown                   data[7] // TP value currently drawn, -1 to force a redraw
 #define hTp_PipsSpriteId            data[4] // MAX_SPRITES in doubles, which have no pips
 #define hTp_PipsState               data[3] // 2 bits per party slot as drawn, -1 to force a redraw
+#define hTp_Preview                 data[2] // TP cost of the move highlighted in FIGHT, 0 for none
+#define hTp_PreviewTimer            data[1] // frames into the preview's blink
+#define hTp_PreviewHidden           data[0] // whether the cost part of the bar is drawn empty now
+
+#define TP_PREVIEW_BLINK_FRAMES 16 // the cost part of the bar shows for this long, then hides as long
 
 #define B_HEALTHBAR_PIXELS 64 // the bar sprite is all fill; the "HP"/"TP" labels are in the box art
 #define TP_BAR_TILE_OFFSET 9 // in the healthbar sprite sheet, after the HP bar's tiles
@@ -1228,14 +1233,47 @@ static void SpriteCB_TpBar(struct Sprite *sprite)
         return;
     tp = gBattleStruct->tp[GetBattlerSide(battler)][gBattlerPartyIndexes[battler]];
     if (sprite->hTp_Shown == tp)
+    {
+        // Preview: the part of the bar the highlighted move would use blinks
+        bool32 hide = sprite->hTp_Preview != 0
+                   && (sprite->hTp_PreviewTimer++ / TP_PREVIEW_BLINK_FRAMES) % 2 == 1;
+
+        if (hide != sprite->hTp_PreviewHidden)
+        {
+            sprite->hTp_PreviewHidden = hide;
+            DrawTpBar(sprite, hide ? max(tp - sprite->hTp_Preview, 0) : tp);
+        }
         return;
+    }
     if (sprite->hTp_Shown < 0)
         sprite->hTp_Shown = tp;
     else if (sprite->hTp_Shown < tp)
         sprite->hTp_Shown++;
     else
         sprite->hTp_Shown--;
+    sprite->hTp_PreviewHidden = FALSE;
     DrawTpBar(sprite, sprite->hTp_Shown);
+}
+
+// Makes the part of the battler's TP bar that a move costing tpCost would use
+// blink, or stops it with 0. The bar shows the whole TP again right away.
+void SetTpBarPreview(u8 battler, u8 tpCost)
+{
+    u8 healthboxSpriteId = gHealthboxSpriteIds[battler];
+    struct Sprite *sprite;
+
+    if (healthboxSpriteId >= MAX_SPRITES || gSprites[healthboxSpriteId].oam.affineParam >= MAX_SPRITES)
+        return;
+    sprite = &gSprites[gSprites[gSprites[healthboxSpriteId].oam.affineParam].hOther_TpBarSpriteId];
+    if (sprite->callback != SpriteCB_TpBar || sprite->hTp_Preview == tpCost)
+        return;
+    sprite->hTp_Preview = tpCost;
+    sprite->hTp_PreviewTimer = 0;
+    if (sprite->hTp_PreviewHidden)
+    {
+        sprite->hTp_PreviewHidden = FALSE;
+        DrawTpBar(sprite, sprite->hTp_Shown);
+    }
 }
 
 static const u8 *GetHealthboxElementGfxPtr(u8 elementId)

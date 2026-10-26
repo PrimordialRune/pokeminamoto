@@ -111,6 +111,9 @@ static void MoveSelectionDrawSpecialPage(void);
 static void RecolorWindowPixels(u8 windowId, u8 from, u8 to, u16 left, u16 top, u16 width, u16 height);
 static void ActionSelectionPrintPrompt(const u8 *text);
 static void HandleInputChooseTalk(void);
+static void Talk_WaitForSlideIn(void);
+static void Talk_WaitForAnswerRead(void);
+static void Talk_WaitForSlideOut(void);
 static void OpenFoeInfoScreen(void);
 static void ReturnToChooseAction(void);
 static void SwitchIn_HandleSoundAndEnd(void);
@@ -237,6 +240,7 @@ void SetControllerToPlayer(void)
 
 static void PlayerBufferExecCompleted(void)
 {
+    SetTpBarPreview(gActiveBattler, 0);
     gBattlerControllerFuncs[gActiveBattler] = PlayerBufferRunCommand;
     if (gBattleTypeFlags & BATTLE_TYPE_LINK)
     {
@@ -412,9 +416,11 @@ static void HandleInputChooseTalk(void)
 {
     if (JOY_NEW(A_BUTTON))
     {
+        // The trainer slides in to answer, then back out
         PlaySE(SE_SELECT);
-        ActionSelectionPrintPrompt(DoBattleTalk(gMultiUsePlayerCursor));
-        gBattlerControllerFuncs[gActiveBattler] = HandleInputChooseAction;
+        ActionSelectionPrintPrompt(gText_EmptyString3);
+        TalkTrainerSlideIn();
+        gBattlerControllerFuncs[gActiveBattler] = Talk_WaitForSlideIn;
     }
     else if (JOY_NEW(B_BUTTON | R_BUTTON))
     {
@@ -427,6 +433,35 @@ static void HandleInputChooseTalk(void)
         PlaySE(SE_SELECT);
         gMultiUsePlayerCursor ^= 1;
         ActionSelectionPrintPrompt(GetTalkMenuText(gMultiUsePlayerCursor));
+    }
+}
+
+static void Talk_WaitForSlideIn(void)
+{
+    if (IsTalkTrainerSlideDone())
+    {
+        ActionSelectionPrintPrompt(DoBattleTalk(gMultiUsePlayerCursor));
+        gBattlerControllerFuncs[gActiveBattler] = Talk_WaitForAnswerRead;
+    }
+}
+
+// The answer stays up with the trainer until A or B
+static void Talk_WaitForAnswerRead(void)
+{
+    if (JOY_NEW(A_BUTTON | B_BUTTON))
+    {
+        PlaySE(SE_SELECT);
+        TalkTrainerSlideOut();
+        gBattlerControllerFuncs[gActiveBattler] = Talk_WaitForSlideOut;
+    }
+}
+
+static void Talk_WaitForSlideOut(void)
+{
+    if (IsTalkTrainerSlideDone())
+    {
+        TalkTrainerRemove();
+        gBattlerControllerFuncs[gActiveBattler] = HandleInputChooseAction;
     }
 }
 
@@ -1461,6 +1496,20 @@ static void MoveSelectionDisplayMoveNames(void)
     MoveSelectionDrawMoveNames();
 }
 
+// One number of the move info box, right-aligned; 0 prints "-"
+static void PrintMoveStat(u8 value, u8 y, const u8 *colors)
+{
+    static const u8 sText_NoValue[] = _("-");
+    const u8 *str = sText_NoValue;
+
+    if (value != 0)
+    {
+        ConvertIntToDecimalStringN(gDisplayedStringBattle, value, STR_CONV_MODE_LEFT_ALIGN, 3);
+        str = gDisplayedStringBattle;
+    }
+    AddTextPrinterParameterized4(B_WIN_TP_LEFT, FONT_SMALL, 22 - GetStringWidth(FONT_SMALL, str, 0), y, 0, 0, colors, TEXT_SKIP_DRAW, str);
+}
+
 static void MoveSelectionDisplayTpCost(void)
 {
     struct ChooseMoveStruct *moveInfo = (struct ChooseMoveStruct *)(&gBattleBufferA[gActiveBattler][4]);
@@ -1473,7 +1522,8 @@ static void MoveSelectionDisplayTpCost(void)
     {
         // The selected move's TP cost, centered in its field. It turns yellow when it can be paid
         // only once more and red when it can't be paid.
-        // A sealed Special shows no cost.
+        // A sealed Special shows no cost. The TP bar previews the cost too.
+        SetTpBarPreview(gActiveBattler, GetSelectedMove() != MOVE_NONE ? GetSelectedTpCost() : 0);
         if (GetSelectedMove() != MOVE_NONE)
         {
             u8 tpCost = GetSelectedTpCost();
@@ -1486,14 +1536,13 @@ static void MoveSelectionDisplayTpCost(void)
             AddTextPrinterParameterized4(B_WIN_TP_COST, FONT_SMALL, 13 - width / 2, 2, 0, 0, colors, TEXT_SKIP_DRAW, gDisplayedStringBattle);
         }
 
-        // The mon's current TP over TP_MAX, right-aligned
+        // The selected move's power over its accuracy, right-aligned. "-" when the move has no
+        // set power (status moves, and power 1 for fixed or variable damage) or never misses.
+        const struct MoveInfo *move = &gMovesInfo[GetSelectedMove()];
+
         colors[1] = B_UI_PAL_TYPE;
-        ConvertIntToDecimalStringN(gDisplayedStringBattle, moveInfo->currentTp, STR_CONV_MODE_LEFT_ALIGN, 3);
-        width = GetStringWidth(FONT_SMALL, gDisplayedStringBattle, 0);
-        AddTextPrinterParameterized4(B_WIN_TP_LEFT, FONT_SMALL, 22 - width, 3, 0, 0, colors, TEXT_SKIP_DRAW, gDisplayedStringBattle);
-        ConvertIntToDecimalStringN(gDisplayedStringBattle, TP_MAX, STR_CONV_MODE_LEFT_ALIGN, 3);
-        width = GetStringWidth(FONT_SMALL, gDisplayedStringBattle, 0);
-        AddTextPrinterParameterized4(B_WIN_TP_LEFT, FONT_SMALL, 22 - width, 12, 0, 0, colors, TEXT_SKIP_DRAW, gDisplayedStringBattle);
+        PrintMoveStat(move->power > 1 ? move->power : 0, 3, colors);
+        PrintMoveStat(move->accuracy, 12, colors);
     }
     MoveScreenWindowFinish(B_WIN_TP_COST);
     MoveScreenWindowFinish(B_WIN_TP_LEFT);

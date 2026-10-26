@@ -332,7 +332,8 @@ struct BattleStruct
     u8 arenaTurnCounter;
     u8 turnSideTracker;
     u8 specialDeedMons; // Bits for player party slots that did their Special's deed this battle (include/special_move.h)
-    u8 unused_6[2];
+    u8 talkTrainerSpriteId; // the foe trainer's sprite while it is on the field for Talk (src/battle_talk.c)
+    u8 unused_6;
     u8 givenExpMons; // Bits for enemy party's Pokémon that gave exp to player's party.
     u8 lastTakenMoveFrom[MAX_BATTLERS_COUNT * MAX_BATTLERS_COUNT * 2]; // a 3-D array [target][attacker][byte]
     u16 castformPalette[NUM_CASTFORM_FORMS][16];
@@ -520,7 +521,7 @@ struct MonSpritesGfx
     struct SpriteFrameImage frameImages[MAX_BATTLERS_COUNT][MAX_MON_PIC_FRAMES];
     u8 unusedArr[0x80];
     u8 *barFontGfx;
-    void *unusedPtr;
+    void *talkPicBackup; // the foe mon's pic while Talk's trainer sprite borrows its buffer
     u16 *buffer;
 };
 

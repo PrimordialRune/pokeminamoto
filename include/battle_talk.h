@@ -23,5 +23,9 @@ u8 GetTalkAvailability(void);
 const u8 *GetTalkUnavailableText(u8 availability);
 const u8 *GetTalkMenuText(u8 cursor);
 const u8 *DoBattleTalk(u8 line);
+void TalkTrainerSlideIn(void);
+void TalkTrainerSlideOut(void);
+bool8 IsTalkTrainerSlideDone(void);
+void TalkTrainerRemove(void);
 
 #endif // GUARD_BATTLE_TALK_H
