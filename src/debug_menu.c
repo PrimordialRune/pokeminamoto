@@ -723,7 +723,7 @@ static void Describe_Map(u32 value, u8 *dest)
 
 static void DebugAction_HealParty(void)
 {
-    HealPlayerParty();
+    RestPlayerParty();
     PlaySE(SE_USE_ITEM);
     DebugMessage((const u8[])_("Party healed."));
 }

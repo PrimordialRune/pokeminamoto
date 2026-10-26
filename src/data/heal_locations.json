@@ -29,6 +29,12 @@
       "map": "MAP_OLDALE_TOWN",
       "x": 6,
       "y": 17
+    },
+    {
+      "id": "HEAL_LOCATION_OLDALE_TOWN_INN",
+      "map": "MAP_OLDALE_TOWN_HOUSE1",
+      "x": 6,
+      "y": 5
     }
   ]
 }

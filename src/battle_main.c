@@ -4458,6 +4458,7 @@ static void HandleEndTurn_FinishBattle(void)
             }
         }
 
+        SaveBattleTP();
         BeginFastPaletteFade(3);
         FadeOutMapMusic(5);
         gBattleMainFunc = FreeResetData_ReturnToOvOrDoEvolutions;

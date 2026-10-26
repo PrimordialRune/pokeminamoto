@@ -1,17 +1,18 @@
-raw `
-OldaleTown_House1_MapScripts::
-	.byte 0
+// Oldale's house doubles as the test inn for the town-life toolkit
+// (docs/engineering/town-life-toolkit.md) until the Kanto inns exist.
+mapscripts OldaleTown_House1_MapScripts {}
 
-OldaleTown_House1_EventScript_Woman::
-	msgbox OldaleTown_House1_Text_LeftPokemonGoesOutFirst, MSGBOX_NPC
-	end
+script OldaleTown_House1_EventScript_Innkeeper {
+    call(Common_EventScript_Inn)
+    if (var(VAR_RESULT) == TRUE) {
+        setrespawn(HEAL_LOCATION_OLDALE_TOWN_INN)
+    }
+    release
+    end
+}
 
-OldaleTown_House1_Text_LeftPokemonGoesOutFirst:
-	.string "When a POKéMON battle starts, the one\n"
-	.string "at the left of the list goes out first.\p"
-	.string "So, when you get more POKéMON in your\n"
-	.string "party, try switching around the order\l"
-	.string "of your POKéMON.\p"
-	.string "It could give you an advantage.$"
-
-`
+// Left in the room after a TAKE or MATSU stay (see data/scripts/inn.pory)
+script OldaleTown_House1_EventScript_TakeRoomItem {
+    finditem(ITEM_SUPER_POTION)
+    end
+}
