@@ -14,7 +14,9 @@
 #include "constants/event_object_movement.h"
 #include "constants/items.h"
 
+#ifndef FREE_ENIGMA_BERRY
 static u32 GetEnigmaBerryChecksum(struct EnigmaBerry *enigmaBerry);
+#endif
 static bool32 BerryTreeGrow(struct BerryTree *tree);
 static u16 BerryTypeToItemId(u16 berry);
 static u8 BerryTreeGetNumStagesWatered(struct BerryTree *tree);
@@ -937,6 +939,22 @@ const struct BerryCrushBerryData gBerryCrush_BerryData[] = {
 
 const struct BerryTree gBlankBerryTree = {};
 
+#ifdef FREE_ENIGMA_BERRY
+const struct EnigmaBerry gEmptyEnigmaBerry = {0};
+
+void ClearEnigmaBerries(void)
+{
+}
+
+void SetEnigmaBerry(u8 *src)
+{
+}
+
+bool32 IsEnigmaBerryValid(void)
+{
+    return FALSE;
+}
+#else
 // unused
 void ClearEnigmaBerries(void)
 {
@@ -977,11 +995,13 @@ bool32 IsEnigmaBerryValid(void)
     return TRUE;
 }
 
+#endif // FREE_ENIGMA_BERRY
+
 const struct Berry *GetBerryInfo(u8 berry)
 {
     if (berry == ITEM_TO_BERRY(ITEM_ENIGMA_BERRY) && IsEnigmaBerryValid())
     {
-        return (struct Berry *)(&gSaveBlock1Ptr->enigmaBerry.berry);
+        return (struct Berry *)(&ENIGMA_BERRY.berry);
     }
     else
     {

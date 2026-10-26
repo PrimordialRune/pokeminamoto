@@ -1698,7 +1698,7 @@ void CopyFrontierTrainerText(u8 whichText, u16 trainerId)
     {
     case FRONTIER_BEFORE_TEXT:
         if (trainerId == TRAINER_EREADER)
-            FrontierSpeechToString(gSaveBlock2Ptr->frontier.ereaderTrainer.greeting);
+            FrontierSpeechToString(EREADER_TRAINER.greeting);
         else if (trainerId == TRAINER_FRONTIER_BRAIN)
             CopyFrontierBrainText(FALSE);
         else if (trainerId < FRONTIER_TRAINERS_COUNT)
@@ -1711,7 +1711,7 @@ void CopyFrontierTrainerText(u8 whichText, u16 trainerId)
     case FRONTIER_PLAYER_LOST_TEXT:
         if (trainerId == TRAINER_EREADER)
         {
-            FrontierSpeechToString(gSaveBlock2Ptr->frontier.ereaderTrainer.farewellPlayerLost);
+            FrontierSpeechToString(EREADER_TRAINER.farewellPlayerLost);
         }
         else if (trainerId == TRAINER_FRONTIER_BRAIN)
         {
@@ -1739,7 +1739,7 @@ void CopyFrontierTrainerText(u8 whichText, u16 trainerId)
     case FRONTIER_PLAYER_WON_TEXT:
         if (trainerId == TRAINER_EREADER)
         {
-            FrontierSpeechToString(gSaveBlock2Ptr->frontier.ereaderTrainer.farewellPlayerWon);
+            FrontierSpeechToString(EREADER_TRAINER.farewellPlayerWon);
         }
         else if (trainerId == TRAINER_FRONTIER_BRAIN)
         {
@@ -2274,8 +2274,12 @@ static void Fill1PRecords(struct RankingHall1P *dst, s32 hallFacilityId, s32 lvl
     struct PlayerHallRecords *playerHallRecords = AllocZeroed(sizeof(struct PlayerHallRecords));
     GetPlayerHallRecords(playerHallRecords);
 
+#ifdef FREE_RECORD_MIXING_HALL_RECORDS
+    memset(record1P, 0, sizeof(record1P));
+#else
     for (i = 0; i < HALL_RECORDS_COUNT; i++)
         record1P[i] = gSaveBlock2Ptr->hallRecords1P[hallFacilityId][lvlMode][i];
+#endif
 
     record1P[HALL_RECORDS_COUNT] = playerHallRecords->onePlayer[hallFacilityId][lvlMode];
 
@@ -2308,8 +2312,12 @@ static void Fill2PRecords(struct RankingHall2P *dst, s32 lvlMode)
     struct PlayerHallRecords *playerHallRecords = AllocZeroed(sizeof(struct PlayerHallRecords));
     GetPlayerHallRecords(playerHallRecords);
 
+#ifdef FREE_RECORD_MIXING_HALL_RECORDS
+    memset(record2P, 0, sizeof(record2P));
+#else
     for (i = 0; i < HALL_RECORDS_COUNT; i++)
         record2P[i] = gSaveBlock2Ptr->hallRecords2P[lvlMode][i];
+#endif
 
     record2P[HALL_RECORDS_COUNT] = playerHallRecords->twoPlayers[lvlMode];
 
@@ -2380,6 +2388,11 @@ void ScrollRankingHallRecordsWindow(void)
     CopyWindowToVram(gRecordsWindowId, COPYWIN_GFX);
 }
 
+#ifdef FREE_RECORD_MIXING_HALL_RECORDS
+void ClearRankingHallRecords(void)
+{
+}
+#else
 void ClearRankingHallRecords(void)
 {
     s32 i, j, k;
@@ -2417,6 +2430,7 @@ void ClearRankingHallRecords(void)
         }
     }
 }
+#endif // FREE_RECORD_MIXING_HALL_RECORDS
 
 void SaveGameFrontier(void)
 {

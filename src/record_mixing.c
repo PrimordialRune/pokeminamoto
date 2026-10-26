@@ -97,7 +97,9 @@ static void *sApprenticesSave;
 static void *sBattleTowerSave_Duplicate;
 static u32 sRecordStructSize;
 static u8 sDaycareMailRandSum;
+#ifndef FREE_RECORD_MIXING_HALL_RECORDS
 static struct PlayerHallRecords *sPartnerHallRecords[HALL_RECORDS_COUNT];
+#endif
 
 static EWRAM_DATA struct RecordMixingDaycareMail sRecordMixMail = {0};
 static EWRAM_DATA union PlayerRecord *sReceivedRecords = NULL;
@@ -121,7 +123,9 @@ static void ReceiveGiftItem(u16 *, u8 );
 static void Task_DoRecordMixing(u8);
 static void GetSavedApprentices(struct Apprentice *, struct Apprentice *);
 static void ReceiveApprenticeData(struct Apprentice *, size_t, u32);
+#ifndef FREE_RECORD_MIXING_HALL_RECORDS
 static void ReceiveRankingHallRecords(struct PlayerHallRecords *, size_t, u32);
+#endif
 static void GetRecordMixingDaycareMail(struct RecordMixingDaycareMail *);
 static void SanitizeDaycareMailForRuby(struct RecordMixingDaycareMail *);
 static void SanitizeEmeraldBattleTowerRecord(struct EmeraldBattleTowerRecord *);
@@ -279,7 +283,9 @@ static void ReceiveExchangePacket(u32 multiplayerId)
         ReceiveGiftItem(&sReceivedRecords->emerald.giftItem, multiplayerId);
         ReceiveLilycoveLadyData(&sReceivedRecords->emerald.lilycoveLady, sizeof(sReceivedRecords->emerald), multiplayerId);
         ReceiveApprenticeData(sReceivedRecords->emerald.apprentices, sizeof(sReceivedRecords->emerald), (u8)multiplayerId);
+#ifndef FREE_RECORD_MIXING_HALL_RECORDS
         ReceiveRankingHallRecords(&sReceivedRecords->emerald.hallRecords, sizeof(sReceivedRecords->emerald), (u8)multiplayerId);
+#endif
     }
 }
 
@@ -1204,6 +1210,7 @@ static void ReceiveApprenticeData(struct Apprentice *records, size_t recordSize,
     }
 }
 
+#ifndef FREE_RECORD_MIXING_HALL_RECORDS
 static void GetNewHallRecords(struct RecordMixingHallRecords *dst, void *records, size_t recordSize, u32 multiplayerId, s32 linkPlayerCount)
 {
     s32 i, j, k, l;
@@ -1362,6 +1369,8 @@ static void ReceiveRankingHallRecords(struct PlayerHallRecords *records, size_t 
 
     Free(mixHallRecords);
 }
+
+#endif // FREE_RECORD_MIXING_HALL_RECORDS
 
 static void GetRecordMixingDaycareMail(struct RecordMixingDaycareMail *dst)
 {

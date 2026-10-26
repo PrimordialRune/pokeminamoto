@@ -112,7 +112,9 @@ static void SetKeyboardCursorToLastColumn(void);
 static u8 GetLastAlphabetColumn(u8);
 static void ReduceToValidWordSelectColumn(void);
 static bool8 IsSelectedWordIndexInvalid(void);
+#ifndef FREE_MYSTERY_GIFT
 static int DidPlayerInputMysteryGiftPhrase(void);
+#endif
 static u16 DidPlayerInputABerryMasterWifePhrase(void);
 static bool8 InitEasyChatScreenControl_(void);
 static void LoadEasyChatPalettes(void);
@@ -690,12 +692,14 @@ static const u8 sAlphabetGroupIdMap[NUM_ALPHABET_ROWS][NUM_ALPHABET_COLUMNS] = {
     {20, 21, 22, 23, 24, 25, 26},
 };
 
+#ifndef FREE_MYSTERY_GIFT
 static const u16 sMysteryGiftPhrase[NUM_QUESTIONNAIRE_WORDS] = {
     EC_WORD_LINK,
     EC_WORD_TOGETHER,
     EC_WORD_WITH,
     EC_WORD_ALL,
 };
+#endif
 
 static const u16 sBerryMasterWifePhrases[][2] = {
     [PHRASE_GREAT_BATTLE - 1]        = {EC_WORD_GREAT, EC_WORD_BATTLE},
@@ -2970,10 +2974,14 @@ static void SetSpecialEasyChatResult(void)
         FlagSet(FLAG_SYS_CHAT_USED);
         break;
     case EASY_CHAT_TYPE_QUESTIONNAIRE:
+#ifdef FREE_MYSTERY_GIFT
+        gSpecialVar_0x8004 = 0;
+#else
         if (DidPlayerInputMysteryGiftPhrase())
             gSpecialVar_0x8004 = 2;
         else
             gSpecialVar_0x8004 = 0;
+#endif
         break;
     case EASY_CHAT_TYPE_TRENDY_PHRASE:
         BufferCurrentPhraseToStringVar2();
@@ -2985,10 +2993,12 @@ static void SetSpecialEasyChatResult(void)
     }
 }
 
+#ifndef FREE_MYSTERY_GIFT
 static int DidPlayerInputMysteryGiftPhrase(void)
 {
     return !IsPhraseDifferentThanPlayerInput(sMysteryGiftPhrase, ARRAY_COUNT(sMysteryGiftPhrase));
 }
+#endif
 
 static u16 DidPlayerInputABerryMasterWifePhrase(void)
 {
