@@ -56,6 +56,8 @@ static const u8 sText_EmptyString4[] = _("");
 static const u8 sText_ABoosted[] = _(" a boosted");
 static const u8 sText_PkmnGrewToLv[] = _("{B_BUFF1} grew to\nLV. {B_BUFF2}!{WAIT_SE}\p");
 static const u8 sText_PkmnLearnedMove[] = _("{B_BUFF1} learned\n{B_BUFF2}!{WAIT_SE}\p");
+static const u8 sText_SpecialAwakened[] = _("{B_BUFF1}'s hidden move\nawakened!{WAIT_SE}\p");
+static const u8 sText_SpecialAwakened2[] = _("Press SELECT in FIGHT\nto use {B_BUFF2}!\p");
 static const u8 sText_TryToLearnMove1[] = _("{B_BUFF1} is trying to\nlearn {B_BUFF2}.\p");
 static const u8 sText_TryToLearnMove2[] = _("But, {B_BUFF1} can't learn\nmore than four moves.\p");
 static const u8 sText_TryToLearnMove3[] = _("Delete a move to make\nroom for {B_BUFF2}?");
@@ -513,6 +515,8 @@ const u8 *const gBattleStringsTable[BATTLESTRINGS_COUNT - BATTLESTRINGS_TABLE_ST
     [STRINGID_PKMNGAINEDEXP - BATTLESTRINGS_TABLE_START] = sText_PkmnGainedEXP,
     [STRINGID_PKMNGREWTOLV - BATTLESTRINGS_TABLE_START] = sText_PkmnGrewToLv,
     [STRINGID_PKMNLEARNEDMOVE - BATTLESTRINGS_TABLE_START] = sText_PkmnLearnedMove,
+    [STRINGID_SPECIALAWAKENED - BATTLESTRINGS_TABLE_START] = sText_SpecialAwakened,
+    [STRINGID_SPECIALAWAKENED2 - BATTLESTRINGS_TABLE_START] = sText_SpecialAwakened2,
     [STRINGID_TRYTOLEARNMOVE1 - BATTLESTRINGS_TABLE_START] = sText_TryToLearnMove1,
     [STRINGID_TRYTOLEARNMOVE2 - BATTLESTRINGS_TABLE_START] = sText_TryToLearnMove2,
     [STRINGID_TRYTOLEARNMOVE3 - BATTLESTRINGS_TABLE_START] = sText_TryToLearnMove3,
@@ -2902,11 +2906,10 @@ static const u16 sTPCostColors[][2] =
     [3] = {RGB(20, 24, 13), RGB(4, 3, 7)},  // fine: LCD green
 };
 
-void SetTpCostPaletteInMoveSelection(void)
+void SetTpCostPaletteInMoveSelection(u8 tpCost)
 {
     struct ChooseMoveStruct *chooseMoveStruct = (struct ChooseMoveStruct *)(&gBattleBufferA[gActiveBattler][4]);
-    u8 var = GetTPCostToCurrentTPState(chooseMoveStruct->tpCost[gMoveSelectionCursor[gActiveBattler]],
-                                       chooseMoveStruct->currentTp);
+    u8 var = GetTPCostToCurrentTPState(tpCost, chooseMoveStruct->currentTp);
 
     gPlttBufferUnfaded[BG_PLTT_ID(5) + 12] = sTPCostColors[var][0];
     gPlttBufferUnfaded[BG_PLTT_ID(5) + 11] = sTPCostColors[var][1];

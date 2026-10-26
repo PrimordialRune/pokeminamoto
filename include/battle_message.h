@@ -218,7 +218,7 @@ void BufferStringBattle(u16 stringID);
 u32 BattleStringExpandPlaceholdersToDisplayedString(const u8 *src);
 u32 BattleStringExpandPlaceholders(const u8 *src, u8 *dst);
 void BattlePutTextOnWindow(const u8 *text, u8 windowId);
-void SetTpCostPaletteInMoveSelection(void);
+void SetTpCostPaletteInMoveSelection(u8 tpCost);
 u8 GetTPCostToCurrentTPState(u8 tpCost, u8 currentTp);
 
 extern struct BattleMsgData *gBattleMsgDataPtr;

@@ -358,6 +358,7 @@ enum BattleScriptOpcode
 #define VARIOUS_PALACE_TRY_ESCAPE_STATUS        24
 #define VARIOUS_SET_TELEPORT_OUTCOME            25
 #define VARIOUS_PLAY_TRAINER_DEFEATED_MUSIC     26
+#define VARIOUS_TRY_AWAKEN_SPECIAL              27
 
 // Cmd_manipulatedmg
 #define DMG_CHANGE_SIGN            0

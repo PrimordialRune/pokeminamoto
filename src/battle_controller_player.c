@@ -23,6 +23,7 @@
 #include "random.h"
 #include "reshow_battle_screen.h"
 #include "sound.h"
+#include "special_move.h"
 #include "string_util.h"
 #include "task.h"
 #include "text.h"
@@ -104,10 +105,9 @@ static void MoveSelectionDisplayMoveType(void);
 static void MoveSelectionDisplayMoveNames(void);
 static void MoveSelectionDisplayEffectiveness(void);
 static void MoveSelectionDrawMoveNames(void);
-static void MoveSelectionDisplaySwitchPrompt(void);
+static void MoveSelectionDrawSpecialPage(void);
 static void RecolorWindowPixels(u8 windowId, u8 from, u8 to, u16 left, u16 top, u16 width, u16 height);
 static void ActionSelectionShowFoeInfo(void);
-static void HandleMoveSwitching(void);
 static void SwitchIn_HandleSoundAndEnd(void);
 static void WaitForMonSelection(void);
 static void CompleteWhenChoseItem(void);
@@ -132,7 +132,10 @@ static void EndDrawPartyStatusSummary(void);
 // Colors of the battle textbox palette (BG palette 0, tools/battle_ui/gen_textbox.py)
 #define TEXTBOX_PAL_NAVY   1
 #define TEXTBOX_PAL_WHITE  5
+#define TEXTBOX_PAL_ORANGE 9
+#define TEXTBOX_PAL_GOLD  10
 #define TEXTBOX_PAL_CYAN  11
+#define TEXTBOX_PAL_GREY  13
 #define TEXTBOX_PAL_LCD   15
 
 #define MOVE_CELL_WIDTH      56
@@ -142,8 +145,11 @@ static void EndDrawPartyStatusSummary(void);
 enum {
     MOVE_NAME_NORMAL,
     MOVE_NAME_SELECTED,
-    MOVE_NAME_HELD, // the move picked up with SELECT to swap places
 };
+
+// SELECT inside FIGHT flips the move grid to the Special page, which has one entry: the mon's
+// Special, or "???" while it is sealed. The page is up while gMoveSelectionCursor == SPECIAL_MOVE_POS.
+#define IsOnSpecialPage() (gMoveSelectionCursor[gActiveBattler] == SPECIAL_MOVE_POS)
 
 // How each cell of the move grid is drawn; the grid is one window, redrawn whole
 static EWRAM_DATA u8 sMoveNameStyles[MAX_MON_MOVES] = {0};
@@ -536,6 +542,25 @@ static void HandleInputChooseTarget(void)
     }
 }
 
+// The move under the cursor, on either page (MOVE_NONE for a sealed Special)
+static u16 GetSelectedMove(void)
+{
+    struct ChooseMoveStruct *moveInfo = (struct ChooseMoveStruct *)(&gBattleBufferA[gActiveBattler][4]);
+
+    if (IsOnSpecialPage())
+        return GetBattlerSpecialMove(gActiveBattler);
+    return moveInfo->moves[gMoveSelectionCursor[gActiveBattler]];
+}
+
+static u8 GetSelectedTpCost(void)
+{
+    struct ChooseMoveStruct *moveInfo = (struct ChooseMoveStruct *)(&gBattleBufferA[gActiveBattler][4]);
+
+    if (IsOnSpecialPage())
+        return GetMoveTPCost(GetBattlerSpecialMove(gActiveBattler));
+    return moveInfo->tpCost[gMoveSelectionCursor[gActiveBattler]];
+}
+
 static void HandleInputChooseMove(void)
 {
     bool32 canSelectTarget = FALSE;
@@ -550,8 +575,14 @@ static void HandleInputChooseMove(void)
     {
         u8 moveTarget;
 
+        // a sealed Special can't be chosen
+        if (IsOnSpecialPage() && GetSelectedMove() == MOVE_NONE)
+        {
+            PlaySE(SE_FAILURE);
+            return;
+        }
         PlaySE(SE_SELECT);
-        if (moveInfo->moves[gMoveSelectionCursor[gActiveBattler]] == MOVE_CURSE)
+        if (GetSelectedMove() == MOVE_CURSE)
         {
             if (moveInfo->monTypes[0] != TYPE_GHOST && moveInfo->monTypes[1] != TYPE_GHOST)
                 moveTarget = MOVE_TARGET_USER;
@@ -560,7 +591,7 @@ static void HandleInputChooseMove(void)
         }
         else
         {
-            moveTarget = gMovesInfo[moveInfo->moves[gMoveSelectionCursor[gActiveBattler]]].target;
+            moveTarget = gMovesInfo[GetSelectedMove()].target;
         }
 
         if (moveTarget & MOVE_TARGET_USER)
@@ -578,7 +609,7 @@ static void HandleInputChooseMove(void)
             if (!(moveTarget & (MOVE_TARGET_RANDOM | MOVE_TARGET_BOTH | MOVE_TARGET_DEPENDS | MOVE_TARGET_FOES_AND_ALLY | MOVE_TARGET_OPPONENTS_FIELD | MOVE_TARGET_USER)))
                 canSelectTarget++; // either selected or user
 
-            if (moveInfo->tpCost[gMoveSelectionCursor[gActiveBattler]] > moveInfo->currentTp)
+            if (GetSelectedTpCost() > moveInfo->currentTp)
             {
                 canSelectTarget = FALSE;
             }
@@ -611,8 +642,36 @@ static void HandleInputChooseMove(void)
     else if (JOY_NEW(B_BUTTON) || gPlayerDpadHoldFrames > 59)
     {
         PlaySE(SE_SELECT);
+        if (IsOnSpecialPage())
+            gMoveSelectionCursor[gActiveBattler] = 0;
         BtlController_EmitTwoReturnValues(B_COMM_TO_ENGINE, 10, 0xFFFF);
         PlayerBufferExecCompleted();
+    }
+    else if (JOY_NEW(SELECT_BUTTON))
+    {
+        // Flip between the move grid and the Special page. Link battles have no Specials.
+        // While the Special page is up, gMultiUsePlayerCursor keeps the grid's cursor.
+        if (!(gBattleTypeFlags & BATTLE_TYPE_LINK))
+        {
+            PlaySE(SE_SELECT);
+            if (IsOnSpecialPage())
+            {
+                gMoveSelectionCursor[gActiveBattler] = (gMultiUsePlayerCursor < gNumberOfMovesToChoose) ? gMultiUsePlayerCursor : 0;
+                MoveSelectionCreateCursorAt(gMoveSelectionCursor[gActiveBattler], 0);
+            }
+            else
+            {
+                gMultiUsePlayerCursor = gMoveSelectionCursor[gActiveBattler];
+                gMoveSelectionCursor[gActiveBattler] = SPECIAL_MOVE_POS;
+                MoveSelectionDrawSpecialPage();
+            }
+            MoveSelectionDisplayTpCost();
+            MoveSelectionDisplayMoveType();
+        }
+    }
+    else if (IsOnSpecialPage())
+    {
+        // the Special page has one entry, so the D-pad does nothing
     }
     else if (JOY_NEW(DPAD_LEFT))
     {
@@ -662,22 +721,6 @@ static void HandleInputChooseMove(void)
             MoveSelectionCreateCursorAt(gMoveSelectionCursor[gActiveBattler], 0);
             MoveSelectionDisplayTpCost();
             MoveSelectionDisplayMoveType();
-        }
-    }
-    else if (JOY_NEW(SELECT_BUTTON))
-    {
-        if (gNumberOfMovesToChoose > 1 && !(gBattleTypeFlags & BATTLE_TYPE_LINK))
-        {
-            MoveSelectionCreateCursorAt(gMoveSelectionCursor[gActiveBattler], 29);
-
-            if (gMoveSelectionCursor[gActiveBattler] != 0)
-                gMultiUsePlayerCursor = 0;
-            else
-                gMultiUsePlayerCursor = gMoveSelectionCursor[gActiveBattler] + 1;
-
-            MoveSelectionCreateCursorAt(gMultiUsePlayerCursor, 27);
-            MoveSelectionDisplaySwitchPrompt();
-            gBattlerControllerFuncs[gActiveBattler] = HandleMoveSwitching;
         }
     }
 }
@@ -730,146 +773,6 @@ static u32 UNUSED HandleMoveInputUnused(void)
     }
 
     return var;
-}
-
-static void HandleMoveSwitching(void)
-{
-    struct ChooseMoveStruct moveStruct;
-
-    if (JOY_NEW(A_BUTTON | SELECT_BUTTON))
-    {
-        PlaySE(SE_SELECT);
-
-        if (gMoveSelectionCursor[gActiveBattler] != gMultiUsePlayerCursor)
-        {
-            struct ChooseMoveStruct *moveInfo = (struct ChooseMoveStruct *)(&gBattleBufferA[gActiveBattler][4]);
-            s32 i;
-
-            // swap moves and their TP costs
-            i = moveInfo->moves[gMoveSelectionCursor[gActiveBattler]];
-            moveInfo->moves[gMoveSelectionCursor[gActiveBattler]] = moveInfo->moves[gMultiUsePlayerCursor];
-            moveInfo->moves[gMultiUsePlayerCursor] = i;
-
-            i = moveInfo->tpCost[gMoveSelectionCursor[gActiveBattler]];
-            moveInfo->tpCost[gMoveSelectionCursor[gActiveBattler]] = moveInfo->tpCost[gMultiUsePlayerCursor];
-            moveInfo->tpCost[gMultiUsePlayerCursor] = i;
-
-            if (gDisableStructs[gActiveBattler].mimickedMoves & gBitTable[gMoveSelectionCursor[gActiveBattler]])
-            {
-                gDisableStructs[gActiveBattler].mimickedMoves &= (~gBitTable[gMoveSelectionCursor[gActiveBattler]]);
-                gDisableStructs[gActiveBattler].mimickedMoves |= gBitTable[gMultiUsePlayerCursor];
-            }
-
-            MoveSelectionDisplayMoveNames();
-
-            for (i = 0; i < MAX_MON_MOVES; i++)
-                gBattleMons[gActiveBattler].moves[i] = moveInfo->moves[i];
-
-            if (!(gBattleMons[gActiveBattler].status2 & STATUS2_TRANSFORMED))
-            {
-                for (i = 0; i < MAX_MON_MOVES; i++)
-                {
-                    moveStruct.moves[i] = GetMonData(&gPlayerParty[gBattlerPartyIndexes[gActiveBattler]], MON_DATA_MOVE1 + i);
-                }
-
-                i = moveStruct.moves[gMoveSelectionCursor[gActiveBattler]];
-                moveStruct.moves[gMoveSelectionCursor[gActiveBattler]] = moveStruct.moves[gMultiUsePlayerCursor];
-                moveStruct.moves[gMultiUsePlayerCursor] = i;
-
-                for (i = 0; i < MAX_MON_MOVES; i++)
-                {
-                    SetMonData(&gPlayerParty[gBattlerPartyIndexes[gActiveBattler]], MON_DATA_MOVE1 + i, &moveStruct.moves[i]);
-                }
-            }
-        }
-
-        gBattlerControllerFuncs[gActiveBattler] = HandleInputChooseMove;
-        gMoveSelectionCursor[gActiveBattler] = gMultiUsePlayerCursor;
-        MoveSelectionCreateCursorAt(gMoveSelectionCursor[gActiveBattler], 0);
-        MoveSelectionDisplayTpCost();
-        MoveSelectionDisplayMoveType();
-    }
-    else if (JOY_NEW(B_BUTTON | SELECT_BUTTON))
-    {
-        PlaySE(SE_SELECT);
-        MoveSelectionDestroyCursorAt(gMultiUsePlayerCursor);
-        MoveSelectionCreateCursorAt(gMoveSelectionCursor[gActiveBattler], 0);
-        gBattlerControllerFuncs[gActiveBattler] = HandleInputChooseMove;
-        MoveSelectionDisplayTpCost();
-        MoveSelectionDisplayMoveType();
-    }
-    else if (JOY_NEW(DPAD_LEFT))
-    {
-        if (gMultiUsePlayerCursor & 1)
-        {
-            if (gMultiUsePlayerCursor == gMoveSelectionCursor[gActiveBattler])
-                MoveSelectionCreateCursorAt(gMoveSelectionCursor[gActiveBattler], 29);
-            else
-                MoveSelectionDestroyCursorAt(gMultiUsePlayerCursor);
-
-            gMultiUsePlayerCursor ^= 1;
-            PlaySE(SE_SELECT);
-
-            if (gMultiUsePlayerCursor == gMoveSelectionCursor[gActiveBattler])
-                MoveSelectionCreateCursorAt(gMultiUsePlayerCursor, 0);
-            else
-                MoveSelectionCreateCursorAt(gMultiUsePlayerCursor, 27);
-        }
-    }
-    else if (JOY_NEW(DPAD_RIGHT))
-    {
-        if (!(gMultiUsePlayerCursor & 1) && (gMultiUsePlayerCursor ^ 1) < gNumberOfMovesToChoose)
-        {
-            if (gMultiUsePlayerCursor == gMoveSelectionCursor[gActiveBattler])
-                MoveSelectionCreateCursorAt(gMoveSelectionCursor[gActiveBattler], 29);
-            else
-                MoveSelectionDestroyCursorAt(gMultiUsePlayerCursor);
-
-            gMultiUsePlayerCursor ^= 1;
-            PlaySE(SE_SELECT);
-
-            if (gMultiUsePlayerCursor == gMoveSelectionCursor[gActiveBattler])
-                MoveSelectionCreateCursorAt(gMultiUsePlayerCursor, 0);
-            else
-                MoveSelectionCreateCursorAt(gMultiUsePlayerCursor, 27);
-        }
-    }
-    else if (JOY_NEW(DPAD_UP))
-    {
-        if (gMultiUsePlayerCursor & 2)
-        {
-            if (gMultiUsePlayerCursor == gMoveSelectionCursor[gActiveBattler])
-                MoveSelectionCreateCursorAt(gMoveSelectionCursor[gActiveBattler], 29);
-            else
-                MoveSelectionDestroyCursorAt(gMultiUsePlayerCursor);
-
-            gMultiUsePlayerCursor ^= 2;
-            PlaySE(SE_SELECT);
-
-            if (gMultiUsePlayerCursor == gMoveSelectionCursor[gActiveBattler])
-                MoveSelectionCreateCursorAt(gMultiUsePlayerCursor, 0);
-            else
-                MoveSelectionCreateCursorAt(gMultiUsePlayerCursor, 27);
-        }
-    }
-    else if (JOY_NEW(DPAD_DOWN))
-    {
-        if (!(gMultiUsePlayerCursor & 2) && (gMultiUsePlayerCursor ^ 2) < gNumberOfMovesToChoose)
-        {
-            if (gMultiUsePlayerCursor == gMoveSelectionCursor[gActiveBattler])
-                MoveSelectionCreateCursorAt(gMoveSelectionCursor[gActiveBattler], 29);
-            else
-                MoveSelectionDestroyCursorAt(gMultiUsePlayerCursor);
-
-            gMultiUsePlayerCursor ^= 2;
-            PlaySE(SE_SELECT);
-
-            if (gMultiUsePlayerCursor == gMoveSelectionCursor[gActiveBattler])
-                MoveSelectionCreateCursorAt(gMultiUsePlayerCursor, 0);
-            else
-                MoveSelectionCreateCursorAt(gMultiUsePlayerCursor, 27);
-        }
-    }
 }
 
 static void SetLinkBattleEndCallbacks(void)
@@ -1532,12 +1435,18 @@ static void MoveSelectionDisplayTpCost(void)
     {
         // The selected move's TP cost, centered in its field. It turns yellow when it can be paid
         // only once more and red when it can't be paid.
-        SetTpCostPaletteInMoveSelection();
-        if (GetTPCostToCurrentTPState(moveInfo->tpCost[gMoveSelectionCursor[gActiveBattler]], moveInfo->currentTp) != 3)
-            colors[1] = 12;
-        ConvertIntToDecimalStringN(gDisplayedStringBattle, moveInfo->tpCost[gMoveSelectionCursor[gActiveBattler]], STR_CONV_MODE_LEFT_ALIGN, 3);
-        width = GetStringWidth(FONT_SMALL, gDisplayedStringBattle, 0);
-        AddTextPrinterParameterized4(B_WIN_TP_COST, FONT_SMALL, 13 - width / 2, 2, 0, 0, colors, TEXT_SKIP_DRAW, gDisplayedStringBattle);
+        // A sealed Special shows no cost.
+        if (GetSelectedMove() != MOVE_NONE)
+        {
+            u8 tpCost = GetSelectedTpCost();
+
+            SetTpCostPaletteInMoveSelection(tpCost);
+            if (GetTPCostToCurrentTPState(tpCost, moveInfo->currentTp) != 3)
+                colors[1] = 12;
+            ConvertIntToDecimalStringN(gDisplayedStringBattle, tpCost, STR_CONV_MODE_LEFT_ALIGN, 3);
+            width = GetStringWidth(FONT_SMALL, gDisplayedStringBattle, 0);
+            AddTextPrinterParameterized4(B_WIN_TP_COST, FONT_SMALL, 13 - width / 2, 2, 0, 0, colors, TEXT_SKIP_DRAW, gDisplayedStringBattle);
+        }
 
         // The mon's current TP over TP_MAX, right-aligned
         colors[1] = B_UI_PAL_TYPE;
@@ -1575,44 +1484,33 @@ static const u16 sTypeTextColors[NUMBER_OF_MON_TYPES] =
     [TYPE_DARK]     = RGB(23, 20, 18),
 };
 
+static const u8 sText_SpecialSealed[] = _("???");
+
 static void MoveSelectionDisplayMoveType(void)
 {
-    struct ChooseMoveStruct *moveInfo = (struct ChooseMoveStruct *)(&gBattleBufferA[gActiveBattler][4]);
-    u8 type = gMovesInfo[moveInfo->moves[gMoveSelectionCursor[gActiveBattler]]].type;
+    u16 move = GetSelectedMove();
+    u8 type = gMovesInfo[move].type;
+    const u8 *typeName = gTypeNames[type];
+    u16 color = sTypeTextColors[type];
     u8 colors[3] = {TEXT_COLOR_TRANSPARENT, B_UI_PAL_TYPE, TEXT_COLOR_TRANSPARENT};
     u8 fontId = FONT_SMALL;
 
+    // A sealed Special hides its type: grey "???", the textbox's grey (slot 13)
+    if (move == MOVE_NONE)
+    {
+        typeName = sText_SpecialSealed;
+        color = RGB(17, 17, 20);
+    }
+
     // The whole info box (rim, type tab, TP fields, icon) is drawn in the type's color
-    gPlttBufferUnfaded[BG_PLTT_ID(5) + B_UI_PAL_TYPE] = sTypeTextColors[type];
-    gPlttBufferFaded[BG_PLTT_ID(5) + B_UI_PAL_TYPE] = sTypeTextColors[type];
-    if (GetStringWidth(fontId, gTypeNames[type], 0) > TYPE_NAME_MAX_WIDTH)
+    gPlttBufferUnfaded[BG_PLTT_ID(5) + B_UI_PAL_TYPE] = color;
+    gPlttBufferFaded[BG_PLTT_ID(5) + B_UI_PAL_TYPE] = color;
+    if (GetStringWidth(fontId, typeName, 0) > TYPE_NAME_MAX_WIDTH)
         fontId = FONT_SMALL_NARROW;
     MoveScreenWindowStart(B_WIN_MOVE_TYPE);
-    AddTextPrinterParameterized4(B_WIN_MOVE_TYPE, fontId, 2, 4, 0, 0, colors, TEXT_SKIP_DRAW, gTypeNames[type]);
+    AddTextPrinterParameterized4(B_WIN_MOVE_TYPE, fontId, 2, 4, 0, 0, colors, TEXT_SKIP_DRAW, typeName);
     MoveScreenWindowFinish(B_WIN_MOVE_TYPE);
     MoveSelectionDisplayEffectiveness();
-}
-
-static const u8 sText_MoveSwitch[] = _("SWITCH");
-
-// While a move is held to swap places, the info box says SWITCH in the held move's cyan
-// and its TP fields stay empty. Leaving the swap redraws the move's info.
-static void MoveSelectionDisplaySwitchPrompt(void)
-{
-    u8 colors[3] = {TEXT_COLOR_TRANSPARENT, B_UI_PAL_TYPE, TEXT_COLOR_TRANSPARENT};
-    u16 tiles[4] = {B_TEXTBOX_TILE_NAVY, B_TEXTBOX_TILE_NAVY, B_TEXTBOX_TILE_NAVY, B_TEXTBOX_TILE_NAVY};
-
-    gPlttBufferUnfaded[BG_PLTT_ID(5) + B_UI_PAL_TYPE] = RGB(6, 20, 30);
-    gPlttBufferFaded[BG_PLTT_ID(5) + B_UI_PAL_TYPE] = RGB(6, 20, 30);
-    MoveScreenWindowStart(B_WIN_MOVE_TYPE);
-    AddTextPrinterParameterized4(B_WIN_MOVE_TYPE, FONT_SMALL, 2, 4, 0, 0, colors, TEXT_SKIP_DRAW, sText_MoveSwitch);
-    MoveScreenWindowFinish(B_WIN_MOVE_TYPE);
-    MoveScreenWindowStart(B_WIN_TP_COST);
-    MoveScreenWindowFinish(B_WIN_TP_COST);
-    MoveScreenWindowStart(B_WIN_TP_LEFT);
-    MoveScreenWindowFinish(B_WIN_TP_LEFT);
-    CopyToBgTilemapBufferRect_ChangePalette(0, tiles, 27, 57, 2, 2, 5);
-    CopyBgTilemapBufferToVram(0);
 }
 
 enum {
@@ -1659,13 +1557,12 @@ static u8 GetMoveEffectivenessIcon(u16 move, u8 defender)
 // up arrow super effective, x no effect. Single battles only, since doubles have two foes.
 static void MoveSelectionDisplayEffectiveness(void)
 {
-    struct ChooseMoveStruct *moveInfo = (struct ChooseMoveStruct *)(&gBattleBufferA[gActiveBattler][4]);
     u16 tiles[4];
     u8 icon = EFFECT_ICON_HIDDEN;
     s32 i;
 
     if (!(gBattleTypeFlags & BATTLE_TYPE_DOUBLE))
-        icon = GetMoveEffectivenessIcon(moveInfo->moves[gMoveSelectionCursor[gActiveBattler]],
+        icon = GetMoveEffectivenessIcon(GetSelectedMove(),
                                         GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT));
 
     for (i = 0; i < 4; i++)
@@ -1747,8 +1644,8 @@ static void RecolorWindowPixels(u8 windowId, u8 from, u8 to, u16 left, u16 top, 
     }
 }
 
-// Draws the 2x2 move grid: the scanlined screen, a rounded highlight behind the selected
-// (navy) or held (cyan) move, and the four names.
+// Draws the 2x2 move grid: the scanlined screen, a rounded navy highlight behind the selected
+// move, and the four names.
 static void MoveSelectionDrawMoveNames(void)
 {
     s32 i;
@@ -1758,7 +1655,7 @@ static void MoveSelectionDrawMoveNames(void)
     {
         if (sMoveNameStyles[i] != MOVE_NAME_NORMAL)
         {
-            u8 fill = PIXEL_FILL(sMoveNameStyles[i] == MOVE_NAME_HELD ? TEXTBOX_PAL_CYAN : TEXTBOX_PAL_NAVY);
+            u8 fill = PIXEL_FILL(TEXTBOX_PAL_NAVY);
             u8 x = (i & 1) ? 59 : 3;
             u8 y = (i & 2) ? 27 : 7;
             u8 height = (i & 2) ? 18 : 19;
@@ -1772,11 +1669,59 @@ static void MoveSelectionDrawMoveNames(void)
     MoveScreenWindowFinish(B_WIN_MOVE_NAME_1);
 }
 
-// baseTileNum is Emerald's cursor graphic: 0 for the move cursor, 27 for the swap target, 29 for the held move
+// baseTileNum was Emerald's cursor graphic and is unused
 static void MoveSelectionCreateCursorAt(u8 cursorPosition, u8 baseTileNum)
 {
-    sMoveNameStyles[cursorPosition] = (baseTileNum == 29) ? MOVE_NAME_HELD : MOVE_NAME_SELECTED;
+    sMoveNameStyles[cursorPosition] = MOVE_NAME_SELECTED;
     MoveSelectionDrawMoveNames();
+}
+
+// The Special page: one full-width row in place of the grid. Awakened, the Special's name in
+// gold inside an amber double frame (textbox palette slots 9 and 10); sealed, a dashed grey
+// frame (slot 13) around "???". No new tiles or palettes.
+#define SPECIAL_ROW_X  3
+#define SPECIAL_ROW_Y 16
+#define SPECIAL_ROW_W 112
+#define SPECIAL_ROW_H 20
+
+static const u8 sText_SpecialPage[] = _("SPECIAL");
+
+static void MoveSelectionDrawSpecialPage(void)
+{
+    u16 move = GetBattlerSpecialMove(gActiveBattler);
+    u8 colors[3] = {TEXT_COLOR_TRANSPARENT, TEXTBOX_PAL_GOLD, TEXT_COLOR_TRANSPARENT};
+    const u8 *name;
+    s32 i;
+
+    MoveScreenWindowStart(B_WIN_MOVE_NAME_1);
+    if (move != MOVE_NONE)
+    {
+        FillWindowPixelRect(B_WIN_MOVE_NAME_1, PIXEL_FILL(TEXTBOX_PAL_ORANGE), SPECIAL_ROW_X + 1, SPECIAL_ROW_Y, SPECIAL_ROW_W - 2, SPECIAL_ROW_H);
+        FillWindowPixelRect(B_WIN_MOVE_NAME_1, PIXEL_FILL(TEXTBOX_PAL_ORANGE), SPECIAL_ROW_X, SPECIAL_ROW_Y + 1, SPECIAL_ROW_W, SPECIAL_ROW_H - 2);
+        FillWindowPixelRect(B_WIN_MOVE_NAME_1, PIXEL_FILL(TEXTBOX_PAL_GOLD), SPECIAL_ROW_X + 1, SPECIAL_ROW_Y + 1, SPECIAL_ROW_W - 2, SPECIAL_ROW_H - 2);
+        FillWindowPixelRect(B_WIN_MOVE_NAME_1, PIXEL_FILL(TEXTBOX_PAL_NAVY), SPECIAL_ROW_X + 2, SPECIAL_ROW_Y + 2, SPECIAL_ROW_W - 4, SPECIAL_ROW_H - 4);
+        name = gMovesInfo[move].name;
+    }
+    else
+    {
+        for (i = 0; i < SPECIAL_ROW_W; i += 4)
+        {
+            FillWindowPixelRect(B_WIN_MOVE_NAME_1, PIXEL_FILL(TEXTBOX_PAL_GREY), SPECIAL_ROW_X + i, SPECIAL_ROW_Y, 2, 1);
+            FillWindowPixelRect(B_WIN_MOVE_NAME_1, PIXEL_FILL(TEXTBOX_PAL_GREY), SPECIAL_ROW_X + i, SPECIAL_ROW_Y + SPECIAL_ROW_H - 1, 2, 1);
+        }
+        for (i = 0; i < SPECIAL_ROW_H; i += 4)
+        {
+            FillWindowPixelRect(B_WIN_MOVE_NAME_1, PIXEL_FILL(TEXTBOX_PAL_GREY), SPECIAL_ROW_X, SPECIAL_ROW_Y + i, 1, 2);
+            FillWindowPixelRect(B_WIN_MOVE_NAME_1, PIXEL_FILL(TEXTBOX_PAL_GREY), SPECIAL_ROW_X + SPECIAL_ROW_W - 1, SPECIAL_ROW_Y + i, 1, 2);
+        }
+        colors[1] = TEXTBOX_PAL_GREY;
+        name = sText_SpecialSealed;
+    }
+    AddTextPrinterParameterized4(B_WIN_MOVE_NAME_1, FONT_SMALL, SPECIAL_ROW_X + (SPECIAL_ROW_W - GetStringWidth(FONT_SMALL, name, 0)) / 2,
+                                 SPECIAL_ROW_Y + 3, 0, 0, colors, TEXT_SKIP_DRAW, name);
+    colors[1] = TEXTBOX_PAL_LCD;
+    AddTextPrinterParameterized4(B_WIN_MOVE_NAME_1, FONT_SMALL, SPECIAL_ROW_X + 2, 3, 0, 0, colors, TEXT_SKIP_DRAW, sText_SpecialPage);
+    MoveScreenWindowFinish(B_WIN_MOVE_NAME_1);
 }
 
 static void MoveSelectionDestroyCursorAt(u8 cursorPosition)
@@ -2827,6 +2772,9 @@ static void PlayerHandleChooseMove(void)
 
 void InitMoveSelectionsVarsAndStrings(void)
 {
+    // FIGHT always opens on the move grid
+    if (IsOnSpecialPage())
+        gMoveSelectionCursor[gActiveBattler] = 0;
     MoveSelectionDisplayMoveNames();
     gMultiUsePlayerCursor = 0xFF;
     MoveSelectionCreateCursorAt(gMoveSelectionCursor[gActiveBattler], 0);

@@ -40,6 +40,7 @@
 #include "script_menu.h"
 #include "script_pokemon_util.h"
 #include "sound.h"
+#include "special_move.h"
 #include "string_util.h"
 #include "task.h"
 #include "window.h"
@@ -171,6 +172,8 @@ static void DebugAction_ToggleRunningShoes(void);
 static void DebugAction_GiveMon(void);
 static void DebugAction_DexAll(void);
 static void DebugAction_DexReset(void);
+static void DebugAction_SpecialProgress(void);
+static void DebugAction_SpecialSeal(void);
 static void DebugAction_TogglePokedex(void);
 static void DebugAction_GiveItem(void);
 static void DebugAction_GiveAllTMs(void);
@@ -222,6 +225,8 @@ static const struct DebugMenuEntry sMenu_Pokemon[] =
     {(const u8[])_("Give Pokémon…"), DebugAction_GiveMon},
     {(const u8[])_("Dex: all 151"),  DebugAction_DexAll},
     {(const u8[])_("Dex: reset"),    DebugAction_DexReset},
+    {(const u8[])_("Special: deed+1"), DebugAction_SpecialProgress},
+    {(const u8[])_("Special: seal"), DebugAction_SpecialSeal},
     {(const u8[])_("Pokédex"),       DebugAction_TogglePokedex, 0, TOGGLE_POKEDEX},
 };
 
@@ -896,6 +901,21 @@ static void DebugAction_DexReset(void)
     ResetPokedex();
     PlaySE(SE_SELECT);
     DebugMessage((const u8[])_("Pokédex cleared."));
+}
+
+// One more deed for every party mon; the Special awakens at the end of the next won battle
+static void DebugAction_SpecialProgress(void)
+{
+    SpecialMove_DebugAddProgress();
+    PlaySE(SE_SELECT);
+    DebugMessage((const u8[])_("Party Special deeds +1.\nWin a battle to awaken."));
+}
+
+static void DebugAction_SpecialSeal(void)
+{
+    SpecialMove_DebugSealParty();
+    PlaySE(SE_SELECT);
+    DebugMessage((const u8[])_("Party Specials sealed."));
 }
 
 static void DebugAction_TogglePokedex(void)

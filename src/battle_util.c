@@ -13,6 +13,7 @@
 #include "text.h"
 #include "safari_zone.h"
 #include "sound.h"
+#include "special_move.h"
 #include "sprite.h"
 #include "string_util.h"
 #include "task.h"
@@ -103,6 +104,13 @@ void HandleAction_UseMove(void)
         gDisableStructs[gBattlerAttacker].encoredMovePos = 0;
         gDisableStructs[gBattlerAttacker].encoreTimer = 0;
         *(gBattleStruct->moveTarget + gBattlerAttacker) = GetMoveTarget(gCurrentMove, NO_TARGET_OVERRIDE);
+    }
+    // the Special is outside the 4 slots
+    else if (gCurrMovePos == SPECIAL_MOVE_POS)
+    {
+        gCurrentMove = gChosenMove = GetBattlerSpecialMove(gBattlerAttacker);
+        if (gCurrentMove == MOVE_NONE) // can't happen: the FIGHT menu offers only an awakened Special
+            gCurrentMove = gChosenMove = MOVE_STRUGGLE;
     }
     else if (gBattleMons[gBattlerAttacker].moves[gCurrMovePos] != gChosenMoveByBattler[gBattlerAttacker])
     {
@@ -882,7 +890,7 @@ void BattleScriptPop(void)
 u8 TrySetCantSelectMoveBattleScript(void)
 {
     u8 limitations = 0;
-    u16 move = gBattleMons[gActiveBattler].moves[gBattleBufferB[gActiveBattler][2]];
+    u16 move = GetBattlerMoveAtPos(gActiveBattler, gBattleBufferB[gActiveBattler][2]);
     u8 holdEffect;
     u16 *choicedMove = &gBattleStruct->choicedMove[gActiveBattler];
 
@@ -3899,9 +3907,17 @@ u8 GetBattlerTP(u8 battler)
     return *GetBattlerTPPtr(battler);
 }
 
+// The move in a chosen move position: slots 0-3, or SPECIAL_MOVE_POS for the battler's Special
+u16 GetBattlerMoveAtPos(u8 battler, u8 movePos)
+{
+    if (movePos == SPECIAL_MOVE_POS)
+        return GetBattlerSpecialMove(battler);
+    return gBattleMons[battler].moves[movePos];
+}
+
 bool8 CanBattlerAffordMoveSlot(u8 battler, u8 moveSlot)
 {
-    return GetBattlerTP(battler) >= GetMoveTPCost(gBattleMons[battler].moves[moveSlot]);
+    return GetBattlerTP(battler) >= GetMoveTPCost(GetBattlerMoveAtPos(battler, moveSlot));
 }
 
 void SpendBattlerTP(u8 battler, u8 amount)

@@ -98,6 +98,7 @@ void InitBattleTP(void);
 u8 GetSpeciesIntelligence(u16 species);
 u8 GetMoveTPCost(u16 move);
 u8 GetBattlerTP(u8 battler);
+u16 GetBattlerMoveAtPos(u8 battler, u8 movePos);
 bool8 CanBattlerAffordMoveSlot(u8 battler, u8 moveSlot);
 void SpendBattlerTP(u8 battler, u8 amount);
 void RegenBattlerTP(u8 battler);

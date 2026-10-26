@@ -357,18 +357,23 @@ void Regress_Reseed(void)
     SeedRng2(0x5EED + sCount);
 }
 
-static void StartWild(void)
+static void StartWildSpecies(u16 species, u8 level)
 {
     u8 *s = sScript;
     *s++ = SCROP_SETWILDBATTLE;
-    *s++ = SPECIES_PIDGEY & 0xFF;
-    *s++ = SPECIES_PIDGEY >> 8;
-    *s++ = 5;
+    *s++ = species & 0xFF;
+    *s++ = species >> 8;
+    *s++ = level;
     *s++ = ITEM_NONE & 0xFF;
     *s++ = ITEM_NONE >> 8;
     *s++ = SCROP_DOWILDBATTLE;
     *s++ = SCROP_END;
     ScriptContext_SetupScript(sScript);
+}
+
+static void StartWild(void)
+{
+    StartWildSpecies(SPECIES_PIDGEY, 5);
 }
 
 static void StartTrainer(void)
@@ -522,6 +527,21 @@ static void StartScene(u8 scene)
     case REGRESS_SCENE_FLY_MAP:
         CleanupOverworldWindowsAndTilemaps();
         SetMainCallback2(CB2_OpenFlyMap);
+        break;
+    case REGRESS_SCENE_SPECIAL_MON:
+    {
+        static const u16 moves[MAX_MON_MOVES] = {MOVE_EMBER, MOVE_SCRATCH, MOVE_GROWL, MOVE_LEER};
+        u8 progress = 2;
+        u32 i;
+
+        CreateMon(&gPlayerParty[0], SPECIES_CHARMANDER, 20, 20, TRUE, 0x1000, OT_ID_PLAYER_ID, 0);
+        for (i = 0; i < MAX_MON_MOVES; i++)
+            SetMonMoveSlot(&gPlayerParty[0], moves[i], i);
+        SetMonData(&gPlayerParty[0], MON_DATA_SPECIAL_PROGRESS, &progress);
+        break;
+    }
+    case REGRESS_SCENE_WILD_GEODUDE:
+        StartWildSpecies(SPECIES_GEODUDE, 8);
         break;
     }
 }

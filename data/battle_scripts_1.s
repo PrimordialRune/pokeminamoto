@@ -2939,6 +2939,15 @@ BattleScript_LocalBattleWonReward::
 BattleScript_PayDayMoneyAndPickUpItems::
 	givepaydaymoney
 	pickup
+BattleScript_TryAwakenSpecials::
+	tryawakenspecial BattleScript_TryAwakenSpecialsEnd
+	fanfare MUS_OBTAIN_TMHM
+	printstring STRINGID_SPECIALAWAKENED
+	waitmessage B_WAIT_TIME_LONG
+	printstring STRINGID_SPECIALAWAKENED2
+	waitmessage B_WAIT_TIME_LONG
+	goto BattleScript_TryAwakenSpecials
+BattleScript_TryAwakenSpecialsEnd::
 	end2
 
 BattleScript_LocalBattleLost::
