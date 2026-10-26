@@ -4261,3 +4261,28 @@ u8 Script_TryGainNewFanFromCounter(void)
 {
     return TryGainNewFanFromCounter(gSpecialVar_0x8004);
 }
+
+// Charisma: the player's renown, 0 to CHARISMA_MAX (GDD "Carisma del Giocatore").
+// Stored in VAR_CHARISMA so it costs no new save data. Scripts can read it
+// directly, e.g. goto_if_ge VAR_CHARISMA, 50, label.
+u16 GetCharisma(void)
+{
+    return VarGet(VAR_CHARISMA);
+}
+
+void ChangeCharisma(s16 delta)
+{
+    s32 charisma = VarGet(VAR_CHARISMA) + delta;
+
+    if (charisma < 0)
+        charisma = 0;
+    else if (charisma > CHARISMA_MAX)
+        charisma = CHARISMA_MAX;
+    VarSet(VAR_CHARISMA, charisma);
+}
+
+// special AddCharisma: adds gSpecialVar_0x8004 (signed) to Charisma. Use the addcharisma macro.
+void AddCharisma(void)
+{
+    ChangeCharisma((s16)gSpecialVar_0x8004);
+}

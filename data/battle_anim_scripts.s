@@ -3318,8 +3318,8 @@ Move_MILK_DRINK:
 Move_MAGNITUDE:
 	createvisualtask AnimTask_IsPowerOver99, 2
 	waitforvisualfinish
-	jumpargeq 15, FALSE, MagnitudeRegular
-	jumpargeq 15, TRUE, MagnitudeIntense
+	jumpargeq ARG_RET_ID, FALSE, MagnitudeRegular
+	jumpargeq ARG_RET_ID, TRUE, MagnitudeIntense
 MagnitudeEnd:
 	end
 MagnitudeRegular:

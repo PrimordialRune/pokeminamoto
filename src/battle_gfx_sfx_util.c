@@ -71,10 +71,11 @@ static const struct CompressedSpriteSheet sSpriteSheet_SafariHealthbox =
 
 static const struct CompressedSpriteSheet sSpriteSheets_HealthBar[MAX_BATTLERS_COUNT] =
 {
-    {gBlankGfxCompressed, 0x0100, TAG_HEALTHBAR_PLAYER1_TILE},
-    {gBlankGfxCompressed, 0x0120, TAG_HEALTHBAR_OPPONENT1_TILE},
-    {gBlankGfxCompressed, 0x0100, TAG_HEALTHBAR_PLAYER2_TILE},
-    {gBlankGfxCompressed, 0x0120, TAG_HEALTHBAR_OPPONENT2_TILE}
+    // HP bar tiles (8, or 9 with the opponent's end cap), then the TP bar's 8 at TP_BAR_TILE_OFFSET
+    {gBlankGfxCompressed, 0x02A0, TAG_HEALTHBAR_PLAYER1_TILE},
+    {gBlankGfxCompressed, 0x02A0, TAG_HEALTHBAR_OPPONENT1_TILE},
+    {gBlankGfxCompressed, 0x02A0, TAG_HEALTHBAR_PLAYER2_TILE},
+    {gBlankGfxCompressed, 0x02A0, TAG_HEALTHBAR_OPPONENT2_TILE}
 };
 
 static const struct SpritePalette sSpritePalettes_HealthBoxHealthBar[2] =
@@ -711,7 +712,10 @@ void DecompressTrainerBackPic(u16 backPicId, u8 battler)
 {
     u8 position = GetBattlerPosition(battler);
 #ifdef BUGFIX
-    CpuCopy32(gTrainerBackPicTable[backPicId].data, gMonSpritesGfxPtr->sprites.ptr[position], gTrainerBackPicTable[backPicId].size);
+    // The player's back sprite draws its frames straight from ROM (sTrainerBackSpriteTemplates),
+    // so nothing needs to go into the buffer. Copying would also overflow it: a 5-frame back pic
+    // (Red, Leaf, our player) is 10 KB and each battler's buffer holds 4 mon frames (8 KB).
+    (void)position;
 #else
     // Trainer back pics aren't compressed!
     // Attempting to decompress the uncompressed data can softlock or crash the game.

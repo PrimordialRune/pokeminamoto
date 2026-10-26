@@ -1,13 +1,3 @@
-static const union AnimCmd sAnimCmd_Brendan_1[] =
-{
-    ANIMCMD_FRAME(0, 24),
-    ANIMCMD_FRAME(1, 9),
-    ANIMCMD_FRAME(2, 24),
-    ANIMCMD_FRAME(0, 9),
-    ANIMCMD_FRAME(3, 50),
-    ANIMCMD_END,
-};
-
 static const union AnimCmd sAnimCmd_May_Steven_1[] =
 {
     ANIMCMD_FRAME(0, 24),
@@ -68,12 +58,6 @@ static const union AnimCmd sAnimCmd_RubySapphireMay_1[] =
     ANIMCMD_END,
 };
 
-static const union AnimCmd *const sBackAnims_Brendan[] =
-{
-    sAnim_GeneralFrame3,
-    sAnimCmd_Brendan_1,
-};
-
 static const union AnimCmd *const sBackAnims_May[] =
 {
     sAnim_GeneralFrame3,
@@ -118,7 +102,7 @@ static const union AnimCmd *const sBackAnims_Steven[] =
 
 const union AnimCmd *const *const gTrainerBackAnimsPtrTable[] =
 {
-    [TRAINER_BACK_PIC_BRENDAN] = sBackAnims_Brendan,
+    [TRAINER_BACK_PIC_BRENDAN] = sBackAnims_Red, // the player's 5-frame throw follows FRLG Red's timing
     [TRAINER_BACK_PIC_MAY] = sBackAnims_May,
     [TRAINER_BACK_PIC_RED] = sBackAnims_Red,
     [TRAINER_BACK_PIC_LEAF] = sBackAnims_Leaf,

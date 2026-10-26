@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 # Bootstrap a fresh Debian/Ubuntu box (Claude Code cloud env, CI, new machine)
-# so that `make modern` and the classic `make` build pokeminamoto.
+# so that `make` (modern arm-none-eabi-gcc) builds pokeminamoto.
 #
 #   tools/setup-cloud.sh            # from anywhere inside the repo
 #   SKIP_APT=1 tools/setup-cloud.sh # toolchain already installed
+#   CLASSIC=1 tools/setup-cloud.sh  # also build agbcc, for the optional `make classic`
 #
 # Idempotent: skips apt packages and agbcc when they are already present.
 set -euo pipefail
@@ -36,9 +37,11 @@ if [ -z "${SKIP_APT:-}" ]; then
     fi
 fi
 
-# --- 2. agbcc (classic compiler, not committed) -------------------------------
+# --- 2. agbcc (classic compiler, optional, not committed) ---------------------
 if [ -x tools/agbcc/bin/agbcc ] && [ -x tools/agbcc/bin/old_agbcc ]; then
     echo ">> tools/agbcc already installed"
+elif [ -z "${CLASSIC:-}" ]; then
+    echo ">> skipping agbcc (only needed for \`make classic\`; rerun with CLASSIC=1)"
 else
     echo ">> building pret/agbcc"
     tmp="$(mktemp -d)"
@@ -95,4 +98,4 @@ python3 -c "import PIL, ortools" 2>/dev/null || \
     python3 -m pip install --quiet --break-system-packages pillow ortools 2>/dev/null || \
     echo "!! pip install pillow ortools failed; tools/porytiles/*.py will be unavailable"
 
-echo ">> done. Build with: make modern -j\$(nproc)   (classic: make -j\$(nproc))"
+echo ">> done. Build with: make -j\$(nproc)   (optional classic build: CLASSIC=1 tools/setup-cloud.sh, then make classic)"

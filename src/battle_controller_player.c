@@ -10,8 +10,10 @@
 #include "battle_tv.h"
 #include "bg.h"
 #include "data.h"
+#include "graphics.h"
 #include "item.h"
 #include "item_menu.h"
+#include "menu.h"
 #include "link.h"
 #include "main.h"
 #include "m4a.h"
@@ -99,9 +101,13 @@ static void HandleInputChooseMove(void);
 static void MoveSelectionCreateCursorAt(u8, u8);
 static void MoveSelectionDestroyCursorAt(u8);
 static void MoveSelectionDisplayPpNumber(void);
-static void MoveSelectionDisplayPpString(void);
 static void MoveSelectionDisplayMoveType(void);
 static void MoveSelectionDisplayMoveNames(void);
+static void MoveSelectionDisplayEffectiveness(void);
+static void MoveSelectionDrawMoveNames(void);
+static void MoveSelectionDisplaySwitchPrompt(void);
+static void RecolorWindowPixels(u8 windowId, u8 from, u8 to, u16 left, u16 top, u16 width, u16 height);
+static void ActionSelectionShowFoeInfo(void);
 static void HandleMoveSwitching(void);
 static void SwitchIn_HandleSoundAndEnd(void);
 static void WaitForMonSelection(void);
@@ -119,6 +125,25 @@ static void DoSwitchOutAnimation(void);
 static void PlayerDoMoveAnimation(void);
 static void Task_StartSendOutAnim(u8);
 static void EndDrawPartyStatusSummary(void);
+
+// Colors of the battle textbox palette (BG palette 0, tools/battle_ui/gen_textbox.py)
+#define TEXTBOX_PAL_NAVY   1
+#define TEXTBOX_PAL_WHITE  5
+#define TEXTBOX_PAL_CYAN  11
+#define TEXTBOX_PAL_LCD   15
+
+#define MOVE_CELL_WIDTH      56
+#define MOVE_NAME_MAX_WIDTH  52
+#define TYPE_NAME_MAX_WIDTH  36
+
+enum {
+    MOVE_NAME_NORMAL,
+    MOVE_NAME_SELECTED,
+    MOVE_NAME_HELD, // the move picked up with SELECT to swap places
+};
+
+// How each cell of the move grid is drawn; the grid is one window, redrawn whole
+static EWRAM_DATA u8 sMoveNameStyles[MAX_MON_MOVES] = {0};
 
 static void (*const sPlayerBufferCommands[CONTROLLER_CMDS_COUNT])(void) =
 {
@@ -251,11 +276,11 @@ static void HandleInputChooseAction(void)
         case 0: // Top left
             BtlController_EmitTwoReturnValues(B_COMM_TO_ENGINE, B_ACTION_USE_MOVE, 0);
             break;
-        case 1: // Top right
-            BtlController_EmitTwoReturnValues(B_COMM_TO_ENGINE, B_ACTION_USE_ITEM, 0);
-            break;
-        case 2: // Bottom left
+        case 1: // Top right, PKMN
             BtlController_EmitTwoReturnValues(B_COMM_TO_ENGINE, B_ACTION_SWITCH, 0);
+            break;
+        case 2: // Bottom left, ITEM
+            BtlController_EmitTwoReturnValues(B_COMM_TO_ENGINE, B_ACTION_USE_ITEM, 0);
             break;
         case 3: // Bottom right
             BtlController_EmitTwoReturnValues(B_COMM_TO_ENGINE, B_ACTION_RUN, 0);
@@ -265,7 +290,7 @@ static void HandleInputChooseAction(void)
     }
     else if (JOY_NEW(DPAD_LEFT))
     {
-        if (gActionSelectionCursor[gActiveBattler] & 1) // if is B_ACTION_USE_ITEM or B_ACTION_RUN
+        if (gActionSelectionCursor[gActiveBattler] & 1) // if is PKMN or RUN
         {
             PlaySE(SE_SELECT);
             ActionSelectionDestroyCursorAt(gActionSelectionCursor[gActiveBattler]);
@@ -275,7 +300,7 @@ static void HandleInputChooseAction(void)
     }
     else if (JOY_NEW(DPAD_RIGHT))
     {
-        if (!(gActionSelectionCursor[gActiveBattler] & 1)) // if is B_ACTION_USE_MOVE or B_ACTION_SWITCH
+        if (!(gActionSelectionCursor[gActiveBattler] & 1)) // if is FIGHT or ITEM
         {
             PlaySE(SE_SELECT);
             ActionSelectionDestroyCursorAt(gActionSelectionCursor[gActiveBattler]);
@@ -285,7 +310,7 @@ static void HandleInputChooseAction(void)
     }
     else if (JOY_NEW(DPAD_UP))
     {
-        if (gActionSelectionCursor[gActiveBattler] & 2) // if is B_ACTION_SWITCH or B_ACTION_RUN
+        if (gActionSelectionCursor[gActiveBattler] & 2) // if is ITEM or RUN
         {
             PlaySE(SE_SELECT);
             ActionSelectionDestroyCursorAt(gActionSelectionCursor[gActiveBattler]);
@@ -295,7 +320,7 @@ static void HandleInputChooseAction(void)
     }
     else if (JOY_NEW(DPAD_DOWN))
     {
-        if (!(gActionSelectionCursor[gActiveBattler] & 2)) // if is B_ACTION_USE_MOVE or B_ACTION_USE_ITEM
+        if (!(gActionSelectionCursor[gActiveBattler] & 2)) // if is FIGHT or PKMN
         {
             PlaySE(SE_SELECT);
             ActionSelectionDestroyCursorAt(gActionSelectionCursor[gActiveBattler]);
@@ -327,6 +352,38 @@ static void HandleInputChooseAction(void)
     {
         SwapHpBarsWithHpText();
     }
+    else if (JOY_NEW(R_BUTTON))
+    {
+        // Talk: a stub until the Talk system exists. It doesn't use up the turn.
+        PlaySE(SE_SELECT);
+        BattlePutTextOnWindow(gText_TalkStub, B_WIN_ACTION_PROMPT);
+    }
+    else if (JOY_NEW(SELECT_BUTTON))
+    {
+        // SEL.: info about the foe. For now its name and types; the full screen,
+        // filled in by battling a species more, comes later.
+        PlaySE(SE_SELECT);
+        ActionSelectionShowFoeInfo();
+    }
+}
+
+static void ActionSelectionShowFoeInfo(void)
+{
+    u8 foe = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
+    u8 *txtPtr;
+
+    if (gAbsentBattlerFlags & gBitTable[foe])
+        foe = GetBattlerAtPosition(B_POSITION_OPPONENT_RIGHT);
+
+    txtPtr = StringCopy(gDisplayedStringBattle, gSpeciesNames[gBattleMons[foe].species]);
+    *(txtPtr)++ = CHAR_NEWLINE;
+    txtPtr = StringCopy(txtPtr, gTypeNames[gBattleMons[foe].types[0]]);
+    if (gBattleMons[foe].types[1] != gBattleMons[foe].types[0])
+    {
+        *(txtPtr)++ = CHAR_SLASH;
+        StringCopy(txtPtr, gTypeNames[gBattleMons[foe].types[1]]);
+    }
+    BattlePutTextOnWindow(gDisplayedStringBattle, B_WIN_ACTION_PROMPT);
 }
 
 static void UNUSED UnusedEndBounceEffect(void)
@@ -608,7 +665,7 @@ static void HandleInputChooseMove(void)
                 gMultiUsePlayerCursor = gMoveSelectionCursor[gActiveBattler] + 1;
 
             MoveSelectionCreateCursorAt(gMultiUsePlayerCursor, 27);
-            BattlePutTextOnWindow(gText_BattleSwitchWhich, B_WIN_SWITCH_PROMPT);
+            MoveSelectionDisplaySwitchPrompt();
             gBattlerControllerFuncs[gActiveBattler] = HandleMoveSwitching;
         }
     }
@@ -692,6 +749,10 @@ static void HandleMoveSwitching(void)
             moveInfo->maxPp[gMoveSelectionCursor[gActiveBattler]] = moveInfo->maxPp[gMultiUsePlayerCursor];
             moveInfo->maxPp[gMultiUsePlayerCursor] = i;
 
+            i = moveInfo->tpCost[gMoveSelectionCursor[gActiveBattler]];
+            moveInfo->tpCost[gMoveSelectionCursor[gActiveBattler]] = moveInfo->tpCost[gMultiUsePlayerCursor];
+            moveInfo->tpCost[gMultiUsePlayerCursor] = i;
+
             if (gDisableStructs[gActiveBattler].mimickedMoves & gBitTable[gMoveSelectionCursor[gActiveBattler]])
             {
                 gDisableStructs[gActiveBattler].mimickedMoves &= (~gBitTable[gMoveSelectionCursor[gActiveBattler]]);
@@ -760,7 +821,6 @@ static void HandleMoveSwitching(void)
         gBattlerControllerFuncs[gActiveBattler] = HandleInputChooseMove;
         gMoveSelectionCursor[gActiveBattler] = gMultiUsePlayerCursor;
         MoveSelectionCreateCursorAt(gMoveSelectionCursor[gActiveBattler], 0);
-        MoveSelectionDisplayPpString();
         MoveSelectionDisplayPpNumber();
         MoveSelectionDisplayMoveType();
     }
@@ -770,7 +830,6 @@ static void HandleMoveSwitching(void)
         MoveSelectionDestroyCursorAt(gMultiUsePlayerCursor);
         MoveSelectionCreateCursorAt(gMoveSelectionCursor[gActiveBattler], 0);
         gBattlerControllerFuncs[gActiveBattler] = HandleInputChooseMove;
-        MoveSelectionDisplayPpString();
         MoveSelectionDisplayPpNumber();
         MoveSelectionDisplayMoveType();
     }
@@ -1453,6 +1512,33 @@ static void PlayerHandleYesNoInput(void)
     }
 }
 
+// The move screen's windows sit on art, so each one starts from a copy of the art under it
+// (graphics/battle_interface/move_grid.png and move_info.png, made by tools/battle_ui/gen_textbox.py).
+static void MoveScreenWindowStart(u8 windowId)
+{
+    switch (windowId)
+    {
+    case B_WIN_MOVE_NAME_1:
+        CopyToWindowPixelBuffer(windowId, gBattleMoveGridGfx, 15 * 6 * TILE_SIZE_4BPP, 0);
+        break;
+    case B_WIN_MOVE_TYPE:
+        CopyToWindowPixelBuffer(windowId, gBattleMoveInfoGfx, 5 * 2 * TILE_SIZE_4BPP, 0);
+        break;
+    case B_WIN_PP_REMAINING:
+        CopyToWindowPixelBuffer(windowId, gBattleMoveInfoGfx + 10 * TILE_SIZE_4BPP, 3 * 2 * TILE_SIZE_4BPP, 0);
+        break;
+    case B_WIN_TP_LEFT:
+        CopyToWindowPixelBuffer(windowId, gBattleMoveInfoGfx + 16 * TILE_SIZE_4BPP, 3 * 3 * TILE_SIZE_4BPP, 0);
+        break;
+    }
+}
+
+static void MoveScreenWindowFinish(u8 windowId)
+{
+    PutWindowTilemap(windowId);
+    CopyWindowToVram(windowId, COPYWIN_FULL);
+}
+
 static void MoveSelectionDisplayMoveNames(void)
 {
     s32 i;
@@ -1461,91 +1547,347 @@ static void MoveSelectionDisplayMoveNames(void)
 
     for (i = 0; i < MAX_MON_MOVES; i++)
     {
-        MoveSelectionDestroyCursorAt(i);
-        StringCopy(gDisplayedStringBattle, gMoveNames[moveInfo->moves[i]]);
-        // Prints on windows B_WIN_MOVE_NAME_1, B_WIN_MOVE_NAME_2, B_WIN_MOVE_NAME_3, B_WIN_MOVE_NAME_4
-        BattlePutTextOnWindow(gDisplayedStringBattle, i + B_WIN_MOVE_NAME_1);
+        sMoveNameStyles[i] = MOVE_NAME_NORMAL;
         if (moveInfo->moves[i] != MOVE_NONE)
             gNumberOfMovesToChoose++;
     }
-}
-
-static void MoveSelectionDisplayPpString(void)
-{
-    StringCopy(gDisplayedStringBattle, gText_MoveInterfacePP);
-    BattlePutTextOnWindow(gDisplayedStringBattle, B_WIN_PP);
+    MoveSelectionDrawMoveNames();
 }
 
 static void MoveSelectionDisplayPpNumber(void)
 {
-    u8 *txtPtr;
-    struct ChooseMoveStruct *moveInfo;
+    struct ChooseMoveStruct *moveInfo = (struct ChooseMoveStruct *)(&gBattleBufferA[gActiveBattler][4]);
+    u8 colors[3] = {TEXT_COLOR_TRANSPARENT, B_UI_PAL_TYPE, TEXT_COLOR_TRANSPARENT};
+    u8 width;
 
-    if (gBattleBufferA[gActiveBattler][2] == TRUE) // check if we didn't want to display pp number
-        return;
+    MoveScreenWindowStart(B_WIN_PP_REMAINING);
+    MoveScreenWindowStart(B_WIN_TP_LEFT);
+    if (gBattleBufferA[gActiveBattler][2] != TRUE) // check if we didn't want to display pp number
+    {
+        // The selected move's TP cost, centered in its field. It turns yellow when it can be paid
+        // only once more and red when it can't be paid.
+        SetPpNumbersPaletteInMoveSelection();
+        if (GetTPCostToCurrentTPState(moveInfo->tpCost[gMoveSelectionCursor[gActiveBattler]], moveInfo->currentTp) != 3)
+            colors[1] = 12;
+        ConvertIntToDecimalStringN(gDisplayedStringBattle, moveInfo->tpCost[gMoveSelectionCursor[gActiveBattler]], STR_CONV_MODE_LEFT_ALIGN, 3);
+        width = GetStringWidth(FONT_SMALL, gDisplayedStringBattle, 0);
+        AddTextPrinterParameterized4(B_WIN_PP_REMAINING, FONT_SMALL, 13 - width / 2, 2, 0, 0, colors, TEXT_SKIP_DRAW, gDisplayedStringBattle);
 
-    SetPpNumbersPaletteInMoveSelection();
-    moveInfo = (struct ChooseMoveStruct *)(&gBattleBufferA[gActiveBattler][4]);
-    // Shows the selected move's TP cost, then the mon's current TP
-    txtPtr = ConvertIntToDecimalStringN(gDisplayedStringBattle, moveInfo->tpCost[gMoveSelectionCursor[gActiveBattler]], STR_CONV_MODE_LEFT_ALIGN, 3);
-    *(txtPtr)++ = CHAR_SLASH;
-    ConvertIntToDecimalStringN(txtPtr, moveInfo->currentTp, STR_CONV_MODE_LEFT_ALIGN, 3);
-
-    BattlePutTextOnWindow(gDisplayedStringBattle, B_WIN_PP_REMAINING);
+        // The mon's current TP over TP_MAX, right-aligned
+        colors[1] = B_UI_PAL_TYPE;
+        ConvertIntToDecimalStringN(gDisplayedStringBattle, moveInfo->currentTp, STR_CONV_MODE_LEFT_ALIGN, 3);
+        width = GetStringWidth(FONT_SMALL, gDisplayedStringBattle, 0);
+        AddTextPrinterParameterized4(B_WIN_TP_LEFT, FONT_SMALL, 22 - width, 3, 0, 0, colors, TEXT_SKIP_DRAW, gDisplayedStringBattle);
+        ConvertIntToDecimalStringN(gDisplayedStringBattle, TP_MAX, STR_CONV_MODE_LEFT_ALIGN, 3);
+        width = GetStringWidth(FONT_SMALL, gDisplayedStringBattle, 0);
+        AddTextPrinterParameterized4(B_WIN_TP_LEFT, FONT_SMALL, 22 - width, 12, 0, 0, colors, TEXT_SKIP_DRAW, gDisplayedStringBattle);
+    }
+    MoveScreenWindowFinish(B_WIN_PP_REMAINING);
+    MoveScreenWindowFinish(B_WIN_TP_LEFT);
 }
+
+// Type names are printed in a color for their type, in BG palette 5 slot B_UI_PAL_TYPE
+static const u16 sTypeTextColors[NUMBER_OF_MON_TYPES] =
+{
+    [TYPE_NORMAL]   = RGB(24, 24, 27),
+    [TYPE_FIGHTING] = RGB(30, 17, 13),
+    [TYPE_FLYING]   = RGB(23, 21, 31),
+    [TYPE_POISON]   = RGB(26, 17, 27),
+    [TYPE_GROUND]   = RGB(29, 25, 15),
+    [TYPE_ROCK]     = RGB(26, 23, 12),
+    [TYPE_BUG]      = RGB(23, 26, 8),
+    [TYPE_GHOST]    = RGB(21, 18, 26),
+    [TYPE_STEEL]    = RGB(25, 25, 28),
+    [TYPE_MYSTERY]  = RGB(17, 24, 22),
+    [TYPE_FIRE]     = RGB(31, 18, 8),
+    [TYPE_WATER]    = RGB(13, 21, 31),
+    [TYPE_GRASS]    = RGB(20, 24, 13),
+    [TYPE_ELECTRIC] = RGB(31, 26, 8),
+    [TYPE_PSYCHIC]  = RGB(31, 17, 21),
+    [TYPE_ICE]      = RGB(21, 28, 28),
+    [TYPE_DRAGON]   = RGB(20, 16, 31),
+    [TYPE_DARK]     = RGB(23, 20, 18),
+};
 
 static void MoveSelectionDisplayMoveType(void)
 {
-    u8 *txtPtr;
     struct ChooseMoveStruct *moveInfo = (struct ChooseMoveStruct *)(&gBattleBufferA[gActiveBattler][4]);
+    u8 type = gBattleMoves[moveInfo->moves[gMoveSelectionCursor[gActiveBattler]]].type;
+    u8 colors[3] = {TEXT_COLOR_TRANSPARENT, B_UI_PAL_TYPE, TEXT_COLOR_TRANSPARENT};
+    u8 fontId = FONT_SMALL;
 
-    txtPtr = StringCopy(gDisplayedStringBattle, gText_MoveInterfaceType);
-    *(txtPtr)++ = EXT_CTRL_CODE_BEGIN;
-    *(txtPtr)++ = EXT_CTRL_CODE_FONT;
-    *(txtPtr)++ = FONT_NORMAL;
-
-    StringCopy(txtPtr, gTypeNames[gBattleMoves[moveInfo->moves[gMoveSelectionCursor[gActiveBattler]]].type]);
-    BattlePutTextOnWindow(gDisplayedStringBattle, B_WIN_MOVE_TYPE);
+    // The whole info box (rim, type tab, TP fields, icon) is drawn in the type's color
+    gPlttBufferUnfaded[BG_PLTT_ID(5) + B_UI_PAL_TYPE] = sTypeTextColors[type];
+    gPlttBufferFaded[BG_PLTT_ID(5) + B_UI_PAL_TYPE] = sTypeTextColors[type];
+    if (GetStringWidth(fontId, gTypeNames[type], 0) > TYPE_NAME_MAX_WIDTH)
+        fontId = FONT_SMALL_NARROW;
+    MoveScreenWindowStart(B_WIN_MOVE_TYPE);
+    AddTextPrinterParameterized4(B_WIN_MOVE_TYPE, fontId, 2, 4, 0, 0, colors, TEXT_SKIP_DRAW, gTypeNames[type]);
+    MoveScreenWindowFinish(B_WIN_MOVE_TYPE);
+    MoveSelectionDisplayEffectiveness();
 }
 
+static const u8 sText_MoveSwitch[] = _("SWITCH");
+
+// While a move is held to swap places, the info box says SWITCH in the held move's cyan
+// and its TP fields stay empty. Leaving the swap redraws the move's info.
+static void MoveSelectionDisplaySwitchPrompt(void)
+{
+    u8 colors[3] = {TEXT_COLOR_TRANSPARENT, B_UI_PAL_TYPE, TEXT_COLOR_TRANSPARENT};
+    u16 tiles[4] = {B_TEXTBOX_TILE_NAVY, B_TEXTBOX_TILE_NAVY, B_TEXTBOX_TILE_NAVY, B_TEXTBOX_TILE_NAVY};
+
+    gPlttBufferUnfaded[BG_PLTT_ID(5) + B_UI_PAL_TYPE] = RGB(6, 20, 30);
+    gPlttBufferFaded[BG_PLTT_ID(5) + B_UI_PAL_TYPE] = RGB(6, 20, 30);
+    MoveScreenWindowStart(B_WIN_MOVE_TYPE);
+    AddTextPrinterParameterized4(B_WIN_MOVE_TYPE, FONT_SMALL, 2, 4, 0, 0, colors, TEXT_SKIP_DRAW, sText_MoveSwitch);
+    MoveScreenWindowFinish(B_WIN_MOVE_TYPE);
+    MoveScreenWindowStart(B_WIN_PP_REMAINING);
+    MoveScreenWindowFinish(B_WIN_PP_REMAINING);
+    MoveScreenWindowStart(B_WIN_TP_LEFT);
+    MoveScreenWindowFinish(B_WIN_TP_LEFT);
+    CopyToBgTilemapBufferRect_ChangePalette(0, tiles, 27, 57, 2, 2, 5);
+    CopyBgTilemapBufferToVram(0);
+}
+
+enum {
+    EFFECT_ICON_NEUTRAL,
+    EFFECT_ICON_WEAK,
+    EFFECT_ICON_STRONG,
+    EFFECT_ICON_NONE,
+    EFFECT_ICON_HIDDEN,
+};
+
+// How the move's type matches up against the defender, read from gTypeEffectiveness.
+// Abilities and held items are left out: the icon shows the type chart only.
+static u8 GetMoveEffectivenessIcon(u16 move, u8 defender)
+{
+    s32 i;
+    u16 multiplier = TYPE_MUL_NORMAL;
+    u8 moveType = gBattleMoves[move].type;
+    u8 type1 = gBattleMons[defender].types[0];
+    u8 type2 = gBattleMons[defender].types[1];
+
+    if (move == MOVE_NONE || gBattleMoves[move].power == 0)
+        return EFFECT_ICON_HIDDEN;
+
+    for (i = 0; TYPE_EFFECT_ATK_TYPE(i) != TYPE_ENDTABLE; i += 3)
+    {
+        if (TYPE_EFFECT_ATK_TYPE(i) != moveType)
+            continue;
+        if (TYPE_EFFECT_DEF_TYPE(i) == type1)
+            multiplier = multiplier * TYPE_EFFECT_MULTIPLIER(i) / TYPE_MUL_NORMAL;
+        if (TYPE_EFFECT_DEF_TYPE(i) == type2 && type1 != type2)
+            multiplier = multiplier * TYPE_EFFECT_MULTIPLIER(i) / TYPE_MUL_NORMAL;
+    }
+
+    if (multiplier == TYPE_MUL_NO_EFFECT)
+        return EFFECT_ICON_NONE;
+    if (multiplier < TYPE_MUL_NORMAL)
+        return EFFECT_ICON_WEAK;
+    if (multiplier > TYPE_MUL_NORMAL)
+        return EFFECT_ICON_STRONG;
+    return EFFECT_ICON_NEUTRAL;
+}
+
+// Draws the effectiveness icon next to the move type: = neutral, down arrow not very effective,
+// up arrow super effective, x no effect. Single battles only, since doubles have two foes.
+static void MoveSelectionDisplayEffectiveness(void)
+{
+    struct ChooseMoveStruct *moveInfo = (struct ChooseMoveStruct *)(&gBattleBufferA[gActiveBattler][4]);
+    u16 tiles[4];
+    u8 icon = EFFECT_ICON_HIDDEN;
+    s32 i;
+
+    if (!(gBattleTypeFlags & BATTLE_TYPE_DOUBLE))
+        icon = GetMoveEffectivenessIcon(moveInfo->moves[gMoveSelectionCursor[gActiveBattler]],
+                                        GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT));
+
+    for (i = 0; i < 4; i++)
+    {
+        if (icon == EFFECT_ICON_HIDDEN)
+            tiles[i] = B_TEXTBOX_TILE_NAVY;
+        else
+            tiles[i] = B_TEXTBOX_TILE_EFFECT_ICON + icon * 4 + i;
+    }
+    CopyToBgTilemapBufferRect_ChangePalette(0, tiles, 27, 57, 2, 2, 5);
+    CopyBgTilemapBufferToVram(0);
+}
+
+// Prints one move name into its cell of the move grid. A name too long for one line breaks at its
+// last space that fits, as in the mockup's "FRAGRANCE / TRAP"; one with no space uses a smaller font.
+static void MoveSelectionPrintMoveName(u8 position)
+{
+    struct ChooseMoveStruct *moveInfo = (struct ChooseMoveStruct *)(&gBattleBufferA[gActiveBattler][4]);
+    u8 colors[3] = {TEXT_COLOR_TRANSPARENT, TEXTBOX_PAL_WHITE, TEXT_COLOR_TRANSPARENT};
+    u8 x = (position & 1) ? 62 : 5;
+    u8 y = (position & 2) ? 26 : 6;
+    u8 fontId = FONT_SMALL;
+    u8 *line2 = NULL;
+    u8 *c;
+
+    StringCopy(gDisplayedStringBattle, gMoveNames[moveInfo->moves[position]]);
+    if (GetStringWidth(fontId, gDisplayedStringBattle, 0) > MOVE_NAME_MAX_WIDTH)
+    {
+        for (c = gDisplayedStringBattle; *c != EOS; c++)
+        {
+            if (*c != CHAR_SPACE)
+                continue;
+            *c = EOS;
+            if (GetStringWidth(fontId, gDisplayedStringBattle, 0) <= MOVE_NAME_MAX_WIDTH)
+                line2 = c;
+            *c = CHAR_SPACE;
+        }
+        if (line2 != NULL)
+            *line2++ = EOS;
+        else
+        {
+            fontId = FONT_SMALL_NARROW;
+        }
+    }
+    AddTextPrinterParameterized4(B_WIN_MOVE_NAME_1, fontId, x, y, 0, 0, colors, TEXT_SKIP_DRAW, gDisplayedStringBattle);
+    if (line2 != NULL)
+        AddTextPrinterParameterized4(B_WIN_MOVE_NAME_1, fontId, x, y + 8, 0, 0, colors, TEXT_SKIP_DRAW, line2);
+
+    // The selected name fades from white to LCD green in its bottom two rows
+    if (sMoveNameStyles[position] == MOVE_NAME_SELECTED)
+    {
+        RecolorWindowPixels(B_WIN_MOVE_NAME_1, TEXTBOX_PAL_WHITE, TEXTBOX_PAL_LCD, x, y + 8, MOVE_NAME_MAX_WIDTH + 2, 2);
+        if (line2 != NULL)
+            RecolorWindowPixels(B_WIN_MOVE_NAME_1, TEXTBOX_PAL_WHITE, TEXTBOX_PAL_LCD, x, y + 16, MOVE_NAME_MAX_WIDTH + 2, 2);
+    }
+}
+
+static void RecolorWindowPixels(u8 windowId, u8 from, u8 to, u16 left, u16 top, u16 width, u16 height)
+{
+    u8 *tileData = gWindows[windowId].tileData;
+    u16 widthInTiles = gWindows[windowId].window.width;
+    u16 x, y;
+
+    for (y = top; y < top + height; y++)
+    {
+        for (x = left; x < left + width; x++)
+        {
+            u8 *pixels = &tileData[((y / 8) * widthInTiles + x / 8) * TILE_SIZE_4BPP + (y % 8) * 4 + (x % 8) / 2];
+            if (x & 1)
+            {
+                if ((*pixels >> 4) == from)
+                    *pixels = (*pixels & 0xF) | (to << 4);
+            }
+            else if ((*pixels & 0xF) == from)
+            {
+                *pixels = (*pixels & 0xF0) | to;
+            }
+        }
+    }
+}
+
+// Draws the 2x2 move grid: the scanlined screen, a rounded highlight behind the selected
+// (navy) or held (cyan) move, and the four names.
+static void MoveSelectionDrawMoveNames(void)
+{
+    s32 i;
+
+    MoveScreenWindowStart(B_WIN_MOVE_NAME_1);
+    for (i = 0; i < MAX_MON_MOVES; i++)
+    {
+        if (sMoveNameStyles[i] != MOVE_NAME_NORMAL)
+        {
+            u8 fill = PIXEL_FILL(sMoveNameStyles[i] == MOVE_NAME_HELD ? TEXTBOX_PAL_CYAN : TEXTBOX_PAL_NAVY);
+            u8 x = (i & 1) ? 59 : 3;
+            u8 y = (i & 2) ? 27 : 7;
+            u8 height = (i & 2) ? 18 : 19;
+
+            FillWindowPixelRect(B_WIN_MOVE_NAME_1, fill, x + 1, y, MOVE_CELL_WIDTH - 2, 1);
+            FillWindowPixelRect(B_WIN_MOVE_NAME_1, fill, x, y + 1, MOVE_CELL_WIDTH, height - 2);
+            FillWindowPixelRect(B_WIN_MOVE_NAME_1, fill, x + 1, y + height - 1, MOVE_CELL_WIDTH - 2, 1);
+        }
+        MoveSelectionPrintMoveName(i);
+    }
+    MoveScreenWindowFinish(B_WIN_MOVE_NAME_1);
+}
+
+// baseTileNum is Emerald's cursor graphic: 0 for the move cursor, 27 for the swap target, 29 for the held move
 static void MoveSelectionCreateCursorAt(u8 cursorPosition, u8 baseTileNum)
 {
-    u16 src[2];
-    src[0] = baseTileNum + 1;
-    src[1] = baseTileNum + 2;
-
-    CopyToBgTilemapBufferRect_ChangePalette(0, src, 9 * (cursorPosition & 1) + 1, 55 + (cursorPosition & 2), 1, 2, 0x11);
-    CopyBgTilemapBufferToVram(0);
+    sMoveNameStyles[cursorPosition] = (baseTileNum == 29) ? MOVE_NAME_HELD : MOVE_NAME_SELECTED;
+    MoveSelectionDrawMoveNames();
 }
 
 static void MoveSelectionDestroyCursorAt(u8 cursorPosition)
 {
-    u16 src[2];
-    src[0] = 0x1016;
-    src[1] = 0x1016;
+    sMoveNameStyles[cursorPosition] = MOVE_NAME_NORMAL;
+    MoveSelectionDrawMoveNames();
+}
 
-    CopyToBgTilemapBufferRect_ChangePalette(0, src, 9 * (cursorPosition & 1) + 1, 55 + (cursorPosition & 2), 1, 2, 0x11);
-    CopyBgTilemapBufferToVram(0);
+// Buttons in B_WIN_ACTION_MENU, from the mockup: FIGHT x2-39, PKMN x41-79, rows 6-19 and 21-34
+#define ACTION_BUTTON_HEIGHT 14
+
+static const u8 sActionButtonX[] = {2, 41, 2, 41};
+static const u8 sActionButtonWidth[] = {38, 39, 38, 39};
+
+static const u8 *const sActionMenuLabels[] =
+{
+    gText_BattleMenuFight, gText_BattleMenuPkmn,
+    gText_BattleMenuItem,  gText_BattleMenuRun,
+};
+
+static const u8 *const sSafariMenuLabels[] =
+{
+    gText_SafariMenuBall, gText_SafariMenuBlock,
+    gText_SafariMenuNear, gText_BattleMenuRun,
+};
+
+// The action menu is four cyan buttons on the art copied into B_WIN_ACTION_MENU.
+// Each has a white lower edge that curls up at the group's outer corner; the selected one turns navy.
+static void DrawActionButton(u8 position, bool8 selected)
+{
+    const u8 *label = (gBattleTypeFlags & BATTLE_TYPE_SAFARI) ? sSafariMenuLabels[position] : sActionMenuLabels[position];
+    u8 x = sActionButtonX[position];
+    u8 y = (position & 2) ? 21 : 6;
+    u8 width = sActionButtonWidth[position];
+    u8 outerX = (position & 1) ? x + width - 1 : x;
+    u8 colors[3] = {TEXT_COLOR_TRANSPARENT, TEXTBOX_PAL_WHITE, TEXT_COLOR_TRANSPARENT};
+
+    FillWindowPixelRect(B_WIN_ACTION_MENU, PIXEL_FILL(TEXTBOX_PAL_NAVY), x, y, width, ACTION_BUTTON_HEIGHT);
+    if (!selected)
+    {
+        FillWindowPixelRect(B_WIN_ACTION_MENU, PIXEL_FILL(TEXTBOX_PAL_CYAN), x, y + 1, width, ACTION_BUTTON_HEIGHT - 2);
+        FillWindowPixelRect(B_WIN_ACTION_MENU, PIXEL_FILL(TEXTBOX_PAL_WHITE), x + 1, y + ACTION_BUTTON_HEIGHT - 1, width - 2, 1);
+        if (position & 2) // bottom row: square top corner on the inside
+        {
+            FillWindowPixelRect(B_WIN_ACTION_MENU, PIXEL_FILL(TEXTBOX_PAL_CYAN), x + 1, y, width - 2, 1);
+            FillWindowPixelRect(B_WIN_ACTION_MENU, PIXEL_FILL(TEXTBOX_PAL_CYAN), (position & 1) ? x : x + width - 1, y, 1, 1);
+        }
+        else // top row: square bottom corner on the inside
+        {
+            FillWindowPixelRect(B_WIN_ACTION_MENU, PIXEL_FILL(TEXTBOX_PAL_CYAN), x + 1, y, width - 2, 1);
+            FillWindowPixelRect(B_WIN_ACTION_MENU, PIXEL_FILL(TEXTBOX_PAL_WHITE), (position & 1) ? x : x + width - 1, y + ACTION_BUTTON_HEIGHT - 1, 1, 1);
+        }
+        FillWindowPixelRect(B_WIN_ACTION_MENU, PIXEL_FILL(TEXTBOX_PAL_WHITE), outerX, y + ACTION_BUTTON_HEIGHT - 2, 1, 1);
+    }
+    AddTextPrinterParameterized4(B_WIN_ACTION_MENU, FONT_SMALL, x + (width - GetStringWidth(FONT_SMALL, label, 0)) / 2, y,
+                                 0, 0, colors, TEXT_SKIP_DRAW, label);
+    PutWindowTilemap(B_WIN_ACTION_MENU);
+    CopyWindowToVram(B_WIN_ACTION_MENU, COPYWIN_FULL);
+}
+
+void ActionSelectionDrawMenu(void)
+{
+    s32 i;
+
+    CopyToWindowPixelBuffer(B_WIN_ACTION_MENU, gBattleActionMenuGfx, 10 * 5 * TILE_SIZE_4BPP, 0);
+    for (i = 0; i < 4; i++)
+        DrawActionButton(i, FALSE);
 }
 
 void ActionSelectionCreateCursorAt(u8 cursorPosition, u8 baseTileNum)
 {
-    u16 src[2];
-    src[0] = 1;
-    src[1] = 2;
-
-    CopyToBgTilemapBufferRect_ChangePalette(0, src, 7 * (cursorPosition & 1) + 16, 35 + (cursorPosition & 2), 1, 2, 0x11);
-    CopyBgTilemapBufferToVram(0);
+    DrawActionButton(cursorPosition, TRUE);
 }
 
 void ActionSelectionDestroyCursorAt(u8 cursorPosition)
 {
-    u16 src[2];
-    src[0] = 0x1016;
-    src[1] = 0x1016;
-
-    CopyToBgTilemapBufferRect_ChangePalette(0, src, 7 * (cursorPosition & 1) + 16, 35 + (cursorPosition & 2), 1, 2, 0x11);
-    CopyBgTilemapBufferToVram(0);
+    DrawActionButton(cursorPosition, FALSE);
 }
 
 void CB2_SetUpReshowBattleScreenAfterMenu(void)
@@ -2575,15 +2917,9 @@ static void HandleChooseActionAfterDma3(void)
 
 static void PlayerHandleChooseAction(void)
 {
-    s32 i;
-
     gBattlerControllerFuncs[gActiveBattler] = HandleChooseActionAfterDma3;
     BattleTv_ClearExplosionFaintCause();
-    BattlePutTextOnWindow(gText_BattleMenu, B_WIN_ACTION_MENU);
-
-    for (i = 0; i < 4; i++)
-        ActionSelectionDestroyCursorAt(i);
-
+    ActionSelectionDrawMenu();
     ActionSelectionCreateCursorAt(gActionSelectionCursor[gActiveBattler], 0);
     BattleStringExpandPlaceholdersToDisplayedString(gText_WhatWillPkmnDo);
     BattlePutTextOnWindow(gDisplayedStringBattle, B_WIN_ACTION_PROMPT);
@@ -2646,7 +2982,6 @@ void InitMoveSelectionsVarsAndStrings(void)
     MoveSelectionDisplayMoveNames();
     gMultiUsePlayerCursor = 0xFF;
     MoveSelectionCreateCursorAt(gMoveSelectionCursor[gActiveBattler], 0);
-    MoveSelectionDisplayPpString();
     MoveSelectionDisplayPpNumber();
     MoveSelectionDisplayMoveType();
 }

@@ -1,0 +1,92 @@
+# Early game, Masara Town to Hanada City (Act One), as a Monte Carlo playthrough.
+#
+# Sources: route order and species from docs/design/data/overworld.csv (Notion MAPS/EVENTS);
+# wild levels and Omar's Green playthrough notes from docs/design/research-and-sources.md section 3
+# (PKMN_Green_LP_Thresholds). Gym order and types from arena_ecology v2.1.
+#
+# PLACEHOLDER marks numbers nobody has designed yet. They are Gen 1 Green/RB values or guesses,
+# here only so the model runs. Replace them as the design lands.
+#
+# Species accept English constants (PIDGEY), English names or Minamoto names (PIDGE, KAMONEGI).
+# Team entries: SPECIES:LEVEL, optionally [MOVE/MOVE] and @ITEM, e.g. FARFETCHD:10[PECK/SAND_ATTACK]@LEEK.
+# RIVAL_STARTER is the starter that beats the player's (Gen 1 rival rule), evolved for its level.
+
+name: Masara to Hanada
+start: Masara Town
+party: ["STARTER:5"]
+potions_per_town: 3          # PLACEHOLDER: Potions (20 HP) bought at each town, used between battles below 50% HP
+
+# Beta species that aren't in the ROM yet stand in as their nearest ROM species.
+proxies:
+  KOBAT: ZUBAT
+  GYOPIN: GOLDEEN
+
+steps:
+  - trainer: {name: "Shigeru (lab)", team: ["RIVAL_STARTER:5"], first_battle: true}
+
+  - area: Route 1
+    wild: ["PIDGE:2-5:50", "RATTATAK:2-4:50"]      # notes: Route 1 Lv 2-3
+    battles: 4                                      # PLACEHOLDER
+  - catch: {species: PIDGE, level: 3, team_only: true}
+
+  - heal: Tokiwa City
+  - area: Route 22
+    wild: ["RATTATAK:2-4:40", "NIDORAN M:2-4:25", "NIDORAN F:2-4:25", "ONISUZUME:3-5:10"]   # notes: Lv 2-4, Spearow very rare
+    battles: 4                                      # PLACEHOLDER
+  - catch: {species: NIDORAN M, level: 4, team_only: true}
+  - trainer: {name: "Shigeru (Route 22)", team: ["PIDGE:9", "RIVAL_STARTER:8"]}     # notes: Pidgey 9, starter 8 (?)
+
+  - heal: Tokiwa City
+  - trainer: {name: "Tokiwa gym trainer", team: ["ONISUZUME:7", "PIDGE:7"]}         # PLACEHOLDER
+  - boss: {name: "Jiro (gym 1, Flying)", badge: 1, sash: true, team: ["ONISUZUME:8", "PIDGE:9", "KAMONEGI:11@LEEK"]}   # PLACEHOLDER team; gym location assumed Tokiwa
+    target: [8, 11]                                 # PLACEHOLDER arrival level range
+
+  - area: Route 2
+    wild: ["PIDGE:3-5:30", "RATTATAK:2-5:30", "CATERPIE:3-5:20", "BEEDLE:3-5:20"]
+    battles: 4                                      # PLACEHOLDER
+  - area: Tokiwa Forest
+    wild: ["CATERPIE:3-5:25", "TRANSEL:4-6:15", "BEEDLE:3-5:25", "KOCOON:4-6:15", "PIDGE:4-6:10", "PIKACHU:3-5:5", "PARAS:5-6:5"]   # LP table: Lv 6
+    battles: 9                                      # LP table "Battles" 9
+  - trainer: {name: "Bug Boy 1", team: ["BEEDLE:6", "CATERPIE:6"]}                 # RB values
+  - trainer: {name: "Bug Boy 2", team: ["BEEDLE:7", "KOCOON:7", "BEEDLE:7"]}
+  - trainer: {name: "Bug Boy 3", team: ["BEEDLE:9"]}
+
+  - heal: Nibi City
+  - trainer: {name: "Nibi gym trainer", team: ["DIGDA:11", "SAND:11"]}            # RB values
+  - boss: {name: "Brock (gym 2, Ground)", badge: 2, sash: true, team: ["ISITSUBUTE:11", "IWARK:14"]}   # notes: Green Brock Geodude 11, Onix 14
+    target: [12, 14]                                # inferred from Brock's levels
+
+  - area: Route 3
+    wild: ["ONISUZUME:6-8:35", "NIDORAN M:6-7:20", "NIDORAN F:6-7:20", "MANKEY:7-9:25"]   # LP table: Lv 8
+    battles: 14                                     # LP table "Battles" 14
+  - trainer: {name: "Route 3 Lass", team: ["PIDGE:9", "PIDGE:9"]}
+  - trainer: {name: "Route 3 Bug Boy", team: ["CATERPIE:10", "BEEDLE:10", "CATERPIE:10"]}
+  - trainer: {name: "Route 3 Shorts Boy", team: ["RATTATAK:11", "ARBO:11"]}
+  - trainer: {name: "Route 3 Bug Boy 2", team: ["BEEDLE:9", "KOCOON:9", "CATERPIE:9", "TRANSEL:9"]}
+  - trainer: {name: "Route 3 Lass 2", team: ["RATTATAK:10", "NIDORAN M:10"]}
+  - trainer: {name: "Route 3 Shorts Boy 2", team: ["ONISUZUME:14"]}
+  - trainer: {name: "Route 3 Bug Boy 3", team: ["CATERPIE:11", "TRANSEL:11"]}
+  - trainer: {name: "Route 3 Lass 3", team: ["PUDDING:14"]}
+
+  - heal: Mt. Moon Pokemon Center
+  - area: Mt. Moon
+    wild: ["KOBAT:7-11:50", "ISITSUBUTE:7-10:25", "PARAS:8-10:15", "ARIA:8-12:10"]   # LP table: Lv 10
+    battles: 16                                     # LP table "Battles" 16
+  - trainer: {name: "Mt. Moon Bug Boy", team: ["BEEDLE:11", "KOCOON:11"]}
+  - trainer: {name: "Mt. Moon Lass", team: ["ARIA:14"]}
+  - trainer: {name: "Mt. Moon Hiker", team: ["ISITSUBUTE:10", "ISITSUBUTE:10", "IWARK:10"]}
+  - trainer: {name: "Rocket 1", team: ["RATTATAK:13", "KOBAT:13"]}
+  - trainer: {name: "Rocket 2", team: ["SAND:11", "RATTATAK:11", "KOBAT:11"]}
+  - trainer: {name: "Rocket 3", team: ["KOBAT:12", "ARBO:12"]}
+  - trainer: {name: "Mt. Moon Super Nerd", team: ["MAGNEMITE:11", "VOLTORB:11"]}
+
+  - area: Route 4
+    wild: ["RATTATAK:8-12:30", "ONISUZUME:8-12:30", "ARBO:6-12:20", "SAND:6-12:20"]   # LP table: Lv 12
+    battles: 5                                      # PLACEHOLDER
+
+  - heal: Hanada City
+  - trainer: {name: "Shigeru (Hanada)", team: ["PIDGEOTTO:18", "HOCUS:15", "RATTATAK:15", "RIVAL_STARTER:17"]}   # RB values
+  - trainer: {name: "Hanada gym Swimmer", team: ["HORSEA:16", "SHELLDER:16"]}
+  - trainer: {name: "Hanada gym Jr. Trainer", team: ["GOLDY:19"]}
+  - boss: {name: "Misty (gym 3, Water)", badge: 3, sash: true, team: ["HITODEMAN:18", "STARMIE:21"]}   # notes: Green Misty Staryu 18, Starmie 21
+    target: [18, 21]                                # notes: Omar's team was Lv 18-21 on arrival

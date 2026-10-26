@@ -13,20 +13,30 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install toolchain and agbcc
+      - name: Install toolchain
         run: bash tools/setup-cloud.sh
 
-      - name: Build classic (agbcc)
+      - name: Build (modern arm-none-eabi-gcc)
         run: make -j$(nproc)
 
-      - name: Build modern (arm-none-eabi-gcc)
-        run: make modern -j$(nproc)
-
-      - name: Upload ROMs
+      - name: Upload ROM
         uses: actions/upload-artifact@v4
         with:
-          name: roms-${{ github.sha }}
-          path: |
-            pokeemerald.gba
-            pokeemerald_modern.gba
+          name: rom-${{ github.sha }}
+          path: pokeemerald_modern.gba
           retention-days: 14
+
+  # The agbcc build is optional now; this job reports whether it still compiles
+  # but never blocks a merge.
+  classic:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install toolchain and agbcc
+        run: CLASSIC=1 bash tools/setup-cloud.sh
+
+      - name: Build classic (agbcc)
+        run: make classic -j$(nproc)

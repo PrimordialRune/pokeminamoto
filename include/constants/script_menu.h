@@ -165,4 +165,8 @@
 #define STDSTRING_BATTLE_PIKE      28
 #define STDSTRING_BATTLE_PYRAMID   29
 
+// Dynamic multichoice callbacks (dynmultichoice's callbacks argument)
+#define DYN_MULTICHOICE_CB_SHOW_ITEM  0   // Option ids are item ids; shows the selected item's icon beside the menu
+#define DYN_MULTICHOICE_CB_NONE       255
+
 #endif //GUARD_SCRIPT_MENU_CONSTANTS_H

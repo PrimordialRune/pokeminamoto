@@ -1761,6 +1761,45 @@
 	.2byte \quantity
 	.endm
 
+	.macro _dynmultichoice left:req, top:req, ignoreBPress:req, maxBeforeScroll:req, shouldSort:req, initialSelected:req, callbacks:req, argv:vararg
+	.byte SCR_OP_DYNMULTICHOICE
+	.2byte \left
+	.2byte \top
+	.byte \ignoreBPress
+	.byte \maxBeforeScroll
+	.byte \shouldSort
+	.2byte \initialSelected
+	.byte \callbacks
+	.byte (.Ldynmultichoice_\@_2 - .Ldynmultichoice_\@_1) / 4
+.Ldynmultichoice_\@_1:
+	.4byte \argv
+.Ldynmultichoice_\@_2:
+	.endm
+
+	@ Displays a scrolling multichoice built from the strings in argv, and blocks script execution until a selection is made.
+	@ The chosen option's index (0 for the first string) goes in VAR_RESULT, or MULTI_B_PRESSED if the player backs out.
+	@ left, top and initialSelected may be vars. maxBeforeScroll is how many options show before the list scrolls (0xFF = 6).
+	@ If ignoreBPress is non-zero the player can't back out with B. callbacks is DYN_MULTICHOICE_CB_NONE for a plain menu,
+	@ or DYN_MULTICHOICE_CB_SHOW_ITEM to show the selected option's item icon (option ids must then be item ids).
+	@ Each option string is copied to the heap only while the menu is open.
+	.macro dynmultichoice left:req, top:req, ignoreBPress:req, maxBeforeScroll:req, initialSelected:req, callbacks:req, argv:vararg
+	_dynmultichoice \left, \top, \ignoreBPress, \maxBeforeScroll, FALSE, \initialSelected, \callbacks, \argv
+	.endm
+
+	@ Adds an option for dynmultistack: its text and the id it puts in VAR_RESULT when chosen (id may be a var).
+	@ Use it to build a menu whose options depend on the game state, e.g. pushing only the moves a tutor can teach.
+	.macro dynmultipush name:req, id:req
+	.byte SCR_OP_DYNMULTIPUSH
+	.4byte \name
+	.2byte \id
+	.endm
+
+	@ Displays the options pushed with dynmultipush, like dynmultichoice. If shouldSort is non-zero they are sorted by id.
+	@ initialSelected is the id (not the position) of the option the cursor starts on.
+	.macro dynmultistack left:req, top:req, ignoreBPress:req, maxBeforeScroll:req, shouldSort:req, initialSelected:req, callbacks:req
+	_dynmultichoice \left, \top, \ignoreBPress, \maxBeforeScroll, \shouldSort, \initialSelected, \callbacks, NULL
+	.endm
+
 
 @ Supplementary
 
@@ -1970,4 +2009,10 @@
 	setvar VAR_0x8005, \level
 	setvar VAR_0x8006, \item
 	special CreateEnemyEventMon
+	.endm
+
+	@ Adds amount (negative to subtract) to the player's Charisma, clamped to 0-CHARISMA_MAX. Clobbers VAR_0x8004.
+	.macro addcharisma amount:req
+	setvar VAR_0x8004, \amount
+	special AddCharisma
 	.endm

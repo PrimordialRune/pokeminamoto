@@ -368,6 +368,14 @@ const u8 gHealthboxElementsGfxTable[][32] = INCBIN_U8("graphics/battle_interface
                                                   "graphics/battle_interface/status4.4bpp",
                                                   "graphics/battle_interface/healthbox_doubles_frameend.4bpp",
                                                   "graphics/battle_interface/healthbox_doubles_frameend_bar.4bpp");
+// TP bar filled 0-8 px (orange), in the HP bar's palette; the "TP" label is in the box art
+const u8 gHealthboxTpBarGfx[][32] = INCBIN_U8("graphics/battle_interface/tpbar.4bpp");
+// Singles status tags, 4 tiles each: PSN, PAR, SLP, FRZ, BRN for battler 0, then battlers 1-3
+const u8 gHealthboxStatusTagGfx[][32] = INCBIN_U8("graphics/battle_interface/status_tags.4bpp");
+// Art under the windows the action and move screens redraw whole (tools/battle_ui/gen_textbox.py)
+const u8 gBattleMoveGridGfx[] = INCBIN_U8("graphics/battle_interface/move_grid.4bpp");
+const u8 gBattleMoveInfoGfx[] = INCBIN_U8("graphics/battle_interface/move_info.4bpp");
+const u8 gBattleActionMenuGfx[] = INCBIN_U8("graphics/battle_interface/action_menu.4bpp");
 const u32 gBattleInterfaceGfx_UnusedWindow3[] = INCBIN_U32("graphics/battle_interface/unused_window3.4bpp.lz");
 const u32 gBattleInterfaceGfx_UnusedWindow4[] = INCBIN_U32("graphics/battle_interface/unused_window4.4bpp.lz");
 

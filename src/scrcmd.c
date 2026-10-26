@@ -25,6 +25,7 @@
 #include "item.h"
 #include "lilycove_lady.h"
 #include "main.h"
+#include "malloc.h"
 #include "menu.h"
 #include "money.h"
 #include "mystery_event_script.h"
@@ -1348,6 +1349,118 @@ bool8 ScrCmd_yesnobox(struct ScriptContext *ctx)
     {
         return FALSE;
     }
+}
+
+// Expands placeholders in a dynamic multichoice option and copies it to the heap,
+// sized to fit. The menu frees it when it closes.
+#define DYN_MULTICHOICE_NAME_BUFFER_SIZE 100
+static u8 *AllocDynamicMultichoiceName(const u8 *str)
+{
+    u8 expanded[DYN_MULTICHOICE_NAME_BUFFER_SIZE];
+    u8 *name;
+
+    StringExpandPlaceholders(expanded, str);
+    name = Alloc(StringLength(expanded) + 1);
+    StringCopy(name, expanded);
+    return name;
+}
+
+static void DynamicMultichoiceSortList(struct ListMenuItem *items, u32 count)
+{
+    u32 i, j;
+    struct ListMenuItem tmp;
+    for (i = 0; i < count - 1; i++)
+    {
+        for (j = 0; j < count - i - 1; j++)
+        {
+            if (items[j].id > items[j + 1].id)
+            {
+                tmp = items[j];
+                items[j] = items[j + 1];
+                items[j + 1] = tmp;
+            }
+        }
+    }
+}
+
+#define DYN_MULTICHOICE_DEFAULT_MAX_BEFORE_SCROLL 6
+
+// dynmultichoice / dynmultistack: builds a scrolling multichoice at runtime, from the
+// options listed in the script or from the ones pushed with dynmultipush.
+bool8 ScrCmd_dynmultichoice(struct ScriptContext *ctx)
+{
+    u32 i;
+    u32 left = VarGet(ScriptReadHalfword(ctx));
+    u32 top = VarGet(ScriptReadHalfword(ctx));
+    bool32 ignoreBPress = ScriptReadByte(ctx);
+    u32 maxBeforeScroll = ScriptReadByte(ctx);
+    bool32 shouldSort = ScriptReadByte(ctx);
+    u32 initialSelected = VarGet(ScriptReadHalfword(ctx));
+    u32 callbackSet = ScriptReadByte(ctx);
+    u32 initialRow = 0;
+    u32 argc = ScriptReadByte(ctx);
+    struct ListMenuItem *items;
+    const u8 *firstArg;
+
+    if (argc == 0)
+        return FALSE;
+
+    if (maxBeforeScroll == 0xFF)
+        maxBeforeScroll = DYN_MULTICHOICE_DEFAULT_MAX_BEFORE_SCROLL;
+
+    // Peek: a NULL first option means "use the pushed stack"
+    firstArg = (const u8 *)(ctx->scriptPtr[0] | (ctx->scriptPtr[1] << 8) | (ctx->scriptPtr[2] << 16) | (ctx->scriptPtr[3] << 24));
+    if (firstArg != NULL)
+    {
+        items = AllocZeroed(sizeof(struct ListMenuItem) * argc);
+        for (i = 0; i < argc; i++)
+        {
+            items[i].name = AllocDynamicMultichoiceName((const u8 *)ScriptReadWord(ctx));
+            items[i].id = i;
+            if (i == initialSelected)
+                initialRow = i;
+        }
+    }
+    else
+    {
+        ScriptReadWord(ctx);
+        argc = MultichoiceDynamic_StackSize();
+        if (argc == 0)
+            return FALSE;
+        items = AllocZeroed(sizeof(struct ListMenuItem) * argc);
+        for (i = 0; i < argc; i++)
+            items[i] = *MultichoiceDynamic_PeekElementAt(i);
+        if (shouldSort)
+            DynamicMultichoiceSortList(items, argc);
+        for (i = 0; i < argc; i++)
+        {
+            if (items[i].id == initialSelected)
+                initialRow = i;
+        }
+        MultichoiceDynamic_DestroyStack();
+    }
+
+    if (ScriptMenu_MultichoiceDynamic(left, top, argc, items, ignoreBPress, maxBeforeScroll, initialRow, callbackSet))
+    {
+        ScriptContext_Stop();
+        return TRUE;
+    }
+    else
+    {
+        return FALSE;
+    }
+}
+
+bool8 ScrCmd_dynmultipush(struct ScriptContext *ctx)
+{
+    struct ListMenuItem item;
+    const u8 *name = (const u8 *)ScriptReadWord(ctx);
+    u32 id = VarGet(ScriptReadHalfword(ctx));
+
+    item.name = AllocDynamicMultichoiceName(name);
+    item.id = id;
+    MultichoiceDynamic_PushElement(item);
+    return FALSE;
 }
 
 bool8 ScrCmd_multichoice(struct ScriptContext *ctx)

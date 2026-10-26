@@ -3,22 +3,27 @@ TITLE       := POKEMON EMER
 GAME_CODE   := BPEE
 MAKER_CODE  := 01
 REVISION    := 0
-MODERN      ?= 0
 KEEP_TEMPS  ?= 0
 
 # `File name`.gba ('_modern' will be appended to the modern builds)
 FILE_NAME := pokeemerald
 BUILD_DIR := build
 
-# Builds the ROM using a modern compiler
-MODERN      ?= 0
+# Modern arm-none-eabi-gcc is the main build (pokeemerald_modern.gba). The classic
+# agbcc build (pokeemerald.gba) is optional: `make classic` or MODERN=0, after
+# installing agbcc (CLASSIC=1 tools/setup-cloud.sh).
+MODERN      ?= 1
 # Compares the ROM to a checksum of the original - only makes sense using when non-modern
 COMPARE     ?= 0
 
 ifeq (modern,$(MAKECMDGOALS))
   MODERN := 1
 endif
+ifeq (classic,$(MAKECMDGOALS))
+  MODERN := 0
+endif
 ifeq (compare,$(MAKECMDGOALS))
+  MODERN := 0
   COMPARE := 1
 endif
 
@@ -122,10 +127,17 @@ ifeq ($(MODERN),0)
   LIB := $(LIBPATH) -lgcc -lc -L../../libagbsyscall -lagbsyscall
 else
   # Note: The makefile must be set up to not call these if modern == 0
+  # Warnings for the modern build, after pokeemerald-expansion's set. Most are reported
+  # without stopping the build because vanilla code still trips them; the ones listed
+  # with -Werror= are always real bugs, so they fail it.
+  MODERN_WARNINGS := -Wall -Wno-strict-aliasing -Wno-attribute-alias -Woverride-init -Wnonnull -Wenum-conversion \
+                     -Wno-pointer-sign -Wno-missing-braces -Wno-array-parameter \
+                     -Werror=return-type -Werror=implicit-function-declaration -Werror=implicit-int \
+                     -Werror=int-conversion -Werror=incompatible-pointer-types -Werror=parentheses
   MODERNCC := $(PREFIX)gcc
   PATH_MODERNCC := PATH="$(PATH)" $(MODERNCC)
   CC1 := $(shell $(PATH_MODERNCC) --print-prog-name=cc1) -quiet
-  override CFLAGS += -mthumb -mthumb-interwork -O$(O_LEVEL) -mabi=apcs-gnu -mtune=arm7tdmi -march=armv4t -fno-toplevel-reorder -Wno-pointer-to-int-cast
+  override CFLAGS += -mthumb -mthumb-interwork -O$(O_LEVEL) -mabi=apcs-gnu -mtune=arm7tdmi -march=armv4t -fno-toplevel-reorder -Wno-pointer-to-int-cast $(MODERN_WARNINGS)
   LIBPATH := -L "$(dir $(shell $(PATH_MODERNCC) -mthumb -print-file-name=libgcc.a))" -L "$(dir $(shell $(PATH_MODERNCC) -mthumb -print-file-name=libnosys.a))" -L "$(dir $(shell $(PATH_MODERNCC) -mthumb -print-file-name=libc.a))"
   LIB := $(LIBPATH) -lc -lnosys -lgcc -L../../libagbsyscall -lagbsyscall
 endif
@@ -169,7 +181,7 @@ MAKEFLAGS += --no-print-directory
 .DELETE_ON_ERROR:
 
 RULES_NO_SCAN += libagbsyscall clean clean-assets tidy tidymodern tidynonmodern generated clean-generated
-.PHONY: all rom modern compare
+.PHONY: all rom modern classic compare
 .PHONY: $(RULES_NO_SCAN)
 
 infoshell = $(foreach line, $(shell $1 | sed "s/ /__SPACE__/g"), $(info $(subst __SPACE__, ,$(line))))
@@ -233,6 +245,7 @@ $(shell mkdir -p $(SUBDIRS))
 
 # Pretend rules that are actually flags defer to `make all`
 modern: all
+classic: all
 compare: all
 
 # Other rules

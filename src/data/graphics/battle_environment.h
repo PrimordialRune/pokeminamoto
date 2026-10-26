@@ -1,3 +1,10 @@
+// GSC-white field from the Battle UI v0.1 mockup (tools/battle_ui/gen_field.py), used by grass and plain ground
+const u32 gBattleEnvironmentTiles_Field[] = INCBIN_U32("graphics/battle_environment/field/tiles.4bpp.lz");
+const u32 gBattleEnvironmentTilemap_Field[] = INCBIN_U32("graphics/battle_environment/field/map.bin.lz");
+const u32 gBattleEnvironmentPalette_FieldGrass[] = INCBIN_U32("graphics/battle_environment/field/grass.gbapal.lz");
+const u32 gBattleEnvironmentPalette_FieldLongGrass[] = INCBIN_U32("graphics/battle_environment/field/long_grass.gbapal.lz");
+const u32 gBattleEnvironmentPalette_FieldPlain[] = INCBIN_U32("graphics/battle_environment/field/plain.gbapal.lz");
+
 const u32 gBattleEnvironmentTiles_TallGrass[] = INCBIN_U32("graphics/battle_environment/tall_grass/tiles.4bpp.lz");
 const u32 gBattleEnvironmentPalette_TallGrass[] = INCBIN_U32("graphics/battle_environment/tall_grass/palette.gbapal.lz");
 const u32 gBattleEnvironmentTilemap_TallGrass[] = INCBIN_U32("graphics/battle_environment/tall_grass/map.bin.lz");
