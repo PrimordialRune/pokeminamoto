@@ -59,6 +59,12 @@
 #define FREE_EXTRA_SEEN_FLAGS           // the two anti-cheat copies of Pokedex seen flags (104 B)
 #define FREE_ENIGMA_BERRY               // e-Reader Enigma Berry (52 B)
 
+// Debug menus (overworld: hold R + START, battle: hold L + SELECT). Every modern
+// build has them except `make release`, which defines RELEASE. See include/debug_menu.h.
+#if MODERN && !defined(RELEASE)
+#define DEBUG_MENUS
+#endif
+
 // Various undefined behavior bugs may or may not prevent compilation with
 // newer compilers. So always fix them when using a modern compiler.
 #if MODERN || defined(BUGFIX)

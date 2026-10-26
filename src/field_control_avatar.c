@@ -33,6 +33,7 @@
 #include "constants/field_poison.h"
 #include "constants/map_types.h"
 #include "constants/songs.h"
+#include "debug_menu.h"
 #include "constants/trainer_hill.h"
 
 static EWRAM_DATA u8 sWildEncounterImmunitySteps = 0;
@@ -179,6 +180,13 @@ int ProcessPlayerFieldInput(struct FieldInput *input)
     }
     if (input->pressedAButton && TrySetupDiveDownScript() == TRUE)
         return TRUE;
+#ifdef DEBUG_MENUS
+    if (input->pressedStartButton && JOY_HELD(R_BUTTON))
+    {
+        Debug_ShowMainMenu();
+        return TRUE;
+    }
+#endif
     if (input->pressedStartButton)
     {
         PlaySE(SE_WIN_OPEN);
@@ -667,6 +675,9 @@ void RestartWildEncounterImmunitySteps(void)
 
 static bool8 CheckStandardWildEncounter(u16 metatileBehavior)
 {
+    if (DebugToggleOn(DEBUG_TOGGLE_NO_ENCOUNTERS))
+        return FALSE;
+
     if (sWildEncounterImmunitySteps < 4)
     {
         sWildEncounterImmunitySteps++;

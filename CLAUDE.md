@@ -44,6 +44,7 @@ make compare             # Verify ROM matches original sha1 (only useful pre-mod
 make clean               # Full clean (tools + objects + assets)
 make tidy                # Remove ROM/ELF/objects only (keeps tools and assets)
 make syms                # Generate symbol file from ELF
+make release -j$(nproc)  # Shipping ROM without debug menus: pokeemerald_modern_release.gba
 ```
 
 ### Single-file rebuild
@@ -218,6 +219,7 @@ The game uses a cooperative multitasking system (`include/task.h`). Nearly all g
 - The starters are `SPECIES_BULBASAUR`, `SPECIES_CHARMANDER`, `SPECIES_SQUIRTLE` (set in `src/starter_choose.c`).
 - See `GEN1_ONLY_CHANGES.md` for the full replacement mapping reference.
 - **Save-block cleanup:** the `FREE_*` defines in `include/config.h` drop save data for unreachable Hoenn/e-Reader systems (Mystery Event/Gift, Enigma Berry, e-Reader trainer, Frontier hall records, Union Room chat texts, extra dex copies), about 3.85 KB of EWRAM. Reads go through `ENIGMA_BERRY` / `EREADER_TRAINER` (empty ROM copies when freed). Changing any of them changes the save layout.
+- **Debug menus:** every modern build except `make release` has them (`DEBUG_MENUS` in `include/config.h`). Overworld: hold R and press START (`src/debug_menu.c`: heal, warp, give mons/items, flags/vars, battles, sound, no-clip/encounter/trainer-sight toggles, `Debug_Script_1-4` in `data/scripts/debug.pory`). Battle: hold L and press SELECT on the action menu (`src/battle_debug.c`: HP, TP, status, stat stages). Keep debug code inside `#ifdef DEBUG_MENUS`; release builds must add no RAM.
 
 ## Working remotely
 

@@ -529,6 +529,7 @@ string generate_map_constants_text(string groups_filepath, Json groups_data) {
     text << "enum\n{\n";
 
     int group_num = 0;
+    vector<size_t> group_sizes;
 
     for (auto &group : groups_data["group_order"].array_items()) {
         string groupName = json_to_string(group);
@@ -555,12 +556,19 @@ string generate_map_constants_text(string groups_filepath, Json groups_data) {
         }
         text << "\n";
 
+        group_sizes.push_back(map_ids.size());
         group_num++;
     }
 
     text << "};\n\n";
 
     text << "#define MAP_GROUPS_COUNT " << group_num << "\n\n";
+
+    // Number of maps in each group, as an initializer list
+    text << "#define MAP_GROUP_SIZES {";
+    for (size_t i = 0; i < group_sizes.size(); i++)
+        text << (i ? ", " : " ") << group_sizes[i];
+    text << " }\n\n";
     text << get_include_guard_end(guard_name);
 
     return text.str();
