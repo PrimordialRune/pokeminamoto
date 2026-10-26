@@ -90,11 +90,11 @@ mkdir -p data/layouts/MasaraTown
 # Collision is edited by hand in Porymap: keep what the committed layout has
 # where the cell looks the same, guess it for new or changed cells.
 # GUESS_COLLISION=1 guesses it from the colors again (pier deck and ROUTE 1 gap
-# walkable, the lab's roof blocked).
+# walkable, the cells below the shop and lab doors walkable, the lab's roof blocked).
 keep=(--keep data/layouts/MasaraTown/map.bin --keep-if-same "$out/old.png")
 if [ -n "${GUESS_COLLISION:-}" ]; then keep=(); fi
 python3 "$HERE/collision.py" "$out/masara.png" "$out/map.bin" "$out/map_collision.bin" \
-    --walk 17,29,19,33 --walk 15,0,16,0 --block 24,15,30,19 --start 5,8 --open "$out/open.txt" "${keep[@]}" > "$out/collision.txt"
+    --walk 17,29,19,33 --walk 15,0,16,0 --walk 10,19,10,19 --walk 27,20,27,20 --block 24,15,30,19 --start 5,8 --open "$out/open.txt" "${keep[@]}" > "$out/collision.txt"
 mv "$out/map_collision.bin" data/layouts/MasaraTown/map.bin
 # make does not track map.bin, only layouts.json: touch it so maps.o picks up the new layout.
 touch data/layouts/layouts.json
