@@ -9,6 +9,8 @@ OldaleTown_OnTransition:
 	call_if_unset FLAG_ADVENTURE_STARTED, OldaleTown_EventScript_BlockWestEntrance
 	call_if_unset FLAG_RECEIVED_POTION_OLDALE, OldaleTown_EventScript_MoveMartEmployee
 	call_if_set FLAG_ADVENTURE_STARTED, OldaleTown_EventScript_SetOldaleState
+	showduringtime FLAG_HIDE_OLDALE_NIGHT_NPC, TIME_OF_DAY_NITE
+	showduringhours FLAG_HIDE_OLDALE_LATE_NPC, 22, 23
 	end
 
 @ This script seems pointless because nothing uses VAR_OLDALE_TOWN_STATE
@@ -28,10 +30,6 @@ OldaleTown_EventScript_MoveMartEmployee::
 
 OldaleTown_EventScript_TownSign::
 	msgbox OldaleTown_Text_TownSign, MSGBOX_SIGN
-	end
-
-OldaleTown_EventScript_Girl::
-	msgbox OldaleTown_Text_SavingMyProgress, MSGBOX_NPC
 	end
 
 OldaleTown_EventScript_MartEmployee::
@@ -340,10 +338,6 @@ OldaleTown_Movement_ReturnToOriginalPosition:
 	walk_left
 	step_end
 
-OldaleTown_Text_SavingMyProgress:
-	.string "I want to take a rest, so I'm saving my\n"
-	.string "progress.$"
-
 OldaleTown_Text_IWorkAtPokemonMart:
 	.string "Hi!\n"
 	.string "I work at a POKéMON MART.\p"
@@ -395,3 +389,93 @@ OldaleTown_Text_BrendanLetsGoBack:
 OldaleTown_Text_TownSign:
 	.string "OLDALE TOWN\n"
 	.string "“Where things start off scarce.”$"
+
+OldaleTown_EventScript_CharismaGirl::
+	lock
+	faceplayer
+	checkcharisma CHARISMA_TIERS_TOKIWA
+	switch VAR_RESULT
+	case CHARISMA_TIER_NONE, OldaleTown_EventScript_CharismaGirl_3
+	case CHARISMA_TIER_LOW, OldaleTown_EventScript_CharismaGirl_4
+	case CHARISMA_TIER_MID, OldaleTown_EventScript_CharismaGirl_5
+	msgbox OldaleTown_EventScript_CharismaGirl_Text_3
+OldaleTown_EventScript_CharismaGirl_1:
+	release
+	end
+
+OldaleTown_EventScript_CharismaGirl_3:
+	msgbox OldaleTown_EventScript_CharismaGirl_Text_0
+	goto OldaleTown_EventScript_CharismaGirl_1
+
+OldaleTown_EventScript_CharismaGirl_4:
+	msgbox OldaleTown_EventScript_CharismaGirl_Text_1
+	goto OldaleTown_EventScript_CharismaGirl_1
+
+OldaleTown_EventScript_CharismaGirl_5:
+	msgbox OldaleTown_EventScript_CharismaGirl_Text_2
+	goto OldaleTown_EventScript_CharismaGirl_1
+
+
+OldaleTown_EventScript_NightMan::
+	msgbox OldaleTown_EventScript_NightMan_Text_0, MSGBOX_NPC
+	end
+
+
+OldaleTown_EventScript_LateOldMan::
+	msgbox OldaleTown_EventScript_LateOldMan_Text_0, MSGBOX_NPC
+	end
+
+
+OldaleTown_EventScript_InnBowl::
+	setflag FLAG_SEEN_OLDALE_INN_BOWL
+	msgbox OldaleTown_EventScript_InnBowl_Text_0, MSGBOX_SIGN
+	end
+
+
+OldaleTown_EventScript_InnSign::
+	goto_if_set FLAG_SEEN_OLDALE_INN_BOWL, OldaleTown_EventScript_InnSign_2
+	msgbox OldaleTown_EventScript_InnSign_Text_1, MSGBOX_SIGN
+OldaleTown_EventScript_InnSign_1:
+	end
+
+OldaleTown_EventScript_InnSign_2:
+	msgbox OldaleTown_EventScript_InnSign_Text_0, MSGBOX_SIGN
+	goto OldaleTown_EventScript_InnSign_1
+
+
+OldaleTown_EventScript_CharismaGirl_Text_0:
+	.string "Hm? Sorry, are you new around here?$"
+
+OldaleTown_EventScript_CharismaGirl_Text_1:
+	.string "Oh, you're the kid who moved in down\n"
+	.string "south, right?$"
+
+OldaleTown_EventScript_CharismaGirl_Text_2:
+	.string "Everyone's been talking about you! You\n"
+	.string "really helped out, didn't you?$"
+
+OldaleTown_EventScript_CharismaGirl_Text_3:
+	.string "It's you! Could I… shake your hand? My\n"
+	.string "little brother won't believe it.$"
+
+OldaleTown_EventScript_NightMan_Text_0:
+	.string "Can't sleep. The town's so quiet at\n"
+	.string "night you can hear the river from here.$"
+
+OldaleTown_EventScript_LateOldMan_Text_0:
+	.string "Ten o'clock, every night, I walk to the\n"
+	.string "shop and back. Forty years now.$"
+
+OldaleTown_EventScript_InnBowl_Text_0:
+	.string "A small bowl of water by the door.\n"
+	.string "Someone keeps it filled.$"
+
+OldaleTown_EventScript_InnSign_Text_0:
+	.string "OLDALE INN\n"
+	.string "Rooms by the night.\p"
+	.string "There's a paw print in chalk under the\n"
+	.string "name.$"
+
+OldaleTown_EventScript_InnSign_Text_1:
+	.string "OLDALE INN\n"
+	.string "Rooms by the night.$"

@@ -1,0 +1,68 @@
+// Inn rest: the only place that restores TP (Pokémon Centers are gone; Omar,
+// 2026-10-26). Three rooms (constants/town_life.h):
+//   Ume    free. HP, status and TP.
+//   Take   Charisma >= INN_TAKE_CHARISMA or INN_TAKE_BADGES badges. As Ume, then a
+//          healing item turns up in the room INN_TAKE_ITEM_STEPS steps later
+//          (object with flag FLAG_HIDE_INN_TAKE_ITEM, counted in UpdateInnStepCounter).
+//   Matsu  FLAG_INN_MATSU_OPEN (placeholder story flag). As Take, plus friendship.
+//
+// An innkeeper calls Common_EventScript_Inn. It returns VAR_RESULT TRUE when the
+// party rested, so the caller can set its own respawn point:
+//
+//   script MyTown_Inn_EventScript_Keeper {
+//       call(Common_EventScript_Inn)
+//       if (var(VAR_RESULT) == TRUE) {
+//           setrespawn(HEAL_LOCATION_MY_TOWN_INN)
+//       }
+//       release
+//       end
+//   }
+//
+// A whiteout wakes the player at the last respawn point, fully rested.
+
+script Common_EventScript_Inn {
+    lock
+    faceplayer
+    msgbox(format("Welcome! Will you be staying the night?"), MSGBOX_YESNO)
+    if (var(VAR_RESULT) == NO) {
+        goto(Inn_EventScript_Goodbye)
+    }
+    message(format("Which room would you like?"))
+    waitmessage
+    dynmultichoice(20, 4, FALSE, 4, 0, DYN_MULTICHOICE_CB_NONE, Inn_Text_RoomUme, Inn_Text_RoomTake, Inn_Text_RoomMatsu, Inn_Text_RoomCancel)
+    if (var(VAR_RESULT) > INN_ROOM_MATSU) {
+        goto(Inn_EventScript_Goodbye)
+    }
+    copyvar(VAR_0x8004, VAR_RESULT)
+    special(IsInnRoomOpen)
+    if (var(VAR_RESULT) == FALSE) {
+        if (var(VAR_0x8004) == INN_ROOM_TAKE) {
+            msgbox(format("I'm sorry, the TAKE room is for guests we know a little better. Make a name for yourself, and it's yours."))
+        } else {
+            msgbox(format("The MATSU room… I'm afraid it isn't open to anyone just now."))
+        }
+        setvar(VAR_RESULT, FALSE)
+        return
+    }
+    msgbox(format("This way, please. Rest well."))
+    closemessage
+    fadescreen(FADE_TO_BLACK)
+    playfanfare(MUS_HEAL)
+    waitfanfare
+    special(InnRest)
+    fadescreen(FADE_FROM_BLACK)
+    msgbox(format("Good morning! Your POKéMON look full of energy again."))
+    setvar(VAR_RESULT, TRUE)
+    return
+}
+
+script Inn_EventScript_Goodbye {
+    msgbox(format("Come back whenever you're tired."))
+    setvar(VAR_RESULT, FALSE)
+    return
+}
+
+text Inn_Text_RoomUme { "UME" }
+text Inn_Text_RoomTake { "TAKE" }
+text Inn_Text_RoomMatsu { "MATSU" }
+text Inn_Text_RoomCancel { "CANCEL" }

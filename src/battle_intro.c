@@ -21,6 +21,7 @@ static void BattleIntroSlide2(u8);
 static void BattleIntroSlide3(u8);
 static void BattleIntroSlideLink(u8);
 static void BattleIntroSlidePartner(u8);
+static void BattleIntroSlideFast(u8);
 
 static const TaskFunc sBattleIntroSlideFuncs[] =
 {
@@ -101,6 +102,7 @@ int GetAnimBgAttribute(u8 bgId, u8 attributeId)
 
 #define tState data[0]
 #define tEnvironment data[1]
+#define tSlideFunc 14 // and 15
 
 void HandleIntroSlide(u8 environment)
 {
@@ -135,6 +137,21 @@ void HandleIntroSlide(u8 environment)
     gTasks[taskId].data[4] = 0;
     gTasks[taskId].data[5] = 0;
     gTasks[taskId].data[6] = 0;
+#if B_INTRO_SLIDE_SPEED > 1
+    SetWordTaskArg(taskId, tSlideFunc, (u32)gTasks[taskId].func);
+    gTasks[taskId].func = BattleIntroSlideFast;
+#endif
+}
+
+// Steps the slide task B_INTRO_SLIDE_SPEED times a frame. The sprites that slide
+// with it (SpriteCB_TrainerSlideIn and the wild mon's) speed up to match.
+static void UNUSED BattleIntroSlideFast(u8 taskId)
+{
+    TaskFunc slide = (TaskFunc)GetWordTaskArg(taskId, tSlideFunc);
+    u32 i;
+
+    for (i = 0; i < B_INTRO_SLIDE_SPEED && gTasks[taskId].isActive; i++)
+        slide(taskId);
 }
 
 static void BattleIntroSlideEnd(u8 taskId)

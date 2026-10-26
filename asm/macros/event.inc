@@ -1862,3 +1862,41 @@
 	setvar VAR_0x8004, \amount
 	special AddCharisma
 	.endm
+
+	@ Town-life toolkit (src/town_life.c, data/scripts/town_life.pory).
+	@ Sets VAR_RESULT to the player's CHARISMA_TIER_* (NONE, LOW, MID, HIGH) on a threshold
+	@ table (CHARISMA_TIERS_*). Clobbers VAR_0x8004.
+	.macro checkcharisma table=CHARISMA_TIERS_TOKIWA
+	setvar VAR_0x8004, \table
+	special GetCharismaTier
+	.endm
+
+	@ Sets VAR_RESULT to TRUE when the clock's hour (0-23) is in [start, end). The window can
+	@ wrap past midnight (22, 2). Clobbers VAR_0x8004, VAR_0x8005.
+	.macro checkhour start:req, end:req
+	setvar VAR_0x8004, \start
+	setvar VAR_0x8005, \end
+	special CheckHourWindow
+	.endm
+
+	@ Sets VAR_RESULT to TIME_OF_DAY_MORN, _DAY or _NITE.
+	.macro checktimeofday
+	special GetTimeOfDayForScript
+	.endm
+
+	@ In a map's ON_TRANSITION script: show the object with hide flag `flag` only while the
+	@ hour is in [start, end). Clobbers VAR_0x8004-VAR_0x8006.
+	.macro showduringhours flag:req, start:req, end:req
+	setvar VAR_0x8004, \flag
+	setvar VAR_0x8005, \start
+	setvar VAR_0x8006, \end
+	special ShowObjectDuringHours
+	.endm
+
+	@ In a map's ON_TRANSITION script: show the object with hide flag `flag` only during
+	@ time of day `time` (TIME_OF_DAY_*). Clobbers VAR_0x8004, VAR_0x8005.
+	.macro showduringtime flag:req, time:req
+	setvar VAR_0x8004, \flag
+	setvar VAR_0x8005, \time
+	special ShowObjectDuringTimeOfDay
+	.endm

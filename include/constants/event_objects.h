@@ -8,9 +8,11 @@
 #define OBJ_EVENT_GFX_BRENDAN_MACH_BIKE            1
 #define OBJ_EVENT_GFX_BRENDAN_SURFING              2
 #define OBJ_EVENT_GFX_BRENDAN_FIELD_MOVE           3
+#define OBJ_EVENT_GFX_OKIDO                        4 // Omar's Okido (MyRes/Trainers/Player/oak_normal.png)
 #define OBJ_EVENT_GFX_NINJA_BOY                    5
 #define OBJ_EVENT_GFX_TWIN                         6
 #define OBJ_EVENT_GFX_BOY_1                        7
+#define OBJ_EVENT_GFX_PROF_OAK                     8 // FRLG Prof. Oak
 #define OBJ_EVENT_GFX_BOY_2                        9
 #define OBJ_EVENT_GFX_GIRL_2                      10
 #define OBJ_EVENT_GFX_LITTLE_BOY                  11
