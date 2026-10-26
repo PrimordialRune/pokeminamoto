@@ -8,6 +8,7 @@ evolutions) and fails on:
   * learnset moves that do not exist or are not Gen 1 moves; learnsets out of level order
   * Gen 2/3 species or moves in trainer parties, wild encounters, Battle Frontier / tent data, contest opponents
   * script and map references (TRAINER_/FLAG_/VAR_/ITEM_/SPECIES_/MOVE_/MAP_/SE_/MUS_) that are not defined anywhere
+  * map text translations (data/maps/*/text.<lang>.pory) missing blocks of text.en.pory, or with blocks it lacks
 Use --list to print every check name, -v for details of passing checks.
 """
 import argparse
@@ -394,6 +395,15 @@ def map_json_integrity(ctx):
                 if s not in ("0x0", "NULL") and not re.search(r"\b%s\b" % re.escape(s), text) and \
                         s not in read("data/scripts/shared_scripts_names.txt") if os.path.exists(os.path.join(ROOT, "data/scripts/shared_scripts_names.txt")) else False:
                     ctx.err(n, f"{rel}: object script {s} not found")
+
+
+@check
+def map_text_translations(ctx):
+    """Every text.<lang>.pory has exactly the blocks of its text.en.pory (tools/textlang.py)."""
+    sys.path.insert(0, os.path.join(ROOT, "tools"))
+    import textlang
+    for _kind, msg in textlang.problems():
+        ctx.err("map_text_translations", msg)
 
 
 KNOWN = os.path.join(ROOT, "tools", "check_data_known.json")

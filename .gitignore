@@ -52,6 +52,7 @@ tools/poryscript/poryscript
 
 # Poryscript-generated files (source is *.pory)
 data/maps/*/scripts.inc
+data/maps/*/text.inc
 data/scripts/*.inc
 /pokeemerald-*.png
 /pokeemerald_modern-*.png
