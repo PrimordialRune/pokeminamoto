@@ -3,7 +3,8 @@ mapscripts MasaraTown_MapScripts {
         if (var(VAR_LITTLEROOT_INTRO_STATE) == 0) {
             call(MasaraTown_EventScript_NewGameSetup)
         }
-        // TODO(town toolkit): showduringtime(FLAG_HIDE_MASARA_KIMURA_NIGHT, TIME_OF_DAY_NITE)
+        // Kimura only goes out at night (MasaraTown_EventScript_KimuraNight).
+        showduringtime(FLAG_HIDE_MASARA_KIMURA_NIGHT, TIME_OF_DAY_NITE)
     }
 }
 
@@ -31,8 +32,6 @@ script MasaraTown_EventScript_NewGameSetup {
         setflag(FLAG_HIDE_LITTLEROOT_TOWN_MAYS_HOUSE_2F_POKE_BALL)
         setvar(VAR_LITTLEROOT_HOUSES_STATE_MAY, 1)
     }
-    // Kimura only goes out at night (see MasaraTown_EventScript_KimuraNight).
-    setflag(FLAG_HIDE_MASARA_KIMURA_NIGHT)
     setflag(FLAG_HIDE_LITTLEROOT_TOWN_MOM_OUTSIDE)
     clearflag(FLAG_HIDE_LITTLEROOT_TOWN_FAT_MAN)
     setvar(VAR_LITTLEROOT_INTRO_STATE, 7)
@@ -109,8 +108,8 @@ script MasaraTown_EventScript_KimuraWindow {
     msgbox(MasaraTown_Text_KimuraWindow, MSGBOX_SIGN)
 }
 
-// At night he walks to Tokiwa for his magazine. Shown by the town toolkit's
-// timed-NPC helper once it lands; hidden until then.
+// At night he walks to Tokiwa for his magazine: shown only at night by
+// showduringtime in MAP_SCRIPT_ON_TRANSITION.
 script MasaraTown_EventScript_KimuraNight {
     lock
     faceplayer
