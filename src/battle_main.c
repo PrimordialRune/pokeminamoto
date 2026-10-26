@@ -90,6 +90,7 @@ static void BattleIntroPrepareBackgroundSlide(void);
 static void BattleIntroDrawTrainersOrMonsSprites(void);
 static void BattleIntroDrawPartySummaryScreens(void);
 static void BattleIntroPrintTrainerWantsToBattle(void);
+static bool32 CanPrintIntroText(u32 battler);
 static void BattleIntroPrintWildMonAttacked(void);
 static void BattleIntroPrintOpponentSendsOut(void);
 static void BattleIntroPrintPlayerSendsOut(void);
@@ -2183,7 +2184,10 @@ static void SpriteCB_MoveWildMonToRight(struct Sprite *sprite)
 {
     if ((gIntroSlideFlags & 1) == 0)
     {
-        sprite->x2 += 2;
+        u32 i;
+
+        for (i = 0; i < B_INTRO_SLIDE_SPEED && sprite->x2 != 0; i++)
+            sprite->x2 += 2;
         if (sprite->x2 == 0)
         {
             sprite->callback = SpriteCB_WildMonShowHealthbox;
@@ -2365,7 +2369,10 @@ static void SpriteCB_BattleSpriteSlideLeft(struct Sprite *sprite)
 {
     if (!(gIntroSlideFlags & 1))
     {
-        sprite->x2 -= 2;
+        u32 i;
+
+        for (i = 0; i < B_INTRO_SLIDE_SPEED && sprite->x2 != 0; i++)
+            sprite->x2 -= 2;
         if (sprite->x2 == 0)
         {
             sprite->callback = SpriteCB_Idle;
@@ -2988,7 +2995,7 @@ static void BattleIntroDrawPartySummaryScreens(void)
     s32 i;
     struct HpAndStatus hpStatus[PARTY_SIZE];
 
-    if (gBattleControllerExecFlags)
+    if (gBattleTypeFlags & BATTLE_TYPE_TRAINER ? gBattleControllerExecFlags != 0 : !CanPrintIntroText(0))
         return;
 
     if (gBattleTypeFlags & BATTLE_TYPE_TRAINER)
@@ -3056,9 +3063,22 @@ static void BattleIntroDrawPartySummaryScreens(void)
     }
 }
 
+// The intro text goes to one battler's controller. Without B_FAST_INTRO_TEXT it
+// waits for every controller, so the foe has finished sliding in and crying;
+// with it, only for the controller that prints it. Link battles keep the
+// full wait so both GBAs stay in step.
+static bool32 CanPrintIntroText(u32 battler)
+{
+#ifdef B_FAST_INTRO_TEXT
+    if (!(gBattleTypeFlags & BATTLE_TYPE_LINK))
+        return !IS_BATTLE_CONTROLLER_ACTIVE_ON_LOCAL(battler);
+#endif
+    return gBattleControllerExecFlags == 0;
+}
+
 static void BattleIntroPrintTrainerWantsToBattle(void)
 {
-    if (gBattleControllerExecFlags == 0)
+    if (CanPrintIntroText(GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)))
     {
         gActiveBattler = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
         PrepareStringBattle(STRINGID_INTROMSG, gActiveBattler);
@@ -3068,7 +3088,7 @@ static void BattleIntroPrintTrainerWantsToBattle(void)
 
 static void BattleIntroPrintWildMonAttacked(void)
 {
-    if (gBattleControllerExecFlags == 0)
+    if (CanPrintIntroText(0))
     {
         gBattleMainFunc = BattleIntroPrintPlayerSendsOut;
         PrepareStringBattle(STRINGID_INTROMSG, 0);

@@ -56,6 +56,19 @@
 // Rayquaza cutscene, Mt. Chimney cable car, Mirage Tower collapse: their maps are gone
 #define FREE_HOENN_SET_PIECES
 
+// Faster battles, hand-ported from pokeemerald-expansion. Comment one out for
+// the vanilla timing.
+// The intro texts ("Wild X appeared!", "X wants to battle!") print as soon as the
+// controller that prints them is free, while the foe is still sliding in.
+#define B_FAST_INTRO_TEXT
+// The intro slide (background, trainers and the wild Pokémon) runs this many
+// times faster. 1 is the vanilla speed.
+#define B_INTRO_SLIDE_SPEED 2
+// The HP bar moves at least one pixel per frame (a full bar takes 64 frames).
+#define B_FAST_HP_DRAIN
+// The EXP bar fills this many pixels per frame instead of one.
+#define B_FAST_EXP_GROW 4
+
 // Debug menus (overworld: hold R + START, battle: hold L + SELECT). Every modern
 // build has them except `make release`, which defines RELEASE. See include/debug_menu.h.
 #if !defined(RELEASE)
