@@ -201,7 +201,8 @@
     "PalletTown_PlayersHouse_1F",
     "PalletTown_PlayersHouse_2F",
     "PalletTown_RivalsHouse",
-    "PalletTown_ProfessorOaksLab"
+    "PalletTown_ProfessorOaksLab",
+    "MasaraTown_OkadaShop"
   ],
   "gMapGroup_IndoorViridian": [
     "ViridianCity_House",
@@ -209,7 +210,8 @@
     "ViridianCity_School",
     "ViridianCity_Mart",
     "ViridianCity_PokemonCenter_1F",
-    "ViridianCity_PokemonCenter_2F"
+    "ViridianCity_PokemonCenter_2F",
+    "ViridianCity_YujirouFlat"
   ],
   "gMapGroup_IndoorPewter": [
     "PewterCity_Museum_1F",
@@ -219,7 +221,9 @@
     "PewterCity_House1",
     "PewterCity_PokemonCenter_1F",
     "PewterCity_PokemonCenter_2F",
-    "PewterCity_House2"
+    "PewterCity_House2",
+    "PewterCity_CVS",
+    "PewterCity_AizawaHouse"
   ],
   "gMapGroup_IndoorCerulean": [
     "CeruleanCity_House1",
