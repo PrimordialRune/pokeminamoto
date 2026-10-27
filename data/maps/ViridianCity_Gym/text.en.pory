@@ -39,7 +39,7 @@ text TokiwaPMC_Text_AoiRegister1 {
 }
 
 text TokiwaPMC_Text_AoiRegister2 {
-    format("Your Trainer Card.\pAnd the Silph Welcome Kit: three Poké Balls and a Potion.\pEnrolment material. It isn't a sale.") // PLACEHOLDER: kit contents are the lab's lever (Q101)
+    format("Your Trainer Card.\pAnd the Silph Welcome Kit: three Poké Balls and four Potions.\pEnrolment material. It isn't a sale.") // PLACEHOLDER: kit contents are the lab's lever (Q101)
 }
 
 text TokiwaPMC_Text_AoiRegister3 {

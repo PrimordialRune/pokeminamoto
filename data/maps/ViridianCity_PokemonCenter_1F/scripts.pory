@@ -12,10 +12,25 @@ const OMURA_RESOLVED_VARS = 4 // V_SANDSHREW 4 given, 5 kept, 6 fainted, 7 misse
 mapscripts ViridianCity_PokemonCenter_1F_MapScripts {
     MAP_SCRIPT_ON_TRANSITION {
         // C8: Hiroshi's inn slots.
-        showduringhours(FLAG_HIDE_INN_HIROSHI_ENTRANCE, 7, 9)
-        showduringhours(FLAG_HIDE_INN_HIROSHI_COMMON, 18, 21)
+        getgamehour
+        if (var(VAR_RESULT) >= 7 && var(VAR_RESULT) < 9) {
+            clearflag(FLAG_HIDE_INN_HIROSHI_ENTRANCE)
+        } else {
+            setflag(FLAG_HIDE_INN_HIROSHI_ENTRANCE)
+        }
+        getgamehour
+        if (var(VAR_RESULT) >= 18 && var(VAR_RESULT) < 21) {
+            clearflag(FLAG_HIDE_INN_HIROSHI_COMMON)
+        } else {
+            setflag(FLAG_HIDE_INN_HIROSHI_COMMON)
+        }
         // TOK-105: Ken carries futons with Hiroshi, after the Index and the first rest here, until B1.
-        showduringhours(FLAG_HIDE_INN_KEN, 7, 9)
+        getgamehour
+        if (var(VAR_RESULT) >= 7 && var(VAR_RESULT) < 9) {
+            clearflag(FLAG_HIDE_INN_KEN)
+        } else {
+            setflag(FLAG_HIDE_INN_KEN)
+        }
         if (!flag(FLAG_SYS_POKEDEX_GET) || var(VAR_REST_COUNT) == 0 || flag(FLAG_BADGE01_GET)) {
             setflag(FLAG_HIDE_INN_KEN)
         }

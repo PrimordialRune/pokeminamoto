@@ -602,6 +602,9 @@ Level: 2
  * no held item. LEEK SLAP is Farfetch'd's unlocked Signature (ShouldTrainerUseSpecial), so it is not
  * listed. Never change the species, levels, moves or items; tune the arena knobs, the AI flags or the
  * IVs (PLACEHOLDER: IVs are a lab lever, owner thread "Design arena ecology for gym battles").
+ * Lab gate round 1 (tools/balance_sim, 300 runs): with the original three AI flags Yujirou sat at 21% (mean),
+ * so the lever applied is lever 3: AI is Check Bad Move only (40%), then the Welcome Kit holds 4 Potions
+ * (56%, Bulbasaur 42, Charmander 59, Squirtle 67). The IVs are not read by the lab model.
  */
 === TRAINER_YUJIROU ===
 Name: YUJIROU
@@ -610,7 +613,7 @@ Pic: Bird Keeper
 Gender: Male
 Music: Male
 Double Battle: No
-AI: Check Bad Move / Try To Faint / Check Viability
+AI: Check Bad Move
 
 Spearow
 Level: 7
@@ -636,6 +639,7 @@ IVs: 12 HP / 12 Atk / 12 Def / 12 SpA / 12 SpD / 12 Spe
  * PMC circuit trainers (TOK-503, TOK-504). PLACEHOLDER parties from the lab scenario
  * (masara_nibi.yaml): circuit 1 Spearow 7 + Pidgey 7, circuit 2 Pidgey 9. Owner thread
  * "Design arena ecology for gym battles"; the lab gate may move them (levels, then moves).
+ * Gate round 1: circuit 2 Pidgey 9 -> 8 (it was 72%, Bulbasaur 47%); circuit 1 Spearow 7 -> 8 (it sat at 97%).
  */
 === TRAINER_CIRCUIT_TOKIWA_1 ===
 Name: CIRCUIT
@@ -647,7 +651,7 @@ Double Battle: No
 AI: Check Bad Move
 
 Spearow
-Level: 7
+Level: 8
 IVs: 8 HP / 8 Atk / 8 Def / 8 SpA / 8 SpD / 8 Spe
 
 Pidgey
@@ -664,7 +668,7 @@ Double Battle: No
 AI: Check Bad Move
 
 Pidgey
-Level: 9
+Level: 8
 IVs: 8 HP / 8 Atk / 8 Def / 8 SpA / 8 SpD / 8 Spe
 
 === TRAINER_SLICE_TOKIWA_SPINE_SPARE_1 ===

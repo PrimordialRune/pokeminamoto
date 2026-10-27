@@ -13,8 +13,18 @@ mapscripts Route1_MapScripts {
         }
         // R01-401: Kimura stands at the midpoint at 21 (facing north) and 23 (facing south). He is
         // at the Tokiwa CVS at 22 (TOK-405) and home from 24.
-        showduringhours(FLAG_HIDE_R01_KIMURA_21, 21, 22)
-        showduringhours(FLAG_HIDE_R01_KIMURA_23, 23, 24)
+        getgamehour
+        if (var(VAR_RESULT) >= 21 && var(VAR_RESULT) < 22) {
+            clearflag(FLAG_HIDE_R01_KIMURA_21)
+        } else {
+            setflag(FLAG_HIDE_R01_KIMURA_21)
+        }
+        getgamehour
+        if (var(VAR_RESULT) >= 23 && var(VAR_RESULT) < 24) {
+            clearflag(FLAG_HIDE_R01_KIMURA_23)
+        } else {
+            setflag(FLAG_HIDE_R01_KIMURA_23)
+        }
     }
 }
 

@@ -14,11 +14,31 @@ mapscripts ViridianCity_Mart_MapScripts {
             clearflag(FLAG_HIDE_CVS_TANABE)
         }
         showduringtime(FLAG_HIDE_CVS_KATO, TIME_NITE)
-        // TOK-402: Hiroshi 12-14. TOK-403: the kids 14-17. TOK-404: the silent man 18-20. TOK-405: Kimura 22.
-        showduringhours(FLAG_HIDE_CVS_HIROSHI, 12, 14)
-        showduringhours(FLAG_HIDE_CVS_KIDS, 14, 18)
-        showduringhours(FLAG_HIDE_CVS_SILENT_MAN, 18, 21)
-        showduringhours(FLAG_HIDE_CVS_KIMURA, 22, 23)
+        // Hours use GetGameHour (exact under REGRESS SET_HOUR; showduringhours reads the phase hour). TOK-402: Hiroshi 12-14. TOK-403: the kids 14-17. TOK-404: the silent man 18-20. TOK-405: Kimura 22.
+        getgamehour
+        if (var(VAR_RESULT) >= 12 && var(VAR_RESULT) < 14) {
+            clearflag(FLAG_HIDE_CVS_HIROSHI)
+        } else {
+            setflag(FLAG_HIDE_CVS_HIROSHI)
+        }
+        getgamehour
+        if (var(VAR_RESULT) >= 14 && var(VAR_RESULT) < 18) {
+            clearflag(FLAG_HIDE_CVS_KIDS)
+        } else {
+            setflag(FLAG_HIDE_CVS_KIDS)
+        }
+        getgamehour
+        if (var(VAR_RESULT) >= 18 && var(VAR_RESULT) < 21) {
+            clearflag(FLAG_HIDE_CVS_SILENT_MAN)
+        } else {
+            setflag(FLAG_HIDE_CVS_SILENT_MAN)
+        }
+        getgamehour
+        if (var(VAR_RESULT) >= 22 && var(VAR_RESULT) < 23) {
+            clearflag(FLAG_HIDE_CVS_KIMURA)
+        } else {
+            setflag(FLAG_HIDE_CVS_KIMURA)
+        }
     }
 }
 

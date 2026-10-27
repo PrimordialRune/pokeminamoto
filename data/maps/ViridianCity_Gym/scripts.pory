@@ -106,7 +106,7 @@ script TokiwaPMC_EventScript_Aoi {
     end
 }
 
-// TOK-005: the Trainer Card and the Welcome Kit (3 Poké Balls + 1 Potion, PLACEHOLDER Q101).
+// TOK-005: the Trainer Card and the Welcome Kit (3 Poké Balls + 4 Potions, PLACEHOLDER Q101: the lab gate's lever, see status.md).
 script TokiwaPMC_EventScript_AoiRegister {
     checkitemspace(ITEM_POKE_BALL, 3)
     if (var(VAR_RESULT) == FALSE) {
@@ -114,7 +114,7 @@ script TokiwaPMC_EventScript_AoiRegister {
         release
         end
     }
-    checkitemspace(ITEM_POTION, 1)
+    checkitemspace(ITEM_POTION, 4)
     if (var(VAR_RESULT) == FALSE) {
         msgbox(TokiwaPMC_Text_AoiBagFull)
         release
@@ -125,7 +125,7 @@ script TokiwaPMC_EventScript_AoiRegister {
     setflag(FLAG_Q_CARD)
     msgbox(TokiwaPMC_Text_AoiRegister2)
     giveitem(ITEM_POKE_BALL, 3)
-    giveitem(ITEM_POTION)
+    giveitem(ITEM_POTION, 4)
     msgbox(TokiwaPMC_Text_AoiRegister3)
     release
     end
