@@ -8,6 +8,8 @@
 
 #ifdef REGRESS_HOOKS
 
+#include "battle.h"
+#include "battle_main.h"
 #include "event_data.h"
 #include "field_screen_effect.h"
 #include "gba/io_reg.h"
@@ -36,6 +38,7 @@
 #include "constants/species.h"
 #include "constants/vars.h"
 #include "constants/flags.h"
+#include "constants/day_night.h"
 #include "constants/battle_setup.h"
 #include "constants/event_objects.h"
 #include "constants/trade.h"
@@ -262,6 +265,40 @@ static void SampleResources(u32 busy)
     }
 }
 
+// REGRESS_CMD_WIN_NEXT_BATTLE: once the battle's mons are loaded, mark the battle as
+// won. The next end-of-turn then runs the normal win path (money, text, flags).
+static void TryForceBattleWin(void)
+{
+    if (!gRegress.winNextBattle || gMain.callback2 != BattleMainCB2)
+        return;
+    if (gBattleOutcome != 0 || gBattleControllerExecFlags != 0 || gBattlersCount < 2)
+        return;
+    if (gBattleMons[B_POSITION_OPPONENT_LEFT].hp == 0 || gBattleMons[B_POSITION_PLAYER_LEFT].hp == 0)
+        return;
+    gBattleOutcome = B_OUTCOME_WON;
+    gRegress.winNextBattle = FALSE;
+    gRegress.winForced++;
+}
+
+// REGRESS_CMD_SET_HOUR: GetGameHour reads hourPlusOne; the day/night phase follows
+// through VAR_TIME_OF_DAY_OVERRIDE (phase hours as in src/day_night.c: 4, 10, 18).
+static void SetHour(u8 hour)
+{
+    if (hour > 23)
+    {
+        gRegress.hourPlusOne = 0;
+        VarSet(VAR_TIME_OF_DAY_OVERRIDE, 0);
+        return;
+    }
+    gRegress.hourPlusOne = hour + 1;
+    if (hour >= 18 || hour < 4)
+        VarSet(VAR_TIME_OF_DAY_OVERRIDE, TIME_OF_DAY_NITE + 1);
+    else if (hour >= 10)
+        VarSet(VAR_TIME_OF_DAY_OVERRIDE, TIME_OF_DAY_DAY + 1);
+    else
+        VarSet(VAR_TIME_OF_DAY_OVERRIDE, TIME_OF_DAY_MORN + 1);
+}
+
 void Regress_FrameEnd(void)
 {
     u32 busy = (REG_VCOUNT + 228 - 160) % 228;
@@ -279,6 +316,7 @@ void Regress_FrameEnd(void)
         NoteStack();
     if (busy < 170)
         SampleResources(busy);
+    TryForceBattleWin();
 }
 
 static void Setup(void)
@@ -339,6 +377,7 @@ static void Setup(void)
     FlagSet(FLAG_SYS_POKEMON_GET);
     FlagSet(FLAG_SYS_POKEDEX_GET);
     FlagSet(FLAG_ADVENTURE_STARTED);
+    FlagSet(FLAG_Q_CARD); // the Trainer Card is hidden without it; run.py opens the start menu's PLAYER entry
     VarSet(VAR_OLDALE_TOWN_STATE, 1);
     VarSet(VAR_OLDALE_RIVAL_STATE, 2);
 
@@ -711,6 +750,28 @@ void Regress_OverworldTick(void)
     case REGRESS_CMD_SCENE:
         Regress_Reseed();
         StartScene(gRegress.arg);
+        break;
+    case REGRESS_CMD_SET_FLAG:
+        if (gRegress.cmdArg[1])
+            FlagSet(gRegress.cmdArg[0]);
+        else
+            FlagClear(gRegress.cmdArg[0]);
+        break;
+    case REGRESS_CMD_SET_VAR:
+        VarSet(gRegress.cmdArg[0], gRegress.cmdArg[1]);
+        break;
+    case REGRESS_CMD_WARP:
+        SetWarpDestination(gRegress.cmdArg[0], gRegress.cmdArg[1], WARP_ID_NONE, gRegress.cmdArg[2], gRegress.cmdArg[3]);
+        DoWarp();
+        break;
+    case REGRESS_CMD_WIN_NEXT_BATTLE:
+        gRegress.winNextBattle = TRUE;
+        break;
+    case REGRESS_CMD_SET_HOUR:
+        SetHour(gRegress.arg);
+        break;
+    case REGRESS_CMD_RUN_SCRIPT:
+        ScriptContext_SetupScript((const u8 *)(gRegress.cmdArg[0] | (gRegress.cmdArg[1] << 16)));
         break;
     case REGRESS_CMD_CABLE_CLUB:
         SetWarpDestination(MAP_GROUP(MAP_OLDALE_TOWN_POKEMON_CENTER_2F), MAP_NUM(MAP_OLDALE_TOWN_POKEMON_CENTER_2F), WARP_ID_NONE, 10, 3);
