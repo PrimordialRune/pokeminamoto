@@ -549,3 +549,352 @@ AI: Check Bad Move / Try To Faint / Check Viability
 Magnemite
 Level: 5
 IVs: 0 HP / 0 Atk / 0 Def / 0 SpA / 0 SpD / 0 Spe
+
+/*
+ Masara-to-Nibi slice trainers (studio scaffold, world M1; slice-plan 5.3).
+ Every party below is a STUB (one Lv 2 Rattata, an existing pic): PLACEHOLDER,
+ the owner of each BEGIN/END block writes the real party; art swaps only the
+ Pic: line at integration. Edit only inside your own block.
+*/
+
+/* BEGIN masara */
+
+=== TRAINER_SHIGERU_LAB_1 ===
+Name: SHIGERU
+Class: Rival
+Pic: Red
+Gender: Male
+Music: Male
+Double Battle: No
+
+Rattata
+Level: 2
+
+=== TRAINER_SHIGERU_LAB_2 ===
+Name: SHIGERU
+Class: Rival
+Pic: Red
+Gender: Male
+Music: Male
+Double Battle: No
+
+Rattata
+Level: 2
+
+=== TRAINER_SHIGERU_LAB_3 ===
+Name: SHIGERU
+Class: Rival
+Pic: Red
+Gender: Male
+Music: Male
+Double Battle: No
+
+Rattata
+Level: 2
+
+/* END masara */
+
+/* BEGIN tokiwa-spine */
+
+=== TRAINER_YUJIROU ===
+Name: YUJIROU
+Class: Leader
+Pic: Bird Keeper
+Gender: Male
+Music: Male
+Double Battle: No
+AI: Check Bad Move / Try To Faint / Check Viability
+
+Rattata
+Level: 2
+
+=== TRAINER_CIRCUIT_TOKIWA_1 ===
+Name: CIRCUIT
+Class: Bird Keeper
+Pic: Bird Keeper
+Gender: Male
+Music: Male
+Double Battle: No
+
+Rattata
+Level: 2
+
+=== TRAINER_CIRCUIT_TOKIWA_2 ===
+Name: CIRCUIT
+Class: Youngster
+Pic: Youngster
+Gender: Male
+Music: Male
+Double Battle: No
+
+Rattata
+Level: 2
+
+=== TRAINER_SLICE_TOKIWA_SPINE_SPARE_1 ===
+Name: SPARE
+Class: Youngster
+Pic: Youngster
+Gender: Male
+Music: Male
+Double Battle: No
+
+Rattata
+Level: 2
+
+/* END tokiwa-spine */
+
+/* BEGIN tokiwa-town */
+
+=== TRAINER_SLICE_TOKIWA_TOWN_SPARE_1 ===
+Name: SPARE
+Class: Youngster
+Pic: Youngster
+Gender: Male
+Music: Male
+Double Battle: No
+
+Rattata
+Level: 2
+
+=== TRAINER_SLICE_TOKIWA_TOWN_SPARE_2 ===
+Name: SPARE
+Class: Youngster
+Pic: Youngster
+Gender: Male
+Music: Male
+Double Battle: No
+
+Rattata
+Level: 2
+
+/* END tokiwa-town */
+
+/* BEGIN north */
+
+=== TRAINER_SHIGERU_ROUTE22_1 ===
+Name: SHIGERU
+Class: Rival
+Pic: Red
+Gender: Male
+Music: Male
+Double Battle: No
+
+Rattata
+Level: 2
+
+=== TRAINER_SHIGERU_ROUTE22_2 ===
+Name: SHIGERU
+Class: Rival
+Pic: Red
+Gender: Male
+Music: Male
+Double Battle: No
+
+Rattata
+Level: 2
+
+=== TRAINER_SHIGERU_ROUTE22_3 ===
+Name: SHIGERU
+Class: Rival
+Pic: Red
+Gender: Male
+Music: Male
+Double Battle: No
+
+Rattata
+Level: 2
+
+=== TRAINER_KEN_FOREST_1 ===
+Name: KEN
+Class: Youngster
+Pic: Youngster
+Gender: Male
+Music: Male
+Double Battle: No
+
+Rattata
+Level: 2
+
+=== TRAINER_KEN_FOREST_2 ===
+Name: KEN
+Class: Youngster
+Pic: Youngster
+Gender: Male
+Music: Male
+Double Battle: No
+
+Rattata
+Level: 2
+
+=== TRAINER_KEN_FOREST_3 ===
+Name: KEN
+Class: Youngster
+Pic: Youngster
+Gender: Male
+Music: Male
+Double Battle: No
+
+Rattata
+Level: 2
+
+=== TRAINER_BUG_CATCHER_FOREST_1 ===
+Name: BUG CATCH
+Class: Bug Catcher
+Pic: Bug Catcher
+Gender: Male
+Music: Male
+Double Battle: No
+
+Rattata
+Level: 2
+
+=== TRAINER_BUG_CATCHER_FOREST_2 ===
+Name: BUG CATCH
+Class: Bug Catcher
+Pic: Bug Catcher
+Gender: Male
+Music: Male
+Double Battle: No
+
+Rattata
+Level: 2
+
+=== TRAINER_BUG_CATCHER_FOREST_3 ===
+Name: BUG CATCH
+Class: Bug Catcher
+Pic: Bug Catcher
+Gender: Male
+Music: Male
+Double Battle: No
+
+Rattata
+Level: 2
+
+/* END north */
+
+/* BEGIN takeshi */
+
+=== TRAINER_TAKESHI ===
+Name: TAKESHI
+Class: Leader
+Pic: Leader Roxanne
+Gender: Male
+Music: Male
+Double Battle: No
+AI: Check Bad Move / Try To Faint / Check Viability
+
+Rattata
+Level: 2
+
+/* END takeshi */
+
+/* BEGIN nibi-spine */
+
+=== TRAINER_CAMPER_NIBI_PMC ===
+Name: CAMPER
+Class: Camper
+Pic: Camper
+Gender: Male
+Music: Male
+Double Battle: No
+
+Rattata
+Level: 2
+
+=== TRAINER_BUG_CATCHER_ROUTE3_1 ===
+Name: BUG CATCH
+Class: Bug Catcher
+Pic: Bug Catcher
+Gender: Male
+Music: Male
+Double Battle: No
+
+Rattata
+Level: 2
+
+=== TRAINER_SLICE_NIBI_SPINE_SPARE_1 ===
+Name: SPARE
+Class: Youngster
+Pic: Youngster
+Gender: Male
+Music: Male
+Double Battle: No
+
+Rattata
+Level: 2
+
+/* END nibi-spine */
+
+/* BEGIN nibi-town */
+
+=== TRAINER_SLICE_NIBI_TOWN_SPARE_1 ===
+Name: SPARE
+Class: Youngster
+Pic: Youngster
+Gender: Male
+Music: Male
+Double Battle: No
+
+Rattata
+Level: 2
+
+=== TRAINER_SLICE_NIBI_TOWN_SPARE_2 ===
+Name: SPARE
+Class: Youngster
+Pic: Youngster
+Gender: Male
+Music: Male
+Double Battle: No
+
+Rattata
+Level: 2
+
+/* END nibi-town */
+
+/* BEGIN director */
+
+=== TRAINER_SLICE_DIRECTOR_RESERVE_1 ===
+Name: SPARE
+Class: Youngster
+Pic: Youngster
+Gender: Male
+Music: Male
+Double Battle: No
+
+Rattata
+Level: 2
+
+=== TRAINER_SLICE_DIRECTOR_RESERVE_2 ===
+Name: SPARE
+Class: Youngster
+Pic: Youngster
+Gender: Male
+Music: Male
+Double Battle: No
+
+Rattata
+Level: 2
+
+=== TRAINER_SLICE_DIRECTOR_RESERVE_3 ===
+Name: SPARE
+Class: Youngster
+Pic: Youngster
+Gender: Male
+Music: Male
+Double Battle: No
+
+Rattata
+Level: 2
+
+=== TRAINER_SLICE_DIRECTOR_RESERVE_4 ===
+Name: SPARE
+Class: Youngster
+Pic: Youngster
+Gender: Male
+Music: Male
+Double Battle: No
+
+Rattata
+Level: 2
+
+/* END director */
