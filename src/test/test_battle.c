@@ -413,7 +413,8 @@ void TestBattle_Tick(void)
             if (sScenario->tweak != NULL)
                 sScenario->tweak();
         }
-        if (sScenario->reduceEnemyAtTurn != 0 && turn == sScenario->reduceEnemyAtTurn)
+        // Only from above: a KO in that turn must stay a KO
+        if (sScenario->reduceEnemyAtTurn != 0 && turn == sScenario->reduceEnemyAtTurn && gBattleMons[1].hp > 1)
             gBattleMons[1].hp = 1;
         if (turn < MAX_LOG_TURNS && !sLog[turn].valid)
         {

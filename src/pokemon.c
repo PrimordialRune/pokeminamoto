@@ -1212,16 +1212,13 @@ s32 CalculateBaseDamage(struct BattlePokemon *attacker, struct BattlePokemon *de
     if (attacker->ability == ABILITY_HUGE_POWER || attacker->ability == ABILITY_PURE_POWER)
         attack *= 2;
 
-    // Apply type-bonus hold item
+    // Apply type-bonus hold item (no physical/special split: always Attack)
     for (i = 0; i < ARRAY_COUNT(sHoldEffectToType); i++)
     {
         if (attackerHoldEffect == sHoldEffectToType[i][0]
             && type == sHoldEffectToType[i][1])
         {
-            if (IS_TYPE_PHYSICAL(type))
-                attack = (attack * (attackerHoldEffectParam + 100)) / 100;
-            else
-                spAttack = (spAttack * (attackerHoldEffectParam + 100)) / 100;
+            attack = (attack * (attackerHoldEffectParam + 100)) / 100;
             break;
         }
     }
@@ -1238,7 +1235,11 @@ s32 CalculateBaseDamage(struct BattlePokemon *attacker, struct BattlePokemon *de
     if (defenderHoldEffect == HOLD_EFFECT_DEEP_SEA_SCALE && defender->species == SPECIES_CLAMPERL)
         spDefense *= 2;
     if (attackerHoldEffect == HOLD_EFFECT_LIGHT_BALL && attacker->species == SPECIES_PIKACHU)
+    {
+        // Pikachu's Electric moves used Sp. Atk before the split was removed: Light Ball now doubles Attack
+        attack *= 2;
         spAttack *= 2;
+    }
     if (defenderHoldEffect == HOLD_EFFECT_METAL_POWDER && defender->species == SPECIES_DITTO)
         defense *= 2;
     if (attackerHoldEffect == HOLD_EFFECT_THICK_CLUB && (attacker->species == SPECIES_CUBONE || attacker->species == SPECIES_MAROWAK))
@@ -1246,7 +1247,7 @@ s32 CalculateBaseDamage(struct BattlePokemon *attacker, struct BattlePokemon *de
 
     // Apply abilities / field sports
     if (defender->ability == ABILITY_THICK_FAT && (type == TYPE_FIRE || type == TYPE_ICE))
-        spAttack /= 2;
+        attack /= 2;
     if (attacker->ability == ABILITY_HUSTLE)
         attack = (150 * attack) / 100;
     if (attacker->ability == ABILITY_PLUS && ABILITY_ON_FIELD2(ABILITY_MINUS))
@@ -1274,144 +1275,133 @@ s32 CalculateBaseDamage(struct BattlePokemon *attacker, struct BattlePokemon *de
     if (gMovesInfo[gCurrentMove].effect == EFFECT_EXPLOSION)
         defense /= 2;
 
-    if (IS_TYPE_PHYSICAL(type))
-    {
-        if (gCritMultiplier == 2)
-        {
-            // Critical hit, if attacker has lost attack stat stages then ignore stat drop
-            if (attacker->statStages[STAT_ATK] > DEFAULT_STAT_STAGE)
-                APPLY_STAT_MOD(damage, attacker, attack, STAT_ATK)
-            else
-                damage = attack;
-        }
-        else
-            APPLY_STAT_MOD(damage, attacker, attack, STAT_ATK)
-
-        damage = damage * gBattleMovePower;
-        damage *= (2 * attacker->level / 5 + 2);
-
-        if (gCritMultiplier == 2)
-        {
-            // Critical hit, if defender has gained defense stat stages then ignore stat increase
-            if (defender->statStages[STAT_DEF] < DEFAULT_STAT_STAGE)
-                APPLY_STAT_MOD(damageHelper, defender, defense, STAT_DEF)
-            else
-                damageHelper = defense;
-        }
-        else
-            APPLY_STAT_MOD(damageHelper, defender, defense, STAT_DEF)
-
-        damage = damage / damageHelper;
-        damage /= 50;
-
-        // Burn cuts attack in half
-        if ((attacker->status1 & STATUS1_BURN) && attacker->ability != ABILITY_GUTS)
-            damage /= 2;
-
-        // Apply Reflect
-        if ((sideStatus & SIDE_STATUS_REFLECT) && gCritMultiplier == 1)
-        {
-            if ((gBattleTypeFlags & BATTLE_TYPE_DOUBLE) && CountAliveMonsInBattle(BATTLE_ALIVE_DEF_SIDE) == 2)
-                damage = 2 * (damage / 3);
-            else
-                damage /= 2;
-        }
-
-        // Moves hitting both targets do half damage in double battles
-        if ((gBattleTypeFlags & BATTLE_TYPE_DOUBLE) && gMovesInfo[move].target == MOVE_TARGET_BOTH && CountAliveMonsInBattle(BATTLE_ALIVE_DEF_SIDE) == 2)
-            damage /= 2;
-
-        // Moves always do at least 1 damage.
-        if (damage == 0)
-            damage = 1;
-    }
-
     if (type == TYPE_MYSTERY)
-        damage = 0; // is ??? type. does 0 damage.
+        return 2; // is ??? type: 0 damage, plus the flat +2 every move gets below
 
-    if (IS_TYPE_SPECIAL(type))
+    // Every move: Attack vs Defense (GDD damage formula, no physical/special split)
+    if (gCritMultiplier == 2)
     {
+        // Critical hit, if attacker has lost attack stat stages then ignore stat drop
+        if (attacker->statStages[STAT_ATK] > DEFAULT_STAT_STAGE)
+            APPLY_STAT_MOD(damage, attacker, attack, STAT_ATK)
+        else
+            damage = attack;
+    }
+    else
+        APPLY_STAT_MOD(damage, attacker, attack, STAT_ATK)
+
+    damage = damage * gBattleMovePower;
+    damage *= (2 * attacker->level / 5 + 2);
+
+    if (gCritMultiplier == 2)
+    {
+        // Critical hit, if defender has gained defense stat stages then ignore stat increase
+        if (defender->statStages[STAT_DEF] < DEFAULT_STAT_STAGE)
+            APPLY_STAT_MOD(damageHelper, defender, defense, STAT_DEF)
+        else
+            damageHelper = defense;
+    }
+    else
+        APPLY_STAT_MOD(damageHelper, defender, defense, STAT_DEF)
+
+    damage = damage / damageHelper;
+
+    // Signature moves: x Special Factor, SF = (Attack / Defense) x (Special / Special) x 1.15 (GDD).
+    // The Attack/Defense ratio is already in; this adds the attacker's Special over the defender's.
+    // Until Sp. Atk and Sp. Def merge into one stored Special, the attacker's Sp. Atk and the
+    // defender's Sp. Def stand in for it.
+    if (IS_MOVE_SIGNATURE(move))
+    {
+        s32 specialAtk, specialDef;
+
         if (gCritMultiplier == 2)
         {
-            // Critical hit, if attacker has lost sp. attack stat stages then ignore stat drop
             if (attacker->statStages[STAT_SPATK] > DEFAULT_STAT_STAGE)
-                APPLY_STAT_MOD(damage, attacker, spAttack, STAT_SPATK)
+                APPLY_STAT_MOD(specialAtk, attacker, spAttack, STAT_SPATK)
             else
-                damage = spAttack;
+                specialAtk = spAttack;
         }
         else
-            APPLY_STAT_MOD(damage, attacker, spAttack, STAT_SPATK)
-
-        damage = damage * gBattleMovePower;
-        damage *= (2 * attacker->level / 5 + 2);
+            APPLY_STAT_MOD(specialAtk, attacker, spAttack, STAT_SPATK)
 
         if (gCritMultiplier == 2)
         {
-            // Critical hit, if defender has gained sp. defense stat stages then ignore stat increase
             if (defender->statStages[STAT_SPDEF] < DEFAULT_STAT_STAGE)
-                APPLY_STAT_MOD(damageHelper, defender, spDefense, STAT_SPDEF)
+                APPLY_STAT_MOD(specialDef, defender, spDefense, STAT_SPDEF)
             else
-                damageHelper = spDefense;
+                specialDef = spDefense;
         }
         else
-            APPLY_STAT_MOD(damageHelper, defender, spDefense, STAT_SPDEF)
+            APPLY_STAT_MOD(specialDef, defender, spDefense, STAT_SPDEF)
 
-        damage = (damage / damageHelper);
-        damage /= 50;
+        if (specialDef == 0)
+            specialDef = 1;
+        damage = (s32)(((s64)damage * specialAtk * 115) / ((s64)specialDef * 100));
+    }
 
-        // Apply Lightscreen
-        if ((sideStatus & SIDE_STATUS_LIGHTSCREEN) && gCritMultiplier == 1)
+    damage /= 50;
+
+    // Burn cuts attack in half
+    if ((attacker->status1 & STATUS1_BURN) && attacker->ability != ABILITY_GUTS)
+        damage /= 2;
+
+    // Reflect halves regular moves, Light Screen halves signature moves
+    if (((sideStatus & SIDE_STATUS_REFLECT) && !IS_MOVE_SIGNATURE(move) && gCritMultiplier == 1)
+     || ((sideStatus & SIDE_STATUS_LIGHTSCREEN) && IS_MOVE_SIGNATURE(move) && gCritMultiplier == 1))
+    {
+        if ((gBattleTypeFlags & BATTLE_TYPE_DOUBLE) && CountAliveMonsInBattle(BATTLE_ALIVE_DEF_SIDE) == 2)
+            damage = 2 * (damage / 3);
+        else
+            damage /= 2;
+    }
+
+    // Moves hitting both targets do half damage in double battles
+    if ((gBattleTypeFlags & BATTLE_TYPE_DOUBLE) && gMovesInfo[move].target == MOVE_TARGET_BOTH && CountAliveMonsInBattle(BATTLE_ALIVE_DEF_SIDE) == 2)
+        damage /= 2;
+
+    // Are effects of weather negated with cloud nine or air lock
+    if (WEATHER_HAS_EFFECT2)
+    {
+        // Rain weakens Fire, boosts Water
+        if (gBattleWeather & B_WEATHER_RAIN_TEMPORARY)
         {
-            if ((gBattleTypeFlags & BATTLE_TYPE_DOUBLE) && CountAliveMonsInBattle(BATTLE_ALIVE_DEF_SIDE) == 2)
-                damage = 2 * (damage / 3);
-            else
+            switch (type)
+            {
+            case TYPE_FIRE:
                 damage /= 2;
+                break;
+            case TYPE_WATER:
+                damage = (15 * damage) / 10;
+                break;
+            }
         }
 
-        // Moves hitting both targets do half damage in double battles
-        if ((gBattleTypeFlags & BATTLE_TYPE_DOUBLE) && gMovesInfo[move].target == MOVE_TARGET_BOTH && CountAliveMonsInBattle(BATTLE_ALIVE_DEF_SIDE) == 2)
+        // Any weather except sun weakens solar beam
+        if ((gBattleWeather & (B_WEATHER_RAIN | B_WEATHER_SANDSTORM | B_WEATHER_HAIL)) && gCurrentMove == MOVE_SOLAR_BEAM)
             damage /= 2;
 
-        // Are effects of weather negated with cloud nine or air lock
-        if (WEATHER_HAS_EFFECT2)
+        // Sun boosts Fire, weakens Water
+        if (gBattleWeather & B_WEATHER_SUN)
         {
-            // Rain weakens Fire, boosts Water
-            if (gBattleWeather & B_WEATHER_RAIN_TEMPORARY)
+            switch (type)
             {
-                switch (type)
-                {
-                case TYPE_FIRE:
-                    damage /= 2;
-                    break;
-                case TYPE_WATER:
-                    damage = (15 * damage) / 10;
-                    break;
-                }
-            }
-
-            // Any weather except sun weakens solar beam
-            if ((gBattleWeather & (B_WEATHER_RAIN | B_WEATHER_SANDSTORM | B_WEATHER_HAIL)) && gCurrentMove == MOVE_SOLAR_BEAM)
+            case TYPE_FIRE:
+                damage = (15 * damage) / 10;
+                break;
+            case TYPE_WATER:
                 damage /= 2;
-
-            // Sun boosts Fire, weakens Water
-            if (gBattleWeather & B_WEATHER_SUN)
-            {
-                switch (type)
-                {
-                case TYPE_FIRE:
-                    damage = (15 * damage) / 10;
-                    break;
-                case TYPE_WATER:
-                    damage /= 2;
-                    break;
-                }
+                break;
             }
         }
-
-        // Flash fire triggered
-        if ((gBattleResources->flags->flags[battlerIdAtk] & RESOURCE_FLAG_FLASH_FIRE) && type == TYPE_FIRE)
-            damage = (15 * damage) / 10;
     }
+
+    // Flash fire triggered
+    if ((gBattleResources->flags->flags[battlerIdAtk] & RESOURCE_FLAG_FLASH_FIRE) && type == TYPE_FIRE)
+        damage = (15 * damage) / 10;
+
+    // Moves always do at least 1 damage.
+    if (damage == 0)
+        damage = 1;
 
     // Badges x1.25: the player's moves of a type whose badge they own (GDD damage modifier)
     if (ShouldGetTypeBadgeBoost(type, battlerIdAtk))

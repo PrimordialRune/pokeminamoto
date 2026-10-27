@@ -293,14 +293,37 @@ static void Test_DamageSpecialAndMinimum(void)
     BattleSetup();
     SetBattler(&gBattleMons[1], SPECIES_CHARMANDER, 50, 100, 100, 100, 100);
     SetBattler(&gBattleMons[0], SPECIES_BULBASAUR, 50, 100, 100, 100, 100);
-    // Ember (power 40, Fire = special) uses Sp. Atk / Sp. Def
-    gBattleMons[1].spAttack = 200;
-    gBattleMons[0].spDefense = 100;
+    // No physical/special split: Ember (power 40, Fire) uses Attack / Defense, Sp. Atk is ignored
+    gBattleMons[1].attack = 200;
+    gBattleMons[1].spAttack = 50;
+    gBattleMons[0].spDefense = 255;
     ASSERT_EQ(Damage(&gBattleMons[1], &gBattleMons[0], MOVE_EMBER), 200 * 40 * 22 / 100 / 50 + 2);
+    // Reflect halves it, Light Screen doesn't
+    gCurrentMove = MOVE_EMBER;
+    ASSERT_EQ(CalculateBaseDamage(&gBattleMons[1], &gBattleMons[0], MOVE_EMBER, SIDE_STATUS_REFLECT, 0, 0, 1, 0), 35 / 2 + 2);
+    ASSERT_EQ(CalculateBaseDamage(&gBattleMons[1], &gBattleMons[0], MOVE_EMBER, SIDE_STATUS_LIGHTSCREEN, 0, 0, 1, 0), 35 + 2);
     // A physical hit always does at least 1 (+2)
     SetBattler(&gBattleMons[1], SPECIES_RATTATA, 5, 1, 1, 1, 1);
     SetBattler(&gBattleMons[0], SPECIES_PIDGEY, 5, 1, 255, 1, 255);
     ASSERT_EQ(Damage(&gBattleMons[1], &gBattleMons[0], MOVE_POUND), 3);
+    BattleTeardown();
+}
+
+static void Test_DamageSignatureSpecialFactor(void)
+{
+    // Signature moves: Attack/Defense x Special Factor (Special / Special x 1.15).
+    // Flame Claws power 90: 100*90*22/100 = 1980, x 200*115/(100*100) = 4554, /50 = 91, +2
+    BattleSetup();
+    SetBattler(&gBattleMons[1], SPECIES_CHARMANDER, 50, 100, 100, 200, 100);
+    SetBattler(&gBattleMons[0], SPECIES_BULBASAUR, 50, 100, 100, 100, 100);
+    ASSERT_EQ(Damage(&gBattleMons[1], &gBattleMons[0], MOVE_FLAME_CLAWS), 93);
+    // Equal Specials: just the x1.15 (1980*115/100 = 2277, /50 = 45)
+    gBattleMons[1].spAttack = 100;
+    ASSERT_EQ(Damage(&gBattleMons[1], &gBattleMons[0], MOVE_FLAME_CLAWS), 47);
+    // Light Screen halves signature moves, Reflect doesn't
+    gCurrentMove = MOVE_FLAME_CLAWS;
+    ASSERT_EQ(CalculateBaseDamage(&gBattleMons[1], &gBattleMons[0], MOVE_FLAME_CLAWS, SIDE_STATUS_LIGHTSCREEN, 0, 0, 1, 0), 45 / 2 + 2);
+    ASSERT_EQ(CalculateBaseDamage(&gBattleMons[1], &gBattleMons[0], MOVE_FLAME_CLAWS, SIDE_STATUS_REFLECT, 0, 0, 1, 0), 47);
     BattleTeardown();
 }
 
@@ -711,6 +734,7 @@ const struct TestCase gPureTests[] =
     {"damage_stat_stages",           Test_DamageStages},
     {"damage_burn_reflect",          Test_DamageBurnAndReflect},
     {"damage_special_and_minimum",   Test_DamageSpecialAndMinimum},
+    {"damage_signature_sf",          Test_DamageSignatureSpecialFactor},
     {"damage_scales_with_level",     Test_DamageScalesWithLevel},
     {"type_immunities",              Test_TypeImmunities},
     {"type_super_effective",         Test_TypeSuperEffective},
