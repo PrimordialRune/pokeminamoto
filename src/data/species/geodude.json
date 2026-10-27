@@ -24,13 +24,12 @@
         [1, "DEFENSE_CURL"],
         [6, "SAND_ATTACK"],
         [11, "ROCK_THROW"],
-        [16, "EARTHQUAKE"],
+        [16, "DIG"],
         [21, "SELF_DESTRUCT"],
-        [26, "TACKLE"],
+        [26, "HARDEN"],
         [31, "ROCK_SLIDE"],
         [36, "EARTHQUAKE"],
-        [41, "EXPLOSION"],
-        [46, "DOUBLE_EDGE"]
+        [41, "EXPLOSION"]
     ],
     "tmhm": [
         "MEGA_PUNCH",

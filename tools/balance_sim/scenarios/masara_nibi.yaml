@@ -1,0 +1,95 @@
+# Chapter 1, Masara Town to the Boulder Badge, as designed (learnsets and encounters v1, 2026-10-27).
+# Run: python3 -m minasim journey scenarios/masara_nibi.yaml --runs 200
+#
+# Sources: the step order is the narrative script list (/mnt/project-files/narrative/script-list-masara-to-nibi-v1.md);
+# species per area are Omar's Notion MAPS rows (docs/design/data/overworld.csv), levels and weights start from
+# Red/Green (JP Green = EN Blue tables). Trainer parties: Tokiwa v5 §11 (Yujirou), Nibi v3 §9 (Takeshi), R/G for the
+# rival, bug catchers and the camper. Wild weights are percentages of the area's encounters.
+# Party moves come from the learnsets (the last four learned) unless a team entry lists them.
+name: Masara to Nibi (v1)
+start: Masara Town
+starter_level: 5
+
+steps:
+  - segment: Masara
+  - fight: rival_lab
+    name: Shigeru (lab)
+    class: rival
+    no_whiteout: true                          # losing continues the story, as in R/G (MAS-004)
+    team: ["RIVAL_STARTER:5"]
+
+  - segment: Route 1
+  - wild: Route 1                              # no Poke Balls yet: grass is EXP only
+    battles: 6
+    table: ["PIDGEY:2-4:45", "RATTATA:2-4:45", "PIDGEY:5:5", "RATTATA:5:5"]
+  - inn: Tokiwa City                           # first arrival, Ume room
+
+  - segment: Route 22
+  - catch_slot: 2                              # Kurosawa's catching session (TOK, session 2)
+  - wild: Route 22
+    battles: 6
+    table: ["NIDORAN_F:3-4:30", "NIDORAN_M:3-4:20", "RATTATA:2-4:35", "SPEAROW:3-5:10", "NIDORAN_F:5:3", "NIDORAN_M:5:2"]
+  - gift: SANDSHREW                            # Omura's out-of-range Sandshrew at the Route 22 wall (TOK-301): kept
+    level: 9
+    take: 0.5                                  # half the players keep it, half sell it for 3,500
+  - fight: rival_r22
+    name: Shigeru (Route 22)
+    class: rival
+    team: ["PIDGEY:9", "RIVAL_STARTER:8"]       # R/G; a hard optional fight (Omar, 2026-10-27)
+  - town: Tokiwa City
+  - gift: PIDGEY                               # the injured Pidgey (TOK-302): kept
+    level: 6
+    take: 0.4
+
+  - segment: Tokiwa arena
+  - grind: Route 22                            # the player grinds to the leader's ace minus the band's gap
+    table: ["NIDORAN_F:3-4:30", "NIDORAN_M:3-4:20", "RATTATA:2-4:35", "SPEAROW:3-5:10", "NIDORAN_F:5:3", "NIDORAN_M:5:2"]
+  - inn: Tokiwa City
+  - fight: circuit1
+    name: Circuit bird trainer 1
+    class: trainer
+    team: ["SPEAROW:7", "PIDGEY:7"]
+  - fight: circuit2
+    name: Circuit bird trainer 2
+    class: trainer
+    team: ["PIDGEY:9"]
+  - fight: yujirou
+    name: Yujirou
+    class: gym
+    team: ["SPEAROW:7[PECK/GROWL/LEER]", "PIDGEY:8[TACKLE/SAND_ATTACK]", "FARFETCHD:9[CUT/SAND_ATTACK/LEER]@LEEK"]
+
+  - segment: Route 2 and forest
+  - catch_slot: 3
+  - inn: Tokiwa City
+  - wild: Route 2
+    battles: 3
+    table: ["PIDGEY:3-5:35", "RATTATA:3-5:35", "CATERPIE:3-5:20", "WEEDLE:3-5:10"]
+  - wild: Tokiwa Forest
+    battles: 5
+    table: ["CATERPIE:3-5:30", "METAPOD:4-6:25", "WEEDLE:3-5:15", "KAKUNA:4-6:10", "PIDGEY:4-6:8", "PIKACHU:3-5:5", "PARAS:5-6:5", "PIDGEOTTO:9:2"]
+  - fight: bug1
+    name: Bug Catcher 1
+    team: ["WEEDLE:6", "CATERPIE:6"]
+  - wild: Tokiwa Forest
+    battles: 3
+  - fight: bug2
+    name: Bug Catcher 2
+    team: ["WEEDLE:7", "KAKUNA:7", "WEEDLE:7"]
+  - wild: Tokiwa Forest
+    battles: 3
+  - fight: bug3
+    name: Bug Catcher 3
+    team: ["WEEDLE:9"]
+
+  - segment: Nibi
+  - inn: Nibi City
+  - grind: Tokiwa Forest
+    table: ["CATERPIE:3-5:30", "METAPOD:4-6:25", "WEEDLE:3-5:15", "KAKUNA:4-6:10", "PIDGEY:4-6:8", "PIKACHU:3-5:5", "PARAS:5-6:5", "PIDGEOTTO:9:2"]
+  - inn: Nibi City
+  - fight: camper
+    name: Camper (gym gate)
+    team: ["DIGLETT:11", "SANDSHREW:11"]
+  - fight: takeshi
+    name: Takeshi
+    class: gym
+    team: ["GEODUDE:12", "ONIX:14"]

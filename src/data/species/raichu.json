@@ -18,7 +18,21 @@
     "safariZoneFleeRate": 0,
     "bodyColor": "YELLOW",
     "cry": "sound/direct_sound_samples/cries/raichu.bin",
-    "levelUpMoves": [[1, "THUNDER_SHOCK"], [1, "TAIL_WHIP"], [1, "QUICK_ATTACK"], [1, "THUNDERBOLT"]],
+    "levelUpMoves": [
+        [1, "THUNDER_SHOCK"],
+        [1, "GROWL"],
+        [1, "THUNDER_WAVE"],
+        [1, "QUICK_ATTACK"],
+        [6, "TAIL_WHIP"],
+        [9, "THUNDER_WAVE"],
+        [12, "QUICK_ATTACK"],
+        [18, "SWIFT"],
+        [23, "SLAM"],
+        [29, "THUNDERBOLT"],
+        [35, "AGILITY"],
+        [43, "THUNDER"],
+        [50, "LIGHT_SCREEN"]
+    ],
     "tmhm": [
         "MEGA_PUNCH",
         "MEGA_KICK",

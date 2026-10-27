@@ -25,11 +25,10 @@
         [14, "STUN_SPORE"],
         [15, "SLEEP_POWDER"],
         [18, "SUPERSONIC"],
-        [23, "WHIRLWIND"],
-        [28, "GUST"],
-        [34, "PSYBEAM"],
-        [40, "LIGHT_SCREEN"],
-        [47, "GUST"]
+        [21, "GUST"],
+        [26, "WHIRLWIND"],
+        [32, "PSYBEAM"],
+        [38, "MEGA_DRAIN"]
     ],
     "tmhm": [
         "RAZOR_WIND",

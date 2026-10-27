@@ -37,7 +37,7 @@ checksum, write and re-encrypt. Writing the struct directly corrupts the mon
 | 6-8 | `moveRank2` | `MON_DATA_MOVE_RANK3` | slot 3 |
 | 9-11 | `moveRank3` | `MON_DATA_MOVE_RANK4` | slot 4 |
 | 0-11 | (all four) | `MON_DATA_MOVE_RANKS` | packed, slot 1 in bits 0-2 (u16 in/out) |
-| 12 | `specialAwakened` | `MON_DATA_SPECIAL_AWAKENED` | the species' Special (signature move) is unsealed |
+| 12 | `specialAwakened` | `MON_DATA_SPECIAL_AWAKENED` | the species' Signature move is unsealed |
 | 13-19 | `savedTp` | `MON_DATA_SAVED_TP` | TP kept between battles, 0-`TP_MAX` (writes clamp) |
 | 20-31 | `reserved` | none | free |
 
@@ -45,23 +45,23 @@ checksum, write and re-encrypt. Writing the struct directly corrupts the mon
 
 | MON_DATA | storage | meaning |
 |---|---|---|
-| `MON_DATA_SPECIAL_PROGRESS` | substruct 2 byte 6 | progress towards awakening the Special, 0-255 |
+| `MON_DATA_SPECIAL_PROGRESS` | substruct 2 byte 6 | progress towards awakening the Signature, 0-255 |
 | `MON_DATA_DVS` | none (view over the IVs) | Gen 1 DVs, u16: Attack bits 15-12, Defense 11-8, Speed 7-4, Special 3-0 |
 | `MON_DATA_COOL` .. `MON_DATA_SHEEN` | none | contest stats are gone: reads return 0, writes are dropped |
 
 ## Design status of each field
 
-- **Move ranks**: Omar dropped move ranks on 2026-10-22 (one Special per species
+- **Move ranks**: Omar dropped move ranks on 2026-10-22 (one Signature per species
   instead). The 12 bits are allocated as asked so the data has a home if ranks come
   back; nothing reads or writes them. They can be handed to something else.
-- **Special**: per the design sessions (2026-10-22) the Special is innate but
+- **Signature**: per the design sessions (2026-10-22) the Signature is innate but
   sealed, a fifth move outside the 4 slots, unlocked per mon (Deed / Place / Witness,
   Bond as fallback) and kept through evolution. The move itself comes from the
   species (`gSpecialMoves[]` in `src/data/pokemon/special_moves.h`), so a mon only
   needs the awakened flag and a progress counter. There is no "signature slot" field
-  because the Special never takes one of the 4 slots. Wired since v1 (2026-10-26,
+  because the Signature never takes one of the 4 slots. Wired since v1 (2026-10-26,
   `src/special_move.c`): Bond and Deed conditions, the awakening message after a won
-  battle, and the Special page on SELECT in the FIGHT menu.
+  battle, and the Signature page on SELECT in the FIGHT menu.
 - **savedTp**: TP resets to `TP_MAX` at the start of each battle (GDD) and lives in
   `gBattleStruct->tp`. Omar wants TP to run out and need rest to recover, which may
   mean TP that persists between battles; `savedTp` is reserved for that. Unused.

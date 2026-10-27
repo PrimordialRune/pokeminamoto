@@ -21,14 +21,14 @@
     "evolutions": [{"method": "LEVEL", "param": 24, "into": "PARASECT"}],
     "levelUpMoves": [
         [1, "SCRATCH"],
+        [1, "ABSORB"],
         [7, "STUN_SPORE"],
-        [13, "POISON_POWDER"],
-        [19, "LEECH_LIFE"],
+        [13, "LEECH_LIFE"],
+        [19, "POISON_POWDER"],
         [25, "SPORE"],
         [31, "SLASH"],
         [37, "GROWTH"],
-        [43, "MEGA_DRAIN"],
-        [49, "RECOVER"]
+        [43, "MEGA_DRAIN"]
     ],
     "tmhm": [
         "SWORDS_DANCE",

@@ -22,13 +22,12 @@
         [1, "SCREECH"],
         [9, "BIND"],
         [13, "ROCK_THROW"],
-        [21, "HARDEN"],
-        [25, "RAGE"],
-        [33, "SAND_ATTACK"],
-        [37, "SLAM"],
-        [45, "SLAM"],
-        [49, "WRAP"],
-        [57, "DOUBLE_EDGE"]
+        [19, "HARDEN"],
+        [23, "RAGE"],
+        [27, "DIG"],
+        [33, "SLAM"],
+        [40, "ROCK_SLIDE"],
+        [47, "EARTHQUAKE"]
     ],
     "tmhm": [
         "TOXIC",

@@ -20,15 +20,14 @@
     "evolutions": [{"method": "ITEM", "param": "MOON_STONE", "into": "NIDOKING"}],
     "levelUpMoves": [
         [1, "LEER"],
-        [1, "PECK"],
-        [8, "FOCUS_ENERGY"],
-        [12, "DOUBLE_KICK"],
-        [18, "POISON_STING"],
-        [22, "HORN_ATTACK"],
-        [26, "GROWL"],
-        [34, "FURY_ATTACK"],
-        [43, "CONFUSE_RAY"],
-        [53, "HORN_DRILL"]
+        [1, "TACKLE"],
+        [6, "POISON_STING"],
+        [8, "HORN_ATTACK"],
+        [10, "DOUBLE_KICK"],
+        [17, "FOCUS_ENERGY"],
+        [24, "FURY_ATTACK"],
+        [32, "HORN_DRILL"],
+        [40, "THRASH"]
     ],
     "tmhm": [
         "TOXIC",

@@ -24,14 +24,13 @@
         [1, "BUBBLE"],
         [4, "TAIL_WHIP"],
         [7, "BUBBLE"],
-        [10, "WITHDRAW"],
-        [13, "WATER_GUN"],
-        [19, "BITE"],
-        [25, "TACKLE"],
-        [31, "HARDEN"],
-        [37, "MIST"],
-        [45, "SKULL_BASH"],
-        [53, "HYDRO_PUMP"]
+        [10, "WATER_GUN"],
+        [13, "WITHDRAW"],
+        [18, "BITE"],
+        [22, "BUBBLE_BEAM"],
+        [29, "REST"],
+        [36, "WATERFALL"],
+        [45, "HYDRO_PUMP"]
     ],
     "tmhm": [
         "MEGA_PUNCH",

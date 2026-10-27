@@ -25,13 +25,12 @@
         [1, "ROCK_THROW"],
         [6, "SAND_ATTACK"],
         [11, "ROCK_THROW"],
-        [16, "EARTHQUAKE"],
+        [16, "DIG"],
         [21, "SELF_DESTRUCT"],
-        [29, "TACKLE"],
-        [37, "ROCK_SLIDE"],
-        [45, "EARTHQUAKE"],
-        [53, "EXPLOSION"],
-        [62, "DOUBLE_EDGE"]
+        [29, "HARDEN"],
+        [34, "ROCK_SLIDE"],
+        [40, "EARTHQUAKE"],
+        [47, "EXPLOSION"]
     ],
     "tmhm": [
         "MEGA_PUNCH",

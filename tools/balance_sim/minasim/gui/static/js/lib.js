@@ -172,7 +172,7 @@ export const W = {
   verdict: { dominant: ['Too strong', 'red'], strong: ['Strong', 'amb'], ok: ['Fine', 'ok'], weak: ['Weak', 'info'], dead: ['Never used', 'dead'] },
   change: { worse: ['▼', 'red', 'worse'], better: ['▲', 'ok', 'better'], new: ['✳', 'info', 'new this run'], same: ['=', 'dead', 'no change'], resolved: ['✔', 'ok', 'fixed'] },
   kinds: { all: 'All', fight: 'Fights', species: 'Species', move: 'Moves', item: 'Items', tp: 'TP' },
-  kindLong: { fight: 'Fight', species: 'Species', move: 'Move', item: 'Item', tp: 'TP', level_curve: 'Levels', special: 'Special', talk: 'Talk', rng: 'Luck', dominance: 'Dominance', dead_content: 'Unused' },
+  kindLong: { fight: 'Fight', species: 'Species', move: 'Move', item: 'Item', tp: 'TP', level_curve: 'Levels', special: 'Signature', talk: 'Talk', rng: 'Luck', dominance: 'Dominance', dead_content: 'Unused' },
   metric: { win_rate: 'win rate', usage: 'turns using it', hp_left: 'HP left', tp_left: 'TP left', battles_per_rest: 'fights per rest', delta_win: 'fights won thanks to it', level_gap: 'level gap' },
   cls: { gym: 'Gym leader', rival: 'Rival', trainer: 'Trainer', wild: 'Wild', boss: 'Boss' },
   margin: 'Run it again and the number stays within this much',

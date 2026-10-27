@@ -21,15 +21,14 @@
     "levelUpMoves": [
         [1, "TACKLE"],
         [1, "SAND_ATTACK"],
-        [1, "GUST"],
         [5, "SAND_ATTACK"],
         [9, "GUST"],
-        [13, "QUICK_ATTACK"],
-        [20, "WHIRLWIND"],
-        [27, "WING_ATTACK"],
-        [34, "GROWL"],
-        [43, "AGILITY"],
-        [52, "MIRROR_MOVE"]
+        [12, "QUICK_ATTACK"],
+        [15, "WHIRLWIND"],
+        [18, "WING_ATTACK"],
+        [31, "AGILITY"],
+        [40, "RAZOR_WIND"],
+        [49, "MIRROR_MOVE"]
     ],
     "tmhm": [
         "RAZOR_WIND",

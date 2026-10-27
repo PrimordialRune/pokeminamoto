@@ -53,7 +53,7 @@ class TalkSpecial(unittest.TestCase):
             return best_move(st)
         talked, hp_u, hp_n, fm_u, fm_n = 0, [], [], 0, 0
         for s in range(1, 120):
-            kw = dict(seed=s, player=[Mon("CHARMANDER", 26)], foe=[Mon("RATICATE", 22), Mon("PIDGEOTTO", 22)], is_trainer=True,
+            kw = dict(seed=s, player=[Mon("CHARMANDER", 26, moves=["EMBER", "SLAM"])], foe=[Mon("RATICATE", 22), Mon("PIDGEOTTO", 22)], is_trainer=True,
                       trainer_class="YOUNGSTER", charisma=100)
             a = ENG.battle(player_policy=unnerve, log=True, **kw)
             b = ENG.battle(player_policy=never, log=True, **kw)

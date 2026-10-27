@@ -22,13 +22,12 @@
         [1, "PECK"],
         [1, "GROWL"],
         [1, "LEER"],
-        [1, "FURY_ATTACK"],
         [7, "LEER"],
-        [13, "FURY_ATTACK"],
-        [26, "TACKLE"],
+        [12, "FURY_ATTACK"],
+        [19, "WING_ATTACK"],
+        [27, "DRILL_PECK"],
         [32, "MIRROR_MOVE"],
-        [40, "DRILL_PECK"],
-        [47, "AGILITY"]
+        [40, "AGILITY"]
     ],
     "tmhm": [
         "RAZOR_WIND",
