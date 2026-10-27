@@ -229,6 +229,21 @@ static const struct TrainerBattleParameter sContinueScriptDoubleBattleParams[] =
     {&sTrainerBattleEndScript,      TRAINER_PARAM_LOAD_SCRIPT_RET_ADDR},
 };
 
+// TRAINER_BATTLE_EARLY_RIVAL: continue-script layout plus the foe's win text
+// (kept in sTrainerVictorySpeech, which no other mode uses).
+static const struct TrainerBattleParameter sEarlyRivalBattleParams[] =
+{
+    {&sTrainerBattleMode,           TRAINER_PARAM_LOAD_VAL_8BIT},
+    {&gTrainerBattleOpponent_A,     TRAINER_PARAM_LOAD_VAL_16BIT},
+    {&sTrainerObjectEventLocalId,   TRAINER_PARAM_LOAD_VAL_16BIT},
+    {&sTrainerAIntroSpeech,         TRAINER_PARAM_LOAD_VAL_32BIT},
+    {&sTrainerADefeatSpeech,        TRAINER_PARAM_LOAD_VAL_32BIT},
+    {&sTrainerVictorySpeech,        TRAINER_PARAM_LOAD_VAL_32BIT},
+    {&sTrainerCannotBattleSpeech,   TRAINER_PARAM_CLEAR_VAL_32BIT},
+    {&sTrainerABattleScriptRetAddr, TRAINER_PARAM_LOAD_VAL_32BIT},
+    {&sTrainerBattleEndScript,      TRAINER_PARAM_LOAD_SCRIPT_RET_ADDR},
+};
+
 static const struct TrainerBattleParameter sTrainerBOrdinaryBattleParams[] =
 {
     {&sTrainerBattleMode,           TRAINER_PARAM_LOAD_VAL_8BIT},
@@ -582,8 +597,16 @@ void StartRegiBattle(void)
     TryUpdateGymLeaderRematchFromWild();
 }
 
+// A stale arena must never apply to a later battle: every way a battle can end
+// (win, no-whiteout loss, whiteout via DoWhiteOut) clears VAR_BATTLE_ARENA.
+void ClearBattleArena(void)
+{
+    VarSet(VAR_BATTLE_ARENA, 0);
+}
+
 static void CB2_EndWildBattle(void)
 {
+    ClearBattleArena();
     CpuFill16(0, (void *)(BG_PLTT), BG_PLTT_SIZE);
     ResetOamRange(0, 128);
 
@@ -600,6 +623,7 @@ static void CB2_EndWildBattle(void)
 
 static void CB2_EndScriptedWildBattle(void)
 {
+    ClearBattleArena();
     CpuFill16(0, (void *)(BG_PLTT), BG_PLTT_SIZE);
     ResetOamRange(0, 128);
 
@@ -1109,6 +1133,10 @@ const u8 *BattleSetup_ConfigureTrainerBattle(const u8 *data)
             gTrainerBattleOpponent_B = LocalIdToPyramidTrainerId(gSpecialVar_LastTalked);
         }
         return EventScript_TryDoNormalTrainerBattle;
+    case TRAINER_BATTLE_EARLY_RIVAL:
+        TrainerBattleLoadArgs(sEarlyRivalBattleParams, data);
+        SetMapVarsToTrainer();
+        return EventScript_TryDoNormalTrainerBattle;
     case TRAINER_BATTLE_SET_TRAINER_A:
         TrainerBattleLoadArgs(sOrdinaryBattleParams, data);
         return NULL;
@@ -1212,6 +1240,9 @@ void BattleSetup_StartTrainerBattle(void)
     else
         gBattleTypeFlags = (BATTLE_TYPE_TRAINER);
 
+    if (sTrainerBattleMode == TRAINER_BATTLE_EARLY_RIVAL)
+        gBattleTypeFlags |= BATTLE_TYPE_EARLY_RIVAL;
+
     if (CurrentBattlePyramidLocation() != PYRAMID_LOCATION_NONE)
     {
         VarSet(VAR_TEMP_PLAYING_PYRAMID_MUSIC, 0);
@@ -1249,10 +1280,26 @@ void BattleSetup_StartTrainerBattle(void)
     ScriptContext_Stop();
 }
 
+// special SetEarlyRivalBattleResult: VAR_RESULT = 1 if the player won the
+// TRAINER_BATTLE_EARLY_RIVAL fight that just ended, 0 if the player lost.
+void SetEarlyRivalBattleResult(void)
+{
+    gSpecialVar_Result = !IsPlayerDefeated(gBattleOutcome);
+}
+
 static void CB2_EndTrainerBattle(void)
 {
+    ClearBattleArena();
     if (gTrainerBattleOpponent_A == TRAINER_SECRET_BASE)
     {
+        SetMainCallback2(CB2_ReturnToFieldContinueScriptPlayMapMusic);
+    }
+    else if (sTrainerBattleMode == TRAINER_BATTLE_EARLY_RIVAL && IsPlayerDefeated(gBattleOutcome) == TRUE)
+    {
+        // No whiteout: no money lost, no warp. The script reads the loss through
+        // SetEarlyRivalBattleResult. PLACEHOLDER (Q96, thread "Make TP need rest, with town toolkit"):
+        // the party is healed on the spot, HP and status only; TP stays spent.
+        HealPlayerParty();
         SetMainCallback2(CB2_ReturnToFieldContinueScriptPlayMapMusic);
     }
     else if (IsPlayerDefeated(gBattleOutcome) == TRUE)
@@ -1273,8 +1320,17 @@ static void CB2_EndTrainerBattle(void)
     }
 }
 
+#ifdef TEST_BUILD
+// src/test/test_core.c runs the end-of-trainer-battle callback without a battle.
+void BattleSetup_TestEndTrainerBattle(void)
+{
+    CB2_EndTrainerBattle();
+}
+#endif
+
 static void CB2_EndRematchBattle(void)
 {
+    ClearBattleArena();
     if (gTrainerBattleOpponent_A == TRAINER_SECRET_BASE)
     {
         SetMainCallback2(CB2_ReturnToFieldContinueScriptPlayMapMusic);
@@ -1435,6 +1491,8 @@ const u8 *GetTrainerALoseText(void)
 
     if (gTrainerBattleOpponent_A == TRAINER_SECRET_BASE)
         string = GetSecretBaseTrainerLoseText();
+    else if ((gBattleTypeFlags & BATTLE_TYPE_EARLY_RIVAL) && IsPlayerDefeated(gBattleOutcome))
+        string = sTrainerVictorySpeech; // TRAINER_BATTLE_EARLY_RIVAL: the foe's win text
     else
         string = sTrainerADefeatSpeech;
 

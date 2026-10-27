@@ -2,22 +2,48 @@
 // Put whatever you want to try in them; they start with the player locked.
 // The debug menu isn't in release builds, so nothing else can reach these.
 
+// Core's scratch scripts (studio slice). Also reachable by tools/regress through
+// REGRESS_CMD_RUN_SCRIPT with the label's address from the ELF.
+
+// 1: a TRAINER_BATTLE_EARLY_RIVAL fight against TRAINER_ROXANNE_1 (a stand-in team). After it,
+// VAR_RESULT tells win (1) from loss (0); a loss costs no money and no warp.
 script Debug_Script_1 {
-    msgbox("Debug script 1 is empty.\nEdit data/scripts/debug.pory.")
+    lockall
+    trainerbattle_early_rival(TRAINER_ROXANNE_1, Debug_Text_RivalIntro, Debug_Text_RivalDefeated, Debug_Text_RivalWon, Debug_EventScript_RivalAfter)
     releaseall
 }
 
+script Debug_EventScript_RivalAfter {
+    if (var(VAR_RESULT) == 1) {
+        msgbox("You won the fight.")
+    } else {
+        msgbox("You lost, and nothing was lost.")
+    }
+    clearflag(TRAINER_FLAGS_START + TRAINER_ROXANNE_1)
+    releaseall
+}
+
+text Debug_Text_RivalIntro { "Let's see what you've got." }
+text Debug_Text_RivalDefeated { "Hm. You win this one." }
+text Debug_Text_RivalWon { "Not this time." }
+
+// 2: an inn rest that counts (Common_EventScript_InnRest adds one to VAR_REST_COUNT).
 script Debug_Script_2 {
-    msgbox("Debug script 2 is empty.\nEdit data/scripts/debug.pory.")
+    lockall
+    call(Common_EventScript_InnRest)
     releaseall
 }
 
+// 3: the whiteout arrival line for the current respawn point.
 script Debug_Script_3 {
-    msgbox("Debug script 3 is empty.\nEdit data/scripts/debug.pory.")
-    releaseall
+    goto(EventScript_WhiteoutArrival)
 }
 
+// 4: the clock's hour through GetGameHour.
 script Debug_Script_4 {
-    msgbox("Debug script 4 is empty.\nEdit data/scripts/debug.pory.")
+    lockall
+    getgamehour
+    buffernumberstring(STR_VAR_1, VAR_RESULT)
+    msgbox("The game hour is {STR_VAR_1}.")
     releaseall
 }

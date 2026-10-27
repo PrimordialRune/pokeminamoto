@@ -15,12 +15,14 @@
 #include "party_menu.h"
 #include "pokedex.h"
 #include "pokemon.h"
+#include "pokemon_storage_system.h"
 #include "random.h"
 #include "script.h"
 #include "sprite.h"
 #include "string_util.h"
 #include "tv.h"
 #include "constants/items.h"
+#include "constants/battle_setup.h"
 #include "constants/battle_frontier.h"
 
 static void CB2_ReturnFromChooseHalfParty(void);
@@ -205,4 +207,80 @@ void ReducePlayerPartyToSelectedMons(void)
         gPlayerParty[i] = party[i];
 
     CalculatePlayerPartyCount();
+}
+
+// Party hand-overs (studio slice, core). Quest scripts that take a Pokémon from the
+// party first ask CheckPartyMonForHandover, then call RemovePartyMonAtSlot.
+//
+// special CheckPartyMonForHandover
+//   in:  VAR_0x8004 species, VAR_0x8005 minimum level,
+//        VAR_0x8006 required met-location mapsec (HANDOVER_ANY_LOCATION = any),
+//        VAR_0x8007 TRUE = it must be at full HP
+//   out: VAR_RESULT HANDOVER_OK / HANDOVER_NONE / HANDOVER_NOT_FULL_HP / HANDOVER_LAST_MON,
+//        VAR_0x8008 = the party slot of the mon that matched (the first one, preferring a
+//        mon that is at full HP when full HP is required); unchanged on HANDOVER_NONE.
+// "Last party member" is a party of one (eggs count as members).
+void CheckPartyMonForHandover(void)
+{
+    u32 i;
+    u32 match = PARTY_SIZE;
+    bool32 matchHurt = FALSE;
+
+    for (i = 0; i < PARTY_SIZE; i++)
+    {
+        struct Pokemon *mon = &gPlayerParty[i];
+        bool32 hurt;
+
+        if (GetMonData(mon, MON_DATA_SPECIES) != gSpecialVar_0x8004 || GetMonData(mon, MON_DATA_IS_EGG))
+            continue;
+        if (GetMonData(mon, MON_DATA_LEVEL) < gSpecialVar_0x8005)
+            continue;
+        if (gSpecialVar_0x8006 != HANDOVER_ANY_LOCATION && GetMonData(mon, MON_DATA_MET_LOCATION) != gSpecialVar_0x8006)
+            continue;
+        hurt = GetMonData(mon, MON_DATA_HP) != GetMonData(mon, MON_DATA_MAX_HP);
+        if (match == PARTY_SIZE || (matchHurt && !hurt))
+        {
+            match = i;
+            matchHurt = hurt;
+        }
+    }
+
+    if (match == PARTY_SIZE)
+    {
+        gSpecialVar_Result = HANDOVER_NONE;
+        return;
+    }
+    gSpecialVar_0x8008 = match;
+    if (gSpecialVar_0x8007 && matchHurt)
+        gSpecialVar_Result = HANDOVER_NOT_FULL_HP;
+    else if (CalculatePlayerPartyCount() <= 1)
+        gSpecialVar_Result = HANDOVER_LAST_MON;
+    else
+        gSpecialVar_Result = HANDOVER_OK;
+}
+
+// special RemovePartyMonAtSlot: takes the party member in slot VAR_0x8008 out of the
+// party and closes the gap. Never removes the last member (VAR_RESULT FALSE then).
+void RemovePartyMonAtSlot(void)
+{
+    if (gSpecialVar_0x8008 >= PARTY_SIZE || CalculatePlayerPartyCount() <= 1
+     || GetMonData(&gPlayerParty[gSpecialVar_0x8008], MON_DATA_SPECIES) == SPECIES_NONE)
+    {
+        gSpecialVar_Result = FALSE;
+        return;
+    }
+    ZeroMonData(&gPlayerParty[gSpecialVar_0x8008]);
+    CompactPartySlots();
+    CalculatePlayerPartyCount();
+    gSpecialVar_Result = TRUE;
+}
+
+// special SetPartyMonFriendship: party slot VAR_0x8004 gets friendship VAR_0x8005 (0-255).
+// Use the setmonfriendship macro.
+void SetPartyMonFriendship(void)
+{
+    u8 friendship = min(gSpecialVar_0x8005, MAX_FRIENDSHIP);
+
+    if (gSpecialVar_0x8004 < PARTY_SIZE)
+        SetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_FRIENDSHIP, &friendship);
 }

@@ -57,6 +57,8 @@ gSpecials::
 	def_special ObjectEventInteractionWaterBerryTree
 	def_special PlayerHasBerries
 	def_special GetTrainerBattleMode
+	def_special SetEarlyRivalBattleResult
+	def_special GetWhiteoutArrivalPlace
 	def_special ShowTrainerIntroSpeech
 	def_special ShowTrainerCantBattleSpeech
 	def_special GetTrainerFlag
@@ -329,6 +331,10 @@ gSpecials::
 	def_special AddCharisma
 	def_special RestPlayerParty
 	def_special GetCharismaTier
+	def_special CheckPartyMonForHandover
+	def_special RemovePartyMonAtSlot
+	def_special SetPartyMonFriendship
+	def_special GetGameHour
 	def_special CheckHourWindow
 	def_special GetTimeOfDayForScript
 	def_special ShowObjectDuringHours
