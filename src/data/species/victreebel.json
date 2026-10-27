@@ -17,7 +17,16 @@
     "safariZoneFleeRate": 0,
     "bodyColor": "GREEN",
     "cry": "sound/direct_sound_samples/cries/victreebel.bin",
-    "levelUpMoves": [[1, "VINE_WHIP"], [1, "SLEEP_POWDER"], [1, "GROWL"], [1, "RAZOR_LEAF"]],
+    "levelUpMoves": [
+        [1, "VINE_WHIP"],
+        [1, "WRAP"],
+        [1, "SLEEP_POWDER"],
+        [1, "ACID"],
+        [1, "STUN_SPORE"],
+        [28, "RAZOR_LEAF"],
+        [36, "SLAM"],
+        [44, "SOLAR_BEAM"]
+    ],
     "tmhm": [
         "SWORDS_DANCE",
         "TOXIC",

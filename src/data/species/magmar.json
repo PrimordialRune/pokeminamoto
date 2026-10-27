@@ -21,16 +21,12 @@
     "levelUpMoves": [
         [1, "EMBER"],
         [1, "LEER"],
-        [1, "SMOG"],
-        [1, "FIRE_PUNCH"],
-        [7, "LEER"],
-        [13, "SMOG"],
+        [7, "SMOG"],
         [19, "FIRE_PUNCH"],
         [25, "SMOKESCREEN"],
-        [33, "LIGHT_SCREEN"],
+        [33, "CONFUSE_RAY"],
         [41, "FLAMETHROWER"],
-        [49, "CONFUSE_RAY"],
-        [57, "FIRE_BLAST"]
+        [49, "FIRE_BLAST"]
     ],
     "tmhm": [
         "MEGA_PUNCH",

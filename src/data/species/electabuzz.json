@@ -21,13 +21,12 @@
     "levelUpMoves": [
         [1, "QUICK_ATTACK"],
         [1, "LEER"],
-        [1, "THUNDER_PUNCH"],
-        [9, "THUNDER_PUNCH"],
-        [17, "LIGHT_SCREEN"],
-        [25, "SWIFT"],
-        [36, "SCREECH"],
-        [47, "THUNDERBOLT"],
-        [58, "THUNDER"]
+        [1, "THUNDER_SHOCK"],
+        [25, "THUNDER_PUNCH"],
+        [30, "SCREECH"],
+        [36, "LIGHT_SCREEN"],
+        [43, "THUNDERBOLT"],
+        [54, "THUNDER"]
     ],
     "tmhm": [
         "MEGA_PUNCH",

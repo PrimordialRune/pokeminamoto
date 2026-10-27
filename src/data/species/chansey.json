@@ -21,16 +21,13 @@
     "levelUpMoves": [
         [1, "POUND"],
         [1, "GROWL"],
-        [5, "TAIL_WHIP"],
-        [9, "RECOVER"],
-        [13, "SOFT_BOILED"],
-        [17, "DOUBLE_SLAP"],
-        [23, "MINIMIZE"],
-        [29, "SING"],
-        [35, "EGG_BOMB"],
-        [41, "DEFENSE_CURL"],
-        [49, "LIGHT_SCREEN"],
-        [57, "DOUBLE_EDGE"]
+        [12, "DEFENSE_CURL"],
+        [20, "DOUBLE_SLAP"],
+        [24, "SING"],
+        [38, "MINIMIZE"],
+        [44, "SOFT_BOILED"],
+        [48, "LIGHT_SCREEN"],
+        [54, "DOUBLE_EDGE"]
     ],
     "tmhm": [
         "MEGA_PUNCH",

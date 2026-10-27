@@ -19,13 +19,13 @@
     "cry": "sound/direct_sound_samples/cries/aerodactyl.bin",
     "levelUpMoves": [
         [1, "WING_ATTACK"],
-        [8, "AGILITY"],
-        [15, "BITE"],
-        [22, "SUPERSONIC"],
-        [29, "ROCK_THROW"],
-        [36, "LEER"],
-        [43, "TAKE_DOWN"],
-        [50, "HYPER_BEAM"]
+        [1, "AGILITY"],
+        [12, "ROCK_THROW"],
+        [26, "SUPERSONIC"],
+        [32, "BITE"],
+        [40, "TAKE_DOWN"],
+        [48, "ROCK_SLIDE"],
+        [54, "HYPER_BEAM"]
     ],
     "tmhm": [
         "RAZOR_WIND",

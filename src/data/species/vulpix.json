@@ -21,16 +21,13 @@
     "evolutions": [{"method": "ITEM", "param": "FIRE_STONE", "into": "NINETALES"}],
     "levelUpMoves": [
         [1, "EMBER"],
-        [5, "TAIL_WHIP"],
-        [9, "ROAR"],
-        [13, "QUICK_ATTACK"],
-        [17, "EMBER"],
+        [1, "TAIL_WHIP"],
+        [8, "QUICK_ATTACK"],
+        [15, "ROAR"],
         [21, "CONFUSE_RAY"],
-        [25, "DISABLE"],
-        [29, "FLAMETHROWER"],
-        [33, "LIGHT_SCREEN"],
-        [37, "DISABLE"],
-        [41, "FIRE_SPIN"]
+        [28, "FLAMETHROWER"],
+        [35, "FIRE_SPIN"],
+        [45, "FIRE_BLAST"]
     ],
     "tmhm": [
         "TOXIC",

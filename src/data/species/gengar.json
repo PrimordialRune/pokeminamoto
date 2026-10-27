@@ -18,16 +18,11 @@
     "bodyColor": "PURPLE",
     "cry": "sound/direct_sound_samples/cries/gengar.bin",
     "levelUpMoves": [
-        [1, "HYPNOSIS"],
         [1, "LICK"],
-        [1, "DISABLE"],
-        [8, "DISABLE"],
-        [13, "LEER"],
-        [16, "GROWL"],
-        [21, "NIGHT_SHADE"],
-        [25, "MEGA_PUNCH"],
-        [31, "CONFUSE_RAY"],
-        [39, "DREAM_EATER"],
+        [1, "CONFUSE_RAY"],
+        [1, "NIGHT_SHADE"],
+        [1, "HYPNOSIS"],
+        [38, "DREAM_EATER"],
         [48, "SELF_DESTRUCT"]
     ],
     "tmhm": [

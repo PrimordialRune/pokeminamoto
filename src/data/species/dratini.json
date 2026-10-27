@@ -22,14 +22,11 @@
     "levelUpMoves": [
         [1, "WRAP"],
         [1, "LEER"],
-        [8, "THUNDER_WAVE"],
-        [15, "GUST"],
-        [22, "DRAGON_RAGE"],
-        [29, "SLAM"],
-        [36, "AGILITY"],
-        [43, "LIGHT_SCREEN"],
-        [50, "THRASH"],
-        [57, "HYPER_BEAM"]
+        [8, "DRAGON_RAGE"],
+        [12, "THUNDER_WAVE"],
+        [20, "AGILITY"],
+        [26, "SLAM"],
+        [50, "HYPER_BEAM"]
     ],
     "tmhm": [
         "TOXIC",

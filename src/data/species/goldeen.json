@@ -21,14 +21,13 @@
     "levelUpMoves": [
         [1, "PECK"],
         [1, "TAIL_WHIP"],
-        [1, "WATER_GUN"],
-        [10, "SUPERSONIC"],
-        [15, "HORN_ATTACK"],
-        [24, "THRASH"],
-        [29, "FURY_ATTACK"],
-        [38, "WATERFALL"],
-        [43, "HORN_DRILL"],
-        [52, "AGILITY"]
+        [10, "WATER_GUN"],
+        [19, "SUPERSONIC"],
+        [24, "HORN_ATTACK"],
+        [30, "FURY_ATTACK"],
+        [37, "WATERFALL"],
+        [45, "HORN_DRILL"],
+        [54, "AGILITY"]
     ],
     "tmhm": [
         "TOXIC",

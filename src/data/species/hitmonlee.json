@@ -18,19 +18,13 @@
     "bodyColor": "BROWN",
     "cry": "sound/direct_sound_samples/cries/hitmonlee.bin",
     "levelUpMoves": [
-        [1, "COUNTER"],
         [1, "DOUBLE_KICK"],
-        [6, "MEDITATE"],
-        [11, "ROLLING_KICK"],
-        [16, "JUMP_KICK"],
-        [20, "KARATE_CHOP"],
-        [21, "FOCUS_ENERGY"],
-        [26, "HI_JUMP_KICK"],
-        [31, "LEER"],
-        [36, "LEER"],
-        [41, "HARDEN"],
-        [46, "MEGA_KICK"],
-        [51, "COUNTER"]
+        [1, "MEDITATE"],
+        [33, "ROLLING_KICK"],
+        [38, "JUMP_KICK"],
+        [43, "FOCUS_ENERGY"],
+        [48, "HI_JUMP_KICK"],
+        [53, "MEGA_KICK"]
     ],
     "tmhm": [
         "MEGA_PUNCH",

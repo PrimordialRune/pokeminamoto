@@ -17,7 +17,15 @@
     "safariZoneFleeRate": 0,
     "bodyColor": "RED",
     "cry": "sound/direct_sound_samples/cries/vileplume.bin",
-    "levelUpMoves": [[1, "ABSORB"], [1, "RECOVER"], [1, "STUN_SPORE"], [1, "MEGA_DRAIN"], [44, "PETAL_DANCE"]],
+    "levelUpMoves": [
+        [1, "ABSORB"],
+        [1, "ACID"],
+        [1, "STUN_SPORE"],
+        [1, "SLEEP_POWDER"],
+        [1, "MEGA_DRAIN"],
+        [38, "PETAL_DANCE"],
+        [52, "SOLAR_BEAM"]
+    ],
     "tmhm": [
         "SWORDS_DANCE",
         "TOXIC",

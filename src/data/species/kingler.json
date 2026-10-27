@@ -22,14 +22,10 @@
         [1, "BUBBLE"],
         [1, "LEER"],
         [1, "VICE_GRIP"],
-        [5, "LEER"],
-        [12, "VICE_GRIP"],
-        [16, "HARDEN"],
-        [23, "SAND_ATTACK"],
-        [27, "STOMP"],
-        [38, "GUILLOTINE"],
-        [49, "HARDEN"],
-        [57, "CRABHAMMER"]
+        [1, "HARDEN"],
+        [22, "STOMP"],
+        [34, "GUILLOTINE"],
+        [38, "CRABHAMMER"]
     ],
     "tmhm": [
         "SWORDS_DANCE",

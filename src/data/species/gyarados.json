@@ -18,15 +18,14 @@
     "bodyColor": "BLUE",
     "cry": "sound/direct_sound_samples/cries/gyarados.bin",
     "levelUpMoves": [
-        [1, "THRASH"],
-        [20, "BITE"],
-        [25, "DRAGON_RAGE"],
-        [30, "LEER"],
-        [35, "GUST"],
-        [40, "HYDRO_PUMP"],
-        [45, "MIST"],
-        [50, "SWORDS_DANCE"],
-        [55, "HYPER_BEAM"]
+        [1, "TACKLE"],
+        [1, "BITE"],
+        [1, "WATER_GUN"],
+        [20, "DRAGON_RAGE"],
+        [25, "LEER"],
+        [28, "WATERFALL"],
+        [32, "HYDRO_PUMP"],
+        [41, "HYPER_BEAM"]
     ],
     "tmhm": [
         "TOXIC",

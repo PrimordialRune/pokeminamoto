@@ -20,13 +20,12 @@
     "evolutions": [{"method": "LEVEL", "param": 34, "into": "DEWGONG"}],
     "levelUpMoves": [
         [1, "HEADBUTT"],
-        [9, "GROWL"],
-        [17, "ICE_BEAM"],
+        [1, "GROWL"],
+        [10, "WATER_GUN"],
         [21, "AURORA_BEAM"],
         [29, "REST"],
-        [37, "TAKE_DOWN"],
-        [41, "ICE_BEAM"],
-        [49, "LIGHT_SCREEN"]
+        [33, "TAKE_DOWN"],
+        [41, "ICE_BEAM"]
     ],
     "tmhm": [
         "TOXIC",

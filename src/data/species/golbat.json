@@ -18,19 +18,14 @@
     "bodyColor": "PURPLE",
     "cry": "sound/direct_sound_samples/cries/golbat.bin",
     "levelUpMoves": [
-        [1, "SCREECH"],
         [1, "LEECH_LIFE"],
+        [1, "SCREECH"],
         [1, "SUPERSONIC"],
-        [1, "TACKLE"],
-        [6, "SUPERSONIC"],
-        [11, "TACKLE"],
-        [16, "BITE"],
-        [21, "WING_ATTACK"],
+        [1, "BITE"],
+        [1, "WING_ATTACK"],
         [28, "CONFUSE_RAY"],
-        [35, "GUST"],
-        [42, "LEER"],
-        [49, "BITE"],
-        [56, "HAZE"]
+        [36, "HAZE"],
+        [44, "MEGA_DRAIN"]
     ],
     "tmhm": [
         "RAZOR_WIND",

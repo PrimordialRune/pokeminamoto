@@ -19,14 +19,13 @@
     "cry": "sound/direct_sound_samples/cries/tauros.bin",
     "levelUpMoves": [
         [1, "TACKLE"],
-        [4, "TAIL_WHIP"],
-        [8, "RAGE"],
-        [13, "HORN_ATTACK"],
-        [19, "LEER"],
-        [26, "TACKLE"],
-        [34, "REST"],
-        [43, "THRASH"],
-        [53, "TAKE_DOWN"]
+        [5, "TAIL_WHIP"],
+        [10, "STOMP"],
+        [15, "HORN_ATTACK"],
+        [20, "LEER"],
+        [26, "RAGE"],
+        [34, "TAKE_DOWN"],
+        [43, "THRASH"]
     ],
     "tmhm": [
         "TOXIC",

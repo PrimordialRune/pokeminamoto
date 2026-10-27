@@ -20,15 +20,14 @@
     "evolutions": [{"method": "ITEM", "param": "LEAF_STONE", "into": "EXEGGUTOR"}],
     "levelUpMoves": [
         [1, "BARRAGE"],
-        [1, "SCREECH"],
         [1, "HYPNOSIS"],
-        [7, "REFLECT"],
-        [13, "LEECH_SEED"],
-        [19, "CONFUSION"],
-        [25, "STUN_SPORE"],
-        [31, "POISON_POWDER"],
-        [37, "SLEEP_POWDER"],
-        [43, "SOLAR_BEAM"]
+        [9, "CONFUSION"],
+        [13, "REFLECT"],
+        [19, "LEECH_SEED"],
+        [27, "STUN_SPORE"],
+        [37, "POISON_POWDER"],
+        [43, "SOLAR_BEAM"],
+        [48, "SLEEP_POWDER"]
     ],
     "tmhm": [
         "TOXIC",

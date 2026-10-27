@@ -21,15 +21,12 @@
         [1, "SCRATCH"],
         [1, "HARDEN"],
         [1, "ABSORB"],
-        [13, "ABSORB"],
-        [19, "LEER"],
-        [25, "SAND_ATTACK"],
-        [31, "SAND_ATTACK"],
-        [37, "HARDEN"],
-        [40, "SLASH"],
-        [46, "SCREECH"],
-        [55, "MEGA_DRAIN"],
-        [65, "ROCK_THROW"]
+        [1, "ROCK_THROW"],
+        [26, "LEER"],
+        [32, "SLASH"],
+        [38, "MEGA_DRAIN"],
+        [46, "ROCK_SLIDE"],
+        [52, "HYDRO_PUMP"]
     ],
     "tmhm": [
         "RAZOR_WIND",

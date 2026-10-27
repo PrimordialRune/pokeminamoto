@@ -18,7 +18,18 @@
     "safariZoneFleeRate": 0,
     "bodyColor": "PURPLE",
     "cry": "sound/direct_sound_samples/cries/starmie.bin",
-    "levelUpMoves": [[1, "WATER_GUN"], [1, "TACKLE"], [1, "RECOVER"], [1, "SWIFT"], [33, "CONFUSE_RAY"]],
+    "levelUpMoves": [
+        [1, "TACKLE"],
+        [1, "WATER_GUN"],
+        [1, "HARDEN"],
+        [1, "RECOVER"],
+        [27, "SWIFT"],
+        [32, "BUBBLE_BEAM"],
+        [35, "PSYBEAM"],
+        [37, "MINIMIZE"],
+        [42, "LIGHT_SCREEN"],
+        [47, "HYDRO_PUMP"]
+    ],
     "tmhm": [
         "TOXIC",
         "TAKE_DOWN",

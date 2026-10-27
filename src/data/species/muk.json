@@ -19,17 +19,15 @@
     "bodyColor": "PURPLE",
     "cry": "sound/direct_sound_samples/cries/muk.bin",
     "levelUpMoves": [
-        [1, "POISON_GAS"],
         [1, "POUND"],
-        [1, "HARDEN"],
-        [4, "HARDEN"],
-        [8, "DISABLE"],
-        [13, "SLUDGE"],
-        [19, "MINIMIZE"],
-        [26, "SCREECH"],
-        [34, "ACID_ARMOR"],
-        [47, "SLUDGE"],
-        [61, "SELF_DESTRUCT"]
+        [1, "DISABLE"],
+        [1, "POISON_GAS"],
+        [1, "SLUDGE"],
+        [13, "MINIMIZE"],
+        [24, "HARDEN"],
+        [30, "SCREECH"],
+        [38, "ACID_ARMOR"],
+        [50, "BODY_SLAM"]
     ],
     "tmhm": [
         "TOXIC",

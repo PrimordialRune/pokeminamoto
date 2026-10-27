@@ -18,15 +18,12 @@
     "bodyColor": "YELLOW",
     "cry": "sound/direct_sound_samples/cries/zapdos.bin",
     "levelUpMoves": [
-        [1, "PECK"],
         [1, "THUNDER_SHOCK"],
-        [13, "THUNDER_WAVE"],
-        [25, "AGILITY"],
-        [37, "AGILITY"],
-        [49, "DRILL_PECK"],
-        [61, "THUNDER_WAVE"],
-        [73, "LIGHT_SCREEN"],
-        [85, "THUNDER"]
+        [1, "DRILL_PECK"],
+        [38, "THUNDERBOLT"],
+        [51, "THUNDER"],
+        [55, "AGILITY"],
+        [60, "LIGHT_SCREEN"]
     ],
     "tmhm": [
         "RAZOR_WIND",

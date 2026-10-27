@@ -20,15 +20,14 @@
     "evolutions": [{"method": "LEVEL", "param": 21, "into": "WEEPINBELL"}],
     "levelUpMoves": [
         [1, "VINE_WHIP"],
-        [6, "GROWTH"],
-        [11, "WRAP"],
-        [15, "SLEEP_POWDER"],
-        [17, "POISON_POWDER"],
-        [19, "STUN_SPORE"],
-        [23, "ACID"],
-        [30, "GROWL"],
-        [37, "RAZOR_LEAF"],
-        [45, "SLAM"]
+        [7, "GROWTH"],
+        [13, "WRAP"],
+        [15, "POISON_POWDER"],
+        [18, "SLEEP_POWDER"],
+        [21, "STUN_SPORE"],
+        [24, "ACID"],
+        [33, "RAZOR_LEAF"],
+        [42, "SLAM"]
     ],
     "tmhm": [
         "SWORDS_DANCE",

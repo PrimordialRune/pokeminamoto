@@ -18,7 +18,7 @@
     "bodyColor": "RED",
     "cry": "sound/direct_sound_samples/cries/magikarp.bin",
     "evolutions": [{"method": "LEVEL", "param": 20, "into": "GYARADOS"}],
-    "levelUpMoves": [[1, "SPLASH"], [15, "TACKLE"], [30, "THRASH"]],
+    "levelUpMoves": [[1, "SPLASH"], [15, "TACKLE"]],
     "tmhm": [],
     "tutor": [],
     "pokedex": {

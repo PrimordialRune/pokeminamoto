@@ -22,15 +22,12 @@
         [1, "VINE_WHIP"],
         [1, "GROWTH"],
         [1, "WRAP"],
-        [6, "GROWTH"],
-        [11, "WRAP"],
-        [15, "SLEEP_POWDER"],
-        [17, "POISON_POWDER"],
-        [19, "STUN_SPORE"],
+        [15, "POISON_POWDER"],
+        [18, "SLEEP_POWDER"],
+        [21, "STUN_SPORE"],
         [24, "ACID"],
-        [33, "GROWL"],
-        [42, "RAZOR_LEAF"],
-        [54, "SLAM"]
+        [36, "RAZOR_LEAF"],
+        [46, "SLAM"]
     ],
     "tmhm": [
         "SWORDS_DANCE",

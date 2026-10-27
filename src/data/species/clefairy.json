@@ -22,17 +22,12 @@
     "levelUpMoves": [
         [1, "POUND"],
         [1, "GROWL"],
-        [5, "DISABLE"],
-        [9, "SING"],
-        [13, "DOUBLE_SLAP"],
-        [17, "MIMIC"],
-        [21, "MINIMIZE"],
-        [25, "DEFENSE_CURL"],
-        [29, "METRONOME"],
-        [33, "HARDEN"],
-        [37, "RECOVER"],
-        [41, "LIGHT_SCREEN"],
-        [45, "MEGA_PUNCH"]
+        [13, "SING"],
+        [18, "DOUBLE_SLAP"],
+        [24, "MINIMIZE"],
+        [31, "METRONOME"],
+        [39, "DEFENSE_CURL"],
+        [48, "LIGHT_SCREEN"]
     ],
     "tmhm": [
         "MEGA_PUNCH",

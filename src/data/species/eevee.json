@@ -25,13 +25,10 @@
     "levelUpMoves": [
         [1, "TACKLE"],
         [1, "TAIL_WHIP"],
-        [1, "GROWL"],
         [8, "SAND_ATTACK"],
-        [16, "GROWL"],
-        [23, "QUICK_ATTACK"],
-        [30, "BITE"],
-        [36, "TELEPORT"],
-        [42, "TAKE_DOWN"]
+        [16, "QUICK_ATTACK"],
+        [23, "BITE"],
+        [36, "TAKE_DOWN"]
     ],
     "tmhm": [
         "TOXIC",

@@ -18,15 +18,12 @@
     "bodyColor": "BLUE",
     "cry": "sound/direct_sound_samples/cries/articuno.bin",
     "levelUpMoves": [
-        [1, "GUST"],
+        [1, "PECK"],
         [1, "ICE_BEAM"],
-        [13, "MIST"],
-        [25, "AGILITY"],
-        [37, "LEER"],
-        [49, "ICE_BEAM"],
-        [61, "REFLECT"],
-        [73, "BLIZZARD"],
-        [85, "BLIZZARD"]
+        [38, "WING_ATTACK"],
+        [51, "BLIZZARD"],
+        [55, "AGILITY"],
+        [60, "MIST"]
     ],
     "tmhm": [
         "RAZOR_WIND",

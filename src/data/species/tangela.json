@@ -18,18 +18,16 @@
     "bodyColor": "BLUE",
     "cry": "sound/direct_sound_samples/cries/tangela.bin",
     "levelUpMoves": [
-        [1, "LEECH_SEED"],
         [1, "CONSTRICT"],
-        [4, "SLEEP_POWDER"],
-        [10, "ABSORB"],
-        [13, "GROWTH"],
-        [19, "POISON_POWDER"],
-        [22, "VINE_WHIP"],
-        [28, "BIND"],
-        [31, "MEGA_DRAIN"],
-        [37, "STUN_SPORE"],
-        [40, "SLAM"],
-        [46, "GROWL"]
+        [1, "BIND"],
+        [10, "VINE_WHIP"],
+        [15, "ABSORB"],
+        [21, "POISON_POWDER"],
+        [27, "STUN_SPORE"],
+        [33, "SLEEP_POWDER"],
+        [36, "SLAM"],
+        [42, "GROWTH"],
+        [49, "MEGA_DRAIN"]
     ],
     "tmhm": [
         "SWORDS_DANCE",

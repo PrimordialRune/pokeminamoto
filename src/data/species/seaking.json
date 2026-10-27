@@ -22,13 +22,11 @@
         [1, "TAIL_WHIP"],
         [1, "WATER_GUN"],
         [1, "SUPERSONIC"],
-        [10, "SUPERSONIC"],
-        [15, "HORN_ATTACK"],
-        [24, "THRASH"],
-        [29, "FURY_ATTACK"],
-        [41, "WATERFALL"],
-        [49, "HORN_DRILL"],
-        [61, "AGILITY"]
+        [24, "HORN_ATTACK"],
+        [30, "FURY_ATTACK"],
+        [39, "WATERFALL"],
+        [48, "HORN_DRILL"],
+        [54, "AGILITY"]
     ],
     "tmhm": [
         "TOXIC",

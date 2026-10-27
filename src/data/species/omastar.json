@@ -18,18 +18,14 @@
     "bodyColor": "BLUE",
     "cry": "sound/direct_sound_samples/cries/omastar.bin",
     "levelUpMoves": [
-        [1, "CONSTRICT"],
+        [1, "WATER_GUN"],
         [1, "WITHDRAW"],
-        [1, "BITE"],
-        [13, "BITE"],
-        [19, "WATER_GUN"],
-        [25, "SAND_ATTACK"],
-        [31, "LEER"],
-        [37, "HARDEN"],
-        [40, "SPIKE_CANNON"],
-        [46, "GROWL"],
-        [55, "ROCK_THROW"],
-        [65, "HYDRO_PUMP"]
+        [1, "ROCK_THROW"],
+        [1, "HORN_ATTACK"],
+        [30, "LEER"],
+        [36, "SPIKE_CANNON"],
+        [46, "HYDRO_PUMP"],
+        [54, "ROCK_SLIDE"]
     ],
     "tmhm": [
         "TOXIC",

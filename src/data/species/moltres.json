@@ -18,15 +18,13 @@
     "bodyColor": "YELLOW",
     "cry": "sound/direct_sound_samples/cries/moltres.bin",
     "levelUpMoves": [
-        [1, "WING_ATTACK"],
-        [1, "EMBER"],
-        [13, "FIRE_SPIN"],
-        [25, "AGILITY"],
-        [37, "HARDEN"],
-        [49, "FLAMETHROWER"],
-        [61, "LIGHT_SCREEN"],
-        [73, "FLAMETHROWER"],
-        [85, "SKY_ATTACK"]
+        [1, "PECK"],
+        [1, "FIRE_SPIN"],
+        [38, "WING_ATTACK"],
+        [45, "FLAMETHROWER"],
+        [51, "LEER"],
+        [55, "AGILITY"],
+        [60, "SKY_ATTACK"]
     ],
     "tmhm": [
         "RAZOR_WIND",

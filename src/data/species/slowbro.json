@@ -19,18 +19,14 @@
     "bodyColor": "PINK",
     "cry": "sound/direct_sound_samples/cries/slowbro.bin",
     "levelUpMoves": [
-        [1, "GROWL"],
-        [1, "HYPNOSIS"],
-        [1, "TACKLE"],
-        [1, "GROWL"],
-        [6, "GROWL"],
-        [15, "WATER_GUN"],
-        [20, "CONFUSION"],
-        [29, "DISABLE"],
-        [34, "HEADBUTT"],
+        [1, "CONFUSION"],
+        [1, "WATER_GUN"],
+        [1, "DISABLE"],
+        [1, "HEADBUTT"],
+        [29, "GROWL"],
         [37, "WITHDRAW"],
-        [46, "AMNESIA"],
-        [54, "PSYCHIC"]
+        [42, "AMNESIA"],
+        [48, "PSYCHIC"]
     ],
     "tmhm": [
         "MEGA_PUNCH",

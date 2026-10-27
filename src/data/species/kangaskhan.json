@@ -19,15 +19,12 @@
     "cry": "sound/direct_sound_samples/cries/kangaskhan.bin",
     "levelUpMoves": [
         [1, "COMET_PUNCH"],
-        [1, "LEER"],
-        [7, "BITE"],
-        [13, "TAIL_WHIP"],
-        [19, "QUICK_ATTACK"],
-        [25, "MEGA_PUNCH"],
-        [31, "RAGE"],
-        [37, "HARDEN"],
-        [43, "DIZZY_PUNCH"],
-        [49, "COUNTER"]
+        [1, "RAGE"],
+        [26, "BITE"],
+        [31, "TAIL_WHIP"],
+        [36, "MEGA_PUNCH"],
+        [41, "LEER"],
+        [46, "DIZZY_PUNCH"]
     ],
     "tmhm": [
         "MEGA_PUNCH",

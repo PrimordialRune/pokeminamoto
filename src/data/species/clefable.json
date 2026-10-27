@@ -18,7 +18,17 @@
     "safariZoneFleeRate": 0,
     "bodyColor": "PINK",
     "cry": "sound/direct_sound_samples/cries/clefable.bin",
-    "levelUpMoves": [[1, "SING"], [1, "DOUBLE_SLAP"], [1, "MINIMIZE"], [1, "METRONOME"]],
+    "levelUpMoves": [
+        [1, "POUND"],
+        [1, "GROWL"],
+        [1, "SING"],
+        [1, "DOUBLE_SLAP"],
+        [24, "MINIMIZE"],
+        [31, "METRONOME"],
+        [39, "DEFENSE_CURL"],
+        [44, "BODY_SLAM"],
+        [48, "LIGHT_SCREEN"]
+    ],
     "tmhm": [
         "MEGA_PUNCH",
         "MEGA_KICK",

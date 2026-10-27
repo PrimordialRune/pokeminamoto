@@ -21,15 +21,14 @@
     "levelUpMoves": [
         [1, "TACKLE"],
         [1, "DISABLE"],
-        [1, "LEER"],
-        [9, "SUPERSONIC"],
-        [17, "CONFUSION"],
+        [7, "SUPERSONIC"],
+        [13, "CONFUSION"],
+        [15, "LEECH_LIFE"],
         [20, "POISON_POWDER"],
-        [25, "LEECH_LIFE"],
-        [28, "STUN_SPORE"],
-        [33, "PSYBEAM"],
-        [36, "SLEEP_POWDER"],
-        [41, "PSYCHIC"]
+        [30, "STUN_SPORE"],
+        [36, "PSYBEAM"],
+        [42, "SLEEP_POWDER"],
+        [50, "PSYCHIC"]
     ],
     "tmhm": [
         "TOXIC",

@@ -20,17 +20,12 @@
     "cry": "sound/direct_sound_samples/cries/alakazam.bin",
     "levelUpMoves": [
         [1, "TELEPORT"],
-        [1, "KINESIS"],
         [1, "CONFUSION"],
-        [16, "CONFUSION"],
-        [18, "DISABLE"],
-        [21, "PSYBEAM"],
-        [23, "REFLECT"],
-        [25, "RECOVER"],
-        [30, "PSYCHIC"],
-        [33, "MEDITATE"],
-        [36, "PSYCHIC"],
-        [43, "MIMIC"]
+        [1, "DISABLE"],
+        [1, "PSYBEAM"],
+        [27, "RECOVER"],
+        [38, "PSYCHIC"],
+        [42, "REFLECT"]
     ],
     "tmhm": [
         "MEGA_PUNCH",

@@ -21,13 +21,11 @@
     "levelUpMoves": [
         [1, "BUBBLE"],
         [5, "LEER"],
-        [12, "VICE_GRIP"],
+        [10, "VICE_GRIP"],
         [16, "HARDEN"],
-        [23, "SAND_ATTACK"],
-        [27, "STOMP"],
-        [34, "GUILLOTINE"],
-        [41, "HARDEN"],
-        [45, "CRABHAMMER"]
+        [22, "STOMP"],
+        [28, "GUILLOTINE"],
+        [36, "CRABHAMMER"]
     ],
     "tmhm": [
         "SWORDS_DANCE",

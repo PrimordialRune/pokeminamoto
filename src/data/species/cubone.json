@@ -21,17 +21,14 @@
     "evolutions": [{"method": "LEVEL", "param": 28, "into": "MAROWAK"}],
     "levelUpMoves": [
         [1, "GROWL"],
-        [5, "TAIL_WHIP"],
-        [9, "BONE_CLUB"],
-        [13, "HEADBUTT"],
-        [17, "LEER"],
-        [21, "FOCUS_ENERGY"],
+        [5, "LEER"],
+        [8, "BONE_CLUB"],
+        [13, "FOCUS_ENERGY"],
+        [19, "HEADBUTT"],
         [25, "BONEMERANG"],
-        [29, "RAGE"],
-        [33, "SLASH"],
-        [37, "THRASH"],
-        [41, "BONE_CLUB"],
-        [45, "DOUBLE_EDGE"]
+        [31, "THRASH"],
+        [38, "RAGE"],
+        [44, "DOUBLE_EDGE"]
     ],
     "tmhm": [
         "MEGA_PUNCH",

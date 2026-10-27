@@ -20,16 +20,13 @@
     "evolutions": [{"method": "ITEM", "param": "MOON_STONE", "into": "WIGGLYTUFF"}],
     "levelUpMoves": [
         [1, "SING"],
-        [4, "DEFENSE_CURL"],
-        [9, "POUND"],
-        [14, "DISABLE"],
-        [19, "TACKLE"],
-        [24, "DOUBLE_SLAP"],
-        [29, "REST"],
-        [34, "BODY_SLAM"],
-        [39, "MIMIC"],
-        [44, "HYPER_BEAM"],
-        [49, "DOUBLE_EDGE"]
+        [1, "POUND"],
+        [9, "DISABLE"],
+        [14, "DEFENSE_CURL"],
+        [19, "DOUBLE_SLAP"],
+        [24, "REST"],
+        [29, "BODY_SLAM"],
+        [39, "DOUBLE_EDGE"]
     ],
     "tmhm": [
         "MEGA_PUNCH",

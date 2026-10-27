@@ -18,14 +18,7 @@
     "safariZoneFleeRate": 0,
     "bodyColor": "PINK",
     "cry": "sound/direct_sound_samples/cries/mew.bin",
-    "levelUpMoves": [
-        [1, "POUND"],
-        [10, "TRANSFORM"],
-        [20, "MEGA_PUNCH"],
-        [30, "METRONOME"],
-        [40, "PSYCHIC"],
-        [50, "ROCK_THROW"]
-    ],
+    "levelUpMoves": [[1, "POUND"], [10, "TRANSFORM"], [20, "MEGA_PUNCH"], [30, "METRONOME"], [40, "PSYCHIC"]],
     "tmhm": [
         "MEGA_PUNCH",
         "RAZOR_WIND",

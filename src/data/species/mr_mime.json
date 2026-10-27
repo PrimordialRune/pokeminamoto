@@ -20,20 +20,12 @@
     "cry": "sound/direct_sound_samples/cries/mr_mime.bin",
     "levelUpMoves": [
         [1, "BARRIER"],
-        [5, "CONFUSION"],
-        [9, "SUBSTITUTE"],
-        [13, "MEDITATE"],
-        [17, "DOUBLE_SLAP"],
-        [21, "LIGHT_SCREEN"],
-        [21, "REFLECT"],
-        [25, "DISABLE"],
-        [29, "PSYBEAM"],
-        [33, "RECOVER"],
-        [37, "MIMIC"],
-        [41, "MIMIC"],
-        [45, "PSYCHIC"],
-        [49, "TELEPORT"],
-        [53, "LIGHT_SCREEN"]
+        [1, "CONFUSION"],
+        [15, "LIGHT_SCREEN"],
+        [23, "DOUBLE_SLAP"],
+        [31, "MEDITATE"],
+        [39, "SUBSTITUTE"],
+        [45, "PSYBEAM"]
     ],
     "tmhm": [
         "MEGA_PUNCH",

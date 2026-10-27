@@ -21,14 +21,12 @@
     "levelUpMoves": [
         [1, "POUND"],
         [1, "HYPNOSIS"],
-        [10, "DISABLE"],
-        [18, "CONFUSION"],
-        [25, "HEADBUTT"],
-        [31, "POISON_GAS"],
-        [36, "MEDITATE"],
-        [40, "PSYCHIC"],
-        [43, "MEDITATE"],
-        [45, "PSYCHIC"]
+        [10, "CONFUSION"],
+        [14, "DISABLE"],
+        [24, "HEADBUTT"],
+        [29, "POISON_GAS"],
+        [32, "PSYCHIC"],
+        [37, "MEDITATE"]
     ],
     "tmhm": [
         "MEGA_PUNCH",

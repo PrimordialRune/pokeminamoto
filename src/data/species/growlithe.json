@@ -23,13 +23,12 @@
         [1, "BITE"],
         [1, "ROAR"],
         [7, "EMBER"],
-        [13, "LEER"],
-        [19, "LEER"],
-        [25, "TAKE_DOWN"],
-        [31, "EMBER"],
-        [37, "GROWL"],
-        [43, "AGILITY"],
-        [49, "FLAMETHROWER"]
+        [15, "AGILITY"],
+        [20, "HEADBUTT"],
+        [25, "FIRE_SPIN"],
+        [32, "DOUBLE_EDGE"],
+        [38, "FLAMETHROWER"],
+        [49, "FIRE_BLAST"]
     ],
     "tmhm": [
         "TOXIC",

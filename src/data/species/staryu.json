@@ -21,17 +21,14 @@
     "evolutions": [{"method": "ITEM", "param": "WATER_STONE", "into": "STARMIE"}],
     "levelUpMoves": [
         [1, "TACKLE"],
-        [1, "HARDEN"],
-        [6, "WATER_GUN"],
-        [10, "TACKLE"],
-        [15, "RECOVER"],
-        [19, "HARDEN"],
-        [24, "SWIFT"],
-        [28, "BUBBLE_BEAM"],
-        [33, "MINIMIZE"],
-        [37, "LIGHT_SCREEN"],
-        [42, "HARDEN"],
-        [46, "HYDRO_PUMP"]
+        [8, "WATER_GUN"],
+        [15, "HARDEN"],
+        [22, "RECOVER"],
+        [27, "SWIFT"],
+        [32, "BUBBLE_BEAM"],
+        [37, "MINIMIZE"],
+        [42, "LIGHT_SCREEN"],
+        [47, "HYDRO_PUMP"]
     ],
     "tmhm": [
         "TOXIC",

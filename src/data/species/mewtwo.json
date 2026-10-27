@@ -20,15 +20,12 @@
     "levelUpMoves": [
         [1, "CONFUSION"],
         [1, "DISABLE"],
-        [11, "BARRIER"],
-        [22, "SWIFT"],
-        [33, "MEDITATE"],
-        [44, "PSYCHIC"],
-        [55, "MIST"],
+        [1, "SWIFT"],
+        [63, "BARRIER"],
         [66, "PSYCHIC"],
-        [77, "AMNESIA"],
-        [88, "RECOVER"],
-        [99, "LIGHT_SCREEN"]
+        [70, "RECOVER"],
+        [75, "MIST"],
+        [81, "AMNESIA"]
     ],
     "tmhm": [
         "MEGA_PUNCH",
