@@ -189,7 +189,7 @@ New Kanto tilesets are built with Porytiles 2.0.0 (installed by `tools/setup-clo
 
 ### Scripting
 
-Map and shared scripts are written in [Poryscript](https://github.com/huderlem/poryscript): edit `data/maps/*/scripts.pory` and `data/scripts/*.pory`. The generated `scripts.inc` and `data/scripts/*.inc` files are gitignored and rebuilt by `make` (or `make generated`) with the committed Linux binary `tools/poryscript/poryscript`. The `preproc` tool handles custom string encoding and script macros. Script constants live in `include/constants/`.
+Map and shared scripts are written in [Poryscript](https://github.com/huderlem/poryscript): edit `data/maps/*/scripts.pory` and `data/scripts/*.pory`. The generated `scripts.inc` and `data/scripts/*.inc` files are gitignored and rebuilt by `make` (or `make generated`) with the committed Linux binary `tools/poryscript/poryscript`. Dialogue goes in a separate `text.en.pory` per map (translations in `text.<lang>.pory`, one language per ROM via `make LANGUAGE=ITALIAN`): see `docs/engineering/map-text.md`. The `preproc` tool handles custom string encoding and script macros. Script constants live in `include/constants/`.
 
 ### Memory Layout
 

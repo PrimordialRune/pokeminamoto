@@ -155,6 +155,14 @@ LANGUAGE       ?= ENGLISH
 PORY_SRCS      := $(wildcard data/maps/*/scripts.pory) $(wildcard data/scripts/*.pory)
 PORY_INCS      := $(PORY_SRCS:.pory=.inc)
 
+# Per-language map text (docs/engineering/map-text.md): each data/maps/X/text.en.pory,
+# with X/text.<code>.pory laid over it for LANGUAGE, compiles to X/text.inc.
+LANG_CODE      := $(or $(word 2,$(subst :, ,$(filter $(LANGUAGE):%,ENGLISH:en ITALIAN:it FRENCH:fr GERMAN:de SPANISH:es JAPANESE:ja))),en)
+TEXT_DIRS      := $(patsubst %/text.en.pory,%,$(wildcard data/maps/*/text.en.pory))
+TEXT_INCS      := $(addsuffix /text.inc,$(TEXT_DIRS))
+# Holds the LANGUAGE of the last build, so script text rebuilds when it changes
+LANG_STAMP     := $(BUILD_DIR)/language
+
 PERL := perl
 
 MAKEFLAGS += --no-print-directory
@@ -268,6 +276,7 @@ tidy:
 	rm -f $(ROM) $(ELF) $(MAP)
 	rm -rf $(OBJ_DIR)
 	@$(if $(PORY_INCS),rm -f $(PORY_INCS))
+	@$(if $(TEXT_INCS),rm -f $(TEXT_INCS))
 
 # Other rules
 include graphics_file_rules.mk
@@ -300,8 +309,16 @@ generated: $(AUTO_GEN_TARGETS)
 $(PORYSCRIPT):
 	@tools/poryscript/fetch.sh
 
-%.inc: %.pory $(PORYSCRIPT_CC) $(PORYSCRIPT_FC) | $(PORYSCRIPT)
+%.inc: %.pory $(PORYSCRIPT_CC) $(PORYSCRIPT_FC) $(LANG_STAMP) | $(PORYSCRIPT)
 	$(PORYSCRIPT) -i $< -o $@ -cc $(PORYSCRIPT_CC) -fc $(PORYSCRIPT_FC) -lm=false -s LANGUAGE=$(LANGUAGE)
+
+$(LANG_STAMP): FORCE
+	@mkdir -p $(@D); [ "$$(cat $@ 2>/dev/null)" = "$(LANGUAGE)" ] || echo "$(LANGUAGE)" > $@
+
+$(foreach d,$(TEXT_DIRS),$(eval $d/text.inc: $d/text.en.pory $(wildcard $d/text.$(LANG_CODE).pory)))
+$(TEXT_INCS): %/text.inc: tools/textlang.py $(PORYSCRIPT_CC) $(PORYSCRIPT_FC) $(LANG_STAMP) | $(PORYSCRIPT)
+	@python3 tools/textlang.py merge $* $(LANG_CODE) -o $(BUILD_DIR)/text/$(subst /,_,$*).pory
+	$(PORYSCRIPT) -i $(BUILD_DIR)/text/$(subst /,_,$*).pory -o $@ -cc $(PORYSCRIPT_CC) -fc $(PORYSCRIPT_FC) -lm=false -s LANGUAGE=$(LANGUAGE)
 
 clean-generated:
 	@rm -f $(AUTO_GEN_TARGETS)
@@ -367,7 +384,7 @@ ifneq ($(NODEP),1)
 endif
 
 # Ensure all .pory sources are compiled to .inc before event_scripts.o is assembled
-$(DATA_ASM_BUILDDIR)/event_scripts.o: $(PORY_INCS)
+$(DATA_ASM_BUILDDIR)/event_scripts.o: $(PORY_INCS) $(TEXT_INCS)
 
 # Linker script
 LD_SCRIPT := ld_script_modern.ld
