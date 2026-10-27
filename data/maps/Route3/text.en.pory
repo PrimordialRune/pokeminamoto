@@ -1,7 +1,39 @@
 // Route3 dialogue (English). Logic: scripts.pory. Translations: text.<lang>.pory
 // with the same block names; see docs/engineering/map-text.md.
+// Owner: nibi-spine.
 
-// PLACEHOLDER (thread "Define Minamoto narrative direction"): hiker at the Route 3 rockfall wall.
+// R03-001. [R/G]
+text Route3_Text_EdgeSign {
+    format("Route 3\nNibi - Otsukimi")
+}
+
+// PLACEHOLDER (thread "Define Minamoto narrative direction", Q112): hiker at the Route 3 rockfall wall.
 text Route3_Text_WallHiker {
-    format("The Otsukimi road's shut past here. Rockfall took the whole pass.\pYou'll have to turn back toward NIBI for now.")
+    format("The Otsukimi road's shut past here. Rockfall. They say after the snow.")
+}
+
+// R03-501. [R/G, verify] PLACEHOLDER party in trainers.party (thread "Design movesets and encounters").
+text Route3_Text_BugCatcher1Intro {
+    format("Hey! I met you in Tokiwa Forest!")
+}
+
+text Route3_Text_BugCatcher1Defeat {
+    format("Again! The forest was kinder to me.")
+}
+
+text Route3_Text_BugCatcher1After {
+    format("The road ends at the rockfall. I already looked.")
+}
+
+// R03-301. [Tokiwa v5 §14, §17, §18] + [parked: Field Research]
+text Route3_Text_GeodudeDay {
+    format("A GEODUDE. It faces away from the mountain.")
+}
+
+text Route3_Text_GeodudeNite {
+    format("A GEODUDE. It's dug itself into the gravel.")
+}
+
+text Route3_Text_GeodudeDisturb {
+    format("Disturb it?")
 }

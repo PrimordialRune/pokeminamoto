@@ -1,2 +1,21 @@
-// PewterCity_PokemonCenter_2F dialogue (English). Logic: scripts.pory. Translations: text.<lang>.pory
-// with the same block names; see docs/engineering/map-text.md.
+// Akagi-ya 2F (PewterCity_PokemonCenter_2F) dialogue (English). Logic: scripts.pory. Translations:
+// text.<lang>.pory with the same block names; see docs/engineering/map-text.md.
+// Owner: nibi-spine.
+
+// NIB-123, Ken in the Ume room, NITE. [new; bible 1.23] He lost to Takeshi and stays to train.
+text NibiInn2F_Text_KenNite {
+    format("Shigeru left this morning. He beat TAKESHI first try. He didn't wait for me either.")
+}
+
+text NibiInn2F_Text_KenB2 {
+    format("You beat him? ...I'll try again tomorrow.")
+}
+
+// NIB-213. [Nibi v3 §7]
+text NibiInn2F_Text_UmeWindow {
+    format("The mountain looks close at night, when the fog cuts it off from everything else.")
+}
+
+text NibiInn2F_Text_Corridor {
+    format("Under the paper there's another, with a flower pattern. It must be much older.")
+}
