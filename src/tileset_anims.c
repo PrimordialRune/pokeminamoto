@@ -1224,3 +1224,5 @@ static void BlendAnimPalette_BattleDome_FloorLightsNoBlend(u16 timer)
 
 // [Porytiles] Auto-generated include. Do not remove.
 #include "porytiles_generated/tilesets/kanto/generated_anim_code.h"
+
+#include "data/tileset_anims_frlg.h"

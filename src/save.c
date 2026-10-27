@@ -11,6 +11,7 @@
 #include "link.h"
 #include "malloc.h"
 #include "regress.h"
+#include "constants/event_objects.h"
 #include "constants/game_stat.h"
 
 static u16 CalculateChecksum(void *, u16);
@@ -160,9 +161,51 @@ static bool8 MigrateSave_1To2(u8 *image)
     return TRUE;
 }
 
+// Version 3 widened object event graphics ids to u16 without changing any
+// sizes: in struct ObjectEvent graphicsId moved to 0x06 (movementType to 0x05,
+// trainerType to 0x23), in struct ObjectEventTemplate it moved to 0x02 (kind
+// to 0x01). The dynamic ids (OBJ_EVENT_GFX_VAR_*) moved up from 240.
+#define OLD_OBJ_EVENT_GFX_VARS 240
+static u16 MigrateGraphicsId_2To3(u8 graphicsId)
+{
+    if (graphicsId >= OLD_OBJ_EVENT_GFX_VARS)
+        return OBJ_EVENT_GFX_VARS + graphicsId - OLD_OBJ_EVENT_GFX_VARS;
+    return graphicsId;
+}
+
+static bool8 MigrateSave_2To3(u8 *image)
+{
+    u8 *saveBlock1 = &image[SECTOR_ID_SAVEBLOCK1_START * SECTOR_DATA_SIZE];
+    u32 i;
+
+    for (i = 0; i < OBJECT_EVENTS_COUNT; i++)
+    {
+        u8 *obj = &saveBlock1[offsetof(struct SaveBlock1, objectEvents) + i * sizeof(struct ObjectEvent)];
+        u16 graphicsId = MigrateGraphicsId_2To3(obj[0x05]);
+        u8 movementType = obj[0x06];
+        u8 trainerType = obj[0x07];
+
+        obj[0x05] = movementType;
+        obj[0x06] = graphicsId & 0xFF;
+        obj[0x07] = graphicsId >> 8;
+        obj[0x23] = trainerType;
+    }
+    for (i = 0; i < OBJECT_EVENT_TEMPLATES_COUNT; i++)
+    {
+        u8 *template = &saveBlock1[offsetof(struct SaveBlock1, objectEventTemplates) + i * sizeof(struct ObjectEventTemplate)];
+        u16 graphicsId = MigrateGraphicsId_2To3(template[0x01]);
+
+        template[0x01] = template[0x02]; // kind
+        template[0x02] = graphicsId & 0xFF;
+        template[0x03] = graphicsId >> 8;
+    }
+    return TRUE;
+}
+
 static const struct SaveMigration sSaveMigrations[] =
 {
     { .fromVersion = 1, .fromLayoutHash = 0x2C45, .migrate = MigrateSave_1To2 },
+    { .fromVersion = 2, .fromLayoutHash = 0xD93A, .migrate = MigrateSave_2To3 },
 };
 
 #define SAVE_MIGRATION_IMAGE_SIZE (NUM_SECTORS_PER_SLOT * SECTOR_DATA_SIZE)
