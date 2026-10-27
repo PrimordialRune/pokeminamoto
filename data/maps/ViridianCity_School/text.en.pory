@@ -13,11 +13,11 @@ text TokiwaKurosawa_Text_Welcome {
 
 // [Tokiwa v5 s10 session 1] same move, three targets, Eevee as the demonstration subject
 text TokiwaKurosawa_Text_S1Intro {
-    format("She sets three chalk cards on the table: Fire, Grass, and a small blank one.")
+    format("She sets two chalk cards on the table, Fire and Grass. Eevee sits down beside them.")
 }
 
 text TokiwaKurosawa_Text_S1Same {
-    format("KUROSAWA: One move. A jet of water. Three targets.")
+    format("KUROSAWA: One move. A jet of water. Three targets: the two cards, and Eevee.")
 }
 
 text TokiwaKurosawa_Text_S1Fire {
@@ -118,7 +118,7 @@ text TokiwaKurosawa_Text_S2NotYet {
 }
 
 text TokiwaKurosawa_Text_S2Intro {
-    format("KUROSAWA: Catching. Eevee, the mat. Not you, you're only watching.")
+    format("KUROSAWA: Catching. Eevee, off the table. This one is for the notebook.")
 }
 
 // [R/G] a healthy Pokémon is hard to catch

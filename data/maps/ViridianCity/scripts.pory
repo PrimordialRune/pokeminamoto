@@ -30,6 +30,7 @@ mapscripts ViridianCity_MapScripts {
         // TOK-011: B1, Hamada steps aside from the north road.
         // (The scene moves his template to the street edge; reset it on every entry.)
         if (flag(FLAG_BADGE01_GET)) {
+            setvar(VAR_TEMP_0, 1) // TOK-011: the north-block triggers (VAR_TEMP_0 == 0) never fire after B1
             setobjectxyperm(LOCALID_TOKIWA_HAMADA, 24, 5)
             setobjectmovementtype(LOCALID_TOKIWA_HAMADA, MOVEMENT_TYPE_FACE_LEFT)
         } else {
@@ -63,6 +64,8 @@ mapscripts ViridianCity_MapScripts {
 // ---------------------------------------------------------------------------------------------
 script TokiwaCity_EventScript_NorthBlock {
     if (flag(FLAG_BADGE01_GET)) {
+        // Belt and braces: ON_TRANSITION already sets VAR_TEMP_0 after B1, so the trigger cannot fire.
+        releaseall
         end
     }
     lockall
