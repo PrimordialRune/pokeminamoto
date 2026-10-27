@@ -1,0 +1,86 @@
+{
+ "_note": "First-try win rates of the journey as it ran before the studio lab revision (git 4559eaf08..b27f2067c, scenarios/masara_nibi.yaml, 60 runs per starter and band, seeds from C.seed_of). tests/test_slice_lab.py replays the scenario with --model legacy --wild yaml and the trainers.party lookups off and must match within 2 points.",
+ "runs": 60,
+ "fights": {
+  "TRAINER_SHIGERU_LAB": {
+   "average/BULBASAUR": 0.867,
+   "average/CHARMANDER": 0.967,
+   "average/SQUIRTLE": 0.983,
+   "skilled/BULBASAUR": 0.983,
+   "skilled/CHARMANDER": 0.983,
+   "skilled/SQUIRTLE": 1.0
+  },
+  "TRAINER_SHIGERU_ROUTE22": {
+   "average/BULBASAUR": 0.433,
+   "average/CHARMANDER": 0.217,
+   "average/SQUIRTLE": 0.1,
+   "skilled/BULBASAUR": 0.767,
+   "skilled/CHARMANDER": 0.5,
+   "skilled/SQUIRTLE": 0.167
+  },
+  "TRAINER_CIRCUIT_TOKIWA_1": {
+   "average/BULBASAUR": 0.95,
+   "average/CHARMANDER": 1.0,
+   "average/SQUIRTLE": 1.0,
+   "skilled/BULBASAUR": 1.0,
+   "skilled/CHARMANDER": 1.0,
+   "skilled/SQUIRTLE": 1.0
+  },
+  "TRAINER_CIRCUIT_TOKIWA_2": {
+   "average/BULBASAUR": 0.75,
+   "average/CHARMANDER": 1.0,
+   "average/SQUIRTLE": 1.0,
+   "skilled/BULBASAUR": 0.983,
+   "skilled/CHARMANDER": 1.0,
+   "skilled/SQUIRTLE": 0.983
+  },
+  "TRAINER_YUJIROU": {
+   "average/BULBASAUR": 0.467,
+   "average/CHARMANDER": 0.683,
+   "average/SQUIRTLE": 0.65,
+   "skilled/BULBASAUR": 0.783,
+   "skilled/CHARMANDER": 0.7,
+   "skilled/SQUIRTLE": 0.8
+  },
+  "TRAINER_BUG_CATCHER_FOREST_1": {
+   "average/BULBASAUR": 1.0,
+   "average/CHARMANDER": 1.0,
+   "average/SQUIRTLE": 1.0,
+   "skilled/BULBASAUR": 1.0,
+   "skilled/CHARMANDER": 1.0,
+   "skilled/SQUIRTLE": 1.0
+  },
+  "TRAINER_BUG_CATCHER_FOREST_2": {
+   "average/BULBASAUR": 1.0,
+   "average/CHARMANDER": 0.983,
+   "average/SQUIRTLE": 1.0,
+   "skilled/BULBASAUR": 1.0,
+   "skilled/CHARMANDER": 1.0,
+   "skilled/SQUIRTLE": 1.0
+  },
+  "TRAINER_BUG_CATCHER_FOREST_3": {
+   "average/BULBASAUR": 1.0,
+   "average/CHARMANDER": 0.983,
+   "average/SQUIRTLE": 1.0,
+   "skilled/BULBASAUR": 1.0,
+   "skilled/CHARMANDER": 1.0,
+   "skilled/SQUIRTLE": 1.0
+  },
+  "TRAINER_CAMPER_NIBI_PMC": {
+   "average/BULBASAUR": 1.0,
+   "average/CHARMANDER": 0.95,
+   "average/SQUIRTLE": 1.0,
+   "skilled/BULBASAUR": 1.0,
+   "skilled/CHARMANDER": 0.967,
+   "skilled/SQUIRTLE": 1.0
+  },
+  "TRAINER_TAKESHI": {
+   "average/BULBASAUR": 0.733,
+   "average/CHARMANDER": 0.367,
+   "average/SQUIRTLE": 0.967,
+   "skilled/BULBASAUR": 0.85,
+   "skilled/CHARMANDER": 0.35,
+   "skilled/SQUIRTLE": 0.85
+  }
+ }
+}

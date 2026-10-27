@@ -87,6 +87,10 @@ def cmd_lint(a):
 
 
 def main(argv=None):
+    argv = sys.argv[1:] if argv is None else argv
+    if argv and argv[0] == "gate":                 # its options start right after the word, which argparse REMAINDER cannot take
+        from . import gate
+        sys.exit(gate.main(argv[1:]))
     p = argparse.ArgumentParser(prog="minasim")
     sub = p.add_subparsers(dest="cmd", required=True)
     r = sub.add_parser("run", help="full balance report")
@@ -115,7 +119,12 @@ def main(argv=None):
     g.add_argument("rest", nargs=argparse.REMAINDER)
     j = sub.add_parser("journey", help="play one scripted chapter (scenarios/*.yaml) battle after battle")
     j.add_argument("rest", nargs=argparse.REMAINDER)
+    ga = sub.add_parser("gate", help="grade the slice's fights against the plan 7.3 bands and write gates.md")
+    ga.add_argument("rest", nargs=argparse.REMAINDER)
     a = p.parse_args(argv)
+    if a.cmd == "gate":
+        from . import gate
+        sys.exit(gate.main(a.rest))
     if a.cmd == "journey":
         from . import journey
         return journey.main(a.rest)

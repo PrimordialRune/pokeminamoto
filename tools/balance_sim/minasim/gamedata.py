@@ -220,6 +220,7 @@ class Game(_BaseData):
             if party:
                 out[tid] = {"id": tid, "name": hd.get("Name", tid), "class": hd.get("Class", ""),
                             "items": [x.strip() for x in hd.get("Items", "").split("/") if x.strip()],
+                            "ai": [re.sub(r"[^A-Z0-9]+", "_", x.strip().upper()) for x in hd.get("AI", "").split("/") if x.strip()],
                             "double": hd.get("Double Battle", "No") == "Yes", "party": party}
         return out
 
