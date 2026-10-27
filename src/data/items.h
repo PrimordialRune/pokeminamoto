@@ -3232,25 +3232,26 @@ const struct Item gItems[] =
         .fieldUseFunc = ItemUseOutOfBattle_CannotUse,
     },
 
-    [ITEM_CONTEST_PASS] =
+    [ITEM_PMC_FORM] = // Masara-to-Nibi slice key item (studio scaffold, world M1; slice-plan 5.4)
     {
-        .name = _("CONTEST PASS"),
-        .itemId = ITEM_CONTEST_PASS,
+        .name = _("PMC FORM"),
+        .itemId = ITEM_PMC_FORM,
         .price = 0,
-        .description = sContestPassDesc,
+        .description = sPmcFormDesc,
         .importance = 1,
         .pocket = POCKET_KEY_ITEMS,
         .type = ITEM_USE_BAG_MENU,
         .fieldUseFunc = ItemUseOutOfBattle_CannotUse,
     },
 
-    [ITEM_10B] =
+    [ITEM_TREASURE_MAP] = // Masara-to-Nibi slice key item (studio scaffold, world M1; slice-plan 5.4)
     {
-        .name = _("????????"),
-        .itemId = ITEM_NONE,
+        .name = _("TREASURE MAP"),
+        .itemId = ITEM_TREASURE_MAP,
         .price = 0,
-        .description = sDummyDesc,
-        .pocket = POCKET_ITEMS,
+        .description = sTreasureMapDesc,
+        .importance = 1,
+        .pocket = POCKET_KEY_ITEMS,
         .type = ITEM_USE_BAG_MENU,
         .fieldUseFunc = ItemUseOutOfBattle_CannotUse,
     },
@@ -3267,13 +3268,13 @@ const struct Item gItems[] =
         .fieldUseFunc = ItemUseOutOfBattle_WailmerPail,
     },
 
-    [ITEM_DEVON_GOODS] =
+    [ITEM_OLD_EAR_TAG] = // Masara-to-Nibi slice key item (studio scaffold, world M1; slice-plan 5.4)
     {
-        .name = _("DEVON GOODS"),
-        .itemId = ITEM_DEVON_GOODS,
+        .name = _("OLD EAR TAG"),
+        .itemId = ITEM_OLD_EAR_TAG,
         .price = 0,
-        .description = sDevonGoodsDesc,
-        .importance = 2,
+        .description = sOldEarTagDesc,
+        .importance = 1,
         .pocket = POCKET_KEY_ITEMS,
         .type = ITEM_USE_BAG_MENU,
         .fieldUseFunc = ItemUseOutOfBattle_CannotUse,
@@ -3291,12 +3292,12 @@ const struct Item gItems[] =
         .fieldUseFunc = ItemUseOutOfBattle_CannotUse,
     },
 
-    [ITEM_BASEMENT_KEY] =
+    [ITEM_HURT_PIDGEY] = // Masara-to-Nibi slice key item (studio scaffold, world M1; slice-plan 5.4)
     {
-        .name = _("BASEMENT KEY"),
-        .itemId = ITEM_BASEMENT_KEY,
+        .name = _("HURT PIDGEY"),
+        .itemId = ITEM_HURT_PIDGEY,
         .price = 0,
-        .description = sBasementKeyDesc,
+        .description = sHurtPidgeyDesc,
         .importance = 1,
         .pocket = POCKET_KEY_ITEMS,
         .type = ITEM_USE_BAG_MENU,
@@ -3390,12 +3391,12 @@ const struct Item gItems[] =
         .fieldUseFunc = ItemUseOutOfBattle_CannotUse,
     },
 
-    [ITEM_GO_GOGGLES] =
+    [ITEM_HIDA_RECEIPT] = // Masara-to-Nibi slice key item (studio scaffold, world M1; slice-plan 5.4)
     {
-        .name = _("GO-GOGGLES"),
-        .itemId = ITEM_GO_GOGGLES,
+        .name = _("HIDA RECEIPT"),
+        .itemId = ITEM_HIDA_RECEIPT,
         .price = 0,
-        .description = sGoGogglesDesc,
+        .description = sHidaReceiptDesc,
         .importance = 1,
         .pocket = POCKET_KEY_ITEMS,
         .type = ITEM_USE_BAG_MENU,
@@ -4184,7 +4185,7 @@ const struct Item gItems[] =
 
     [ITEM_OAKS_PARCEL] =
     {
-        .name = _("OAK'S PARCEL"),
+        .name = _("OKIDO PARCEL"), // slice: Minamoto name (slice-plan 5.4)
         .itemId = ITEM_OAKS_PARCEL,
         .price = 0,
         .description = sOaksParcelDesc,

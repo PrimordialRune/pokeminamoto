@@ -1006,30 +1006,41 @@ static const u8 sSSTicketDesc[] = _(
     "for sailing on a\n"
     "ferry.");
 
-static const u8 sContestPassDesc[] = _(
-    "The pass required\n"
-    "for entering\n"
-    "POKéMON CONTESTS.");
+// Masara-to-Nibi slice key items (studio scaffold, world M1; slice-plan 5.4).
+// PLACEHOLDER wording where the script list has no row text (owner: thread
+// "Define Minamoto narrative direction"). The bag box holds 3 lines of about
+// 108 px, so long row texts are condensed here and belong in full in the
+// pickup message.
+static const u8 sPmcFormDesc[] = _(
+    "A PMC entry form.\n"
+    "A minor needs a\n"
+    "guardian's seal.");
+
+static const u8 sTreasureMapDesc[] = _(
+    "KEN's old map of\n"
+    "three hidden spots\n"
+    "near MASARA.");
 
 static const u8 sWailmerPailDesc[] = _(
     "A tool used for\n"
     "watering BERRIES\n"
     "and plants.");
 
-static const u8 sDevonGoodsDesc[] = _(
-    "A package that\n"
-    "contains DEVON's\n"
-    "machine parts.");
+// R01-302, condensed to fit: "Metal tag. 'OKD-' and worn digits. On the
+// back, a second stamp, newer, too small to read."
+static const u8 sOldEarTagDesc[] = _(
+    "'OKD-', worn digits.\n"
+    "Back: a newer stamp,\n"
+    "too small to read.");
 
 static const u8 sSootSackDesc[] = _(
     "A sack used to\n"
     "gather and hold\n"
     "volcanic ash.");
 
-static const u8 sBasementKeyDesc[] = _(
-    "The key for NEW\n"
-    "MAUVILLE beneath\n"
-    "MAUVILLE CITY.");
+static const u8 sHurtPidgeyDesc[] = _(
+    "A hurt PIDGEY\n"
+    "found by the canal.");
 
 static const u8 sAcroBikeDesc[] = _(
     "A folding bicycle\n"
@@ -1041,10 +1052,11 @@ static const u8 sPokeblockCaseDesc[] = _(
     "{POKEBLOCK}S made with\n"
     "a BERRY BLENDER.");
 
+// TOK-305: Grandma Inoue's sealed letter (slice-plan 5.4)
 static const u8 sLetterDesc[] = _(
-    "A letter to STEVEN\n"
-    "from the PRESIDENT\n"
-    "of the DEVON CORP.");
+    "A sealed letter for\n"
+    "the AKAGI-YA's\n"
+    "innkeeper, in NIBI.");
 
 static const u8 sEonTicketDesc[] = _(
     "The ticket for a\n"
@@ -1066,10 +1078,11 @@ static const u8 sScannerDesc[] = _(
     "inside the\n"
     "ABANDONED SHIP.");
 
-static const u8 sGoGogglesDesc[] = _(
-    "Nifty goggles that\n"
-    "protect eyes from\n"
-    "desert sandstorms.");
+// NIB-224: "Received: one Graveler. M. Hida. A Yamabuki P.O. box number."
+static const u8 sHidaReceiptDesc[] = _(
+    "Received: one\n"
+    "GRAVELER. M. HIDA.\n"
+    "A YAMABUKI P.O. box.");
 
 static const u8 sMeteoriteDesc[] = _(
     "A meteorite found\n"
@@ -1408,8 +1421,8 @@ static const u8 sHM08Desc[] = _(
 // FireRed/LeafGreen key items
 static const u8 sOaksParcelDesc[] = _(
     "A parcel for PROF.\n"
-    "OAK from a POKéMON\n"
-    "MART's clerk.");
+    "OKIDO. A plain\n"
+    "delivery slip.");
 
 static const u8 sPokeFluteDesc[] = _(
     "A sweet-sounding\n"

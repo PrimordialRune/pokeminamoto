@@ -297,12 +297,12 @@
 #define ITEM_GOOD_ROD 263
 #define ITEM_SUPER_ROD 264
 #define ITEM_SS_TICKET 265
-#define ITEM_CONTEST_PASS 266
-#define ITEM_10B 267
+#define ITEM_PMC_FORM 266 // slice key item, was ITEM_CONTEST_PASS
+#define ITEM_TREASURE_MAP 267 // slice key item, was ITEM_10B
 #define ITEM_WAILMER_PAIL 268
-#define ITEM_DEVON_GOODS 269
+#define ITEM_OLD_EAR_TAG 269 // slice key item, was ITEM_DEVON_GOODS
 #define ITEM_SOOT_SACK 270
-#define ITEM_BASEMENT_KEY 271
+#define ITEM_HURT_PIDGEY 271 // slice key item, was ITEM_BASEMENT_KEY
 #define ITEM_ACRO_BIKE 272
 #define ITEM_POKEBLOCK_CASE 273
 #define ITEM_LETTER 274
@@ -310,7 +310,7 @@
 #define ITEM_RED_ORB 276
 #define ITEM_BLUE_ORB 277
 #define ITEM_SCANNER 278
-#define ITEM_GO_GOGGLES 279
+#define ITEM_HIDA_RECEIPT 279 // slice key item, was ITEM_GO_GOGGLES
 #define ITEM_METEORITE 280
 #define ITEM_ROOM_1_KEY 281
 #define ITEM_ROOM_2_KEY 282
