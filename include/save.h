@@ -54,7 +54,8 @@
 // src/save.c if saves of the old version should keep loading.
 // Version 0 is every save written before versioning (Emerald's footer).
 // Version 2 added SaveBlock2.foeBattleCounts.
-#define SAVE_FORMAT_VERSION 2
+// Version 3 made object event graphics ids u16 (FRLG sprites).
+#define SAVE_FORMAT_VERSION 3
 
 #define SAVE_STATUS_EMPTY    0
 #define SAVE_STATUS_OK       1

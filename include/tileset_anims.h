@@ -36,4 +36,12 @@ void InitTilesetAnim_BattlePyramid(void);
 // [Porytiles] Auto-generated declaration. Do not remove.
 void InitTilesetAnim_PorytilesManaged_Kanto(void);
 
+// FRLG import begin (tools/frlg_import/import_maps.py)
+void InitTilesetAnim_FrlgCeladonCity(void);
+void InitTilesetAnim_FrlgCeladonGym(void);
+void InitTilesetAnim_FrlgGeneral(void);
+void InitTilesetAnim_FrlgSilphCo(void);
+void InitTilesetAnim_FrlgVermilionGym(void);
+// FRLG import end
+
 #endif // GUARD_TILESET_ANIMS_H
