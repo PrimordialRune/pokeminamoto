@@ -1,2 +1,184 @@
-// ViridianCity_PokemonCenter_1F dialogue (English). Logic: scripts.pory. Translations: text.<lang>.pory
-// with the same block names; see docs/engineering/map-text.md.
+// Tokaido-ya inn 1F (ViridianCity_PokemonCenter_1F) dialogue (English). Logic: scripts.pory.
+// Translations: text.<lang>.pory with the same block names; see docs/engineering/map-text.md.
+// Owner: tokiwa-spine. Canon first, joins tagged [new].
+
+// TOK-102, Tanaka Fumiko. [Tokiwa v5 §7] + [ev2 §3]. Four states: no Card / Card / bridge / T3.
+text TokiwaInn_Text_FumikoNoCard {
+    format("You're not on the circuit yet? The PMC across the street will see to that.\pUme is free all the same. Use it.")
+}
+
+text TokiwaInn_Text_FumikoRot1 {
+    format("Yujirou goes to bed late. He doesn't have many friends.")
+}
+
+text TokiwaInn_Text_FumikoRot2 {
+    format("Omura? He doesn't make trouble. That's all I ask of a guest.")
+}
+
+text TokiwaInn_Text_FumikoRot3 {
+    format("Grandma Inoue is one of those people the town remembers as it was.")
+}
+
+// [new bridge line] the player has met Yujirou and has not yet slept.
+text TokiwaInn_Text_FumikoBridge {
+    format("He said tomorrow? Then sleep. He doesn't open early.")
+}
+
+text TokiwaInn_Text_FumikoT3 {
+    format("Mind yourself out there. Not everyone on the circuit plays for the same reason.") // PLACEHOLDER OQ14: Omar to write
+}
+
+// TOK-103, the signpost for TOK-301's expiry (once, after the notice).
+text TokiwaInn_Text_FumikoSignpost {
+    format("Omura says another trainer's been asking about the wall too.")
+}
+
+// TOK-102, DAY, asked about the notice.
+text TokiwaInn_Text_FumikoOmuraDay {
+    format("Omura? He's in after dark.")
+}
+
+// TOK-410, after B2: Yujirou's flat is empty. Plays once.
+text TokiwaInn_Text_FumikoB2 {
+    format("He paid to the end of the month.") // [new, OQ 11]
+}
+
+// TOK-302, the first rest after Yuki gave the INJURED PIDGEY (C4).
+text TokiwaInn_Text_FumikoPidgey {
+    format("It's standing up. Yuki is at the canal.")
+}
+
+// TOK-309, once the Take room opens (CH 5 or 2 badges, and Omura checked out).
+text TokiwaInn_Text_FumikoTake {
+    format("The TAKE room is free now. You've earned it.\pThere's usually something left in it for the next guest.") // PLACEHOLDER OQ14
+}
+
+// TOK-206 + TOK-308 (register half). [ev2 §2.2] + [new variant]
+text TokiwaInn_Text_Register {
+    format("The register. A line in a neat hand: “Okada F., Masara, Take.”")
+}
+
+text TokiwaInn_Text_RegisterFumiko {
+    format("A girl from Masara. She paid for Take with her first prize money and slept in the Ume anyway.\pSaid she'd earn it properly next time.")
+}
+
+text TokiwaInn_Text_RegisterFiora {
+    format("So you know her.")
+}
+
+// TOK-208, the tokonoma. (The font has no kanji: two characters, read aloud.)
+text TokiwaInn_Text_Tokonoma {
+    format("A scroll. Two characters: “traveller.”")
+}
+
+// TOK-211 + TOK-225, the notice board: calendar, house rules, Kurosawa's card.
+text TokiwaInn_Text_BoardCalendar {
+    format("The PMC circuit calendar. The arena is marked closed every day but one.")
+}
+
+text TokiwaInn_Text_BoardRules {
+    format("House rules, handwritten. Shoes off. Quiet after ten. No Pokémon on the futons.")
+}
+
+text TokiwaInn_Text_BoardCard {
+    format("A small handwritten card: “Lessons at home. Types, catching, growth. Ask at the house by the shrine.”")
+}
+
+// TOK-209, the common-room TV, by phase. NITE rotates three headlines.
+text TokiwaInn_Text_TVMorn {
+    format("A wildlife programme: Rattata dig a burrow with two entrances, one of them a decoy.") // PLACEHOLDER: one plain behaviour fact per episode (TOK-209)
+}
+
+text TokiwaInn_Text_TVDay {
+    format("A variety show. Someone is eating something enormous.")
+}
+
+text TokiwaInn_Text_TVNite1 {
+    format("The late news: rain expected over the mountains by morning.")
+}
+
+text TokiwaInn_Text_TVNite2 {
+    format("The late news: police ask owners to keep Poké Balls indoors after a string of thefts.")
+}
+
+text TokiwaInn_Text_TVNite3 {
+    format("The late news: the PMC circuit has added two more arenas in the east.")
+}
+
+// TOK-104 + TOK-402, Hiroshi in his two inn slots (07-09 entrance, 18-21 common room). One line per visit.
+text TokiwaInn_Text_HiroshiWater {
+    format("The Genbei water comes from Fuji. It has a taste.")
+}
+
+text TokiwaInn_Text_HiroshiB1 {
+    format("He was angry at something that had nothing to do with you.")
+}
+
+text TokiwaInn_Text_HiroshiPidgey {
+    format("The bird. Good.")
+}
+
+// TOK-105, Ken carrying futons (07-09, until B1).
+text TokiwaInn_Text_Ken {
+    format("Fumiko lets me stay if I carry these. Is that strange?")
+}
+
+// TOK-108 + TOK-301, Omura Kenji (common room NITE, the Take corridor MORN on 2F).
+text TokiwaInn_Text_OmuraBefore {
+    format("I hear a Pokémon turned up out of its range. Out where it shouldn't be. That kind of thing interests me.")
+}
+
+text TokiwaInn_Text_OmuraQuest1 {
+    format("The wall on Route 22. There is a Sandshrew there that doesn't belong.")
+}
+
+text TokiwaInn_Text_OmuraQuest2 {
+    format("Not bred. Bring it unhurt and you'll be paid well.")
+}
+
+text TokiwaInn_Text_OmuraQuestAgain {
+    format("The Sandshrew on Route 22. Unhurt.")
+}
+
+text TokiwaInn_Text_OmuraAsk {
+    format("That's the one. Will you hand it over?")
+}
+
+text TokiwaInn_Text_OmuraGiven {
+    format("Good. A clean one.\pHere. As agreed.")
+}
+
+text TokiwaInn_Text_OmuraPaid {
+    format("Mm. Practical.")
+}
+
+text TokiwaInn_Text_OmuraKept {
+    format("Ah. Understood.")
+}
+
+text TokiwaInn_Text_OmuraRest {
+    format("Rest it first. I pay for whole ones.")
+}
+
+text TokiwaInn_Text_OmuraWrong {
+    format("That isn't the one I mean.")
+}
+
+text TokiwaInn_Text_OmuraLast {
+    format("It's your only Pokémon. Come back when you have company for it.") // PLACEHOLDER
+}
+
+text TokiwaInn_Text_OmuraFainted {
+    format("A pity.")
+}
+
+text TokiwaInn_Text_OmuraMissed {
+    format("Someone else brought it. Same price.\pA boy from Masara. He didn't haggle.")
+}
+
+text TokiwaInn_Text_OmuraT2 {
+    format("This trade isn't only Tokiwa's. It exists across the whole region.")
+}
+
+text TokiwaInn_Text_ChoiceHandOver { format("HAND IT OVER") }
+text TokiwaInn_Text_ChoiceKeep { format("KEEP IT") }

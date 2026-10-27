@@ -129,7 +129,7 @@ script TokiwaCVS_EventScript_Kato {
         goto(TokiwaCVS_EventScript_ParcelHandOver)
     }
     checkcharisma(CHARISMA_TIERS_TOKIWA)
-    if (var(VAR_RESULT) == CHARISMA_TIER_HIGH) {
+    if (var(VAR_RESULT) >= CHARISMA_TIER_MID) {
         msgbox(TokiwaCVS_Text_KatoT2)
     } elif (flag(FLAG_BADGE01_GET)) {
         msgbox(TokiwaCVS_Text_KatoWon)

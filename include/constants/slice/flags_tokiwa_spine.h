@@ -37,9 +37,9 @@
 #define FLAG_P_HIROSHI_PIDGEY                   0x2A9 // TOK-104: Hiroshi's 'The bird. Good.' played
 #define FLAG_P_FUMIKO_TAKE                      0x2AA // TOK-309: Fumiko offered the Take room
 #define FLAG_Q_TM04_OWED                        0x2AB // SYS-004: TM04 not handed over yet (full bag); Yujirou pays at the next talk
-#define FLAG_SLICE_TOKIWA_SPINE_28               0x2AC
-#define FLAG_SLICE_TOKIWA_SPINE_29               0x2AD
-#define FLAG_SLICE_TOKIWA_SPINE_30               0x2AE
+#define FLAG_P_STUDENTS_REPORT                0x2AC // TOK-306: Jun logged the Geodude observations (+CH 1 once)
+#define FLAG_P_STUDENTS_V3                    0x2AD // TOK-306 V3: the Silph exchange played
+#define FLAG_P_REIKO_T2                       0x2AE // TOK-306: Reiko's Okido line played
 #define FLAG_SLICE_TOKIWA_SPINE_31               0x2AF
 
 // Item balls 0x3F0-0x3F7 (dead Hoenn FLAG_ITEM_* ids; use as the object's "flag")

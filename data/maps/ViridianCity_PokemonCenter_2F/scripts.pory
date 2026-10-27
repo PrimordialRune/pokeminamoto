@@ -1,2 +1,127 @@
-// Placeholder imported from FireRed (tools/frlg_import). No events yet.
-mapscripts ViridianCity_PokemonCenter_2F_MapScripts {}
+// Tokaido-ya inn 2F (ViridianCity_PokemonCenter_2F), tokiwa-spine. The Take corridor (TOK-210, 227, 108's
+// MORN copy of Omura), the Take-room item (TOK-309) and the students (TOK-114, TOK-306). V_STUDENTS:
+// 0 none, 1 V1 given (gates the report), 2 V2 heard.
+
+const TIME_MORN = 0
+const TIME_DAY = 1
+const TIME_NITE = 2
+
+mapscripts ViridianCity_PokemonCenter_2F_MapScripts {
+    MAP_SCRIPT_ON_TRANSITION {
+        // TOK-108: Omura in the Take corridor at MORN until he checks out.
+        showduringtime(FLAG_HIDE_OMURA_CORRIDOR, TIME_MORN)
+        if (flag(FLAG_OMURA_CHECKED_OUT)) {
+            setflag(FLAG_HIDE_OMURA_CORRIDOR)
+        }
+        // TOK-227: the cage while V_SANDSHREW is 4 or 7, until Omura checks out.
+        setflag(FLAG_HIDE_INN_CAGE)
+        if (var(VAR_Q_SANDSHREW) == 4 || var(VAR_Q_SANDSHREW) == 7) {
+            if (!flag(FLAG_OMURA_CHECKED_OUT)) {
+                clearflag(FLAG_HIDE_INN_CAGE)
+            }
+        }
+    }
+}
+
+script TokiwaInn2F_EventScript_DoorUme {
+    lockall
+    msgbox(TokiwaInn_Text_DoorUme)
+    checktimeofday
+    if (var(VAR_RESULT) == TIME_NITE) {
+        msgbox(TokiwaInn_Text_DoorUmeNite)
+    }
+    releaseall
+    end
+}
+
+script TokiwaInn2F_EventScript_DoorTake {
+    // The tag hangs there while Omura lodges (until he checks out).
+    if (flag(FLAG_OMURA_CHECKED_OUT)) {
+        msgbox(TokiwaInn_Text_DoorTake, MSGBOX_SIGN)
+    } else {
+        msgbox(TokiwaInn_Text_DoorTakeTag, MSGBOX_SIGN)
+    }
+    end
+}
+
+script TokiwaInn2F_EventScript_DoorMatsu {
+    msgbox(TokiwaInn_Text_DoorMatsu, MSGBOX_SIGN)
+    end
+}
+
+script TokiwaInn2F_EventScript_Cage {
+    msgbox(TokiwaInn_Text_Cage, MSGBOX_SIGN)
+    end
+}
+
+// Left in the room after a TAKE or MATSU stay (see data/scripts/inn.pory): shared item flag with the
+// other inns, one item due at a time.
+script TokiwaInn2F_EventScript_TakeItem {
+    finditem(ITEM_SUPER_POTION)
+    end
+}
+
+// ---------------------------------------------------------------------------------------------
+// The students.
+// ---------------------------------------------------------------------------------------------
+script TokiwaInn2F_EventScript_Jun {
+    lock
+    faceplayer
+    if (var(VAR_Q_STUDENTS) == 0) {
+        msgbox(TokiwaInn_Text_JunV1)
+        msgbox(TokiwaInn_Text_JunV1b)
+        msgbox(TokiwaInn_Text_JunV1c)
+        setvar(VAR_Q_STUDENTS, 1)
+    } elif (flag(FLAG_Q_GEODUDE_DAY) && flag(FLAG_Q_GEODUDE_NITE) && !flag(FLAG_P_STUDENTS_REPORT)) {
+        msgbox(TokiwaInn_Text_JunReport)
+        addcharisma(1)
+        setflag(FLAG_P_STUDENTS_REPORT)
+    } elif (flag(FLAG_BADGE01_GET) && !flag(FLAG_P_STUDENTS_V3)) {
+        msgbox(TokiwaInn_Text_JunV3a)
+        msgbox(TokiwaInn_Text_JunV3b)
+        msgbox(TokiwaInn_Text_JunV3c)
+        setflag(FLAG_P_STUDENTS_V3)
+    } else {
+        msgbox(TokiwaInn_Text_JunDefault)
+    }
+    release
+    end
+}
+
+script TokiwaInn2F_EventScript_Reiko {
+    lock
+    faceplayer
+    if (var(VAR_Q_SANDSHREW) >= 1 && var(VAR_Q_STUDENTS) < 2) {
+        // V2: plays in every case; the party variant when the Sandshrew is along.
+        checkpartymonforhandover(SPECIES_SANDSHREW, 1, 0xFFFF, FALSE)
+        if (var(VAR_RESULT) == HANDOVER_NONE) {
+            msgbox(TokiwaInn_Text_ReikoV2)
+        } else {
+            msgbox(TokiwaInn_Text_ReikoV2Party)
+        }
+        setvar(VAR_Q_STUDENTS, 2)
+    } elif (flag(FLAG_P_STUDENTS_V3) && flag(FLAG_BADGE01_GET) && !flag(FLAG_P_REIKO_T2)) {
+        // T2, never on the V3 visit itself: V3 has to have played on an earlier talk.
+        checkcharisma(CHARISMA_TIERS_TOKIWA)
+        if (var(VAR_RESULT) >= CHARISMA_TIER_MID) {
+            setflag(FLAG_P_REIKO_T2)
+            msgbox(TokiwaInn_Text_ReikoT2)
+        } else {
+            msgbox(TokiwaInn_Text_ReikoDefault)
+        }
+    } else {
+        msgbox(TokiwaInn_Text_ReikoDefault)
+    }
+    release
+    end
+}
+
+script TokiwaInn2F_EventScript_Hayashi {
+    msgbox(TokiwaInn_Text_Hayashi, MSGBOX_NPC)
+    end
+}
+
+script TokiwaInn2F_EventScript_Table {
+    msgbox(TokiwaInn_Text_StudentsTable, MSGBOX_SIGN)
+    end
+}
