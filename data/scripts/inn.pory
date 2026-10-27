@@ -66,3 +66,69 @@ text Inn_Text_RoomUme { "UME" }
 text Inn_Text_RoomTake { "TAKE" }
 text Inn_Text_RoomMatsu { "MATSU" }
 text Inn_Text_RoomCancel { "CANCEL" }
+
+// ---------------------------------------------------------------------------
+// Studio slice (core). SYS-001, SYS-002.
+// ---------------------------------------------------------------------------
+
+// SYS-001: an inn rest that counts. Wraps Common_EventScript_Inn and adds one to
+// VAR_REST_COUNT when the party rested. Returns VAR_RESULT TRUE on a rest, like the inn.
+// Callers run setrespawn(HEAL_LOCATION_<X>) for their inn after it (when VAR_RESULT is TRUE) and set
+// their own per-rest flags; nothing about a particular inn or quest lives here.
+//
+//   script MyInn_EventScript_Keeper {
+//       call(Common_EventScript_InnRest)
+//       if (var(VAR_RESULT) == TRUE) {
+//           setrespawn(HEAL_LOCATION_MY_INN)
+//           setflag(FLAG_MY_OWN_REST_FLAG)
+//       }
+//       release
+//       end
+//   }
+script Common_EventScript_InnRest {
+    call(Common_EventScript_Inn)
+    if (var(VAR_RESULT) == TRUE) {
+        addvar(VAR_REST_COUNT, 1)
+    }
+    return
+}
+
+// SYS-002: whiteout arrival. After a whiteout the player wakes at the last respawn point
+// (DoWhiteOut already rested the party there). Once the fade-in is over, the field runs this
+// script, which calls the one line for that respawn point. Each label below is CALLED, so it
+// must end with `return`; the hook locks the player around it. The area owners replace the
+// stubs: delete the stub here and define the same label in the map's scripts.pory.
+// GetWhiteoutArrivalPlace (src/overworld.c) tells the places apart by heal location id, so
+// moving a heal location to another map needs no change here.
+script EventScript_WhiteoutArrival {
+    lockall
+    specialvar(VAR_RESULT, GetWhiteoutArrivalPlace)
+    switch (var(VAR_RESULT)) {
+        case WHITEOUT_ARRIVAL_TOKIWA_INN:
+            call(TokiwaInn_EventScript_WhiteoutLine)
+        case WHITEOUT_ARRIVAL_NIBI_INN:
+            call(NibiInn_EventScript_WhiteoutLine)
+        case WHITEOUT_ARRIVAL_MASARA_HOME:
+            call(MasaraHome_EventScript_WhiteoutLine)
+    }
+    releaseall
+    end
+}
+
+// Stub: owner tokiwa-spine replaces it (Fumiko's own line, from the script list).
+script TokiwaInn_EventScript_WhiteoutLine {
+    msgbox(format("FUMIKO: Back already. Sit down."))
+    return
+}
+
+// Stub: owner nibi-spine replaces it. PLACEHOLDER line (Fumie runs the Akagi-ya desk).
+script NibiInn_EventScript_WhiteoutLine {
+    msgbox(format("FUMIE: There you are. Your room is still warm."))
+    return
+}
+
+// Stub: owner masara replaces it. PLACEHOLDER line (Mom, before the first inn rest).
+script MasaraHome_EventScript_WhiteoutLine {
+    msgbox(format("MOM: Oh. You're home. Sit, sit."))
+    return
+}

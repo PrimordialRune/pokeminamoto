@@ -62,6 +62,8 @@
 #include "constants/weather.h"
 #include "constants/metatile_labels.h"
 #include "constants/parked_maps.h"
+#include "day_night.h"
+#include "regress.h"
 #include "palette.h"
 
 #define TAG_ITEM_ICON 5500
@@ -3472,4 +3474,20 @@ void ChangeCharisma(s16 delta)
 void AddCharisma(void)
 {
     ChangeCharisma((s16)gSpecialVar_0x8004);
+}
+
+// special GetGameHour: VAR_RESULT = the clock's hour, 0-23. It reads the cartridge RTC through
+// GetCurrentHour (src/day_night.c), which reads at most once a second, never while the sound IRQ
+// is due, and falls back to play time without a working clock. REGRESS builds honour the
+// REGRESS_CMD_SET_HOUR override. Use the getgamehour macro.
+void GetGameHour(void)
+{
+#ifdef REGRESS_HOOKS
+    if (gRegress.hourPlusOne != 0)
+    {
+        gSpecialVar_Result = gRegress.hourPlusOne - 1;
+        return;
+    }
+#endif
+    gSpecialVar_Result = GetCurrentHour();
 }

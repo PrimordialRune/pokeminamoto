@@ -35,6 +35,9 @@
 #include "berry_powder.h"
 #include "palette_tone.h"
 #include "constants/items.h"
+#include "constants/maps.h"
+#include "constants/heal_locations.h"
+#include "constants/vars.h"
 
 extern const u8 EventScript_ResetAllMapFlags[];
 
@@ -98,10 +101,12 @@ static void ClearFrontierRecord(void)
     gSaveBlock2Ptr->frontier.opponentNames[1][0] = EOS;
 }
 
-// New games start outside the player's house in Masara Town.
+// New games start in Satoshi's room (SYS-000): the player's house 2F, with home as the
+// respawn point until the first inn rest. Placeholder spot (6, 6): FRLG's own start tile.
 static void WarpToStart(void)
 {
-    SetWarpDestination(MAP_GROUP(MAP_MASARA_TOWN), MAP_NUM(MAP_MASARA_TOWN), WARP_ID_NONE, 5, 8);
+    SetWarpDestination(MAP_GROUP(MAP_PALLET_TOWN_PLAYERS_HOUSE_2F), MAP_NUM(MAP_PALLET_TOWN_PLAYERS_HOUSE_2F), WARP_ID_NONE, 6, 6);
+    SetLastHealLocationWarp(HEAL_LOCATION_MASARA_HOME);
     WarpIntoMap();
 }
 
@@ -139,6 +144,9 @@ void NewGameInitData(void)
     PlayTimeCounter_Reset();
     ClearPokedexFlags();
     InitEventData();
+    // Masara's old NewGameSetup (Littleroot flags and a Littleroot respawn) only runs while this
+    // is 0. A new game no longer passes through it; masara deletes the script.
+    VarSet(VAR_LITTLEROOT_INTRO_STATE, 7);
     ClearSecretBases();
     ClearBerryTrees();
     SetMoney(&gSaveBlock1Ptr->money, 3000);

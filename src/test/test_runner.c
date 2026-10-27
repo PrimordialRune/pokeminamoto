@@ -19,6 +19,9 @@ static EWRAM_DATA u32 sCurrent = 0;
 static EWRAM_DATA u32 sBattleIndex = 0;
 static EWRAM_DATA bool8 sBattleRunning = FALSE;
 
+extern const struct TestCase gCoreTests[];
+extern const u32 gCoreTestCount;
+
 static void CB2_TestRunBattles(void);
 static void CB2_TestHalt(void);
 
@@ -71,6 +74,17 @@ void CB2_TestRunner(void)
         gTestResults.entries[sCurrent].kind = 0;
         SeedRng(0x1234);
         gPureTests[i].func();
+        Finish(sCurrent);
+    }
+
+    // Studio slice tests (test_core.c)
+    for (i = 0; i < gCoreTestCount; i++)
+    {
+        sCurrent = gTestResults.count++;
+        gTestResults.entries[sCurrent].name = gCoreTests[i].name;
+        gTestResults.entries[sCurrent].kind = 0;
+        SeedRng(0x1234);
+        gCoreTests[i].func();
         Finish(sCurrent);
     }
 

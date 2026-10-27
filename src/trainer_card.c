@@ -125,6 +125,7 @@ static u8 GetSetCardType(void);
 static void PrintNameOnCardFront(void);
 static void PrintIdOnCard(void);
 static void PrintMoneyOnCard(void);
+static void PrintCharismaOnCard(void);
 static void PrintPokedexOnCard(void);
 static void PrintProfilePhraseOnCard(void);
 static bool8 PrintAllOnCardBack(void);
@@ -897,6 +898,9 @@ static bool8 PrintAllOnCardFront(void)
     case 5:
         PrintProfilePhraseOnCard();
         break;
+    case 6:
+        PrintCharismaOnCard();
+        break;
     default:
         sData->printState = 0;
         return TRUE;
@@ -986,6 +990,44 @@ static void PrintIdOnCard(void)
     }
 
     AddTextPrinterParameterized3(WIN_CARD_TEXT, FONT_NORMAL, xPos, top, sTrainerCardTextColors, TEXT_SKIP_DRAW, buffer);
+}
+
+// Charisma on the front of the player's own Card (SYS-005): no number and no popup, a blank
+// line below the first tier, then one word per tier. The tier thresholds (2, 5, 9) are the
+// ones of CHARISMA_TIERS_TOKIWA in src/town_life.c; keep them in step.
+// PLACEHOLDER words and label (owner thread "Make TP need rest, with town toolkit").
+static const u8 sText_CardCharisma[] = _("CHARISMA");
+static const u8 sText_CharismaTier1[] = _("NOTICED");
+static const u8 sText_CharismaTier2[] = _("KNOWN");
+static const u8 sText_CharismaTier3[] = _("TRUSTED");
+static const u8 *const sCharismaTierWords[] = {sText_CharismaTier1, sText_CharismaTier2, sText_CharismaTier3};
+static const u8 sCharismaTierMinimums[] = {2, 5, 9};
+
+// The word for a Charisma value, or NULL when the line stays blank.
+const u8 *GetCharismaCardWord(u16 charisma)
+{
+    u32 tier = 0;
+
+    while (tier < ARRAY_COUNT(sCharismaTierMinimums) && charisma >= sCharismaTierMinimums[tier])
+        tier++;
+    return tier == 0 ? NULL : sCharismaTierWords[tier - 1];
+}
+
+static void PrintCharismaOnCard(void)
+{
+    const u8 *word;
+    s32 xOffset;
+    u8 top;
+
+    if (sData->isLink)
+        return; // the saved Charisma is the local player's, not the linked trainer's
+    word = GetCharismaCardWord(VarGet(VAR_CHARISMA));
+    if (word == NULL)
+        return;
+    top = sData->isHoenn ? 42 : 41;
+    AddTextPrinterParameterized3(WIN_CARD_TEXT, FONT_NORMAL, sData->isHoenn ? 16 : 20, top, sTrainerCardTextColors, TEXT_SKIP_DRAW, sText_CardCharisma);
+    xOffset = GetStringRightAlignXOffset(FONT_NORMAL, word, sData->isHoenn ? 128 : 144);
+    AddTextPrinterParameterized3(WIN_CARD_TEXT, FONT_NORMAL, xOffset, top, sTrainerCardTextColors, TEXT_SKIP_DRAW, word);
 }
 
 static void PrintMoneyOnCard(void)

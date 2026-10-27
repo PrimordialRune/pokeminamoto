@@ -5,6 +5,7 @@
 #include "constants/battle_script_commands.h"
 #include "constants/battle_anim.h"
 #include "constants/battle_string_ids.h"
+#include "constants/battle_setup.h"
 #include "constants/abilities.h"
 #include "constants/moves.h"
 #include "constants/songs.h"
@@ -2953,6 +2954,7 @@ BattleScript_TryAwakenSpecialsEnd::
 BattleScript_LocalBattleLost::
 	jumpifbattletype BATTLE_TYPE_DOME, BattleScript_CheckDomeDrew
 	jumpifbattletype BATTLE_TYPE_FRONTIER, BattleScript_LocalBattleLostPrintTrainersWinText
+	jumpifbattletype BATTLE_TYPE_EARLY_RIVAL, BattleScript_LocalBattleLostEarlyRival
 	jumpifhalfword CMP_EQUAL, gTrainerBattleOpponent_A, TRAINER_SECRET_BASE, BattleScript_LocalBattleLostEnd
 BattleScript_LocalBattleLostPrintWhiteOut::
 	printstring STRINGID_PLAYERWHITEOUT
@@ -2960,6 +2962,15 @@ BattleScript_LocalBattleLostPrintWhiteOut::
 	printstring STRINGID_PLAYERWHITEOUT2
 	waitmessage B_WAIT_TIME_LONG
 BattleScript_LocalBattleLostEnd::
+	end2
+@ TRAINER_BATTLE_EARLY_RIVAL: no whiteout strings; the foe's win text instead. The text is the
+@ trainer's "lose" string slot, which GetTrainerALoseText fills with the win text on a player loss.
+BattleScript_LocalBattleLostEarlyRival::
+	returnopponentmon1toball BS_ATTACKER
+	waitstate
+	trainerslidein BS_ATTACKER
+	waitstate
+	printstring STRINGID_TRAINER1LOSETEXT
 	end2
 BattleScript_CheckDomeDrew::
 	jumpifbyte CMP_EQUAL, gBattleOutcome, B_OUTCOME_DREW, BattleScript_LocalBattleLostEnd_

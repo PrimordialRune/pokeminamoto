@@ -8,5 +8,10 @@ void ScriptSetMonMoveSlot(u8 monIndex, u16 move, u8 slot);
 void ReducePlayerPartyToSelectedMons(void);
 void HealPlayerParty(void);
 void RestPlayerParty(void);
+void CheckPartyMonForHandover(void);
+void RemovePartyMonAtSlot(void);
+void SetPartyMonFriendship(void);
+
+// HANDOVER_* (results and the any-location wildcard) are in constants/battle_setup.h, so scripts can use them
 
 #endif // GUARD_SCRIPT_POKEMON_UTIL_H

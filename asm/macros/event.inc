@@ -738,6 +738,11 @@
 	.elseif \type == TRAINER_BATTLE_SET_TRAINER_B
 		.4byte \pointer1 @ text
 		.4byte \pointer2 @ text
+	.elseif \type == TRAINER_BATTLE_EARLY_RIVAL
+		.4byte \pointer1 @ intro text
+		.4byte \pointer2 @ text when the player wins
+		.4byte \pointer3 @ text when the player loses (the foe's win text)
+		.4byte \pointer4 @ event script, run after the battle with VAR_RESULT = 1 (won) or 0 (lost)
 	.endif
 	.endm
 
@@ -753,6 +758,14 @@
 	.else
 	trainerbattle TRAINER_BATTLE_CONTINUE_SCRIPT_NO_MUSIC, \trainer, LOCALID_NONE, \intro_text, \lose_text, \event_script
 	.endif
+	.endm
+
+	@ Starts a no-whiteout story battle (TRAINER_BATTLE_EARLY_RIVAL). Takes a trainer, intro text, the text shown when
+	@ the player wins, the text shown when the player loses (the foe's win text) and the event script that runs after
+	@ the battle with VAR_RESULT = 1 (player won) or 0 (player lost). A loss costs no money and no warp: the party is
+	@ healed (HP and status, not TP; PLACEHOLDER Q96) and the script carries on where the player stands.
+	.macro trainerbattle_early_rival trainer:req, intro_text:req, win_text:req, loss_text:req, event_script:req
+	trainerbattle TRAINER_BATTLE_EARLY_RIVAL, \trainer, LOCALID_NONE, \intro_text, \win_text, \loss_text, \event_script
 	.endm
 
 	@ Starts a double trainer battle. Takes a trainer, intro text, loss text, text for when you have too few pokemon
@@ -1877,6 +1890,30 @@
 	setvar VAR_0x8004, \start
 	setvar VAR_0x8005, \end
 	special CheckHourWindow
+	.endm
+
+	@ Sets VAR_RESULT to the clock's hour, 0-23 (the RTC with the same guard as checkhour; a forced time of
+	@ day gives one fixed hour; REGRESS builds honour the SET_HOUR override).
+	.macro getgamehour
+	special GetGameHour
+	.endm
+
+	@ Sets the friendship (0-255) of the party member in slot (0-5). Clobbers VAR_0x8004, VAR_0x8005.
+	.macro setmonfriendship slot:req, value:req
+	setvar VAR_0x8004, \slot
+	setvar VAR_0x8005, \value
+	special SetPartyMonFriendship
+	.endm
+
+	@ Handover check for a party Pokemon: see CheckPartyMonForHandover in src/script_pokemon_util.c.
+	@ VAR_RESULT = 0 ok, 1 none matching, 2 not full HP, 3 the last party member; the slot is in VAR_0x8008.
+	@ met_mapsec 0xFFFF = any. Clobbers VAR_0x8004-VAR_0x8007.
+	.macro checkpartymonforhandover species:req, min_level:req, met_mapsec:req, full_hp:req
+	setvar VAR_0x8004, \species
+	setvar VAR_0x8005, \min_level
+	setvar VAR_0x8006, \met_mapsec
+	setvar VAR_0x8007, \full_hp
+	special CheckPartyMonForHandover
 	.endm
 
 	@ Sets VAR_RESULT to TIME_OF_DAY_MORN, _DAY or _NITE.

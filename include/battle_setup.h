@@ -50,6 +50,8 @@ const u8 *BattleSetup_GetTrainerPostBattleScript(void);
 void ShowTrainerCantBattleSpeech(void);
 void PlayTrainerEncounterMusic(void);
 const u8 *GetTrainerALoseText(void);
+void ClearBattleArena(void);
+void SetEarlyRivalBattleResult(void);
 const u8 *GetTrainerBLoseText(void);
 void UpdateRematchIfDefeated(s32 rematchTableId);
 void IncrementRematchStepCounter(void);

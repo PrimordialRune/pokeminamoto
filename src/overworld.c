@@ -25,6 +25,8 @@
 #include "fldeff.h"
 #include "gpu_regs.h"
 #include "heal_location.h"
+#include "constants/heal_locations.h"
+#include "constants/battle_setup.h"
 #include "io_reg.h"
 #include "link.h"
 #include "load_save.h"
@@ -356,6 +358,7 @@ static void (*const sMovementStatusHandler[])(struct LinkPlayerObjectEvent *, st
 void DoWhiteOut(void)
 {
     RunScriptImmediately(EventScript_WhiteOut);
+    ClearBattleArena();
     SetMoney(&gSaveBlock1Ptr->money, GetMoney(&gSaveBlock1Ptr->money) / 2);
     RestPlayerParty(); // the player wakes up at the last inn (or home) rested at
     Overworld_ResetStateAfterWhiteOut();
@@ -1390,6 +1393,38 @@ void CB2_NewGame(void)
     SetMainCallback2(CB2_Overworld);
 }
 
+extern const u8 EventScript_WhiteoutArrival[];
+
+// SYS-002: once the fade-in after a whiteout is over and the player is free, run the arrival
+// script (the one line for this respawn point).
+static void Task_WhiteoutArrival(u8 taskId)
+{
+    if (gPaletteFade.active || ArePlayerFieldControlsLocked())
+        return;
+    DestroyTask(taskId);
+    ScriptContext_SetupScript(EventScript_WhiteoutArrival);
+}
+
+static void FieldCB_WhiteoutArrival(void)
+{
+    FieldCB_WarpExitFadeFromBlack();
+    CreateTask(Task_WhiteoutArrival, 80);
+}
+
+// specialvar GetWhiteoutArrivalPlace: WHITEOUT_ARRIVAL_*, from the last heal location.
+u16 GetWhiteoutArrivalPlace(void)
+{
+    u32 index = GetHealLocationIndexByMap(gSaveBlock1Ptr->lastHealLocation.mapGroup, gSaveBlock1Ptr->lastHealLocation.mapNum);
+
+    if (index == HEAL_LOCATION_TOKIWA_INN)
+        return WHITEOUT_ARRIVAL_TOKIWA_INN;
+    if (index == HEAL_LOCATION_NIBI_INN)
+        return WHITEOUT_ARRIVAL_NIBI_INN;
+    if (index == HEAL_LOCATION_MASARA_HOME)
+        return WHITEOUT_ARRIVAL_MASARA_HOME;
+    return WHITEOUT_ARRIVAL_NONE;
+}
+
 void CB2_WhiteOut(void)
 {
     u8 state;
@@ -1403,7 +1438,7 @@ void CB2_WhiteOut(void)
         ResetInitialPlayerAvatarState();
         ScriptContext_Init();
         UnlockPlayerFieldControls();
-        gFieldCallback = FieldCB_WarpExitFadeFromBlack;
+        gFieldCallback = FieldCB_WhiteoutArrival;
         state = 0;
         DoMapLoadLoop(&state);
         SetFieldVBlankCallback();

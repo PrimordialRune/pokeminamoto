@@ -20,6 +20,13 @@ enum
     REGRESS_CMD_CABLE_CLUB, // warp in front of the Cable Club attendant in Oldale's Pokémon Center 2F
     REGRESS_CMD_SCENE,   // open the screen gRegress.arg names (REGRESS_SCENE_*)
     REGRESS_CMD_MUSIC,   // play song gRegress.song as the map music
+    // Studio slice commands (core). Append only. Arguments go in gRegress.cmdArg[] (or gRegress.arg) BEFORE cmd.
+    REGRESS_CMD_SET_FLAG,        // cmdArg[0] = flag id, cmdArg[1] = 1 set / 0 clear
+    REGRESS_CMD_SET_VAR,         // cmdArg[0] = var id, cmdArg[1] = value
+    REGRESS_CMD_WARP,            // cmdArg[0] = map group, cmdArg[1] = map num, cmdArg[2] = x, cmdArg[3] = y
+    REGRESS_CMD_WIN_NEXT_BATTLE, // the next battle ends as a player win (once its mons are loaded); winForced counts them
+    REGRESS_CMD_SET_HOUR,        // arg = hour 0-23 for GetGameHour (and the day/night phase); 0xFF clears the override
+    REGRESS_CMD_RUN_SCRIPT,      // run the script at address cmdArg[0] | cmdArg[1] << 16 (a ROM label from the ELF, e.g. Debug_Script_1)
 };
 
 // Screens the main run doesn't reach, for measuring heap use
@@ -99,6 +106,12 @@ struct RegressState
     u8 saveCutDone;       // set when the power was "cut"
     u8 battleTransition; // nonzero: wild and trainer battles use B_TRANSITION_* (value - 1)
     u16 song;            // song for REGRESS_CMD_MUSIC
+    // Studio slice commands (core), appended after song: only ever append below this line.
+    u16 cmdArg[4];       // arguments of SET_FLAG / SET_VAR / WARP, written before cmd
+    u8 hourPlusOne;      // SET_HOUR override + 1 (0 = none), read by GetGameHour
+    u8 winNextBattle;    // WIN_NEXT_BATTLE armed
+    u8 winForced;        // battles WIN_NEXT_BATTLE has forced to a win so far (the log)
+    u8 padSlice;
 };
 
 enum

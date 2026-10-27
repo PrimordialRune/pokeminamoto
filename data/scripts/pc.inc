@@ -65,3 +65,27 @@ EventScript_AccessHallOfFame::
 	waitstate
 	goto EventScript_AccessPC
 	end
+
+@ OKIDO'S PC (core, slice): the Pokedex "index rating" machine that replaces the Birch rating. The
+@ Tokiwa PMC owner places the PC object and points its script here. It rates the Pokedex with the
+@ same numbers and texts as the old Birch rating, and does nothing else (no storage, no HoF).
+@ PLACEHOLDER: wording of the boot line; owner thread "Define Minamoto narrative direction".
+Common_EventScript_OkidoPC::
+	lockall
+	setvar VAR_0x8004, PC_LOCATION_OTHER
+	special DoPCTurnOnEffect
+	playse SE_PC_ON
+	msgbox Text_OkidoPC_Boot, MSGBOX_DEFAULT
+	call ProfBirch_EventScript_RatePokedex
+	setvar VAR_0x8004, PC_LOCATION_OTHER
+	playse SE_PC_OFF
+	special DoPCTurnOffEffect
+	releaseall
+	end
+
+gText_OkidosPC::
+	.string "OKIDO'S PC$"
+
+Text_OkidoPC_Boot:
+	.string "Accessed OKIDO'S PC.\n"
+	.string "The INDEX RATING is running…$"

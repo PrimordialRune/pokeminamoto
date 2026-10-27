@@ -323,10 +323,33 @@ static void BuildNormalStartMenu(void)
         AddStartMenuAction(MENU_ACTION_POKENAV);
     }
 
-    AddStartMenuAction(MENU_ACTION_PLAYER);
+    // The Trainer Card is hidden until the player has registered (FLAG_Q_CARD, SYS-005).
+    if (IsTrainerCardUnlocked())
+        AddStartMenuAction(MENU_ACTION_PLAYER);
     AddStartMenuAction(MENU_ACTION_SAVE);
     AddStartMenuAction(MENU_ACTION_OPTION);
     AddStartMenuAction(MENU_ACTION_EXIT);
+}
+
+#ifdef TEST_BUILD
+// src/test/test_core.c: does the start menu offer the Trainer Card right now?
+bool32 StartMenu_TestOffersTrainerCard(void)
+{
+    u32 i;
+
+    BuildStartMenuActions();
+    for (i = 0; i < sNumStartMenuActions; i++)
+    {
+        if (sCurrentStartMenuActions[i] == MENU_ACTION_PLAYER)
+            return TRUE;
+    }
+    return FALSE;
+}
+#endif
+
+bool32 IsTrainerCardUnlocked(void)
+{
+    return FlagGet(FLAG_Q_CARD);
 }
 
 static void BuildSafariZoneStartMenu(void)

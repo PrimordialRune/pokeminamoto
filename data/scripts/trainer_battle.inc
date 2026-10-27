@@ -119,7 +119,16 @@ EventScript_DoTrainerBattle::
 	goto_if_eq VAR_RESULT, TRAINER_BATTLE_CONTINUE_SCRIPT_NO_MUSIC, EventScript_EndTrainerBattle
 	goto_if_eq VAR_RESULT, TRAINER_BATTLE_CONTINUE_SCRIPT_DOUBLE, EventScript_EndTrainerBattle
 	goto_if_eq VAR_RESULT, TRAINER_BATTLE_CONTINUE_SCRIPT_DOUBLE_NO_MUSIC, EventScript_EndTrainerBattle
+	goto_if_eq VAR_RESULT, TRAINER_BATTLE_EARLY_RIVAL, EventScript_EndEarlyRivalBattle
 EventScript_EndTrainerBattle::
+	gotobeatenscript
+	releaseall
+	end
+
+@ TRAINER_BATTLE_EARLY_RIVAL: the battle mode check above clobbered VAR_RESULT; set it to
+@ the outcome (1 = the player won, 0 = lost) before the after-battle script runs.
+EventScript_EndEarlyRivalBattle::
+	special SetEarlyRivalBattleResult
 	gotobeatenscript
 	releaseall
 	end
