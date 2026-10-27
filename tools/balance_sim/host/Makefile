@@ -17,7 +17,7 @@ SRCS := battle_gfx_sfx_util trig battle_main battle_script_commands battle_util 
 HOSTSRCS := hb_ptr hb_platform hb_api
 
 CPP      ?= cpp
-CPPFLAGS := -iquote $(HOST)/hostinc -iquote include -Wno-trigraphs -DRELEASE
+CPPFLAGS := -std=gnu11 -iquote $(HOST)/hostinc -iquote include -Wno-trigraphs -DRELEASE
 CFLAGS   := -m64 -fPIC -O2 -std=gnu11 -ffunction-sections -fdata-sections -fno-strict-aliasing -fwrapv \
             -fcommon -fvisibility=hidden -Werror=implicit-function-declaration -Werror=int-conversion
 ifneq ($(HB_DEBUG),)
