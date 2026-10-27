@@ -33,7 +33,7 @@ text PalletTown_RivalsHouse_Text_NanamiRest {
 
 // [PR #21: herbs for the Okada shop, shortened]
 text PalletTown_RivalsHouse_Text_MAS301_Ask {
-    format("I'm drying herbs for the OKADA shop. Food fills a POKéMON up. Herbs work on what's wrong, not on the hunger.\pCould you find me a fresh herb on ROUTE 1? A damp ditch by the grass. Only when you're passing, no hurry.")
+    format("I'm drying herbs for the OKADA shop. Could you find me a fresh one on ROUTE 1?\pIt grows in a damp ditch by the grass. No hurry.")
 }
 
 text PalletTown_RivalsHouse_Text_MAS301_Reminder {
@@ -46,7 +46,7 @@ text PalletTown_RivalsHouse_Text_MAS301_Thanks {
 
 // [PR #21]
 text PalletTown_RivalsHouse_Text_NanamiKimura {
-    format("...Mr. KIMURA's bowl? He used to buy calming herbs from me, for a POKéMON.\pThat POKéMON's been gone for years. He still keeps the bowl out.")
+    format("...Mr. KIMURA's bowl? He bought calming herbs from me, for a POKéMON.\pIt's been gone for years. He still keeps the bowl out.")
 }
 
 // [R/G]

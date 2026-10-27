@@ -230,7 +230,7 @@ text PalletTown_ProfessorOaksLab_Text_MAS104_ComeSee {
 
 // [PR #21, minus "Up early": absorbed ODDISH complaint is FIORA's]
 text PalletTown_ProfessorOaksLab_Text_OkidoSealed {
-    format("OKIDO: But every POKéMON I've examined has something in it I can't measure. Something sealed.\pI've never managed to document it. Perhaps you'll see it before I do.\pAnd FIORA says my INDEX has her ODDISH under the wrong habitat. Hmph. Habitats change.")
+    format("OKIDO: Forty years filling the INDEX, and every POKéMON still has something in it I can't measure. Something sealed.\pI never managed to document it. Perhaps you will.")
 }
 
 text PalletTown_ProfessorOaksLab_Text_OkidoSealedAgain {
