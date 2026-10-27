@@ -43,7 +43,7 @@
       "local_id": "LOCALID_PEWTER_MUSEUM_GUIDE",
       "type": "object",
       "graphics_id": "OBJ_EVENT_GFX_FRLG_MAN",
-      "x": 33,
+      "x": 37,
       "y": 17,
       "elevation": 3,
       "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
@@ -175,6 +175,20 @@
       "y": 30,
       "elevation": 0,
       "dest_map": "MAP_PEWTER_CITY_HOUSE2",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 33,
+      "y": 18,
+      "elevation": 0,
+      "dest_map": "MAP_PEWTER_CITY_CVS",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 8,
+      "y": 5,
+      "elevation": 0,
+      "dest_map": "MAP_PEWTER_CITY_AIZAWA_HOUSE",
       "dest_warp_id": "1"
     }
   ],
