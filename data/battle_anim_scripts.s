@@ -373,7 +373,11 @@ gBattleAnims_Moves::
 	.4byte Move_PSYCHO_BOOST
 	.4byte Move_FIRE_PUNCH @ MOVE_FLAME_CLAWS, placeholder until it has its own animation
 	.4byte Move_SLASH @ MOVE_LEEK_SLAP, placeholder until it has its own animation
-	.4byte Move_COUNT @ cannot be reached, because last move is Flame Claws
+#if STARTER_SIGNATURES_ON
+	.4byte Move_GIGA_DRAIN @ MOVE_GREEDY_PLANT, borrows Giga Drain
+	.4byte Move_SKULL_BASH @ MOVE_SKULL_BASH_SIGNATURE, borrows Skull Bash
+#endif
+	.4byte Move_COUNT @ cannot be reached, because last move is a Signature
 
 	.align 2
 gBattleAnims_StatusConditions::

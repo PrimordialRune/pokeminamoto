@@ -1,6 +1,8 @@
 #ifndef GUARD_CONSTANTS_MOVES_H
 #define GUARD_CONSTANTS_MOVES_H
 
+#include "config.h"
+
 #define MOVE_NONE 0
 #define MOVE_POUND 1
 #define MOVE_KARATE_CHOP 2
@@ -361,7 +363,16 @@
 #define MOVE_FLAME_CLAWS 355
 #define MOVE_LEEK_SLAP 356
 
+#if STARTER_SIGNATURES_ON // include/config.h; PLACEHOLDER ids, thread "Research TCG attacks as lost moves"
+// Skull Bash is already a regular Gen 1 move (MOVE_SKULL_BASH, Normal, 100, 9 TP). The Squirtle line's Signature
+// is a separate id so the Special Factor, which keys on the move id (IS_MOVE_SIGNATURE), leaves the regular move
+// alone. Both display as Omar's names (Q104).
+#define MOVE_GREEDY_PLANT 357
+#define MOVE_SKULL_BASH_SIGNATURE 358
+#define MOVES_COUNT 359
+#else
 #define MOVES_COUNT 357
+#endif
 
 // Used for checks for moves affected by Disable, Mimic, etc.
 #define MOVE_UNAVAILABLE 0xFFFF

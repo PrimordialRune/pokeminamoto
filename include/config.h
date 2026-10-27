@@ -75,6 +75,20 @@
 #define DEBUG_MENUS
 #endif
 
+// Starter Signature proposal (Q97, studio data workstream): with TRUE the Bulbasaur line gets GREEDY PLANT and the
+// Squirtle line gets SKULL BASH (Omar's names) as sealed Signatures, so he can try them. Off in every shipped ROM:
+// the default build adds no Signature, move id or table row.
+#define STARTER_SIGNATURES_PROPOSAL FALSE
+// Numeric copy for the headers and .s files that are preprocessed without gba/defines.h (where TRUE and FALSE
+// are not macros; global.inc defines them as assembler symbols). Use it in constants/moves.h and in .s files.
+#define SSP_CHECK_TRUE  1
+#define SSP_CHECK_FALSE 0
+#define SSP_CHECK_1     1
+#define SSP_CHECK_0     0
+#define SSP_JOIN_(x) SSP_CHECK_##x
+#define SSP_JOIN(x) SSP_JOIN_(x)
+#define STARTER_SIGNATURES_ON SSP_JOIN(STARTER_SIGNATURES_PROPOSAL)
+
 // Various undefined behavior bugs may or may not prevent compilation with
 // newer compilers. So always fix them when using a modern compiler.
 #ifndef UBFIX
