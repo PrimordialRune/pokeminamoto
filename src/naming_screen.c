@@ -391,6 +391,11 @@ static void VBlankCB_NamingScreen(void);
 static void NamingScreen_ShowBgs(void);
 static bool8 IsWideLetter(u8);
 
+// The player's name when the naming screen opens (SYS-006): SATOSHI is the first preset. The
+// random Emerald presets in main_menu.c are overwritten here. PLACEHOLDER: one preset for both
+// genders until the narrative thread names a female default.
+static const u8 sPlayerPresetName[] = _("SATOSHI");
+
 void DoNamingScreen(u8 templateNum, u8 *destBuffer, u16 monSpecies, u16 monGender, u32 monPersonality, MainCallback returnCallback)
 {
     sNamingScreen = Alloc(sizeof(struct NamingScreenData));
@@ -408,7 +413,10 @@ void DoNamingScreen(u8 templateNum, u8 *destBuffer, u16 monSpecies, u16 monGende
         sNamingScreen->returnCallback = returnCallback;
 
         if (templateNum == NAMING_SCREEN_PLAYER)
+        {
+            StringCopyN(destBuffer, sPlayerPresetName, PLAYER_NAME_LENGTH + 1);
             StartTimer1();
+        }
 
         SetMainCallback2(CB2_LoadNamingScreen);
     }
