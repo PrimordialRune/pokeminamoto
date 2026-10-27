@@ -25,8 +25,8 @@ script Route3_EventScript_WallHiker {
     end
 }
 
-// R03-501: sight trigger. Must start with the trainerbattle command. The sight zone ends at x=24,
-// seven tiles west of the wall.
+// R03-501: sight trigger (faces west, sees x=18-20, eleven tiles west of the wall). Must start with the
+// trainerbattle command.
 script Route3_EventScript_BugCatcher1 {
     trainerbattle_single(TRAINER_BUG_CATCHER_ROUTE3_1, Route3_Text_BugCatcher1Intro, Route3_Text_BugCatcher1Defeat)
     msgbox(Route3_Text_BugCatcher1After, MSGBOX_AUTOCLOSE)

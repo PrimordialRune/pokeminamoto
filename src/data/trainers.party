@@ -798,13 +798,13 @@ Gender: Male
 Music: Male
 Double Battle: No
 
-/* PLACEHOLDER party (NIB-501, R/G Jr. Trainer: Diglett 11, Sandshrew 11; lab scenario masara_nibi.yaml).
+/* PLACEHOLDER party (NIB-501, R/G Jr. Trainer: Diglett 11, Sandshrew 11; raised to 13/13 for the 85-97% band, lever 4).
    Thread "Design movesets and encounters". Fought with the Fault Line armed (channel 3). */
 Diglett
-Level: 11
+Level: 13
 
 Sandshrew
-Level: 11
+Level: 13
 
 === TRAINER_BUG_CATCHER_ROUTE3_1 ===
 Name: BUG CATCH
@@ -814,13 +814,16 @@ Gender: Male
 Music: Male
 Double Battle: No
 
-/* PLACEHOLDER party (R03-501; lab scenario masara_nibi.yaml: Kakuna 11, Caterpie 11).
+/* PLACEHOLDER party (R03-501; lab scenario masara_nibi.yaml: Kakuna 11, Caterpie 11; raised to Weedle/Kakuna/Caterpie 18 for the 85-97% band, lever 4).
    Thread "Design movesets and encounters". */
+Weedle
+Level: 18
+
 Kakuna
-Level: 11
+Level: 18
 
 Caterpie
-Level: 11
+Level: 18
 
 === TRAINER_SLICE_NIBI_SPINE_SPARE_1 ===
 Name: SPARE
