@@ -107,6 +107,7 @@ gStdScripts_End::
 	.include "data/maps/Route103/scripts.inc"
 	.include "data/maps/MasaraTown/scripts.inc"
 	.include "data/maps/MasaraTown/text.inc"
+	.include "data/slice_doors.inc"
 	.include "data/maps/LittlerootTown_BrendansHouse_1F/scripts.inc"
 	.include "data/maps/LittlerootTown_BrendansHouse_2F/scripts.inc"
 	.include "data/maps/LittlerootTown_MaysHouse_1F/scripts.inc"
