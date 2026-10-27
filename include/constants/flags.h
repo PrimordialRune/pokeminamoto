@@ -51,46 +51,46 @@
 #define FLAG_UNUSED_0x025    0x25 // Unused Flag
 #define FLAG_UNUSED_0x026    0x26 // Unused Flag
 #define FLAG_UNUSED_0x027    0x27 // Unused Flag
-#define FLAG_UNUSED_0x028    0x28 // Unused Flag
-#define FLAG_UNUSED_0x029    0x29 // Unused Flag
-#define FLAG_UNUSED_0x02A    0x2A // Unused Flag
-#define FLAG_UNUSED_0x02B    0x2B // Unused Flag
-#define FLAG_UNUSED_0x02C    0x2C // Unused Flag
-#define FLAG_UNUSED_0x02D    0x2D // Unused Flag
-#define FLAG_UNUSED_0x02E    0x2E // Unused Flag
-#define FLAG_UNUSED_0x02F    0x2F // Unused Flag
-#define FLAG_UNUSED_0x030    0x30 // Unused Flag
-#define FLAG_UNUSED_0x031    0x31 // Unused Flag
-#define FLAG_UNUSED_0x032    0x32 // Unused Flag
-#define FLAG_UNUSED_0x033    0x33 // Unused Flag
-#define FLAG_UNUSED_0x034    0x34 // Unused Flag
-#define FLAG_UNUSED_0x035    0x35 // Unused Flag
-#define FLAG_UNUSED_0x036    0x36 // Unused Flag
-#define FLAG_UNUSED_0x037    0x37 // Unused Flag
-#define FLAG_UNUSED_0x038    0x38 // Unused Flag
-#define FLAG_UNUSED_0x039    0x39 // Unused Flag
-#define FLAG_UNUSED_0x03A    0x3A // Unused Flag
-#define FLAG_UNUSED_0x03B    0x3B // Unused Flag
-#define FLAG_UNUSED_0x03C    0x3C // Unused Flag
-#define FLAG_UNUSED_0x03D    0x3D // Unused Flag
-#define FLAG_UNUSED_0x03E    0x3E // Unused Flag
-#define FLAG_UNUSED_0x03F    0x3F // Unused Flag
-#define FLAG_UNUSED_0x040    0x40 // Unused Flag
-#define FLAG_UNUSED_0x041    0x41 // Unused Flag
-#define FLAG_UNUSED_0x042    0x42 // Unused Flag
-#define FLAG_UNUSED_0x043    0x43 // Unused Flag
-#define FLAG_UNUSED_0x044    0x44 // Unused Flag
-#define FLAG_UNUSED_0x045    0x45 // Unused Flag
-#define FLAG_UNUSED_0x046    0x46 // Unused Flag
-#define FLAG_UNUSED_0x047    0x47 // Unused Flag
-#define FLAG_UNUSED_0x048    0x48 // Unused Flag
-#define FLAG_UNUSED_0x049    0x49 // Unused Flag
-#define FLAG_UNUSED_0x04A    0x4A // Unused Flag
-#define FLAG_UNUSED_0x04B    0x4B // Unused Flag
-#define FLAG_UNUSED_0x04C    0x4C // Unused Flag
-#define FLAG_UNUSED_0x04D    0x4D // Unused Flag
-#define FLAG_UNUSED_0x04E    0x4E // Unused Flag
-#define FLAG_UNUSED_0x04F    0x4F // Unused Flag
+// 0x028: slice (tokiwa_spine), see include/constants/slice/flags_tokiwa_spine.h (was FLAG_UNUSED_0x028)
+// 0x029: slice (tokiwa_spine), see include/constants/slice/flags_tokiwa_spine.h (was FLAG_UNUSED_0x029)
+// 0x02A: slice (tokiwa_spine), see include/constants/slice/flags_tokiwa_spine.h (was FLAG_UNUSED_0x02A)
+// 0x02B: slice (tokiwa_spine), see include/constants/slice/flags_tokiwa_spine.h (was FLAG_UNUSED_0x02B)
+// 0x02C: slice (tokiwa_spine), see include/constants/slice/flags_tokiwa_spine.h (was FLAG_UNUSED_0x02C)
+// 0x02D: slice (tokiwa_spine), see include/constants/slice/flags_tokiwa_spine.h (was FLAG_UNUSED_0x02D)
+// 0x02E: slice (tokiwa_spine), see include/constants/slice/flags_tokiwa_spine.h (was FLAG_UNUSED_0x02E)
+// 0x02F: slice (tokiwa_spine), see include/constants/slice/flags_tokiwa_spine.h (was FLAG_UNUSED_0x02F)
+// 0x030: slice (tokiwa_spine), see include/constants/slice/flags_tokiwa_spine.h (was FLAG_UNUSED_0x030)
+// 0x031: slice (tokiwa_spine), see include/constants/slice/flags_tokiwa_spine.h (was FLAG_UNUSED_0x031)
+// 0x032: slice (tokiwa_spine), see include/constants/slice/flags_tokiwa_spine.h (was FLAG_UNUSED_0x032)
+// 0x033: slice (tokiwa_spine), see include/constants/slice/flags_tokiwa_spine.h (was FLAG_UNUSED_0x033)
+// 0x034: slice (tokiwa_spine), see include/constants/slice/flags_tokiwa_spine.h (was FLAG_UNUSED_0x034)
+// 0x035: slice (tokiwa_spine), see include/constants/slice/flags_tokiwa_spine.h (was FLAG_UNUSED_0x035)
+// 0x036: slice (tokiwa_spine), see include/constants/slice/flags_tokiwa_spine.h (was FLAG_UNUSED_0x036)
+// 0x037: slice (tokiwa_spine), see include/constants/slice/flags_tokiwa_spine.h (was FLAG_UNUSED_0x037)
+// 0x038: slice (tokiwa_spine), see include/constants/slice/flags_tokiwa_spine.h (was FLAG_UNUSED_0x038)
+// 0x039: slice (tokiwa_spine), see include/constants/slice/flags_tokiwa_spine.h (was FLAG_UNUSED_0x039)
+// 0x03A: slice (tokiwa_spine), see include/constants/slice/flags_tokiwa_spine.h (was FLAG_UNUSED_0x03A)
+// 0x03B: slice (tokiwa_spine), see include/constants/slice/flags_tokiwa_spine.h (was FLAG_UNUSED_0x03B)
+// 0x03C: slice (tokiwa_town), see include/constants/slice/flags_tokiwa_town.h (was FLAG_UNUSED_0x03C)
+// 0x03D: slice (tokiwa_town), see include/constants/slice/flags_tokiwa_town.h (was FLAG_UNUSED_0x03D)
+// 0x03E: slice (tokiwa_town), see include/constants/slice/flags_tokiwa_town.h (was FLAG_UNUSED_0x03E)
+// 0x03F: slice (tokiwa_town), see include/constants/slice/flags_tokiwa_town.h (was FLAG_UNUSED_0x03F)
+// 0x040: slice (tokiwa_town), see include/constants/slice/flags_tokiwa_town.h (was FLAG_UNUSED_0x040)
+// 0x041: slice (tokiwa_town), see include/constants/slice/flags_tokiwa_town.h (was FLAG_UNUSED_0x041)
+// 0x042: slice (tokiwa_town), see include/constants/slice/flags_tokiwa_town.h (was FLAG_UNUSED_0x042)
+// 0x043: slice (tokiwa_town), see include/constants/slice/flags_tokiwa_town.h (was FLAG_UNUSED_0x043)
+// 0x044: slice (tokiwa_town), see include/constants/slice/flags_tokiwa_town.h (was FLAG_UNUSED_0x044)
+// 0x045: slice (tokiwa_town), see include/constants/slice/flags_tokiwa_town.h (was FLAG_UNUSED_0x045)
+// 0x046: slice (tokiwa_town), see include/constants/slice/flags_tokiwa_town.h (was FLAG_UNUSED_0x046)
+// 0x047: slice (tokiwa_town), see include/constants/slice/flags_tokiwa_town.h (was FLAG_UNUSED_0x047)
+// 0x048: slice (tokiwa_town), see include/constants/slice/flags_tokiwa_town.h (was FLAG_UNUSED_0x048)
+// 0x049: slice (tokiwa_town), see include/constants/slice/flags_tokiwa_town.h (was FLAG_UNUSED_0x049)
+// 0x04A: slice (tokiwa_town), see include/constants/slice/flags_tokiwa_town.h (was FLAG_UNUSED_0x04A)
+// 0x04B: slice (tokiwa_town), see include/constants/slice/flags_tokiwa_town.h (was FLAG_UNUSED_0x04B)
+// 0x04C: slice (tokiwa_town), see include/constants/slice/flags_tokiwa_town.h (was FLAG_UNUSED_0x04C)
+// 0x04D: slice (tokiwa_town), see include/constants/slice/flags_tokiwa_town.h (was FLAG_UNUSED_0x04D)
+// 0x04E: slice (tokiwa_town), see include/constants/slice/flags_tokiwa_town.h (was FLAG_UNUSED_0x04E)
+// 0x04F: slice (tokiwa_town), see include/constants/slice/flags_tokiwa_town.h (was FLAG_UNUSED_0x04F)
 
 // Scripts
 #define FLAG_HIDE_SKY_PILLAR_TOP_RAYQUAZA_STILL  0x50
@@ -543,67 +543,67 @@
 
 // Hidden Items
 #define FLAG_HIDDEN_ITEMS_START                                                         0x1F4
-#define FLAG_HIDDEN_ITEM_LAVARIDGE_TOWN_ICE_HEAL             (FLAG_HIDDEN_ITEMS_START + 0x00)
+// 0x1F4: slice (masara), see include/constants/slice/flags_masara.h (was FLAG_HIDDEN_ITEM_LAVARIDGE_TOWN_ICE_HEAL)
 #define FLAG_HIDDEN_ITEM_TRICK_HOUSE_NUGGET                  (FLAG_HIDDEN_ITEMS_START + 0x01)
-#define FLAG_HIDDEN_ITEM_ROUTE_111_STARDUST                  (FLAG_HIDDEN_ITEMS_START + 0x02)
-#define FLAG_HIDDEN_ITEM_ROUTE_113_ETHER                     (FLAG_HIDDEN_ITEMS_START + 0x03)
-#define FLAG_HIDDEN_ITEM_ROUTE_114_CARBOS                    (FLAG_HIDDEN_ITEMS_START + 0x04)
-#define FLAG_HIDDEN_ITEM_ROUTE_119_CALCIUM                   (FLAG_HIDDEN_ITEMS_START + 0x05)
-#define FLAG_HIDDEN_ITEM_ROUTE_119_ULTRA_BALL                (FLAG_HIDDEN_ITEMS_START + 0x06)
-#define FLAG_HIDDEN_ITEM_ROUTE_123_SUPER_REPEL               (FLAG_HIDDEN_ITEMS_START + 0x07)
-#define FLAG_HIDDEN_ITEM_UNDERWATER_124_CARBOS               (FLAG_HIDDEN_ITEMS_START + 0x08)
-#define FLAG_HIDDEN_ITEM_UNDERWATER_124_GREEN_SHARD          (FLAG_HIDDEN_ITEMS_START + 0x09)
-#define FLAG_HIDDEN_ITEM_UNDERWATER_124_PEARL                (FLAG_HIDDEN_ITEMS_START + 0x0A)
-#define FLAG_HIDDEN_ITEM_UNDERWATER_124_BIG_PEARL            (FLAG_HIDDEN_ITEMS_START + 0x0B)
-#define FLAG_HIDDEN_ITEM_UNDERWATER_126_BLUE_SHARD           (FLAG_HIDDEN_ITEMS_START + 0x0C)
-#define FLAG_HIDDEN_ITEM_UNDERWATER_124_HEART_SCALE_1        (FLAG_HIDDEN_ITEMS_START + 0x0D)
-#define FLAG_HIDDEN_ITEM_UNDERWATER_126_HEART_SCALE          (FLAG_HIDDEN_ITEMS_START + 0x0E)
-#define FLAG_HIDDEN_ITEM_UNDERWATER_126_ULTRA_BALL           (FLAG_HIDDEN_ITEMS_START + 0x0F)
-#define FLAG_HIDDEN_ITEM_UNDERWATER_126_STARDUST             (FLAG_HIDDEN_ITEMS_START + 0x10)
-#define FLAG_HIDDEN_ITEM_UNDERWATER_126_PEARL                (FLAG_HIDDEN_ITEMS_START + 0x11)
-#define FLAG_HIDDEN_ITEM_UNDERWATER_126_YELLOW_SHARD         (FLAG_HIDDEN_ITEMS_START + 0x12)
-#define FLAG_HIDDEN_ITEM_UNDERWATER_126_IRON                 (FLAG_HIDDEN_ITEMS_START + 0x13)
-#define FLAG_HIDDEN_ITEM_UNDERWATER_126_BIG_PEARL            (FLAG_HIDDEN_ITEMS_START + 0x14)
-#define FLAG_HIDDEN_ITEM_UNDERWATER_127_STAR_PIECE           (FLAG_HIDDEN_ITEMS_START + 0x15)
-#define FLAG_HIDDEN_ITEM_UNDERWATER_127_HP_UP                (FLAG_HIDDEN_ITEMS_START + 0x16)
-#define FLAG_HIDDEN_ITEM_UNDERWATER_127_HEART_SCALE          (FLAG_HIDDEN_ITEMS_START + 0x17)
-#define FLAG_HIDDEN_ITEM_UNDERWATER_127_RED_SHARD            (FLAG_HIDDEN_ITEMS_START + 0x18)
-#define FLAG_HIDDEN_ITEM_UNDERWATER_128_PROTEIN              (FLAG_HIDDEN_ITEMS_START + 0x19)
-#define FLAG_HIDDEN_ITEM_UNDERWATER_128_PEARL                (FLAG_HIDDEN_ITEMS_START + 0x1A)
-#define FLAG_HIDDEN_ITEM_LILYCOVE_CITY_HEART_SCALE           (FLAG_HIDDEN_ITEMS_START + 0x1B)
-#define FLAG_HIDDEN_ITEM_FALLARBOR_TOWN_NUGGET               (FLAG_HIDDEN_ITEMS_START + 0x1C)
-#define FLAG_HIDDEN_ITEM_MT_PYRE_EXTERIOR_ULTRA_BALL         (FLAG_HIDDEN_ITEMS_START + 0x1D)
-#define FLAG_HIDDEN_ITEM_ROUTE_113_TM_DOUBLE_TEAM            (FLAG_HIDDEN_ITEMS_START + 0x1E)
+// 0x1F6: slice (masara), see include/constants/slice/flags_masara.h (was FLAG_HIDDEN_ITEM_ROUTE_111_STARDUST)
+// 0x1F7: slice (masara), see include/constants/slice/flags_masara.h (was FLAG_HIDDEN_ITEM_ROUTE_113_ETHER)
+// 0x1F8: slice (masara), see include/constants/slice/flags_masara.h (was FLAG_HIDDEN_ITEM_ROUTE_114_CARBOS)
+// 0x1F9: slice (masara), see include/constants/slice/flags_masara.h (was FLAG_HIDDEN_ITEM_ROUTE_119_CALCIUM)
+// 0x1FA: slice (masara), see include/constants/slice/flags_masara.h (was FLAG_HIDDEN_ITEM_ROUTE_119_ULTRA_BALL)
+// 0x1FB: slice (masara), see include/constants/slice/flags_masara.h (was FLAG_HIDDEN_ITEM_ROUTE_123_SUPER_REPEL)
+// 0x1FC: slice (tokiwa_spine), see include/constants/slice/flags_tokiwa_spine.h (was FLAG_HIDDEN_ITEM_UNDERWATER_124_CARBOS)
+// 0x1FD: slice (tokiwa_spine), see include/constants/slice/flags_tokiwa_spine.h (was FLAG_HIDDEN_ITEM_UNDERWATER_124_GREEN_SHARD)
+// 0x1FE: slice (tokiwa_spine), see include/constants/slice/flags_tokiwa_spine.h (was FLAG_HIDDEN_ITEM_UNDERWATER_124_PEARL)
+// 0x1FF: slice (tokiwa_spine), see include/constants/slice/flags_tokiwa_spine.h (was FLAG_HIDDEN_ITEM_UNDERWATER_124_BIG_PEARL)
+// 0x200: slice (tokiwa_spine), see include/constants/slice/flags_tokiwa_spine.h (was FLAG_HIDDEN_ITEM_UNDERWATER_126_BLUE_SHARD)
+// 0x201: slice (tokiwa_spine), see include/constants/slice/flags_tokiwa_spine.h (was FLAG_HIDDEN_ITEM_UNDERWATER_124_HEART_SCALE_1)
+// 0x202: slice (tokiwa_spine), see include/constants/slice/flags_tokiwa_spine.h (was FLAG_HIDDEN_ITEM_UNDERWATER_126_HEART_SCALE)
+// 0x203: slice (tokiwa_spine), see include/constants/slice/flags_tokiwa_spine.h (was FLAG_HIDDEN_ITEM_UNDERWATER_126_ULTRA_BALL)
+// 0x204: slice (tokiwa_town), see include/constants/slice/flags_tokiwa_town.h (was FLAG_HIDDEN_ITEM_UNDERWATER_126_STARDUST)
+// 0x205: slice (tokiwa_town), see include/constants/slice/flags_tokiwa_town.h (was FLAG_HIDDEN_ITEM_UNDERWATER_126_PEARL)
+// 0x206: slice (tokiwa_town), see include/constants/slice/flags_tokiwa_town.h (was FLAG_HIDDEN_ITEM_UNDERWATER_126_YELLOW_SHARD)
+// 0x207: slice (tokiwa_town), see include/constants/slice/flags_tokiwa_town.h (was FLAG_HIDDEN_ITEM_UNDERWATER_126_IRON)
+// 0x208: slice (tokiwa_town), see include/constants/slice/flags_tokiwa_town.h (was FLAG_HIDDEN_ITEM_UNDERWATER_126_BIG_PEARL)
+// 0x209: slice (tokiwa_town), see include/constants/slice/flags_tokiwa_town.h (was FLAG_HIDDEN_ITEM_UNDERWATER_127_STAR_PIECE)
+// 0x20A: slice (tokiwa_town), see include/constants/slice/flags_tokiwa_town.h (was FLAG_HIDDEN_ITEM_UNDERWATER_127_HP_UP)
+// 0x20B: slice (tokiwa_town), see include/constants/slice/flags_tokiwa_town.h (was FLAG_HIDDEN_ITEM_UNDERWATER_127_HEART_SCALE)
+// 0x20C: slice (north), see include/constants/slice/flags_north.h (was FLAG_HIDDEN_ITEM_UNDERWATER_127_RED_SHARD)
+// 0x20D: slice (north), see include/constants/slice/flags_north.h (was FLAG_HIDDEN_ITEM_UNDERWATER_128_PROTEIN)
+// 0x20E: slice (north), see include/constants/slice/flags_north.h (was FLAG_HIDDEN_ITEM_UNDERWATER_128_PEARL)
+// 0x20F: slice (north), see include/constants/slice/flags_north.h (was FLAG_HIDDEN_ITEM_LILYCOVE_CITY_HEART_SCALE)
+// 0x210: slice (north), see include/constants/slice/flags_north.h (was FLAG_HIDDEN_ITEM_FALLARBOR_TOWN_NUGGET)
+// 0x211: slice (north), see include/constants/slice/flags_north.h (was FLAG_HIDDEN_ITEM_MT_PYRE_EXTERIOR_ULTRA_BALL)
+// 0x212: slice (north), see include/constants/slice/flags_north.h (was FLAG_HIDDEN_ITEM_ROUTE_113_TM_DOUBLE_TEAM)
 #define FLAG_HIDDEN_ITEM_ABANDONED_SHIP_RM_1_KEY             (FLAG_HIDDEN_ITEMS_START + 0x1F)
 #define FLAG_HIDDEN_ITEM_ABANDONED_SHIP_RM_2_KEY             (FLAG_HIDDEN_ITEMS_START + 0x20)
 #define FLAG_HIDDEN_ITEM_ABANDONED_SHIP_RM_4_KEY             (FLAG_HIDDEN_ITEMS_START + 0x21)
 #define FLAG_HIDDEN_ITEM_ABANDONED_SHIP_RM_6_KEY             (FLAG_HIDDEN_ITEMS_START + 0x22)
-#define FLAG_HIDDEN_ITEM_SS_TIDAL_LOWER_DECK_LEFTOVERS       (FLAG_HIDDEN_ITEMS_START + 0x23)
-#define FLAG_HIDDEN_ITEM_UNDERWATER_124_CALCIUM              (FLAG_HIDDEN_ITEMS_START + 0x24)
-#define FLAG_HIDDEN_ITEM_ROUTE_104_POTION                    (FLAG_HIDDEN_ITEMS_START + 0x25)
-#define FLAG_HIDDEN_ITEM_UNDERWATER_124_HEART_SCALE_2        (FLAG_HIDDEN_ITEMS_START + 0x26)
-#define FLAG_HIDDEN_ITEM_ROUTE_121_HP_UP                     (FLAG_HIDDEN_ITEMS_START + 0x27)
-#define FLAG_HIDDEN_ITEM_ROUTE_121_NUGGET                    (FLAG_HIDDEN_ITEMS_START + 0x28)
-#define FLAG_HIDDEN_ITEM_ROUTE_123_REVIVE                    (FLAG_HIDDEN_ITEMS_START + 0x29)
-#define FLAG_HIDDEN_ITEM_ROUTE_114_REVIVE                    (FLAG_HIDDEN_ITEMS_START + 0x2A)
-#define FLAG_HIDDEN_ITEM_LILYCOVE_CITY_PP_UP                 (FLAG_HIDDEN_ITEMS_START + 0x2B)
-#define FLAG_HIDDEN_ITEM_ROUTE_104_SUPER_POTION              (FLAG_HIDDEN_ITEMS_START + 0x2C)
-#define FLAG_HIDDEN_ITEM_ROUTE_116_SUPER_POTION              (FLAG_HIDDEN_ITEMS_START + 0x2D)
-#define FLAG_HIDDEN_ITEM_ROUTE_106_STARDUST                  (FLAG_HIDDEN_ITEMS_START + 0x2E)
-#define FLAG_HIDDEN_ITEM_ROUTE_106_HEART_SCALE               (FLAG_HIDDEN_ITEMS_START + 0x2F)
-#define FLAG_HIDDEN_ITEM_GRANITE_CAVE_B2F_EVERSTONE_1        (FLAG_HIDDEN_ITEMS_START + 0x30)
-#define FLAG_HIDDEN_ITEM_GRANITE_CAVE_B2F_EVERSTONE_2        (FLAG_HIDDEN_ITEMS_START + 0x31)
-#define FLAG_HIDDEN_ITEM_ROUTE_109_REVIVE                    (FLAG_HIDDEN_ITEMS_START + 0x32)
-#define FLAG_HIDDEN_ITEM_ROUTE_109_GREAT_BALL                (FLAG_HIDDEN_ITEMS_START + 0x33)
-#define FLAG_HIDDEN_ITEM_ROUTE_109_HEART_SCALE_1             (FLAG_HIDDEN_ITEMS_START + 0x34)
-#define FLAG_HIDDEN_ITEM_ROUTE_110_GREAT_BALL                (FLAG_HIDDEN_ITEMS_START + 0x35)
-#define FLAG_HIDDEN_ITEM_ROUTE_110_REVIVE                    (FLAG_HIDDEN_ITEMS_START + 0x36)
-#define FLAG_HIDDEN_ITEM_ROUTE_110_FULL_HEAL                 (FLAG_HIDDEN_ITEMS_START + 0x37)
-#define FLAG_HIDDEN_ITEM_ROUTE_111_PROTEIN                   (FLAG_HIDDEN_ITEMS_START + 0x38)
-#define FLAG_HIDDEN_ITEM_ROUTE_111_RARE_CANDY                (FLAG_HIDDEN_ITEMS_START + 0x39)
-#define FLAG_HIDDEN_ITEM_PETALBURG_WOODS_POTION              (FLAG_HIDDEN_ITEMS_START + 0x3A)
-#define FLAG_HIDDEN_ITEM_PETALBURG_WOODS_TINY_MUSHROOM_1     (FLAG_HIDDEN_ITEMS_START + 0x3B)
-#define FLAG_HIDDEN_ITEM_PETALBURG_WOODS_TINY_MUSHROOM_2     (FLAG_HIDDEN_ITEMS_START + 0x3C)
+// 0x217: slice (north), see include/constants/slice/flags_north.h (was FLAG_HIDDEN_ITEM_SS_TIDAL_LOWER_DECK_LEFTOVERS)
+// 0x218: slice (north), see include/constants/slice/flags_north.h (was FLAG_HIDDEN_ITEM_UNDERWATER_124_CALCIUM)
+// 0x219: slice (north), see include/constants/slice/flags_north.h (was FLAG_HIDDEN_ITEM_ROUTE_104_POTION)
+// 0x21A: slice (north), see include/constants/slice/flags_north.h (was FLAG_HIDDEN_ITEM_UNDERWATER_124_HEART_SCALE_2)
+// 0x21B: slice (north), see include/constants/slice/flags_north.h (was FLAG_HIDDEN_ITEM_ROUTE_121_HP_UP)
+// 0x21C: slice (nibi_spine), see include/constants/slice/flags_nibi_spine.h (was FLAG_HIDDEN_ITEM_ROUTE_121_NUGGET)
+// 0x21D: slice (nibi_spine), see include/constants/slice/flags_nibi_spine.h (was FLAG_HIDDEN_ITEM_ROUTE_123_REVIVE)
+// 0x21E: slice (nibi_spine), see include/constants/slice/flags_nibi_spine.h (was FLAG_HIDDEN_ITEM_ROUTE_114_REVIVE)
+// 0x21F: slice (nibi_spine), see include/constants/slice/flags_nibi_spine.h (was FLAG_HIDDEN_ITEM_LILYCOVE_CITY_PP_UP)
+// 0x220: slice (nibi_spine), see include/constants/slice/flags_nibi_spine.h (was FLAG_HIDDEN_ITEM_ROUTE_104_SUPER_POTION)
+// 0x221: slice (nibi_spine), see include/constants/slice/flags_nibi_spine.h (was FLAG_HIDDEN_ITEM_ROUTE_116_SUPER_POTION)
+// 0x222: slice (nibi_spine), see include/constants/slice/flags_nibi_spine.h (was FLAG_HIDDEN_ITEM_ROUTE_106_STARDUST)
+// 0x223: slice (nibi_spine), see include/constants/slice/flags_nibi_spine.h (was FLAG_HIDDEN_ITEM_ROUTE_106_HEART_SCALE)
+// 0x224: slice (nibi_town), see include/constants/slice/flags_nibi_town.h (was FLAG_HIDDEN_ITEM_GRANITE_CAVE_B2F_EVERSTONE_1)
+// 0x225: slice (nibi_town), see include/constants/slice/flags_nibi_town.h (was FLAG_HIDDEN_ITEM_GRANITE_CAVE_B2F_EVERSTONE_2)
+// 0x226: slice (nibi_town), see include/constants/slice/flags_nibi_town.h (was FLAG_HIDDEN_ITEM_ROUTE_109_REVIVE)
+// 0x227: slice (nibi_town), see include/constants/slice/flags_nibi_town.h (was FLAG_HIDDEN_ITEM_ROUTE_109_GREAT_BALL)
+// 0x228: slice (nibi_town), see include/constants/slice/flags_nibi_town.h (was FLAG_HIDDEN_ITEM_ROUTE_109_HEART_SCALE_1)
+// 0x229: slice (nibi_town), see include/constants/slice/flags_nibi_town.h (was FLAG_HIDDEN_ITEM_ROUTE_110_GREAT_BALL)
+// 0x22A: slice (nibi_town), see include/constants/slice/flags_nibi_town.h (was FLAG_HIDDEN_ITEM_ROUTE_110_REVIVE)
+// 0x22B: slice (nibi_town), see include/constants/slice/flags_nibi_town.h (was FLAG_HIDDEN_ITEM_ROUTE_110_FULL_HEAL)
+// 0x22C: slice (masara), see include/constants/slice/flags_masara.h (was FLAG_HIDDEN_ITEM_ROUTE_111_PROTEIN)
+// 0x22D: slice (north), see include/constants/slice/flags_north.h (was FLAG_HIDDEN_ITEM_ROUTE_111_RARE_CANDY)
+// 0x22E: slice (north), see include/constants/slice/flags_north.h (was FLAG_HIDDEN_ITEM_PETALBURG_WOODS_POTION)
+// 0x22F: slice (north), see include/constants/slice/flags_north.h (was FLAG_HIDDEN_ITEM_PETALBURG_WOODS_TINY_MUSHROOM_1)
+// 0x230: slice (north), see include/constants/slice/flags_north.h (was FLAG_HIDDEN_ITEM_PETALBURG_WOODS_TINY_MUSHROOM_2)
 #define FLAG_HIDDEN_ITEM_PETALBURG_WOODS_POKE_BALL           (FLAG_HIDDEN_ITEMS_START + 0x3D)
 #define FLAG_HIDDEN_ITEM_ROUTE_104_POKE_BALL                 (FLAG_HIDDEN_ITEMS_START + 0x3E)
 #define FLAG_HIDDEN_ITEM_ROUTE_106_POKE_BALL                 (FLAG_HIDDEN_ITEMS_START + 0x3F)
@@ -656,94 +656,94 @@
 #define FLAG_HIDDEN_ITEM_ROUTE_123_RARE_CANDY                (FLAG_HIDDEN_ITEMS_START + 0x6E)
 #define FLAG_HIDDEN_ITEM_ROUTE_105_BIG_PEARL                 (FLAG_HIDDEN_ITEMS_START + 0x6F)
 
-#define FLAG_UNUSED_0x264  0x264 // Unused Flag
-#define FLAG_UNUSED_0x265  0x265 // Unused Flag
-#define FLAG_UNUSED_0x266  0x266 // Unused Flag
-#define FLAG_UNUSED_0x267  0x267 // Unused Flag
-#define FLAG_UNUSED_0x268  0x268 // Unused Flag
-#define FLAG_UNUSED_0x269  0x269 // Unused Flag
-#define FLAG_UNUSED_0x26A  0x26A // Unused Flag
-#define FLAG_UNUSED_0x26B  0x26B // Unused Flag
-#define FLAG_UNUSED_0x26C  0x26C // Unused Flag
-#define FLAG_UNUSED_0x26D  0x26D // Unused Flag
-#define FLAG_UNUSED_0x26E  0x26E // Unused Flag
-#define FLAG_UNUSED_0x26F  0x26F // Unused Flag
-#define FLAG_UNUSED_0x270  0x270 // Unused Flag
-#define FLAG_UNUSED_0x271  0x271 // Unused Flag
-#define FLAG_UNUSED_0x272  0x272 // Unused Flag
-#define FLAG_UNUSED_0x273  0x273 // Unused Flag
-#define FLAG_UNUSED_0x274  0x274 // Unused Flag
-#define FLAG_UNUSED_0x275  0x275 // Unused Flag
-#define FLAG_UNUSED_0x276  0x276 // Unused Flag
-#define FLAG_UNUSED_0x277  0x277 // Unused Flag
-#define FLAG_UNUSED_0x278  0x278 // Unused Flag
-#define FLAG_UNUSED_0x279  0x279 // Unused Flag
-#define FLAG_UNUSED_0x27A  0x27A // Unused Flag
-#define FLAG_UNUSED_0x27B  0x27B // Unused Flag
-#define FLAG_UNUSED_0x27C  0x27C // Unused Flag
-#define FLAG_UNUSED_0x27D  0x27D // Unused Flag
-#define FLAG_UNUSED_0x27E  0x27E // Unused Flag
-#define FLAG_UNUSED_0x27F  0x27F // Unused Flag
-#define FLAG_UNUSED_0x280  0x280 // Unused Flag
-#define FLAG_UNUSED_0x281  0x281 // Unused Flag
-#define FLAG_UNUSED_0x282  0x282 // Unused Flag
-#define FLAG_UNUSED_0x283  0x283 // Unused Flag
-#define FLAG_UNUSED_0x284  0x284 // Unused Flag
-#define FLAG_UNUSED_0x285  0x285 // Unused Flag
-#define FLAG_UNUSED_0x286  0x286 // Unused Flag
-#define FLAG_UNUSED_0x287  0x287 // Unused Flag
-#define FLAG_UNUSED_0x288  0x288 // Unused Flag
-#define FLAG_UNUSED_0x289  0x289 // Unused Flag
-#define FLAG_UNUSED_0x28A  0x28A // Unused Flag
-#define FLAG_UNUSED_0x28B  0x28B // Unused Flag
-#define FLAG_UNUSED_0x28C  0x28C // Unused Flag
-#define FLAG_UNUSED_0x28D  0x28D // Unused Flag
-#define FLAG_UNUSED_0x28E  0x28E // Unused Flag
-#define FLAG_UNUSED_0x28F  0x28F // Unused Flag
-#define FLAG_UNUSED_0x290  0x290 // Unused Flag
-#define FLAG_UNUSED_0x291  0x291 // Unused Flag
-#define FLAG_UNUSED_0x292  0x292 // Unused Flag
-#define FLAG_UNUSED_0x293  0x293 // Unused Flag
-#define FLAG_UNUSED_0x294  0x294 // Unused Flag
-#define FLAG_UNUSED_0x295  0x295 // Unused Flag
-#define FLAG_UNUSED_0x296  0x296 // Unused Flag
-#define FLAG_UNUSED_0x297  0x297 // Unused Flag
-#define FLAG_UNUSED_0x298  0x298 // Unused Flag
-#define FLAG_UNUSED_0x299  0x299 // Unused Flag
-#define FLAG_UNUSED_0x29A  0x29A // Unused Flag
-#define FLAG_UNUSED_0x29B  0x29B // Unused Flag
-#define FLAG_UNUSED_0x29C  0x29C // Unused Flag
-#define FLAG_UNUSED_0x29D  0x29D // Unused Flag
-#define FLAG_UNUSED_0x29E  0x29E // Unused Flag
-#define FLAG_UNUSED_0x29F  0x29F // Unused Flag
-#define FLAG_UNUSED_0x2A0  0x2A0 // Unused Flag
-#define FLAG_UNUSED_0x2A1  0x2A1 // Unused Flag
-#define FLAG_UNUSED_0x2A2  0x2A2 // Unused Flag
-#define FLAG_UNUSED_0x2A3  0x2A3 // Unused Flag
-#define FLAG_UNUSED_0x2A4  0x2A4 // Unused Flag
-#define FLAG_UNUSED_0x2A5  0x2A5 // Unused Flag
-#define FLAG_UNUSED_0x2A6  0x2A6 // Unused Flag
-#define FLAG_UNUSED_0x2A7  0x2A7 // Unused Flag
-#define FLAG_UNUSED_0x2A8  0x2A8 // Unused Flag
-#define FLAG_UNUSED_0x2A9  0x2A9 // Unused Flag
-#define FLAG_UNUSED_0x2AA  0x2AA // Unused Flag
-#define FLAG_UNUSED_0x2AB  0x2AB // Unused Flag
-#define FLAG_UNUSED_0x2AC  0x2AC // Unused Flag
-#define FLAG_UNUSED_0x2AD  0x2AD // Unused Flag
-#define FLAG_UNUSED_0x2AE  0x2AE // Unused Flag
-#define FLAG_UNUSED_0x2AF  0x2AF // Unused Flag
-#define FLAG_UNUSED_0x2B0  0x2B0 // Unused Flag
-#define FLAG_UNUSED_0x2B1  0x2B1 // Unused Flag
-#define FLAG_UNUSED_0x2B2  0x2B2 // Unused Flag
-#define FLAG_UNUSED_0x2B3  0x2B3 // Unused Flag
-#define FLAG_UNUSED_0x2B4  0x2B4 // Unused Flag
-#define FLAG_UNUSED_0x2B5  0x2B5 // Unused Flag
-#define FLAG_UNUSED_0x2B6  0x2B6 // Unused Flag
-#define FLAG_UNUSED_0x2B7  0x2B7 // Unused Flag
-#define FLAG_UNUSED_0x2B8  0x2B8 // Unused Flag
-#define FLAG_UNUSED_0x2B9  0x2B9 // Unused Flag
-#define FLAG_UNUSED_0x2BA  0x2BA // Unused Flag
-#define FLAG_UNUSED_0x2BB  0x2BB // Unused Flag
+// 0x264: slice (masara), see include/constants/slice/flags_masara.h (was FLAG_UNUSED_0x264)
+// 0x265: slice (masara), see include/constants/slice/flags_masara.h (was FLAG_UNUSED_0x265)
+// 0x266: slice (masara), see include/constants/slice/flags_masara.h (was FLAG_UNUSED_0x266)
+// 0x267: slice (masara), see include/constants/slice/flags_masara.h (was FLAG_UNUSED_0x267)
+// 0x268: slice (masara), see include/constants/slice/flags_masara.h (was FLAG_UNUSED_0x268)
+// 0x269: slice (masara), see include/constants/slice/flags_masara.h (was FLAG_UNUSED_0x269)
+// 0x26A: slice (masara), see include/constants/slice/flags_masara.h (was FLAG_UNUSED_0x26A)
+// 0x26B: slice (masara), see include/constants/slice/flags_masara.h (was FLAG_UNUSED_0x26B)
+// 0x26C: slice (masara), see include/constants/slice/flags_masara.h (was FLAG_UNUSED_0x26C)
+// 0x26D: slice (masara), see include/constants/slice/flags_masara.h (was FLAG_UNUSED_0x26D)
+// 0x26E: slice (masara), see include/constants/slice/flags_masara.h (was FLAG_UNUSED_0x26E)
+// 0x26F: slice (masara), see include/constants/slice/flags_masara.h (was FLAG_UNUSED_0x26F)
+// 0x270: slice (masara), see include/constants/slice/flags_masara.h (was FLAG_UNUSED_0x270)
+// 0x271: slice (masara), see include/constants/slice/flags_masara.h (was FLAG_UNUSED_0x271)
+// 0x272: slice (masara), see include/constants/slice/flags_masara.h (was FLAG_UNUSED_0x272)
+// 0x273: slice (masara), see include/constants/slice/flags_masara.h (was FLAG_UNUSED_0x273)
+// 0x274: slice (masara), see include/constants/slice/flags_masara.h (was FLAG_UNUSED_0x274)
+// 0x275: slice (masara), see include/constants/slice/flags_masara.h (was FLAG_UNUSED_0x275)
+// 0x276: slice (masara), see include/constants/slice/flags_masara.h (was FLAG_UNUSED_0x276)
+// 0x277: slice (masara), see include/constants/slice/flags_masara.h (was FLAG_UNUSED_0x277)
+// 0x278: slice (masara), see include/constants/slice/flags_masara.h (was FLAG_UNUSED_0x278)
+// 0x279: slice (masara), see include/constants/slice/flags_masara.h (was FLAG_UNUSED_0x279)
+// 0x27A: slice (masara), see include/constants/slice/flags_masara.h (was FLAG_UNUSED_0x27A)
+// 0x27B: slice (masara), see include/constants/slice/flags_masara.h (was FLAG_UNUSED_0x27B)
+// 0x27C: slice (masara), see include/constants/slice/flags_masara.h (was FLAG_UNUSED_0x27C)
+// 0x27D: slice (masara), see include/constants/slice/flags_masara.h (was FLAG_UNUSED_0x27D)
+// 0x27E: slice (masara), see include/constants/slice/flags_masara.h (was FLAG_UNUSED_0x27E)
+// 0x27F: slice (masara), see include/constants/slice/flags_masara.h (was FLAG_UNUSED_0x27F)
+// 0x280: slice (masara), see include/constants/slice/flags_masara.h (was FLAG_UNUSED_0x280)
+// 0x281: slice (masara), see include/constants/slice/flags_masara.h (was FLAG_UNUSED_0x281)
+// 0x282: slice (masara), see include/constants/slice/flags_masara.h (was FLAG_UNUSED_0x282)
+// 0x283: slice (masara), see include/constants/slice/flags_masara.h (was FLAG_UNUSED_0x283)
+// 0x284: slice (masara), see include/constants/slice/flags_masara.h (was FLAG_UNUSED_0x284)
+// 0x285: slice (masara), see include/constants/slice/flags_masara.h (was FLAG_UNUSED_0x285)
+// 0x286: slice (masara), see include/constants/slice/flags_masara.h (was FLAG_UNUSED_0x286)
+// 0x287: slice (masara), see include/constants/slice/flags_masara.h (was FLAG_UNUSED_0x287)
+// 0x288: slice (masara), see include/constants/slice/flags_masara.h (was FLAG_UNUSED_0x288)
+// 0x289: slice (masara), see include/constants/slice/flags_masara.h (was FLAG_UNUSED_0x289)
+// 0x28A: slice (masara), see include/constants/slice/flags_masara.h (was FLAG_UNUSED_0x28A)
+// 0x28B: slice (masara), see include/constants/slice/flags_masara.h (was FLAG_UNUSED_0x28B)
+// 0x28C: slice (north), see include/constants/slice/flags_north.h (was FLAG_UNUSED_0x28C)
+// 0x28D: slice (north), see include/constants/slice/flags_north.h (was FLAG_UNUSED_0x28D)
+// 0x28E: slice (north), see include/constants/slice/flags_north.h (was FLAG_UNUSED_0x28E)
+// 0x28F: slice (north), see include/constants/slice/flags_north.h (was FLAG_UNUSED_0x28F)
+// 0x290: slice (north), see include/constants/slice/flags_north.h (was FLAG_UNUSED_0x290)
+// 0x291: slice (north), see include/constants/slice/flags_north.h (was FLAG_UNUSED_0x291)
+// 0x292: slice (north), see include/constants/slice/flags_north.h (was FLAG_UNUSED_0x292)
+// 0x293: slice (north), see include/constants/slice/flags_north.h (was FLAG_UNUSED_0x293)
+// 0x294: slice (north), see include/constants/slice/flags_north.h (was FLAG_UNUSED_0x294)
+// 0x295: slice (north), see include/constants/slice/flags_north.h (was FLAG_UNUSED_0x295)
+// 0x296: slice (north), see include/constants/slice/flags_north.h (was FLAG_UNUSED_0x296)
+// 0x297: slice (north), see include/constants/slice/flags_north.h (was FLAG_UNUSED_0x297)
+// 0x298: slice (north), see include/constants/slice/flags_north.h (was FLAG_UNUSED_0x298)
+// 0x299: slice (north), see include/constants/slice/flags_north.h (was FLAG_UNUSED_0x299)
+// 0x29A: slice (north), see include/constants/slice/flags_north.h (was FLAG_UNUSED_0x29A)
+// 0x29B: slice (north), see include/constants/slice/flags_north.h (was FLAG_UNUSED_0x29B)
+// 0x29C: slice (north), see include/constants/slice/flags_north.h (was FLAG_UNUSED_0x29C)
+// 0x29D: slice (north), see include/constants/slice/flags_north.h (was FLAG_UNUSED_0x29D)
+// 0x29E: slice (north), see include/constants/slice/flags_north.h (was FLAG_UNUSED_0x29E)
+// 0x29F: slice (north), see include/constants/slice/flags_north.h (was FLAG_UNUSED_0x29F)
+// 0x2A0: slice (north), see include/constants/slice/flags_north.h (was FLAG_UNUSED_0x2A0)
+// 0x2A1: slice (north), see include/constants/slice/flags_north.h (was FLAG_UNUSED_0x2A1)
+// 0x2A2: slice (north), see include/constants/slice/flags_north.h (was FLAG_UNUSED_0x2A2)
+// 0x2A3: slice (north), see include/constants/slice/flags_north.h (was FLAG_UNUSED_0x2A3)
+// 0x2A4: slice (tokiwa_spine), see include/constants/slice/flags_tokiwa_spine.h (was FLAG_UNUSED_0x2A4)
+// 0x2A5: slice (tokiwa_spine), see include/constants/slice/flags_tokiwa_spine.h (was FLAG_UNUSED_0x2A5)
+// 0x2A6: slice (tokiwa_spine), see include/constants/slice/flags_tokiwa_spine.h (was FLAG_UNUSED_0x2A6)
+// 0x2A7: slice (tokiwa_spine), see include/constants/slice/flags_tokiwa_spine.h (was FLAG_UNUSED_0x2A7)
+// 0x2A8: slice (tokiwa_spine), see include/constants/slice/flags_tokiwa_spine.h (was FLAG_UNUSED_0x2A8)
+// 0x2A9: slice (tokiwa_spine), see include/constants/slice/flags_tokiwa_spine.h (was FLAG_UNUSED_0x2A9)
+// 0x2AA: slice (tokiwa_spine), see include/constants/slice/flags_tokiwa_spine.h (was FLAG_UNUSED_0x2AA)
+// 0x2AB: slice (tokiwa_spine), see include/constants/slice/flags_tokiwa_spine.h (was FLAG_UNUSED_0x2AB)
+// 0x2AC: slice (tokiwa_spine), see include/constants/slice/flags_tokiwa_spine.h (was FLAG_UNUSED_0x2AC)
+// 0x2AD: slice (tokiwa_spine), see include/constants/slice/flags_tokiwa_spine.h (was FLAG_UNUSED_0x2AD)
+// 0x2AE: slice (tokiwa_spine), see include/constants/slice/flags_tokiwa_spine.h (was FLAG_UNUSED_0x2AE)
+// 0x2AF: slice (tokiwa_spine), see include/constants/slice/flags_tokiwa_spine.h (was FLAG_UNUSED_0x2AF)
+// 0x2B0: slice (tokiwa_town), see include/constants/slice/flags_tokiwa_town.h (was FLAG_UNUSED_0x2B0)
+// 0x2B1: slice (tokiwa_town), see include/constants/slice/flags_tokiwa_town.h (was FLAG_UNUSED_0x2B1)
+// 0x2B2: slice (tokiwa_town), see include/constants/slice/flags_tokiwa_town.h (was FLAG_UNUSED_0x2B2)
+// 0x2B3: slice (tokiwa_town), see include/constants/slice/flags_tokiwa_town.h (was FLAG_UNUSED_0x2B3)
+// 0x2B4: slice (tokiwa_town), see include/constants/slice/flags_tokiwa_town.h (was FLAG_UNUSED_0x2B4)
+// 0x2B5: slice (tokiwa_town), see include/constants/slice/flags_tokiwa_town.h (was FLAG_UNUSED_0x2B5)
+// 0x2B6: slice (tokiwa_town), see include/constants/slice/flags_tokiwa_town.h (was FLAG_UNUSED_0x2B6)
+// 0x2B7: slice (tokiwa_town), see include/constants/slice/flags_tokiwa_town.h (was FLAG_UNUSED_0x2B7)
+// 0x2B8: slice (tokiwa_town), see include/constants/slice/flags_tokiwa_town.h (was FLAG_UNUSED_0x2B8)
+// 0x2B9: slice (tokiwa_town), see include/constants/slice/flags_tokiwa_town.h (was FLAG_UNUSED_0x2B9)
+// 0x2BA: slice (tokiwa_town), see include/constants/slice/flags_tokiwa_town.h (was FLAG_UNUSED_0x2BA)
+// 0x2BB: slice (tokiwa_town), see include/constants/slice/flags_tokiwa_town.h (was FLAG_UNUSED_0x2BB)
 
 // Event Flags
 #define FLAG_HIDE_ROUTE_101_BIRCH_STARTERS_BAG                      0x2BC
@@ -1050,70 +1050,70 @@
 #define FLAG_HIDE_RUSTBORO_CITY_POKEMON_SCHOOL_SCOTT                0x3E7
 
 // Item Ball Flags
-#define FLAG_ITEM_ROUTE_102_POTION                                  0x3E8
-#define FLAG_ITEM_ROUTE_116_X_SPECIAL                               0x3E9
-#define FLAG_ITEM_ROUTE_104_PP_UP                                   0x3EA
-#define FLAG_ITEM_ROUTE_105_IRON                                    0x3EB
-#define FLAG_ITEM_ROUTE_106_PROTEIN                                 0x3EC
-#define FLAG_ITEM_ROUTE_109_PP_UP                                   0x3ED
-#define FLAG_ITEM_ROUTE_110_RARE_CANDY                              0x3EE
-#define FLAG_ITEM_ROUTE_110_DIRE_HIT                                0x3EF
-#define FLAG_ITEM_ROUTE_111_TM_SANDSTORM                            0x3F0
-#define FLAG_ITEM_ROUTE_111_STARDUST                                0x3F1
-#define FLAG_ITEM_ROUTE_111_HP_UP                                   0x3F2
-#define FLAG_ITEM_ROUTE_112_NUGGET                                  0x3F3
-#define FLAG_ITEM_ROUTE_113_MAX_ETHER                               0x3F4
-#define FLAG_ITEM_ROUTE_113_SUPER_REPEL                             0x3F5
-#define FLAG_ITEM_ROUTE_114_RARE_CANDY                              0x3F6
-#define FLAG_ITEM_ROUTE_114_PROTEIN                                 0x3F7
-#define FLAG_ITEM_ROUTE_115_SUPER_POTION                            0x3F8
-#define FLAG_ITEM_ROUTE_115_TM_FOCUS_PUNCH                          0x3F9
-#define FLAG_ITEM_ROUTE_115_IRON                                    0x3FA
-#define FLAG_ITEM_ROUTE_116_ETHER                                   0x3FB
-#define FLAG_ITEM_ROUTE_116_REPEL                                   0x3FC
-#define FLAG_ITEM_ROUTE_116_HP_UP                                   0x3FD
-#define FLAG_ITEM_ROUTE_117_GREAT_BALL                              0x3FE
-#define FLAG_ITEM_ROUTE_117_REVIVE                                  0x3FF
-#define FLAG_ITEM_ROUTE_119_SUPER_REPEL                             0x400
-#define FLAG_ITEM_ROUTE_119_ZINC                                    0x401
-#define FLAG_ITEM_ROUTE_119_ELIXIR_1                                0x402
-#define FLAG_ITEM_ROUTE_119_LEAF_STONE                              0x403
-#define FLAG_ITEM_ROUTE_119_RARE_CANDY                              0x404
-#define FLAG_ITEM_ROUTE_119_HYPER_POTION_1                          0x405
-#define FLAG_ITEM_ROUTE_120_NUGGET                                  0x406
-#define FLAG_ITEM_ROUTE_120_FULL_HEAL                               0x407
-#define FLAG_ITEM_ROUTE_123_CALCIUM                                 0x408
-#define FLAG_ITEM_ROUTE_123_RARE_CANDY                              0x409 // Unused Flag, leftover from R/S. In Emerald this is a hidden item and uses a different flag
-#define FLAG_ITEM_ROUTE_127_ZINC                                    0x40A
-#define FLAG_ITEM_ROUTE_127_CARBOS                                  0x40B
-#define FLAG_ITEM_ROUTE_132_RARE_CANDY                              0x40C
-#define FLAG_ITEM_ROUTE_133_BIG_PEARL                               0x40D
-#define FLAG_ITEM_ROUTE_133_STAR_PIECE                              0x40E
-#define FLAG_ITEM_PETALBURG_CITY_MAX_REVIVE                         0x40F
-#define FLAG_ITEM_PETALBURG_CITY_ETHER                              0x410
-#define FLAG_ITEM_RUSTBORO_CITY_X_DEFEND                            0x411
-#define FLAG_ITEM_LILYCOVE_CITY_MAX_REPEL                           0x412
-#define FLAG_ITEM_MOSSDEEP_CITY_NET_BALL                            0x413
-#define FLAG_ITEM_METEOR_FALLS_1F_1R_TM_IRON_TAIL                   0x414
-#define FLAG_ITEM_METEOR_FALLS_1F_1R_FULL_HEAL                      0x415
-#define FLAG_ITEM_METEOR_FALLS_1F_1R_MOON_STONE                     0x416
-#define FLAG_ITEM_METEOR_FALLS_1F_1R_PP_UP                          0x417
-#define FLAG_ITEM_RUSTURF_TUNNEL_POKE_BALL                          0x418
-#define FLAG_ITEM_RUSTURF_TUNNEL_MAX_ETHER                          0x419
-#define FLAG_ITEM_GRANITE_CAVE_1F_ESCAPE_ROPE                       0x41A
-#define FLAG_ITEM_GRANITE_CAVE_B1F_POKE_BALL                        0x41B
-#define FLAG_ITEM_MT_PYRE_5F_LAX_INCENSE                            0x41C
-#define FLAG_ITEM_GRANITE_CAVE_B2F_REPEL                            0x41D
-#define FLAG_ITEM_GRANITE_CAVE_B2F_RARE_CANDY                       0x41E
-#define FLAG_ITEM_PETALBURG_WOODS_X_ATTACK                          0x41F
-#define FLAG_ITEM_PETALBURG_WOODS_GREAT_BALL                        0x420
-#define FLAG_ITEM_ROUTE_104_POKE_BALL                               0x421
-#define FLAG_ITEM_PETALBURG_WOODS_ETHER                             0x422
-#define FLAG_ITEM_MAGMA_HIDEOUT_3F_3R_ECAPE_ROPE                    0x423
-#define FLAG_ITEM_TRICK_HOUSE_PUZZLE_1_ORANGE_MAIL                  0x424
-#define FLAG_ITEM_TRICK_HOUSE_PUZZLE_2_HARBOR_MAIL                  0x425
-#define FLAG_ITEM_TRICK_HOUSE_PUZZLE_2_WAVE_MAIL                    0x426
-#define FLAG_ITEM_TRICK_HOUSE_PUZZLE_3_SHADOW_MAIL                  0x427
+// 0x3E8: slice (masara), see include/constants/slice/flags_masara.h (was FLAG_ITEM_ROUTE_102_POTION)
+// 0x3E9: slice (masara), see include/constants/slice/flags_masara.h (was FLAG_ITEM_ROUTE_116_X_SPECIAL)
+// 0x3EA: slice (masara), see include/constants/slice/flags_masara.h (was FLAG_ITEM_ROUTE_104_PP_UP)
+// 0x3EB: slice (masara), see include/constants/slice/flags_masara.h (was FLAG_ITEM_ROUTE_105_IRON)
+// 0x3EC: slice (masara), see include/constants/slice/flags_masara.h (was FLAG_ITEM_ROUTE_106_PROTEIN)
+// 0x3ED: slice (masara), see include/constants/slice/flags_masara.h (was FLAG_ITEM_ROUTE_109_PP_UP)
+// 0x3EE: slice (masara), see include/constants/slice/flags_masara.h (was FLAG_ITEM_ROUTE_110_RARE_CANDY)
+// 0x3EF: slice (masara), see include/constants/slice/flags_masara.h (was FLAG_ITEM_ROUTE_110_DIRE_HIT)
+// 0x3F0: slice (tokiwa_spine), see include/constants/slice/flags_tokiwa_spine.h (was FLAG_ITEM_ROUTE_111_TM_SANDSTORM)
+// 0x3F1: slice (tokiwa_spine), see include/constants/slice/flags_tokiwa_spine.h (was FLAG_ITEM_ROUTE_111_STARDUST)
+// 0x3F2: slice (tokiwa_spine), see include/constants/slice/flags_tokiwa_spine.h (was FLAG_ITEM_ROUTE_111_HP_UP)
+// 0x3F3: slice (tokiwa_spine), see include/constants/slice/flags_tokiwa_spine.h (was FLAG_ITEM_ROUTE_112_NUGGET)
+// 0x3F4: slice (tokiwa_spine), see include/constants/slice/flags_tokiwa_spine.h (was FLAG_ITEM_ROUTE_113_MAX_ETHER)
+// 0x3F5: slice (tokiwa_spine), see include/constants/slice/flags_tokiwa_spine.h (was FLAG_ITEM_ROUTE_113_SUPER_REPEL)
+// 0x3F6: slice (tokiwa_spine), see include/constants/slice/flags_tokiwa_spine.h (was FLAG_ITEM_ROUTE_114_RARE_CANDY)
+// 0x3F7: slice (tokiwa_spine), see include/constants/slice/flags_tokiwa_spine.h (was FLAG_ITEM_ROUTE_114_PROTEIN)
+// 0x3F8: slice (tokiwa_town), see include/constants/slice/flags_tokiwa_town.h (was FLAG_ITEM_ROUTE_115_SUPER_POTION)
+// 0x3F9: slice (tokiwa_town), see include/constants/slice/flags_tokiwa_town.h (was FLAG_ITEM_ROUTE_115_TM_FOCUS_PUNCH)
+// 0x3FA: slice (tokiwa_town), see include/constants/slice/flags_tokiwa_town.h (was FLAG_ITEM_ROUTE_115_IRON)
+// 0x3FB: slice (tokiwa_town), see include/constants/slice/flags_tokiwa_town.h (was FLAG_ITEM_ROUTE_116_ETHER)
+// 0x3FC: slice (tokiwa_town), see include/constants/slice/flags_tokiwa_town.h (was FLAG_ITEM_ROUTE_116_REPEL)
+// 0x3FD: slice (tokiwa_town), see include/constants/slice/flags_tokiwa_town.h (was FLAG_ITEM_ROUTE_116_HP_UP)
+// 0x3FE: slice (tokiwa_town), see include/constants/slice/flags_tokiwa_town.h (was FLAG_ITEM_ROUTE_117_GREAT_BALL)
+// 0x3FF: slice (tokiwa_town), see include/constants/slice/flags_tokiwa_town.h (was FLAG_ITEM_ROUTE_117_REVIVE)
+// 0x400: slice (north), see include/constants/slice/flags_north.h (was FLAG_ITEM_ROUTE_119_SUPER_REPEL)
+// 0x401: slice (north), see include/constants/slice/flags_north.h (was FLAG_ITEM_ROUTE_119_ZINC)
+// 0x402: slice (north), see include/constants/slice/flags_north.h (was FLAG_ITEM_ROUTE_119_ELIXIR_1)
+// 0x403: slice (north), see include/constants/slice/flags_north.h (was FLAG_ITEM_ROUTE_119_LEAF_STONE)
+// 0x404: slice (north), see include/constants/slice/flags_north.h (was FLAG_ITEM_ROUTE_119_RARE_CANDY)
+// 0x405: slice (north), see include/constants/slice/flags_north.h (was FLAG_ITEM_ROUTE_119_HYPER_POTION_1)
+// 0x406: slice (north), see include/constants/slice/flags_north.h (was FLAG_ITEM_ROUTE_120_NUGGET)
+// 0x407: slice (north), see include/constants/slice/flags_north.h (was FLAG_ITEM_ROUTE_120_FULL_HEAL)
+// 0x408: slice (north), see include/constants/slice/flags_north.h (was FLAG_ITEM_ROUTE_123_CALCIUM)
+// 0x409: slice (north), see include/constants/slice/flags_north.h (was FLAG_ITEM_ROUTE_123_RARE_CANDY)
+// 0x40A: slice (north), see include/constants/slice/flags_north.h (was FLAG_ITEM_ROUTE_127_ZINC)
+// 0x40B: slice (north), see include/constants/slice/flags_north.h (was FLAG_ITEM_ROUTE_127_CARBOS)
+// 0x40C: slice (north), see include/constants/slice/flags_north.h (was FLAG_ITEM_ROUTE_132_RARE_CANDY)
+// 0x40D: slice (north), see include/constants/slice/flags_north.h (was FLAG_ITEM_ROUTE_133_BIG_PEARL)
+// 0x40E: slice (north), see include/constants/slice/flags_north.h (was FLAG_ITEM_ROUTE_133_STAR_PIECE)
+// 0x40F: slice (north), see include/constants/slice/flags_north.h (was FLAG_ITEM_PETALBURG_CITY_MAX_REVIVE)
+// 0x410: slice (north), see include/constants/slice/flags_north.h (was FLAG_ITEM_PETALBURG_CITY_ETHER)
+// 0x411: slice (north), see include/constants/slice/flags_north.h (was FLAG_ITEM_RUSTBORO_CITY_X_DEFEND)
+// 0x412: slice (north), see include/constants/slice/flags_north.h (was FLAG_ITEM_LILYCOVE_CITY_MAX_REPEL)
+// 0x413: slice (north), see include/constants/slice/flags_north.h (was FLAG_ITEM_MOSSDEEP_CITY_NET_BALL)
+// 0x414: slice (north), see include/constants/slice/flags_north.h (was FLAG_ITEM_METEOR_FALLS_1F_1R_TM_IRON_TAIL)
+// 0x415: slice (north), see include/constants/slice/flags_north.h (was FLAG_ITEM_METEOR_FALLS_1F_1R_FULL_HEAL)
+// 0x416: slice (north), see include/constants/slice/flags_north.h (was FLAG_ITEM_METEOR_FALLS_1F_1R_MOON_STONE)
+// 0x417: slice (north), see include/constants/slice/flags_north.h (was FLAG_ITEM_METEOR_FALLS_1F_1R_PP_UP)
+// 0x418: slice (nibi_spine), see include/constants/slice/flags_nibi_spine.h (was FLAG_ITEM_RUSTURF_TUNNEL_POKE_BALL)
+// 0x419: slice (nibi_spine), see include/constants/slice/flags_nibi_spine.h (was FLAG_ITEM_RUSTURF_TUNNEL_MAX_ETHER)
+// 0x41A: slice (nibi_spine), see include/constants/slice/flags_nibi_spine.h (was FLAG_ITEM_GRANITE_CAVE_1F_ESCAPE_ROPE)
+// 0x41B: slice (nibi_spine), see include/constants/slice/flags_nibi_spine.h (was FLAG_ITEM_GRANITE_CAVE_B1F_POKE_BALL)
+// 0x41C: slice (nibi_spine), see include/constants/slice/flags_nibi_spine.h (was FLAG_ITEM_MT_PYRE_5F_LAX_INCENSE)
+// 0x41D: slice (nibi_spine), see include/constants/slice/flags_nibi_spine.h (was FLAG_ITEM_GRANITE_CAVE_B2F_REPEL)
+// 0x41E: slice (nibi_spine), see include/constants/slice/flags_nibi_spine.h (was FLAG_ITEM_GRANITE_CAVE_B2F_RARE_CANDY)
+// 0x41F: slice (nibi_spine), see include/constants/slice/flags_nibi_spine.h (was FLAG_ITEM_PETALBURG_WOODS_X_ATTACK)
+// 0x420: slice (nibi_town), see include/constants/slice/flags_nibi_town.h (was FLAG_ITEM_PETALBURG_WOODS_GREAT_BALL)
+// 0x421: slice (nibi_town), see include/constants/slice/flags_nibi_town.h (was FLAG_ITEM_ROUTE_104_POKE_BALL)
+// 0x422: slice (nibi_town), see include/constants/slice/flags_nibi_town.h (was FLAG_ITEM_PETALBURG_WOODS_ETHER)
+// 0x423: slice (nibi_town), see include/constants/slice/flags_nibi_town.h (was FLAG_ITEM_MAGMA_HIDEOUT_3F_3R_ECAPE_ROPE)
+// 0x424: slice (nibi_town), see include/constants/slice/flags_nibi_town.h (was FLAG_ITEM_TRICK_HOUSE_PUZZLE_1_ORANGE_MAIL)
+// 0x425: slice (nibi_town), see include/constants/slice/flags_nibi_town.h (was FLAG_ITEM_TRICK_HOUSE_PUZZLE_2_HARBOR_MAIL)
+// 0x426: slice (nibi_town), see include/constants/slice/flags_nibi_town.h (was FLAG_ITEM_TRICK_HOUSE_PUZZLE_2_WAVE_MAIL)
+// 0x427: slice (nibi_town), see include/constants/slice/flags_nibi_town.h (was FLAG_ITEM_TRICK_HOUSE_PUZZLE_3_SHADOW_MAIL)
 #define FLAG_ITEM_TRICK_HOUSE_PUZZLE_3_WOOD_MAIL                    0x428
 #define FLAG_ITEM_TRICK_HOUSE_PUZZLE_4_MECH_MAIL                    0x429
 #define FLAG_ITEM_ROUTE_124_YELLOW_SHARD                            0x42A
@@ -1228,93 +1228,93 @@
 #define FLAG_SEEN_KIMURA_PHOTO                                      0x496 // Masara: looked at the photo in Kimura's window
 #define FLAG_MASARA_OKIDO_SEALED                                    0x497 // Masara: Okido told the player about "something sealed"
 #define FLAG_MASARA_KNOCKED_KIMURA                                  0x498 // Masara: knocked on Kimura's door
-#define FLAG_UNUSED_0x499                                           0x499 // Unused Flag
-#define FLAG_UNUSED_0x49A                                           0x49A // Unused Flag
-#define FLAG_UNUSED_0x49B                                           0x49B // Unused Flag
-#define FLAG_UNUSED_0x49C                                           0x49C // Unused Flag
-#define FLAG_UNUSED_0x49D                                           0x49D // Unused Flag
-#define FLAG_UNUSED_0x49E                                           0x49E // Unused Flag
-#define FLAG_UNUSED_0x49F                                           0x49F // Unused Flag
-#define FLAG_UNUSED_0x4A0                                           0x4A0 // Unused Flag
-#define FLAG_UNUSED_0x4A1                                           0x4A1 // Unused Flag
-#define FLAG_UNUSED_0x4A2                                           0x4A2 // Unused Flag
-#define FLAG_UNUSED_0x4A3                                           0x4A3 // Unused Flag
-#define FLAG_UNUSED_0x4A4                                           0x4A4 // Unused Flag
-#define FLAG_UNUSED_0x4A5                                           0x4A5 // Unused Flag
-#define FLAG_UNUSED_0x4A6                                           0x4A6 // Unused Flag
-#define FLAG_UNUSED_0x4A7                                           0x4A7 // Unused Flag
-#define FLAG_UNUSED_0x4A8                                           0x4A8 // Unused Flag
-#define FLAG_UNUSED_0x4A9                                           0x4A9 // Unused Flag
-#define FLAG_UNUSED_0x4AA                                           0x4AA // Unused Flag
-#define FLAG_UNUSED_0x4AB                                           0x4AB // Unused Flag
-#define FLAG_UNUSED_0x4AC                                           0x4AC // Unused Flag
-#define FLAG_UNUSED_0x4AD                                           0x4AD // Unused Flag
-#define FLAG_UNUSED_0x4AE                                           0x4AE // Unused Flag
-#define FLAG_UNUSED_0x4AF                                           0x4AF // Unused Flag
-#define FLAG_UNUSED_0x4B0                                           0x4B0 // Unused Flag
-#define FLAG_UNUSED_0x4B1                                           0x4B1 // Unused Flag
-#define FLAG_UNUSED_0x4B2                                           0x4B2 // Unused Flag
-#define FLAG_UNUSED_0x4B3                                           0x4B3 // Unused Flag
-#define FLAG_UNUSED_0x4B4                                           0x4B4 // Unused Flag
-#define FLAG_UNUSED_0x4B5                                           0x4B5 // Unused Flag
-#define FLAG_UNUSED_0x4B6                                           0x4B6 // Unused Flag
-#define FLAG_UNUSED_0x4B7                                           0x4B7 // Unused Flag
-#define FLAG_UNUSED_0x4B8                                           0x4B8 // Unused Flag
-#define FLAG_UNUSED_0x4B9                                           0x4B9 // Unused Flag
-#define FLAG_UNUSED_0x4BA                                           0x4BA // Unused Flag
-#define FLAG_UNUSED_0x4BB                                           0x4BB // Unused Flag
-#define FLAG_UNUSED_0x4BC                                           0x4BC // Unused Flag
-#define FLAG_UNUSED_0x4BD                                           0x4BD // Unused Flag
-#define FLAG_UNUSED_0x4BE                                           0x4BE // Unused Flag
-#define FLAG_UNUSED_0x4BF                                           0x4BF // Unused Flag
-#define FLAG_UNUSED_0x4C0                                           0x4C0 // Unused Flag
-#define FLAG_UNUSED_0x4C1                                           0x4C1 // Unused Flag
-#define FLAG_UNUSED_0x4C2                                           0x4C2 // Unused Flag
-#define FLAG_UNUSED_0x4C3                                           0x4C3 // Unused Flag
-#define FLAG_UNUSED_0x4C4                                           0x4C4 // Unused Flag
-#define FLAG_UNUSED_0x4C5                                           0x4C5 // Unused Flag
-#define FLAG_UNUSED_0x4C6                                           0x4C6 // Unused Flag
-#define FLAG_UNUSED_0x4C7                                           0x4C7 // Unused Flag
-#define FLAG_UNUSED_0x4C8                                           0x4C8 // Unused Flag
-#define FLAG_UNUSED_0x4C9                                           0x4C9 // Unused Flag
-#define FLAG_UNUSED_0x4CA                                           0x4CA // Unused Flag
-#define FLAG_UNUSED_0x4CB                                           0x4CB // Unused Flag
-#define FLAG_UNUSED_0x4CC                                           0x4CC // Unused Flag
-#define FLAG_UNUSED_0x4CD                                           0x4CD // Unused Flag
-#define FLAG_UNUSED_0x4CE                                           0x4CE // Unused Flag
-#define FLAG_UNUSED_0x4CF                                           0x4CF // Unused Flag
-#define FLAG_UNUSED_0x4D0                                           0x4D0 // Unused Flag
-#define FLAG_UNUSED_0x4D1                                           0x4D1 // Unused Flag
-#define FLAG_UNUSED_0x4D2                                           0x4D2 // Unused Flag
-#define FLAG_UNUSED_0x4D3                                           0x4D3 // Unused Flag
-#define FLAG_UNUSED_0x4D4                                           0x4D4 // Unused Flag
-#define FLAG_UNUSED_0x4D5                                           0x4D5 // Unused Flag
-#define FLAG_UNUSED_0x4D6                                           0x4D6 // Unused Flag
-#define FLAG_UNUSED_0x4D7                                           0x4D7 // Unused Flag
-#define FLAG_UNUSED_0x4D8                                           0x4D8 // Unused Flag
-#define FLAG_UNUSED_0x4D9                                           0x4D9 // Unused Flag
-#define FLAG_UNUSED_0x4DA                                           0x4DA // Unused Flag
-#define FLAG_UNUSED_0x4DB                                           0x4DB // Unused Flag
-#define FLAG_UNUSED_0x4DC                                           0x4DC // Unused Flag
-#define FLAG_UNUSED_0x4DD                                           0x4DD // Unused Flag
-#define FLAG_UNUSED_0x4DE                                           0x4DE // Unused Flag
-#define FLAG_UNUSED_0x4DF                                           0x4DF // Unused Flag
-#define FLAG_UNUSED_0x4E0                                           0x4E0 // Unused Flag
-#define FLAG_UNUSED_0x4E1                                           0x4E1 // Unused Flag
-#define FLAG_UNUSED_0x4E2                                           0x4E2 // Unused Flag
-#define FLAG_UNUSED_0x4E3                                           0x4E3 // Unused Flag
-#define FLAG_UNUSED_0x4E4                                           0x4E4 // Unused Flag
-#define FLAG_UNUSED_0x4E5                                           0x4E5 // Unused Flag
-#define FLAG_UNUSED_0x4E6                                           0x4E6 // Unused Flag
-#define FLAG_UNUSED_0x4E7                                           0x4E7 // Unused Flag
-#define FLAG_UNUSED_0x4E8                                           0x4E8 // Unused Flag
-#define FLAG_UNUSED_0x4E9                                           0x4E9 // Unused Flag
-#define FLAG_UNUSED_0x4EA                                           0x4EA // Unused Flag
-#define FLAG_UNUSED_0x4EB                                           0x4EB // Unused Flag
-#define FLAG_UNUSED_0x4EC                                           0x4EC // Unused Flag
-#define FLAG_UNUSED_0x4ED                                           0x4ED // Unused Flag
-#define FLAG_UNUSED_0x4EE                                           0x4EE // Unused Flag
-#define FLAG_UNUSED_0x4EF                                           0x4EF // Unused Flag
+// 0x499: slice (north), see include/constants/slice/flags_north.h (was FLAG_UNUSED_0x499)
+// 0x49A: slice (north), see include/constants/slice/flags_north.h (was FLAG_UNUSED_0x49A)
+// 0x49B: slice (north), see include/constants/slice/flags_north.h (was FLAG_UNUSED_0x49B)
+// 0x49C: slice (north), see include/constants/slice/flags_north.h (was FLAG_UNUSED_0x49C)
+// 0x49D: slice (north), see include/constants/slice/flags_north.h (was FLAG_UNUSED_0x49D)
+// 0x49E: slice (north), see include/constants/slice/flags_north.h (was FLAG_UNUSED_0x49E)
+// 0x49F: slice (north), see include/constants/slice/flags_north.h (was FLAG_UNUSED_0x49F)
+// 0x4A0: slice (north), see include/constants/slice/flags_north.h (was FLAG_UNUSED_0x4A0)
+// 0x4A1: slice (north), see include/constants/slice/flags_north.h (was FLAG_UNUSED_0x4A1)
+// 0x4A2: slice (north), see include/constants/slice/flags_north.h (was FLAG_UNUSED_0x4A2)
+// 0x4A3: slice (north), see include/constants/slice/flags_north.h (was FLAG_UNUSED_0x4A3)
+// 0x4A4: slice (north), see include/constants/slice/flags_north.h (was FLAG_UNUSED_0x4A4)
+// 0x4A5: slice (north), see include/constants/slice/flags_north.h (was FLAG_UNUSED_0x4A5)
+// 0x4A6: slice (north), see include/constants/slice/flags_north.h (was FLAG_UNUSED_0x4A6)
+// 0x4A7: slice (north), see include/constants/slice/flags_north.h (was FLAG_UNUSED_0x4A7)
+// 0x4A8: slice (north), see include/constants/slice/flags_north.h (was FLAG_UNUSED_0x4A8)
+// 0x4A9: slice (nibi_spine), see include/constants/slice/flags_nibi_spine.h (was FLAG_UNUSED_0x4A9)
+// 0x4AA: slice (nibi_spine), see include/constants/slice/flags_nibi_spine.h (was FLAG_UNUSED_0x4AA)
+// 0x4AB: slice (nibi_spine), see include/constants/slice/flags_nibi_spine.h (was FLAG_UNUSED_0x4AB)
+// 0x4AC: slice (nibi_spine), see include/constants/slice/flags_nibi_spine.h (was FLAG_UNUSED_0x4AC)
+// 0x4AD: slice (nibi_spine), see include/constants/slice/flags_nibi_spine.h (was FLAG_UNUSED_0x4AD)
+// 0x4AE: slice (nibi_spine), see include/constants/slice/flags_nibi_spine.h (was FLAG_UNUSED_0x4AE)
+// 0x4AF: slice (nibi_spine), see include/constants/slice/flags_nibi_spine.h (was FLAG_UNUSED_0x4AF)
+// 0x4B0: slice (nibi_spine), see include/constants/slice/flags_nibi_spine.h (was FLAG_UNUSED_0x4B0)
+// 0x4B1: slice (nibi_spine), see include/constants/slice/flags_nibi_spine.h (was FLAG_UNUSED_0x4B1)
+// 0x4B2: slice (nibi_spine), see include/constants/slice/flags_nibi_spine.h (was FLAG_UNUSED_0x4B2)
+// 0x4B3: slice (nibi_spine), see include/constants/slice/flags_nibi_spine.h (was FLAG_UNUSED_0x4B3)
+// 0x4B4: slice (nibi_spine), see include/constants/slice/flags_nibi_spine.h (was FLAG_UNUSED_0x4B4)
+// 0x4B5: slice (nibi_spine), see include/constants/slice/flags_nibi_spine.h (was FLAG_UNUSED_0x4B5)
+// 0x4B6: slice (nibi_spine), see include/constants/slice/flags_nibi_spine.h (was FLAG_UNUSED_0x4B6)
+// 0x4B7: slice (nibi_spine), see include/constants/slice/flags_nibi_spine.h (was FLAG_UNUSED_0x4B7)
+// 0x4B8: slice (nibi_spine), see include/constants/slice/flags_nibi_spine.h (was FLAG_UNUSED_0x4B8)
+// 0x4B9: slice (nibi_town), see include/constants/slice/flags_nibi_town.h (was FLAG_UNUSED_0x4B9)
+// 0x4BA: slice (nibi_town), see include/constants/slice/flags_nibi_town.h (was FLAG_UNUSED_0x4BA)
+// 0x4BB: slice (nibi_town), see include/constants/slice/flags_nibi_town.h (was FLAG_UNUSED_0x4BB)
+// 0x4BC: slice (nibi_town), see include/constants/slice/flags_nibi_town.h (was FLAG_UNUSED_0x4BC)
+// 0x4BD: slice (nibi_town), see include/constants/slice/flags_nibi_town.h (was FLAG_UNUSED_0x4BD)
+// 0x4BE: slice (nibi_town), see include/constants/slice/flags_nibi_town.h (was FLAG_UNUSED_0x4BE)
+// 0x4BF: slice (nibi_town), see include/constants/slice/flags_nibi_town.h (was FLAG_UNUSED_0x4BF)
+// 0x4C0: slice (nibi_town), see include/constants/slice/flags_nibi_town.h (was FLAG_UNUSED_0x4C0)
+// 0x4C1: slice (nibi_town), see include/constants/slice/flags_nibi_town.h (was FLAG_UNUSED_0x4C1)
+// 0x4C2: slice (nibi_town), see include/constants/slice/flags_nibi_town.h (was FLAG_UNUSED_0x4C2)
+// 0x4C3: slice (nibi_town), see include/constants/slice/flags_nibi_town.h (was FLAG_UNUSED_0x4C3)
+// 0x4C4: slice (nibi_town), see include/constants/slice/flags_nibi_town.h (was FLAG_UNUSED_0x4C4)
+// 0x4C5: slice (nibi_town), see include/constants/slice/flags_nibi_town.h (was FLAG_UNUSED_0x4C5)
+// 0x4C6: slice (nibi_town), see include/constants/slice/flags_nibi_town.h (was FLAG_UNUSED_0x4C6)
+// 0x4C7: slice (nibi_town), see include/constants/slice/flags_nibi_town.h (was FLAG_UNUSED_0x4C7)
+// 0x4C8: slice (nibi_town), see include/constants/slice/flags_nibi_town.h (was FLAG_UNUSED_0x4C8)
+// 0x4C9: slice (nibi_town), see include/constants/slice/flags_nibi_town.h (was FLAG_UNUSED_0x4C9)
+// 0x4CA: slice (nibi_town), see include/constants/slice/flags_nibi_town.h (was FLAG_UNUSED_0x4CA)
+// 0x4CB: slice (nibi_town), see include/constants/slice/flags_nibi_town.h (was FLAG_UNUSED_0x4CB)
+// 0x4CC: slice (nibi_town), see include/constants/slice/flags_nibi_town.h (was FLAG_UNUSED_0x4CC)
+// 0x4CD: slice (shared), see include/constants/slice/shared.h (was FLAG_UNUSED_0x4CD)
+// 0x4CE: slice (shared), see include/constants/slice/shared.h (was FLAG_UNUSED_0x4CE)
+// 0x4CF: slice (shared), see include/constants/slice/shared.h (was FLAG_UNUSED_0x4CF)
+// 0x4D0: slice (shared), see include/constants/slice/shared.h (was FLAG_UNUSED_0x4D0)
+// 0x4D1: slice (shared), see include/constants/slice/shared.h (was FLAG_UNUSED_0x4D1)
+// 0x4D2: slice (shared), see include/constants/slice/shared.h (was FLAG_UNUSED_0x4D2)
+// 0x4D3: slice (shared), see include/constants/slice/shared.h (was FLAG_UNUSED_0x4D3)
+// 0x4D4: slice (shared), see include/constants/slice/shared.h (was FLAG_UNUSED_0x4D4)
+// 0x4D5: slice (shared), see include/constants/slice/shared.h (was FLAG_UNUSED_0x4D5)
+// 0x4D6: slice (shared), see include/constants/slice/shared.h (was FLAG_UNUSED_0x4D6)
+// 0x4D7: slice (shared), see include/constants/slice/shared.h (was FLAG_UNUSED_0x4D7)
+// 0x4D8: slice (shared), see include/constants/slice/shared.h (was FLAG_UNUSED_0x4D8)
+// 0x4D9: slice (shared), see include/constants/slice/shared.h (was FLAG_UNUSED_0x4D9)
+// 0x4DA: slice (shared), see include/constants/slice/shared.h (was FLAG_UNUSED_0x4DA)
+// 0x4DB: slice (shared), see include/constants/slice/shared.h (was FLAG_UNUSED_0x4DB)
+// 0x4DC: slice (shared), see include/constants/slice/shared.h (was FLAG_UNUSED_0x4DC)
+// 0x4DD: slice (shared), see include/constants/slice/shared.h (was FLAG_UNUSED_0x4DD)
+// 0x4DE: slice (shared), see include/constants/slice/shared.h (was FLAG_UNUSED_0x4DE)
+// 0x4DF: slice (shared), see include/constants/slice/shared.h (was FLAG_UNUSED_0x4DF)
+// 0x4E0: slice (shared), see include/constants/slice/shared.h (was FLAG_UNUSED_0x4E0)
+// 0x4E1: slice (shared), see include/constants/slice/shared.h (was FLAG_UNUSED_0x4E1)
+// 0x4E2: slice (shared), see include/constants/slice/shared.h (was FLAG_UNUSED_0x4E2)
+// 0x4E3: slice (shared), see include/constants/slice/shared.h (was FLAG_UNUSED_0x4E3)
+// 0x4E4: slice (shared), see include/constants/slice/shared.h (was FLAG_UNUSED_0x4E4)
+// 0x4E5: slice (shared), see include/constants/slice/shared.h (was FLAG_UNUSED_0x4E5)
+// 0x4E6: slice (shared), see include/constants/slice/shared.h (was FLAG_UNUSED_0x4E6)
+// 0x4E7: slice (shared), see include/constants/slice/shared.h (was FLAG_UNUSED_0x4E7)
+// 0x4E8: slice (shared), see include/constants/slice/shared.h (was FLAG_UNUSED_0x4E8)
+// 0x4E9: slice (shared), see include/constants/slice/shared.h (was FLAG_UNUSED_0x4E9)
+// 0x4EA: slice (shared), see include/constants/slice/shared.h (was FLAG_UNUSED_0x4EA)
+// 0x4EB: slice (shared), see include/constants/slice/shared.h (was FLAG_UNUSED_0x4EB)
+// 0x4EC: slice (shared), see include/constants/slice/shared.h (was FLAG_UNUSED_0x4EC)
+// 0x4ED: slice (shared), see include/constants/slice/shared.h (was FLAG_UNUSED_0x4ED)
+// 0x4EE: slice (shared), see include/constants/slice/shared.h (was FLAG_UNUSED_0x4EE)
+// 0x4EF: slice (shared), see include/constants/slice/shared.h (was FLAG_UNUSED_0x4EF)
 
 #define FLAG_DEFEATED_RUSTBORO_GYM                                  0x4F0
 #define FLAG_DEFEATED_DEWFORD_GYM                                   0x4F1
@@ -1656,5 +1656,15 @@
 #define FLAG_TEMP_REGICE_PUZZLE_STARTED         FLAG_TEMP_2
 #define FLAG_TEMP_REGICE_PUZZLE_FAILED          FLAG_TEMP_3
 #define FLAG_TEMP_HIDE_MIRAGE_ISLAND_BERRY_TREE FLAG_TEMP_11
+
+// Masara-to-Nibi slice: per-area flag blocks (studio scaffold, world M1).
+// Ids never move; owners rename their placeholders in place.
+#include "constants/slice/flags_masara.h"
+#include "constants/slice/flags_tokiwa_spine.h"
+#include "constants/slice/flags_tokiwa_town.h"
+#include "constants/slice/flags_north.h"
+#include "constants/slice/flags_nibi_spine.h"
+#include "constants/slice/flags_nibi_town.h"
+#include "constants/slice/shared.h"
 
 #endif // GUARD_CONSTANTS_FLAGS_H

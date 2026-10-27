@@ -314,7 +314,8 @@ REF_PREFIXES = ("TRAINER", "FLAG", "VAR", "ITEM", "SPECIES", "MOVE", "MAP", "SE"
 
 def all_defined_names():
     names = set()
-    for path in glob.glob(os.path.join(ROOT, "include/constants/*.h")):
+    # include/constants/slice/ holds the studio's per-area flag and var blocks
+    for path in glob.glob(os.path.join(ROOT, "include/constants/**/*.h"), recursive=True):
         text = open(path, encoding="utf-8", errors="replace").read()
         names.update(re.findall(r"^\s*#define\s+(\w+)", text, re.M))
         for body in re.findall(r"enum[^{;]*\{(.*?)\};", text, re.S):
