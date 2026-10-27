@@ -1,0 +1,53 @@
+name: Balance gates (nightly)
+
+# Schedule only: never runs on push or pull request. Grades the slice's fights against the slice-plan 7.3 bands with
+# `python3 -m minasim gate` and uploads gates.md. The gate's exit status is 1 while a gating fight is outside its band;
+# the report is the product, so the job keeps going and uploads it either way, then fails the run to make the nightly visible.
+on:
+  schedule:
+    - cron: "17 3 * * *"
+
+permissions:
+  contents: read
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install toolchain
+        run: LEAN=1 bash tools/setup-cloud.sh
+
+      - name: Python dependencies
+        run: python3 -m pip install --user pyyaml
+
+      - name: Build the host battle engine
+        run: make balance-lib -j$(nproc)
+
+      - name: Balance gate (60 runs per starter and band, under a minute on 4 cores)
+        id: gate
+        continue-on-error: true
+        run: python3 -m minasim gate --runs 60 --out "$GITHUB_WORKSPACE/gates.md" --json "$GITHUB_WORKSPACE/gate.json"
+        working-directory: tools/balance_sim
+
+      - name: Summary
+        if: always()
+        run: |
+          if [ -f gates.md ]; then head -n 12 gates.md >> "$GITHUB_STEP_SUMMARY"; fi
+
+      - name: Upload gates.md
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gates-${{ github.sha }}
+          path: |
+            gates.md
+            gate.json
+          retention-days: 30
+
+      - name: Fail the run when a gate failed
+        if: steps.gate.outcome == 'failure'
+        run: exit 1

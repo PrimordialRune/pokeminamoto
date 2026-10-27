@@ -68,8 +68,8 @@ class CatalogTest(unittest.TestCase):
 
 
 class PolicyTest(unittest.TestCase):
-    def state(self, hp=30):
-        return {"side": 0, "turn": 1, "seed": 1, "kind": "wild",
+    def state(self, hp=30, kind="wild"):
+        return {"side": 0, "turn": 1, "seed": 1, "kind": kind,
                 "me": {"species": "CHARMANDER", "level": 14, "hp": hp, "max_hp": 40, "tp": 90, "tp_max": 100, "status": None,
                        "stages": {}, "moves": ["SCRATCH", "EMBER", "WATER_GUN"], "tp_costs": [5, 5, 5], "special": None},
                 "foe": {"species": "BULBASAUR", "level": 14, "hp": 40, "max_hp": 40, "status": None, "stages": {}},
@@ -84,8 +84,11 @@ class PolicyTest(unittest.TestCase):
         self.assertGreater(picks.count(1) / 200, 0.8)           # ~10% mistakes
 
     def test_average_heals_low(self):
-        picks = [policies.average_policy(dict(self.state(hp=5), seed=i)) for i in range(100)]
+        picks = [policies.average_policy(dict(self.state(hp=5, kind="trainer"), seed=i)) for i in range(100)]
         self.assertGreater(sum(p["type"] == "item" for p in picks), 70)
+        # Potions are kept for trainers (heal_in_wild: false): a wild battle never spends one, bar the ~10% random mistakes
+        wild = [policies.average_policy(dict(self.state(hp=5), seed=i)) for i in range(100)]
+        self.assertLess(sum(p["type"] == "item" for p in wild), 20)
 
 
 class ReportTest(unittest.TestCase):

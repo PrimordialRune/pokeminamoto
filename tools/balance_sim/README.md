@@ -69,3 +69,28 @@ The turn cap maxes at 250 (the game's `battleTurnCounter` is a u8).
 Not supported: doubles and multi battles, link, Safari, running/catching/fleeing by the player, Focus Sash (the
 item is dropped in the game), learning a move over four known moves (declined), chains of battles other than by
 carrying `Mon` state (hp, TP, EXP) between calls.
+
+## Slice journey and the gate (studio lab)
+
+`python3 -m minasim gate [--runs 60] [--out gates.md] [--json out.json] [--levers]` grades every fight of
+`scenarios/masara_nibi.yaml` against the slice-plan 7.3 bands (average player, mean of the three starters; skilled
+reported against targets.yaml) and writes gates.md: bands, data sources, lever suggestions in the plan's order, the Signature
+check (FLAME CLAWS; GREEDY PLANT and SKULL BASH when the data switch is on and `make balance-lib` was re-run), the report-only
+metrics (TP rests before each gym, Potions per segment, ₽ at each gym, Poke Balls at Nibi) and the status-move measurement.
+60 runs per starter and band take about 11 s on 4 cores. Exit status 1 while a gating fight is outside its band.
+
+- Trainer parties come from `src/data/trainers.party` for every `fight:` whose id (or `trainer:` list, by starter) is a TRAINER_
+  const; a scaffold stub (one Lv 2 Rattata) falls back to the scenario's `team:`. Wild steps with `map: MAP_X` read the land table of
+  `src/data/wild_encounters.json`, with the scenario's `table:` as the fallback. The gate lists which source each fight used.
+- The scenario keeps route order, arenas, inn stops, no-whiteout flags and the catch policy. Bands, prices, prizes and the money
+  rules are in `minasim/gate.py` and `minasim/economy.py`; prices, prize classes and start money are read from items.h,
+  battle_main.c and new_game.c. Steps marked `new: true` are the slice economy and the fights added for the gate.
+- Money model (slice-plan 3.2): Mom does not heal; the Route 1 vendor gives one Potion once; Okido's 5 balls, the Welcome Kit
+  (3 balls + 1 Potion, PLACEHOLDER) and quest Potions are the only free supplies; the first shop is the Nibi Market; only inns restore
+  HP and TP; a whiteout returns to the last inn and halves money (PLACEHOLDER); no-whiteout fights (lab Shigeru, Ken, Route 22 Shigeru) restore
+  HP, not TP. Potions are kept for trainers (`heal_in_wild: false`).
+- Status moves: the average player picks a useful status move with probability `status_use_rate` (targets.yaml, PLACEHOLDER) per eligible
+  decision; every gate run prints the realized share of status moves among the average player's turns.
+- `--model legacy --wild yaml` replays the lab before the economy (inn Potion restock, YAML tables, no new steps): `tests/test_slice_lab.py`
+  checks it against `tests/baseline_legacy60.json` within 2 points (it matches exactly).
+- Tests: `python3 tools/balance_sim/tests/test_slice_lab.py` (needs `make balance-lib`).

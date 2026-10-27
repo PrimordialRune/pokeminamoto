@@ -16,11 +16,17 @@ policies:
     switch_matchup_prob: 0.7     # forced switches pick the type-advantage member this often (else the first alive)
     lead_matchup_prob: 0.7       # before a fight, leads with the best type matchup this often
     heal_below_hp: 0.30          # uses a Potion when the active mon is under this HP fraction
+    heal_in_wild: false          # PLACEHOLDER habit: Potions are scarce (only inns heal), so none are spent on wild battles
     level_offset: -1             # plays at (foe ace level + offset)
     bench_offset: -3             # other party members relative to the lead
     uses_tp_planning: false
     uses_talk: false
     uses_special: false
+    # Status moves (sleep, paralysis, poison, Leech Seed, stat drops): probability per decision that an average player picks
+    # a useful one over an attack while the foe is above half HP and not yet afflicted. PLACEHOLDER (no player telemetry
+    # exists; the slice-lab thread owns it, Omar question logged): set so the realized share of status moves among the
+    # average player's turns, which every gate run measures and prints, sits near one turn in ten.
+    status_use_rate: 0.10
     special_awake_prob: 0.3      # share of party mons whose Signature is unsealed (conditions are not simulated)
     party_size_base: 2           # party size = min(6, base + badges * per_badge)
     party_per_badge: 0.7
@@ -33,6 +39,7 @@ policies:
     switch_matchup_prob: 1.0
     lead_matchup_prob: 1.0
     heal_below_hp: 0.35
+    heal_in_wild: false
     level_offset: 0
     bench_offset: -1
     uses_tp_planning: true

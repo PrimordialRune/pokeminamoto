@@ -19,7 +19,17 @@ Scenario format (see scenarios/masara_nibi.yaml): `steps` is a list of
   {grind: AREA, until: LEVEL}                                     grind the last table until the lead reaches LEVEL (default: next leader ace - grind_gap)
   {inn: TOWN}                                                      rest (also restocks the bag)
   {town: TOWN}                                                     where a walk back to rest goes from here on
-`RIVAL_STARTER` in a team is the starter that beats the player's, evolved for its level.
+  {give: ITEM, n: N, take: P}                                      a free item (Okido's balls, the Kit, the vendor sample, quest Potions)
+  {shop: TOWN}                                                     the Nibi Market: the player spends money on Potions
+  {museum: true, take: P}                                          the 50 yen museum ticket, paid by a share of the players
+`RIVAL_STARTER` in a team is the starter that beats the player's, evolved for its level; `KEN_STARTER` the leftover one.
+
+Where the repo has the data, it wins over the scenario: a fight whose `fight:` id (or `trainer:` const, a list of three
+for the by-starter pairs) is a TRAINER_ const in src/data/trainers.party plays that party; a `wild:` step with
+`map: MAP_X` plays that map's land table from src/data/wild_encounters.json. The scenario's `team`/`table` is the fallback
+while a party is still the scaffold stub (one Lv 2 Rattata) or the map has no entry, and is listed as `yaml` in the gate.
+`model: legacy` (or --model legacy) replays the pre-economy lab for parity checks: inns restock Potions, no money, no
+status-move policy, and steps marked `new: true` are skipped.
 """
 import argparse
 import json
@@ -31,9 +41,9 @@ from collections import Counter, defaultdict
 
 import yaml
 
-from . import arena as ARENA, policies, stats
+from . import arena as ARENA, economy as ECON, policies, sigdata as SIG, stats
 from .fights import RIVAL_OF, STARTERS, parse_mon
-from .gamedata import Game, SIM_ROOT
+from .gamedata import Game, ROOT, SIM_ROOT
 from .policies import move_value, stat
 from .signals import _common as C
 
@@ -42,37 +52,101 @@ BAND = {
     # the lowest-level healthy member (how catches get levels); grind_gap: lead level the player grinds to
     # before a leader (ace - gap, as targets.yaml level_offset), at most grind_max wild battles; rest_hp/rest_tp: party
     # averages under which they walk back to the inn.
-    "average": {"catch": 0.6, "train_bench": 0.35, "grind_gap": 1, "grind_max": 15, "rest_hp": 0.40, "rest_tp": 0.20, "potions": 3, "smart_moves": False},
-    "skilled": {"catch": 0.9, "train_bench": 0.5, "grind_gap": 0, "grind_max": 20, "rest_hp": 0.50, "rest_tp": 0.30, "potions": 5, "smart_moves": os.environ.get("MINASIM_SMART", "1") == "1"},
+    # potions: the legacy bag (restocked at every inn); shop_*: what the player tops up to at the Nibi Market (slice model, PLACEHOLDER habits)
+    "average": {"catch": 0.6, "train_bench": 0.35, "grind_gap": 1, "grind_max": 15, "rest_hp": 0.40, "rest_tp": 0.20, "potions": 3, "smart_moves": False,
+                "shop_potions": 4, "shop_balls": 3, "shop_antidote": 1},
+    "skilled": {"catch": 0.9, "train_bench": 0.5, "grind_gap": 0, "grind_max": 20, "rest_hp": 0.50, "rest_tp": 0.30, "potions": 5,
+                "smart_moves": os.environ.get("MINASIM_SMART", "1") == "1", "shop_potions": 6, "shop_balls": 5, "shop_antidote": 2},
 }
 GYM_AI = C.GYM_AI
 MAX_TRIES = 4
+KEN_OF = {"BULBASAUR": "SQUIRTLE", "CHARMANDER": "BULBASAUR", "SQUIRTLE": "CHARMANDER"}   # the leftover ball (plan 4.3 #13)
+TOKEN_STARTER = {"RIVAL_STARTER": RIVAL_OF, "KEN_STARTER": KEN_OF}
+STUB = ("RATTATA", 2)             # the scaffold's placeholder party (slice-plan 5.3): not a real party yet
+HEAL_ITEMS = ("POTION", "SUPER_POTION", "HYPER_POTION")
 
 
 # ------------------------------------------------------------------ scenario
-def load(path):
+def load(path, model=None, wild="json"):
+    """Reads a scenario. `model` overrides its `model:` key (slice|legacy); `wild` is json (the repo's table, YAML as the
+    fallback) or yaml (the scenario's own tables)."""
     if not os.path.isabs(path) and not os.path.exists(path):
         path = os.path.join(SIM_ROOT, path)
     with open(path, encoding="utf-8") as f:
         sc = yaml.safe_load(f)
+    if model:
+        sc["model"] = model
+    sc.setdefault("model", "slice")
     g = Game.get()
+    if sc["model"] == "legacy":
+        sc["steps"] = [st for st in sc["steps"] if not st.get("new")]
+    sc["_sources"] = {}
     for st in sc["steps"]:
+        if st.get("slice_no_whiteout") and sc["model"] != "legacy":
+            st["no_whiteout"] = True
         if "wild" in st or "grind" in st:
-            st["_table"] = [_wild_row(g, w) for w in st.get("table", [])]
+            rows, src = None, "yaml"
+            if wild == "json" and st.get("map"):
+                rows = wild_rows_json(g, st["map"])
+                src = "json" if rows else "yaml"
+            st["_table"] = rows or [_wild_row(g, w) for w in st.get("table", [])]
+            st["_source"] = src
+            if "wild" in st:
+                sc["_sources"]["wild:" + st["wild"]] = src
         if "fight" in st:
             st["_party"] = []
-            for s in st["team"]:
-                if s.split(":")[0].strip().upper() == "RIVAL_STARTER":
-                    lv = int(re.search(r":(\d+)", s).group(1))
-                    st["_party"].append({"species": "RIVAL_STARTER", "level": lv, "moves": None, "item": None})
+            for s_ in st.get("team", []):
+                if s_.split(":")[0].strip().upper() in TOKEN_STARTER:
+                    lv = int(re.search(r":(\d+)", s_).group(1))
+                    st["_party"].append({"species": s_.split(":")[0].strip().upper(), "level": lv, "moves": None, "item": None})
                 else:
-                    m = parse_mon(g, s)
+                    m = parse_mon(g, s_)
                     if m is None:
-                        raise ValueError("unknown species in %r" % s)
+                        raise ValueError("unknown species in %r" % s_)
                     st["_party"].append(m)
+            st["_by_starter"] = resolve_trainer(g, st)
+            sc["_sources"][st["fight"]] = {s_: v["source"] for s_, v in st["_by_starter"].items()}
         if "gift" in st:
             st["gift"] = g.try_resolve(st["gift"]) or st["gift"]
     return sc
+
+
+def wild_rows_json(g, map_const):
+    """[(species, lo, hi, weight)] of a map's land table in src/data/wild_encounters.json (slot rates from the file); None if absent."""
+    with open(os.path.join(ROOT, "src/data/wild_encounters.json"), encoding="utf-8") as f:
+        d = json.load(f)
+    for grp in d["wild_encounter_groups"]:
+        rates = next((x["encounter_rates"] for x in grp.get("fields", []) if x["type"] == "land_mons"), None)
+        for e in grp.get("encounters", []):
+            if e["map"] == map_const and e.get("land_mons") and rates:
+                rows = Counter()
+                for rate, m in zip(rates, e["land_mons"]["mons"]):
+                    sp = g.try_resolve(m["species"].replace("SPECIES_", ""))
+                    if sp:
+                        rows[(sp, m["min_level"], m["max_level"])] += rate
+                return [(sp, lo, hi, float(w)) for (sp, lo, hi), w in rows.items()] or None
+    return None
+
+
+def is_stub(party):
+    return len(party) == 1 and (party[0]["species"], party[0]["level"]) == STUB
+
+
+def resolve_trainer(g, st):
+    """{starter: {"party", "source", "class", "ai", "tid"}}: the party each starter faces, from trainers.party when it is a real one."""
+    ids = st.get("trainer") or st["fight"]
+    ids = ids if isinstance(ids, list) else [ids] * len(STARTERS)
+    out = {}
+    for starter, tid in zip(STARTERS, ids):
+        t = g.party_trainers.get(tid) if str(tid).startswith("TRAINER_") else None
+        if t and not is_stub(t["party"]):
+            out[starter] = {"party": [dict(m) for m in t["party"]], "source": "party", "class": t["class"], "ai": t.get("ai") or None, "tid": tid}
+        elif st.get("_party"):
+            out[starter] = {"party": None, "source": "yaml", "class": (t or {}).get("class") or st.get("trainer_class"), "ai": (t or {}).get("ai") or None,
+                            "tid": tid if t else None}
+        else:
+            raise ValueError("fight %s: %s is a stub and the scenario has no team to fall back on" % (st["fight"], tid))
+    return out
 
 
 def _wild_row(g, spec):
@@ -133,12 +207,15 @@ def smart_moves(g, mon, foes):
 
 
 # ------------------------------------------------------------------ one battle
-def foe_party(g, party, starter):
+def foe_party(g, st, starter):
+    """The party a fight puts against `starter`: trainers.party's when it is real, else the scenario's (tokens resolved)."""
+    info = st["_by_starter"][starter]
     out = []
-    for m in party:
+    for m in info["party"] or st["_party"]:
         m = dict(m)
-        if m["species"] == "RIVAL_STARTER":
-            m["species"] = g.evolve_to(RIVAL_OF[starter], m["level"])
+        tok = TOKEN_STARTER.get(m["species"])
+        if tok:
+            m["species"] = g.evolve_to(tok[starter], m["level"])
         out.append(m)
     return out
 
@@ -159,20 +236,29 @@ def order_lead(g, team, foe, rng, prob):
     team.sort(key=score, reverse=True)
 
 
-def battle(g, team, bag, foes, band, seed, cls, arena=0):
+def policy_name(band, model, signature, no_status=False):
+    """Engine policy for a band: legacy average never uses status moves; the signature check lets every band use a Signature."""
+    if band == "average" and signature:
+        return "average_sig"
+    if band == "average" and no_status:
+        return "average_nostatus"
+    return band + "_legacy" if model == "legacy" else band
+
+
+def battle(g, team, bag, foes, band, seed, cls, arena=0, ai=None, model="slice", signature=False, no_status=False):
     alive = [m for m in team if m["hp"] > 0]
     order = alive + [m for m in team if m["hp"] <= 0]
-    mons = C.make_mons([{"species": m["species"], "level": m["level"], "moves": m["moves"], "item": None} for m in order],
+    mons = C.make_mons([{"species": m["species"], "level": m["level"], "moves": m["moves"], "item": None, "awakened": m.get("awakened")} for m in order],
                        tp_spent=[int(round((1 - m["tp"]) * 100)) for m in order],
                        hp=[int(round(m["hp"] * m["max_hp"])) for m in order],
                        exps=[m["exp"] for m in order])
     kw = {}
     if cls != "wild":
-        kw = {"is_trainer": True, "ai_flags": GYM_AI if cls in ("gym", "rival") else ["CHECK_BAD_MOVE"],
+        kw = {"is_trainer": True, "ai_flags": ai or (GYM_AI if cls in ("gym", "rival") else ["CHECK_BAD_MOVE"]),
               "trainer_class": {"gym": "LEADER", "rival": "RIVAL"}.get(cls, "YOUNGSTER")}
     policies.ARENA["id"] = arena
-    res = C.battle(None, seed=seed, player=mons, foe=C.make_mons(foes), player_policy=band, foe_policy="rom", bag=dict(bag),
-                   max_turns=200, arena=arena, **kw)
+    res = C.battle(None, seed=seed, player=mons, foe=C.make_mons(foes), player_policy=policy_name(band, model, signature, no_status), foe_policy="rom",
+                   bag={k: v for k, v in bag.items() if k in HEAL_ITEMS}, max_turns=200, arena=arena, **kw)
     for m, r in zip(order, res["player"]):
         m["hp"] = max(0, r["hp"]) / max(1, r["max_hp"])
         m["tp"] = r["tp"] / max(1, r["tp_max"])
@@ -193,27 +279,46 @@ def battle(g, team, bag, foes, band, seed, cls, arena=0):
 def run_one(job):
     sc, starter, band, seed = job
     g = Game.get()
+    legacy = sc["model"] == "legacy"
+    sigs = SIG.base_species() if sc.get("signature") == "awake" else set()
     knobs = ARENA.apply(C.engine(), sc.get("arena_tuning"))
     policies.ARENA.update(knobs=knobs, blockers=ARENA.blockers(knobs), average_use=sc.get("arena_use", 0.5))
     P = dict(BAND[band], **(sc.get("bands", {}).get(band, {})))
     rng = random.Random(seed)
+    erng = random.Random(seed ^ 0x5EC0DE)                   # the economy's own stream: it never moves the battle stream
     team = [new_mon(g, starter, sc.get("starter_level", 5))]
-    bag = {"POTION": P["potions"]}
+    bag = {"POTION": P["potions"]} if legacy else {"POTION": 0, "POKE_BALL": 0, "ANTIDOTE": 0}
+    money = [0 if legacy else ECON.start_money()]
     size = 1
     rec = {"starter": starter, "band": band, "fights": [], "rests": [], "blackouts": 0, "battles": 0, "wild": 0, "catches": [],
-           "segments": defaultdict(lambda: {"battles": 0, "rests": 0, "hp_rests": 0, "tp_rests": 0})}
+           "tp_rests": {}, "money_at": {}, "potions_used": defaultdict(int), "balls_at_nibi": None, "balls_end": 0, "money_end": 0,
+           "status_turns": 0, "turns": 0,
+           "segments": defaultdict(lambda: {"battles": 0, "rests": 0, "hp_rests": 0, "tp_rests": 0, "potions": 0})}
     town = sc.get("start", "home")
     seg = "start"
     k = [0]
+    tp_total = [0]
+    last_gym_tp = [0]
+
+    def mark_sig(m):
+        m["awakened"] = bool(sigs) and g.base_form(m["species"]) in sigs
+        return m
+
+    if sigs:
+        mark_sig(team[0])
 
     def rest(reason):
         for m in team:
             m["hp"], m["tp"] = 1.0, 1.0
-        bag["POTION"] = max(bag.get("POTION", 0), P["potions"])
+        if legacy:
+            bag["POTION"] = max(bag.get("POTION", 0), P["potions"])
+        elif reason == "blackout":
+            money[0] -= int(money[0] * ECON.WHITEOUT_LOSS)
         s = rec["segments"][seg]
         s["rests"] += 1
         s["hp_rests"] += reason == "hp"
         s["tp_rests"] += reason == "tp"
+        tp_total[0] += reason == "tp"
         rec["rests"].append((seg, reason))
 
     def maybe_walk_back():
@@ -226,10 +331,14 @@ def run_one(job):
         elif tp < P["rest_tp"]:
             rest("tp")
 
-    def fight(foes, cls, fid=None, no_whiteout=False, arena=0):
+    def fight(foes, cls, fid=None, no_whiteout=False, arena=0, ai=None, tclass=None):
         won, tries = False, 0
         for tries in range(1, MAX_TRIES + 1):
             maybe_walk_back()
+            if tries == 1 and cls == "gym":
+                rec["tp_rests"][fid] = tp_total[0] - last_gym_tp[0]
+                last_gym_tp[0] = tp_total[0]
+                rec["money_at"][fid] = money[0]
             if P["smart_moves"]:
                 for m in team:                      # re-picked every fight: new moves are learned along the way
                     m["moves"] = smart_moves(g, m, foes)
@@ -241,9 +350,16 @@ def run_one(job):
                     team.insert(0, low)
             before = [(m["species"], m["level"]) for m in team]
             k[0] += 1
-            res = battle(g, team, bag, foes, band, seed * 7919 + k[0], cls, arena)
+            res = battle(g, team, bag, foes, band, seed * 7919 + k[0], cls, arena, ai, sc["model"], bool(sigs), bool(sc.get("no_status")))
             rec["battles"] += 1
             rec["segments"][seg]["battles"] += 1
+            used = sum(n for it, n in (res.get("items_used") or {}).items() if it in HEAL_ITEMS)
+            rec["potions_used"][seg] += used
+            rec["segments"][seg]["potions"] += used
+            if band == "average":
+                mu = res.get("moves_used") or {}
+                rec["turns"] += sum(mu.values())
+                rec["status_turns"] += sum(n for mv, n in mu.items() if g.moves.get(mv, {}).get("power", 1) == 0)
             won = res["winner"] == 0
             if fid and tries == 1:
                 rec["fights"].append({"id": fid, "won": won, "lead": max(l for _s, l in before), "party": before, "turns": res["turns"],
@@ -253,15 +369,25 @@ def run_one(job):
                     rec["blackouts"] += 1
                     rest("blackout")
                 return won
-            if won or no_whiteout:
+            if won and not legacy:
+                money[0] += ECON.prize(tclass or ECON.TRAINER_CLASS_DEFAULT.get(cls, "Youngster"), foes[-1]["level"])
+            if won:
+                return won
+            if no_whiteout:
+                if not legacy:                      # R/G-style join: HP and status come back, TP does not (slice-plan 3.4, Q96)
+                    for m in team:
+                        m["hp"] = 1.0
                 return won
             rec["blackouts"] += 1
             rest("blackout")
         return won
 
+    ctx = {"bag": bag, "erng": erng, "legacy": legacy, "mark": mark_sig}
     for i, st in enumerate(sc["steps"]):
         if "segment" in st:
             seg = st["segment"]
+            if seg == "Nibi" and rec["balls_at_nibi"] is None:
+                rec["balls_at_nibi"] = bag.get("POKE_BALL", 0)
         if "town" in st:
             town = st["town"]
         if "inn" in st:
@@ -270,40 +396,67 @@ def run_one(job):
         if "catch_slot" in st:
             size = st["catch_slot"]
         if "gift" in st and len(team) < 6 and rng.random() < st.get("take", 1.0):
-            team.append(new_mon(g, st["gift"], st["level"], st.get("moves")))
+            team.append(mark_sig(new_mon(g, st["gift"], st["level"], st.get("moves"))))
             rec["catches"].append(st["gift"])
+        elif "gift" in st and st.get("sell") and not legacy:
+            money[0] += ECON.SANDSHREW_SALE                      # Omura's offer (plan 4.2 row 6): the optional branch
+        if "give" in st and not legacy and erng.random() < st.get("take", 1.0):
+            bag[st["give"]] = bag.get(st["give"], 0) + st.get("n", 1)
+        if "shop" in st and not legacy:
+            _shop(bag, money, P)
+        if "museum" in st and not legacy and erng.random() < st.get("take", 1.0):
+            money[0] -= min(money[0], ECON.MUSEUM_TICKET)
         if "wild" in st or "grind" in st:
             table = st.get("_table") or last_table(sc, i)
             n = st.get("battles", 0)
             if "grind" in st:
-                nxt = next((s for s in sc["steps"][i:] if s.get("class") == "gym"), None)
-                ace = max(m["level"] for m in nxt["_party"]) if nxt else 0
+                nxt = next((s_ for s_ in sc["steps"][i:] if s_.get("class") == "gym"), None)
+                ace = max(m["level"] for m in foe_party(g, nxt, starter)) if nxt else 0
                 target = st["until"] if isinstance(st.get("until"), int) else ace - P["grind_gap"]
                 n = 0
                 while max(m["level"] for m in team) < target and n < P["grind_max"]:
                     n += 1
-                    _wild_battle(g, team, table, rng, size, P, rec, fight)
+                    _wild_battle(g, team, table, rng, size, P, rec, fight, ctx)
                 continue
             for _ in range(n):
-                _wild_battle(g, team, table, rng, size, P, rec, fight)
+                _wild_battle(g, team, table, rng, size, P, rec, fight, ctx)
         if "fight" in st:
-            foes = foe_party(g, st["_party"], starter)
+            foes = foe_party(g, st, starter)
+            info = st["_by_starter"][starter]
             ar = 0 if sc.get("no_arena") else ARENA.ARENAS[st.get("arena", "NONE")]
-            fight(foes, st.get("class", "trainer"), st["fight"], st.get("no_whiteout", False), ar)
+            fight(foes, st.get("class", "trainer"), st["fight"], st.get("no_whiteout", False), ar, info["ai"], info["class"] or st.get("trainer_class"))
     rec["segments"] = dict(rec["segments"])
+    rec["potions_used"] = dict(rec["potions_used"])
     rec["final"] = [(m["species"], m["level"]) for m in team]
+    rec["money_end"], rec["balls_end"] = money[0], bag.get("POKE_BALL", 0)
     return rec
 
 
-def _wild_battle(g, team, table, rng, size, P, rec, fight):
+def _shop(bag, money, P):
+    """The Nibi Market (plan 3.2): Potions up to the band's habit first, then Poke Balls, then one Antidote; prices from items.h."""
+    for item, want in (("POTION", P["shop_potions"]), ("POKE_BALL", P["shop_balls"]), ("ANTIDOTE", P["shop_antidote"])):
+        price = ECON.item_price(item)
+        n = min(max(0, want - bag.get(item, 0)), money[0] // price if price else 0)
+        bag[item] = bag.get(item, 0) + n
+        money[0] -= n * price
+
+
+def _wild_battle(g, team, table, rng, size, P, rec, fight, ctx):
     sp, lo, hi, _w = rng.choices(table, [t[3] for t in table])[0]
     lv = rng.randint(lo, hi)
     rec["wild"] += 1
     have = {g.base_form(m["species"]) for m in team}
     if len(team) < size and g.base_form(sp) not in have and rng.random() < P["catch"]:
-        team.append(new_mon(g, sp, lv))                       # caught (the catch fight itself is not simulated)
-        rec["catches"].append(sp)
-        return
+        if ctx["legacy"]:
+            team.append(new_mon(g, sp, lv))                   # caught (the catch fight itself is not simulated)
+            rec["catches"].append(sp)
+            return
+        used, ok = ECON.balls_to_catch(ctx["erng"], ctx["bag"].get("POKE_BALL", 0))
+        ctx["bag"]["POKE_BALL"] = ctx["bag"].get("POKE_BALL", 0) - used
+        if ok:
+            team.append(ctx["mark"](new_mon(g, sp, lv)))
+            rec["catches"].append(sp)
+            return                                            # no balls (or all thrown in vain): it is fought for EXP instead
     fight([{"species": sp, "level": lv, "moves": None, "item": None}], "wild")
 
 
@@ -346,11 +499,28 @@ def summarise(sc, recs):
                                                     "battles_per_rest": round(b / max(1, sum(x["rests"] for x in ss)), 1)}
         out["segments"].append(row)
     for (band, starter), rs in sorted(by.items()):
-        out["parties"]["%s/%s" % (band, starter)] = {
+        key = "%s/%s" % (band, starter)
+        out["parties"][key] = {
             "blackouts": round(statistics.mean(r["blackouts"] for r in rs), 2),
             "battles": round(statistics.mean(r["battles"] for r in rs), 1),
             "final_levels": round(statistics.mean(max(l for _s, l in r["final"]) for r in rs), 1),
             "species": Counter(g for r in rs for g, _l in r["final"][1:]).most_common(8)}
+    # report-only economy metrics (plan 7.3): TP rests before each gym, Potions per segment, money at each gym, balls at Nibi
+    gyms = [st["fight"] for st in sc["steps"] if st.get("class") == "gym"]
+    out["metrics"] = {}
+    for (band, starter), rs in sorted(by.items()):
+        n = len(rs)
+        out["metrics"]["%s/%s" % (band, starter)] = {
+            "tp_rests": {f: round(sum(r["tp_rests"].get(f, 0) for r in rs) / n, 2) for f in gyms},
+            "tp_rest_share": {f: round(sum(r["tp_rests"].get(f, 0) >= 1 for r in rs) / n, 2) for f in gyms},
+            "money_at": {f: round(sum(r["money_at"].get(f, 0) for r in rs) / n) for f in gyms},
+            "potions_used": {s_: round(sum(r["potions_used"].get(s_, 0) for r in rs) / n, 2) for s_ in segs},
+            "balls_at_nibi": round(sum((r["balls_at_nibi"] or 0) for r in rs) / n, 2),
+            "balls_end": round(sum(r["balls_end"] for r in rs) / n, 2),
+            "money_end": round(sum(r["money_end"] for r in rs) / n),
+            "status_share": round(sum(r["status_turns"] for r in rs) / max(1, sum(r["turns"] for r in rs)), 3) if band == "average" else None}
+    out["sources"] = sc.get("_sources", {})
+    out["model"] = sc.get("model")
     return out
 
 
@@ -370,6 +540,35 @@ def print_summary(s):
                                                                              ", ".join("%s %d" % x for x in v["species"])))
 
 
+def simulate(sc, runs, bands=("average", "skilled"), starters=STARTERS, jobs=None):
+    """All runs of a scenario: one per (band, starter, i); seeds depend only on those, so variants pair up."""
+    jobs = jobs or os.cpu_count() or 1
+    todo = [(sc, s, b, C.seed_of("journey", s, b, i)) for b in bands for s in starters for i in range(runs)]
+    if jobs > 1:
+        import multiprocessing as mp
+        with mp.get_context("fork").Pool(jobs) as pool:
+            return pool.map(run_one, todo, chunksize=8)
+    return [run_one(j) for j in todo]
+
+
+def add_scenario_args(p):
+    p.add_argument("--model", choices=["slice", "legacy"], help="legacy replays the lab before the economy (parity runs); default: the scenario's")
+    p.add_argument("--wild", choices=["json", "yaml"], default="json", help="wild tables: src/data/wild_encounters.json (YAML fallback) or the scenario's own")
+    p.add_argument("--signature", choices=["off", "awake"], default="off", help="awaken every Signature line in the player's party (signature check)")
+    p.add_argument("--arena", action="append", metavar="KNOB=VALUE", help="override an arena knob (minasim/arena.py)")
+    p.add_argument("--no-arena", action="store_true", help="fight every gym without its arena")
+    p.add_argument("--arena-use", type=float, default=0.5, help="chance per turn that an average player plays the arena")
+
+
+def prepare(a, scenario=None):
+    sc = load(scenario or a.scenario, model=a.model, wild=a.wild)
+    sc["arena_tuning"] = dict(sc.get("arena_tuning") or {}, **ARENA.parse_overrides(a.arena))
+    sc["no_arena"] = a.no_arena
+    sc["arena_use"] = a.arena_use
+    sc["signature"] = a.signature
+    return sc
+
+
 def main(argv=None):
     p = argparse.ArgumentParser(prog="minasim journey")
     p.add_argument("scenario")
@@ -378,21 +577,10 @@ def main(argv=None):
     p.add_argument("--starters", default=",".join(STARTERS))
     p.add_argument("--jobs", type=int, default=os.cpu_count())
     p.add_argument("--json")
-    p.add_argument("--arena", action="append", metavar="KNOB=VALUE", help="override an arena knob (minasim/arena.py)")
-    p.add_argument("--no-arena", action="store_true", help="fight every gym without its arena")
-    p.add_argument("--arena-use", type=float, default=0.5, help="chance per turn that an average player plays the arena")
+    add_scenario_args(p)
     a = p.parse_args(argv)
-    sc = load(a.scenario)
-    sc["arena_tuning"] = dict(sc.get("arena_tuning") or {}, **ARENA.parse_overrides(a.arena))
-    sc["no_arena"] = a.no_arena
-    sc["arena_use"] = a.arena_use
-    jobs = [(sc, s, b, C.seed_of("journey", s, b, i)) for b in a.bands.split(",") for s in a.starters.split(",") for i in range(a.runs)]
-    if a.jobs > 1:
-        import multiprocessing as mp
-        with mp.get_context("fork").Pool(a.jobs) as pool:
-            recs = pool.map(run_one, jobs, chunksize=8)
-    else:
-        recs = [run_one(j) for j in jobs]
+    sc = prepare(a)
+    recs = simulate(sc, a.runs, a.bands.split(","), a.starters.split(","), a.jobs)
     s = summarise(sc, recs)
     print_summary(s)
     if a.json:

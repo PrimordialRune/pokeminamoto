@@ -122,6 +122,12 @@ def _best_switch(game, state, require_hp=0.0):
     return best
 
 
+def _may_heal(state, p):
+    """With Potions scarce (the slice: only inns heal), the player keeps them for trainers: no Potion in a wild battle
+    (`heal_in_wild: false`, PLACEHOLDER habit, targets.yaml). The legacy lab and the stage report's bag-less wild fights are unaffected."""
+    return state.get("kind") != "wild" or p.get("heal_in_wild", True)
+
+
 def _heal_action(game, state, below):
     me = state["me"]
     if me["hp"] / me["max_hp"] >= below:
@@ -170,7 +176,7 @@ def average_policy(state, params=None):
     rng = _rng(state)
     if rng.random() < p.get("mistake_rate", 0.1):
         return rng.choice(state["legal"] if rng.random() < 0.2 else ms)
-    heal = _heal_action(g, state, p.get("heal_below_hp", 0.3))
+    heal = _heal_action(g, state, p.get("heal_below_hp", 0.3)) if _may_heal(state, p) else None
     if heal:
         return heal
     me, foe = state["me"], state["foe"]
@@ -182,8 +188,47 @@ def average_policy(state, params=None):
     act = _arena_action(state, dict(p, arena_use=p.get("arena_use", ARENA["average_use"])), g, me, foe, ms)
     if act:
         return act
+    act = _average_status(state, p, g, me, foe, ms)
+    if act:
+        return act
+    if p.get("uses_special"):                          # signature check only: the average policy never plans Signatures otherwise
+        sp = _legal(state, "special")
+        if sp and me.get("special"):
+            best = max(move_value(g, me, foe, _mv(me, a)) for a in ms)
+            if move_value(g, me, foe, me["special"]) >= best * 1.05:
+                return sp[0]
     # strongest-looking move: power x effectiveness x STAB x accuracy, ignores TP cost; avoids immune moves
     return max(ms, key=lambda a: move_value(g, me, foe, _mv(me, a)) + 1e-4 * g.moves.get(_mv(me, a), {"power": 0})["power"])
+
+
+# Status moves an average ROM-hack player reaches for (they know sleep, paralysis, poison and the stat drops from the games
+# they grew up on), and the stage the stat has to be above for a repeat to look worth it.
+STATUS_FOR_AVERAGE = {"SLEEP": None, "PARALYZE": None, "POISON": None, "TOXIC": None, "LEECH_SEED": None,
+                      "ATTACK_DOWN": "atk", "DEFENSE_DOWN": "def", "ACCURACY_DOWN": "acc", "SPEED_DOWN": "spe"}
+
+
+def _average_status(state, p, g, me, foe, ms):
+    """The average player's measured use of status moves (targets.yaml `status_use_rate`, PLACEHOLDER source: see the lab notes).
+
+    Each decision where a useful status move is known, the foe is still healthy (above half HP) and not already
+    afflicted by it, the player picks it with probability `status_use_rate` instead of attacking. The realized share of
+    status moves among an average player's turns is reported by every gate run (`gate.md`, "Status-move policy")."""
+    rate = p.get("status_use_rate", 0.0)
+    if rate <= 0 or foe["hp"] / foe["max_hp"] <= 0.5 or _rng(state, 17).random() >= rate:
+        return None
+    for a in ms:
+        mv = _mv(me, a)
+        m = g.moves.get(mv)
+        if not m or m["power"] != 0 or m["effect"] not in STATUS_FOR_AVERAGE:
+            continue
+        stage = STATUS_FOR_AVERAGE[m["effect"]]
+        if stage is None:
+            if foe.get("status") or (m["effect"] == "LEECH_SEED" and "GRASS" in g.species[foe["species"]]["types"]):
+                continue
+        elif (foe.get("stages") or {}).get(stage, 0) <= -2:
+            continue
+        return a
+    return None
 
 
 _SEEDED = set()
@@ -246,7 +291,7 @@ def skilled_policy(state, params=None):
     i_first = _speed(g, me) >= _speed(g, foe)
     losing = foe_turns < my_turns - (0 if i_first else 0) and not (i_first and my_turns <= foe_turns)
     # heal when I would die next turn and cannot finish first
-    if hp_frac < p.get("heal_below_hp", 0.35) and not (best[1] >= foe_frac and i_first):
+    if hp_frac < p.get("heal_below_hp", 0.35) and not (best[1] >= foe_frac and i_first) and _may_heal(state, p):
         h = _heal_action(g, state, 1.0)
         if h and g.heal_amount(h["item"]) / me["max_hp"] > foe_threat * 0.8:
             return h
@@ -323,6 +368,16 @@ def _variant(base, **over):
     return f
 
 
+def _variant_of(base, section, **over):
+    def f(state, params=None):
+        return base(state, dict(policy_params(section), **over))
+    return f
+
+
+POLICIES["average_legacy"] = _variant_of(average_policy, "average", status_use_rate=0.0, heal_in_wild=True)   # the lab before the economy (parity runs)
+POLICIES["average_nostatus"] = _variant_of(average_policy, "average", status_use_rate=0.0)   # what-if: the average player without the status-move policy
+POLICIES["skilled_legacy"] = _variant_of(skilled_policy, "skilled", heal_in_wild=True)
+POLICIES["average_sig"] = _variant_of(average_policy, "average", uses_special=True)           # signature check: an average player who has it
 POLICIES["skilled_notalk"] = _variant(skilled_policy, uses_talk=False)
 POLICIES["skilled_unnerve"] = _variant(skilled_policy, uses_talk=True, talk_mode="unnerve")
 POLICIES["skilled_provoke"] = _variant(skilled_policy, uses_talk=True, talk_mode="provoke")

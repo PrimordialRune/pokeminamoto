@@ -6,35 +6,68 @@
 # Red/Green (JP Green = EN Blue tables). Trainer parties: Tokiwa v5 §11 (Yujirou), Nibi v3 §9 (Takeshi), R/G for the
 # rival, bug catchers and the camper. Wild weights are percentages of the area's encounters.
 # Party moves come from the learnsets (the last four learned) unless a team entry lists them.
+#
+# Studio lab rev (2026-10-27): trainer parties come from src/data/trainers.party and wild tables from
+# src/data/wild_encounters.json wherever the repo has them (a `fight:` id or `trainer:` that is a TRAINER_ const; a `wild:`
+# step's `map:`). The `team:` and `table:` entries below are the FALLBACK until the area owners fill their blocks (the scaffold
+# parties are one Lv 2 Rattata): Omar's canon (Yujirou) and the placeholders are listed in the gate output with their source.
+# Steps marked `new: true` are the slice economy and the fights added for the gate; `--model legacy` skips them.
+# Bands, prices, prizes and the money rules live in minasim/gate.py and minasim/economy.py, not here.
 name: Masara to Nibi (v1)
+model: slice
 start: Masara Town
 starter_level: 5
 
 steps:
   - segment: Masara
-  - fight: rival_lab
+  - give: POKE_BALL                            # Okido's 5 balls (plan 4.3 #16)
+    n: 5
+    new: true
+  - fight: TRAINER_SHIGERU_LAB
+    trainer: [TRAINER_SHIGERU_LAB_1, TRAINER_SHIGERU_LAB_2, TRAINER_SHIGERU_LAB_3]   # by the player's starter (VAR_STARTER_MON 0/1/2)
     name: Shigeru (lab)
     class: rival
+    trainer_class: Rival
     no_whiteout: true                          # losing continues the story, as in R/G (MAS-004)
     team: ["RIVAL_STARTER:5"]
 
   - segment: Route 1
+  - give: POTION                               # the Route 1 vendor's one free sample (R01-101): once, no shop
+    n: 1
+    new: true
   - wild: Route 1                              # no Poke Balls yet: grass is EXP only
+    map: MAP_ROUTE1
     battles: 6
     table: ["PIDGEY:2-4:45", "RATTATA:2-4:45", "PIDGEY:5:5", "RATTATA:5:5"]
+  - give: POTION                               # MAS-301/302: Nanami's herb, then the back issue (PLACEHOLDER: a backtrack to Masara)
+    n: 1
+    take: 0.6
+    new: true
   - inn: Tokiwa City                           # first arrival, Ume room
+  - give: POKE_BALL                            # the Welcome Kit: 3 balls + 1 Potion (PLACEHOLDER, script list proposal)
+    n: 3
+    new: true
+  - give: POTION
+    n: 1
+    kit: true                                  # the gate's Kit what-if adds Potions here
+    new: true
 
   - segment: Route 22
   - catch_slot: 2                              # Kurosawa's catching session (TOK, session 2)
   - wild: Route 22
+    map: MAP_ROUTE22
     battles: 6
     table: ["NIDORAN_F:3-4:30", "NIDORAN_M:3-4:20", "RATTATA:2-4:35", "SPEAROW:3-5:10", "NIDORAN_F:5:3", "NIDORAN_M:5:2"]
   - gift: SANDSHREW                            # Omura's out-of-range Sandshrew at the Route 22 wall (TOK-301): kept
     level: 9
     take: 0.5                                  # half the players keep it, half sell it for 3,500
-  - fight: rival_r22
+    sell: true
+  - fight: TRAINER_SHIGERU_ROUTE22
+    trainer: [TRAINER_SHIGERU_ROUTE22_1, TRAINER_SHIGERU_ROUTE22_2, TRAINER_SHIGERU_ROUTE22_3]
     name: Shigeru (Route 22)
     class: rival
+    trainer_class: Rival
+    slice_no_whiteout: true                    # slice model only: a loss heals HP, no warp, no money lost (plan 3.4, 7.3)
     team: ["PIDGEY:9", "RIVAL_STARTER:8"]       # R/G; a hard optional fight (Omar, 2026-10-27)
   - town: Tokiwa City
   - gift: PIDGEY                               # the injured Pidgey (TOK-302): kept
@@ -45,17 +78,20 @@ steps:
   - grind: Route 22                            # the player grinds to the leader's ace minus the band's gap
     table: ["NIDORAN_F:3-4:30", "NIDORAN_M:3-4:20", "RATTATA:2-4:35", "SPEAROW:3-5:10", "NIDORAN_F:5:3", "NIDORAN_M:5:2"]
   - inn: Tokiwa City
-  - fight: circuit1
+  - fight: TRAINER_CIRCUIT_TOKIWA_1
     name: Circuit bird trainer 1
     class: trainer
+    trainer_class: Bird Keeper
     team: ["SPEAROW:7", "PIDGEY:7"]
-  - fight: circuit2
+  - fight: TRAINER_CIRCUIT_TOKIWA_2
     name: Circuit bird trainer 2
     class: trainer
+    trainer_class: Youngster
     team: ["PIDGEY:9"]
-  - fight: yujirou
+  - fight: TRAINER_YUJIROU
     name: Yujirou
     class: gym
+    trainer_class: Leader
     arena: LUCKY_STRIKE
     team: ["SPEAROW:7[PECK/GROWL/LEER]", "PIDGEY:8[TACKLE/SAND_ATTACK]", "FARFETCHD:9[CUT/SAND_ATTACK/LEER]"]
 
@@ -63,35 +99,65 @@ steps:
   - catch_slot: 3
   - inn: Tokiwa City
   - wild: Route 2
+    map: MAP_ROUTE2
     battles: 3
     table: ["PIDGEY:3-5:35", "RATTATA:3-5:35", "CATERPIE:3-5:20", "WEEDLE:3-5:10"]
   - wild: Tokiwa Forest
+    map: MAP_VIRIDIAN_FOREST
     battles: 5
     table: ["CATERPIE:3-5:30", "METAPOD:4-6:25", "WEEDLE:3-5:15", "KAKUNA:4-6:10", "PIDGEY:4-6:8", "PIKACHU:3-5:5", "PARAS:5-6:5", "PIDGEOTTO:9:2"]
-  - fight: bug1
+  - give: POKE_BALL                            # the forest item ball (PLACEHOLDER: its place is the north owner's)
+    n: 1
+    new: true
+  - fight: TRAINER_BUG_CATCHER_FOREST_1
     name: Bug Catcher 1
+    trainer_class: Bug Catcher
     team: ["WEEDLE:6", "CATERPIE:6"]
   - wild: Tokiwa Forest
     battles: 3
-  - fight: bug2
+  - fight: TRAINER_BUG_CATCHER_FOREST_2
     name: Bug Catcher 2
+    trainer_class: Bug Catcher
     team: ["WEEDLE:7", "KAKUNA:7", "WEEDLE:7"]
   - wild: Tokiwa Forest
     battles: 3
-  - fight: bug3
+  - fight: TRAINER_BUG_CATCHER_FOREST_3
     name: Bug Catcher 3
+    trainer_class: Bug Catcher
     team: ["WEEDLE:9"]
+  - fight: TRAINER_KEN_FOREST                  # Ken: his starter (the leftover ball) Lv 8 + Metapod Lv 7 (plan 4.3 #13, PLACEHOLDER)
+    trainer: [TRAINER_KEN_FOREST_1, TRAINER_KEN_FOREST_2, TRAINER_KEN_FOREST_3]
+    name: Ken (forest)
+    class: rival
+    trainer_class: Rival
+    no_whiteout: true
+    team: ["KEN_STARTER:8", "METAPOD:7"]
+    new: true
 
   - segment: Nibi
   - inn: Nibi City
+  - museum: true                               # the 50 yen ticket (NIB-126); PLACEHOLDER share of players who go in
+    take: 0.6
+    new: true
+  - shop: Nibi Market                          # Poke Ball, Potion, Antidote (plan 3.2); the first shop of the chapter
+    new: true
   - grind: Tokiwa Forest
     table: ["CATERPIE:3-5:30", "METAPOD:4-6:25", "WEEDLE:3-5:15", "KAKUNA:4-6:10", "PIDGEY:4-6:8", "PIKACHU:3-5:5", "PARAS:5-6:5", "PIDGEOTTO:9:2"]
   - inn: Nibi City
-  - fight: camper
+  - fight: TRAINER_CAMPER_NIBI_PMC
     name: Camper (gym gate)
+    trainer_class: Camper
     team: ["DIGLETT:11", "SANDSHREW:11"]
-  - fight: takeshi
+  - fight: TRAINER_TAKESHI
     name: Takeshi
     class: gym
-    arena: GRUNGE_ROCK
+    trainer_class: Leader
+    arena: GRUNGE_ROCK                         # takeshi switches this to FAULT_LINE with his arena model
     team: ["GEODUDE:12", "ONIX:14"]
+
+  - segment: Route 3
+  - fight: TRAINER_BUG_CATCHER_ROUTE3_1        # PLACEHOLDER fallback party until nibi-spine writes it
+    name: Route 3 Bug Catcher
+    trainer_class: Bug Catcher
+    team: ["KAKUNA:11", "CATERPIE:11"]
+    new: true
