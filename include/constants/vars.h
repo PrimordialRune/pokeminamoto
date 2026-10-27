@@ -99,23 +99,23 @@
 #define VAR_LOTAD_SIZE_RECORD                            0x404F
 #define VAR_LITTLEROOT_TOWN_STATE                        0x4050
 #define VAR_OLDALE_TOWN_STATE                            0x4051
-#define VAR_DEWFORD_TOWN_STATE                           0x4052 // Unused Var
+// 0x4052: VAR_FOREST_STATE (north), see include/constants/slice/vars_north.h (was VAR_DEWFORD_TOWN_STATE)
 #define VAR_LAVARIDGE_TOWN_STATE                         0x4053
 #define VAR_CURRENT_SECRET_BASE                          0x4054 // was probably allocated for VAR_FALLARBOR_TOWN_STATE at one point
-#define VAR_VERDANTURF_TOWN_STATE                        0x4055 // Unused Var
+// 0x4055: VAR_SLICE_RESERVE_3 (shared), see include/constants/slice/shared.h (was VAR_VERDANTURF_TOWN_STATE)
 #define VAR_PACIFIDLOG_TOWN_STATE                        0x4056 // Unused Var
-#define VAR_PETALBURG_CITY_STATE                         0x4057
-#define VAR_SLATEPORT_CITY_STATE                         0x4058
-#define VAR_MAUVILLE_CITY_STATE                          0x4059 // Unused Var
-#define VAR_RUSTBORO_CITY_STATE                          0x405A
+// 0x4057: VAR_TOKIWA_STATE (tokiwa_town), see include/constants/slice/vars_tokiwa_town.h (was VAR_PETALBURG_CITY_STATE)
+// 0x4058: VAR_MASARA_LAB_STATE (masara), see include/constants/slice/vars_masara.h (was VAR_SLATEPORT_CITY_STATE)
+// 0x4059: VAR_SLICE_RESERVE_4 (shared), see include/constants/slice/shared.h (was VAR_MAUVILLE_CITY_STATE)
+// 0x405A: VAR_NIBI_STATE (nibi_town), see include/constants/slice/vars_nibi_town.h (was VAR_RUSTBORO_CITY_STATE)
 #define VAR_FORTREE_CITY_STATE                           0x405B // Unused Var
 #define VAR_LILYCOVE_CITY_STATE                          0x405C // Unused Var
 #define VAR_MOSSDEEP_CITY_STATE                          0x405D
 #define VAR_SOOTOPOLIS_CITY_STATE                        0x405E
 #define VAR_EVER_GRANDE_CITY_STATE                       0x405F // Unused Var
 #define VAR_ROUTE101_STATE                               0x4060
-#define VAR_ROUTE102_STATE                               0x4061 // Unused Var
-#define VAR_ROUTE103_STATE                               0x4062 // Unused Var
+// 0x4061: VAR_ROUTE22_STATE (north), see include/constants/slice/vars_north.h (was VAR_ROUTE102_STATE)
+// 0x4062: VAR_SLICE_RESERVE_5 (shared), see include/constants/slice/shared.h (was VAR_ROUTE103_STATE)
 #define VAR_ROUTE104_STATE                               0x4063
 #define VAR_ROUTE105_STATE                               0x4064 // Unused Var
 #define VAR_ROUTE106_STATE                               0x4065 // Unused Var
@@ -162,7 +162,7 @@
 #define VAR_BOARD_BRINEY_BOAT_STATE                      0x408E
 #define VAR_DEVON_CORP_3F_STATE                          0x408F
 #define VAR_BRINEY_HOUSE_STATE                           0x4090
-#define VAR_UNUSED_0x4091                                0x4091 // Unused Var
+// 0x4091: VAR_Q_TAG (shared), see include/constants/slice/shared.h (was VAR_UNUSED_0x4091)
 #define VAR_LITTLEROOT_INTRO_STATE                       0x4092
 #define VAR_MAUVILLE_GYM_STATE                           0x4093
 #define VAR_LILYCOVE_MUSEUM_2F_STATE                     0x4094
@@ -172,20 +172,20 @@
 #define VAR_PETALBURG_WOODS_STATE                        0x4098
 #define VAR_LILYCOVE_CONTEST_LOBBY_STATE                 0x4099
 #define VAR_RUSTURF_TUNNEL_STATE                         0x409A
-#define VAR_UNUSED_0x409B                                0x409B // Unused Var
+// 0x409B: VAR_Q_HERB (shared), see include/constants/slice/shared.h (was VAR_UNUSED_0x409B)
 #define VAR_ELITE_4_STATE                                0x409C
-#define VAR_UNUSED_0x409D                                0x409D // Unused Var
+// 0x409D: VAR_Q_SANDSHREW (shared), see include/constants/slice/shared.h (was VAR_UNUSED_0x409D)
 #define VAR_MOSSDEEP_SPACE_CENTER_STAIR_GUARD_STATE      0x409E
 #define VAR_MOSSDEEP_SPACE_CENTER_STATE                  0x409F
 #define VAR_SLATEPORT_HARBOR_STATE                       0x40A0
-#define VAR_UNUSED_0x40A1                                0x40A1 // Unused var
+// 0x40A1: VAR_Q_PIDGEY (shared), see include/constants/slice/shared.h (was VAR_UNUSED_0x40A1)
 #define VAR_SEAFLOOR_CAVERN_STATE                        0x40A2
 #define VAR_CABLE_CAR_STATION_STATE                      0x40A3
 #define VAR_SAFARI_ZONE_STATE                            0x40A4  // 0: In or out of SZ, 1: Player exiting SZ, 2: Player entering SZ
 #define VAR_TRICK_HOUSE_BEING_WATCHED_STATE              0x40A5
 #define VAR_TRICK_HOUSE_FOUND_TRICK_MASTER               0x40A6
 #define VAR_TRICK_HOUSE_ENTRANCE_STATE                   0x40A7
-#define VAR_UNUSED_0x40A8                                0x40A8 // Unused Var
+// 0x40A8: VAR_Q_KUROSAWA (tokiwa_town), see include/constants/slice/vars_tokiwa_town.h (was VAR_UNUSED_0x40A8)
 #define VAR_CYCLING_CHALLENGE_STATE                      0x40A9
 #define VAR_SLATEPORT_MUSEUM_1F_STATE                    0x40AA
 #define VAR_TRICK_HOUSE_PUZZLE_1_STATE                   0x40AB
@@ -201,10 +201,10 @@
 #define VAR_TRICK_HOUSE_ENTER_FROM_CORRIDOR              0x40B5
 #define VAR_TRICK_HOUSE_PUZZLE_7_STATE_2                 0x40B6 // Leftover from RS, never set
 #define VAR_SLATEPORT_FAN_CLUB_STATE                     0x40B7
-#define VAR_UNUSED_0x40B8                                0x40B8 // Unused Var
+// 0x40B8: VAR_Q_LETTER (shared), see include/constants/slice/shared.h (was VAR_UNUSED_0x40B8)
 #define VAR_MT_PYRE_STATE                                0x40B9
 #define VAR_NEW_MAUVILLE_STATE                           0x40BA
-#define VAR_UNUSED_0x40BB                                0x40BB // Unused Var
+// 0x40BB: VAR_Q_STUDENTS (tokiwa_spine), see include/constants/slice/vars_tokiwa_spine.h (was VAR_UNUSED_0x40BB)
 #define VAR_BRAVO_TRAINER_BATTLE_TOWER_ON                0x40BC
 #define VAR_JAGGED_PASS_ASH_WEATHER                      0x40BD
 #define VAR_GLASS_WORKSHOP_STATE                         0x40BE
@@ -236,8 +236,8 @@
 #define VAR_SOOTOPOLIS_WALLACE_STATE                     0x40D8
 #define VAR_HAS_TALKED_TO_SEAFLOOR_CAVERN_ENTRANCE_GRUNT 0x40D9
 #define VAR_REGISTER_BIRCH_STATE                         0x40DA
-#define VAR_UNUSED_0x40DB                                0x40DB // Unused Var
-#define VAR_UNUSED_0x40DC                                0x40DC // Unused Var
+// 0x40DB: VAR_Q_VENDOR (tokiwa_spine), see include/constants/slice/vars_tokiwa_spine.h (was VAR_UNUSED_0x40DB)
+// 0x40DC: VAR_Q_HIDA (nibi_spine), see include/constants/slice/vars_nibi_spine.h (was VAR_UNUSED_0x40DC)
 #define VAR_GIFT_PICHU_SLOT                              0x40DD
 #define VAR_GIFT_UNUSED_1                                0x40DE // Var is written to, but never read
 #define VAR_GIFT_UNUSED_2                                0x40DF // Var is written to, but never read
@@ -246,7 +246,7 @@
 #define VAR_GIFT_UNUSED_5                                0x40E2 // Var is written to, but never read
 #define VAR_GIFT_UNUSED_6                                0x40E3 // Var is written to, but never read
 #define VAR_GIFT_UNUSED_7                                0x40E4 // var is written to, but never read
-#define VAR_UNUSED_0x40E5                                0x40E5 // Unused Var
+// 0x40E5: VAR_Q_FOSSILS (nibi_town), see include/constants/slice/vars_nibi_town.h (was VAR_UNUSED_0x40E5)
 #define VAR_DAILY_SLOTS                                  0x40E6
 #define VAR_DAILY_WILDS                                  0x40E7
 #define VAR_DAILY_BLENDER                                0x40E8
@@ -268,11 +268,11 @@
 #define VAR_UNUSED_0x40F8                                0x40F8 // Unused Var
 #define VAR_UNUSED_0x40F9                                0x40F9 // Unused Var
 #define VAR_UNUSED_0x40FA                                0x40FA // Unused Var
-#define VAR_UNUSED_0x40FB                                0x40FB // Unused Var
-#define VAR_UNUSED_0x40FC                                0x40FC // Unused Var
-#define VAR_UNUSED_0x40FD                                0x40FD // Unused Var
-#define VAR_UNUSED_0x40FE                                0x40FE // Unused Var
-#define VAR_UNUSED_0x40FF                                0x40FF // Unused Var
+// 0x40FB: VAR_Q_POET (nibi_town), see include/constants/slice/vars_nibi_town.h (was VAR_UNUSED_0x40FB)
+#define VAR_REST_COUNT                                   0x40FC // core: inn rests taken (incremented by every RestPlayerParty rest) (was VAR_UNUSED_0x40FC)
+#define VAR_CLOCK_OFFSET                                 0x40FD // core: reserved, unused this build (was VAR_UNUSED_0x40FD)
+// 0x40FE: VAR_SLICE_RESERVE_1 (shared), see include/constants/slice/shared.h (was VAR_UNUSED_0x40FE)
+// 0x40FF: VAR_SLICE_RESERVE_2 (shared), see include/constants/slice/shared.h (was VAR_UNUSED_0x40FF)
 
 #define VARS_END                                         0x40FF
 #define VARS_COUNT                                       (VARS_END - VARS_START + 1)
@@ -325,5 +325,14 @@
 #define VAR_TEMP_TRANSFERRED_SPECIES  VAR_TEMP_1
 
 #define CHARISMA_MAX 100 // Cap for VAR_CHARISMA
+
+// Masara-to-Nibi slice: per-area vars (studio scaffold, world M1). Ids never move.
+#include "constants/slice/vars_masara.h"
+#include "constants/slice/vars_tokiwa_spine.h"
+#include "constants/slice/vars_tokiwa_town.h"
+#include "constants/slice/vars_north.h"
+#include "constants/slice/vars_nibi_spine.h"
+#include "constants/slice/vars_nibi_town.h"
+#include "constants/slice/shared.h"
 
 #endif // GUARD_CONSTANTS_VARS_H

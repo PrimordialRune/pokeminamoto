@@ -1,0 +1,3 @@
+// Aizawa house (nibi-town). New slice interior (studio scaffold, world M1), reusing LAYOUT_HOUSE5.
+// Its door in the town and the exit warp target are wired at world M2.
+mapscripts PewterCity_AizawaHouse_MapScripts {}

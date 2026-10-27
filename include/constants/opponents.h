@@ -39,7 +39,47 @@
 // (constants/flags.h); MAX_TRAINERS_COUNT also sizes the save's trainer flags, so it
 // stays at Emerald's 864 and new trainers fit below it.
 
-#define TRAINERS_COUNT                               33
+// Masara-to-Nibi slice (studio scaffold, world M1; slice-plan 5.3). Each block
+// belongs to the workstream named above it; its party lives between the
+// matching BEGIN/END lines in src/data/trainers.party. Ids never move.
+// masara
+#define TRAINER_SHIGERU_LAB_1                        33
+#define TRAINER_SHIGERU_LAB_2                        34
+#define TRAINER_SHIGERU_LAB_3                        35
+// tokiwa-spine
+#define TRAINER_YUJIROU                              36
+#define TRAINER_CIRCUIT_TOKIWA_1                     37
+#define TRAINER_CIRCUIT_TOKIWA_2                     38
+#define TRAINER_SLICE_TOKIWA_SPINE_SPARE_1           39
+// tokiwa-town
+#define TRAINER_SLICE_TOKIWA_TOWN_SPARE_1            40
+#define TRAINER_SLICE_TOKIWA_TOWN_SPARE_2            41
+// north
+#define TRAINER_SHIGERU_ROUTE22_1                    42
+#define TRAINER_SHIGERU_ROUTE22_2                    43
+#define TRAINER_SHIGERU_ROUTE22_3                    44
+#define TRAINER_KEN_FOREST_1                         45
+#define TRAINER_KEN_FOREST_2                         46
+#define TRAINER_KEN_FOREST_3                         47
+#define TRAINER_BUG_CATCHER_FOREST_1                 48
+#define TRAINER_BUG_CATCHER_FOREST_2                 49
+#define TRAINER_BUG_CATCHER_FOREST_3                 50
+// takeshi
+#define TRAINER_TAKESHI                              51
+// nibi-spine
+#define TRAINER_CAMPER_NIBI_PMC                      52
+#define TRAINER_BUG_CATCHER_ROUTE3_1                 53
+#define TRAINER_SLICE_NIBI_SPINE_SPARE_1             54
+// nibi-town
+#define TRAINER_SLICE_NIBI_TOWN_SPARE_1              55
+#define TRAINER_SLICE_NIBI_TOWN_SPARE_2              56
+// director
+#define TRAINER_SLICE_DIRECTOR_RESERVE_1             57
+#define TRAINER_SLICE_DIRECTOR_RESERVE_2             58
+#define TRAINER_SLICE_DIRECTOR_RESERVE_3             59
+#define TRAINER_SLICE_DIRECTOR_RESERVE_4             60
+
+#define TRAINERS_COUNT                               61
 #define MAX_TRAINERS_COUNT                          864
 
 // The deleted Hoenn trainers, still named by dead systems

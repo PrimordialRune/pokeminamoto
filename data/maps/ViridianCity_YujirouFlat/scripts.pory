@@ -1,0 +1,3 @@
+// Yujirou's flat by the canal (tokiwa-spine). New slice interior (studio scaffold, world M1), reusing LAYOUT_FRLG_HOUSE1.
+// Its door in the town and the exit warp target are wired at world M2.
+mapscripts ViridianCity_YujirouFlat_MapScripts {}
