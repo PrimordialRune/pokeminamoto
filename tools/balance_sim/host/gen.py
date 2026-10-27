@@ -1,0 +1,188 @@
+#!/usr/bin/env python3
+"""Generators for the minasim host build (build/host/). Run from the repo root by the Makefile.
+
+  gen.py ctrl   build/host/gen/hb_ctrl_gen.c : the real opponent controller + hb_ctrl_tail.c
+  gen.py blob   build/host/gen/hb_blob.c     : battle scripts (data/battle_scripts_*.s, battle_ai_scripts.s)
+                                               assembled with the ROM pipeline, pointers relocated to
+                                               32-bit pseudo addresses that HostPtr() maps back
+  gen.py link   build/host/libminasim.so     : links, auto-stubbing every symbol the sources still need
+                                               that the host layer does not define; writes
+                                               build/host/stubs.txt (compared with stubs_allowlist.txt)
+Nothing under src/, include/ or data/ is edited: everything is generated from them.
+"""
+import bisect, glob, os, re, struct, subprocess, sys
+
+HOST = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.abspath(os.path.join(HOST, "..", "..", ".."))
+B = os.path.join(ROOT, "build", "host")
+GEN = os.path.join(B, "gen")
+OBJ = os.path.join(B, "obj")
+SCRIPTS = ["battle_scripts_1", "battle_scripts_2", "battle_ai_scripts"]
+CFLAGS = (["-g"] if os.environ.get("HB_DEBUG") else []) + ["-m64", "-fPIC", "-O2", "-std=gnu11", "-ffunction-sections", "-fdata-sections",
+          "-fno-strict-aliasing", "-fwrapv", "-fcommon", "-fvisibility=hidden",
+          "-Werror=implicit-function-declaration", "-Werror=int-conversion"]
+
+
+def sh(*a, **k):
+    return subprocess.check_output(a, text=True, cwd=k.get("cwd", ROOT))
+
+
+def read(p):
+    with open(p) as f:
+        return f.read()
+
+
+# ---------------------------------------------------------------- controller
+def gen_ctrl():
+    src = read(os.path.join(ROOT, "src/battle_controller_opponent.c"))
+    pat = re.compile(r"^static void \(\*const sOpponentBufferCommands", re.M)
+    if not pat.search(src):
+        sys.exit("gen.py ctrl: the sOpponentBufferCommands table moved; update the pattern in tools/balance_sim/host/gen.py")
+    src = pat.sub("static void (*sOpponentBufferCommands", src)
+    lines = src.split("\n")
+    last = max(i for i, l in enumerate(lines) if l.startswith("#include"))
+    lines.insert(last + 1, "extern struct Pokemon *HbParty(void);\n#define gEnemyParty (HbParty())\nextern void HbEmitChosen(u8, u8, u8 *);\n#define BtlController_EmitChosenMonReturnValue HbEmitChosen")
+    out = "\n".join(lines) + "\n/* ---- appended from tools/balance_sim/host/hb_ctrl_tail.c ---- */\n"
+    out += read(os.path.join(HOST, "hb_ctrl_tail.c"))
+    os.makedirs(GEN, exist_ok=True)
+    write_if_changed(os.path.join(GEN, "hb_ctrl_gen.c"), out)
+
+
+def write_if_changed(path, text):
+    if os.path.exists(path) and read(path) == text:
+        return
+    with open(path, "w") as f:
+        f.write(text)
+
+
+# ---------------------------------------------------------------- scripts blob
+def assemble(name):
+    o = os.path.join(OBJ, name + ".arm.o")
+    d = f"data/{name}.s"
+    cmd = (f"tools/preproc/preproc {d} charmap.txt | cpp -I include -DRELEASE - | "
+           f"tools/preproc/preproc -ie {d} charmap.txt | arm-none-eabi-as -mcpu=arm7tdmi -o {o}")
+    subprocess.run(["bash", "-o", "pipefail", "-c", cmd], cwd=ROOT, check=True)
+    subprocess.run(["arm-none-eabi-objcopy", "-O", "binary", "-j", "script_data", o, o[:-6] + ".bin"], check=True)
+    return o
+
+
+def gen_blob():
+    os.makedirs(OBJ, exist_ok=True)
+    os.makedirs(GEN, exist_ok=True)
+    names = SCRIPTS
+    BASE = {n: 0x08000000 + i * 0x00100000 for i, n in enumerate(names)}
+    EXT = 0x0F000000
+    glob_syms, syms, blobs, relocs = set(), {}, {}, {}
+    for n in names:
+        o = assemble(n)
+        blobs[n] = bytearray(open(o[:-6] + ".bin", "rb").read())
+        for l in sh("arm-none-eabi-readelf", "-sW", o).splitlines():
+            p = l.split()
+            if len(p) >= 8 and p[0].endswith(":") and p[6] != "UND" and p[3] in ("NOTYPE", "OBJECT", "FUNC"):
+                if p[6].isdigit():
+                    syms[(n, p[7])] = int(p[1], 16)
+                    if p[4] == "GLOBAL":
+                        glob_syms.add((n, p[7]))
+        relocs[n] = []
+        for l in sh("arm-none-eabi-readelf", "-rW", o).splitlines():
+            p = l.split()
+            if len(p) >= 5 and p[2] == "R_ARM_ABS32":
+                relocs[n].append((int(p[0], 16), p[4]))
+    allsyms = {s: (n, v) for (n, s), v in syms.items()}
+    ext = {}
+    for n in names:
+        for off, s in relocs[n]:
+            add = struct.unpack_from("<I", blobs[n], off)[0]
+            if s == "script_data":
+                val = BASE[n] + add
+            elif s in allsyms:
+                val = BASE[allsyms[s][0]] + allsyms[s][1] + add
+            else:
+                ext.setdefault(s, len(ext))
+                val = EXT + ext[s] * 0x1000 + add
+            struct.pack_into("<I", blobs[n], off, val)
+    out = ["/* generated by tools/balance_sim/host/gen.py blob */", '#include "global.h"']
+    for n in names:
+        out.append(f"const unsigned char hb_{n}[] = {{" + ",".join(map(str, blobs[n])) + "};")
+        out.append(f"const unsigned int hb_{n}_size = {len(blobs[n])};")
+    for s in ext:
+        out.append(f"extern char {s}[];")
+    out.append("const struct { const char *name; void *ptr; } hb_ext[] = {"
+               + ",".join(f'{{"{s}",(void*){s}}}' for s in ext) + "};")
+    out.append(f"const unsigned hb_ext_count = {len(ext)};")
+    offs = {n: sorted(v for (m, _), v in syms.items() if m == n) for n in names}
+    rl = {n: {o: s_ for o, s_ in relocs[n]} for n in names}
+    for (n, sname), v in sorted(syms.items()):
+        if (n, sname) not in glob_syms:
+            continue
+        i = bisect.bisect_right(offs[n], v)
+        nxt = offs[n][i] if i < len(offs[n]) else len(blobs[n])
+        k = [o for o in rl[n] if v <= o < nxt]
+        if k and nxt - v == 4 * len(k):  # a pointer table (gBattleScriptsForMoveEffects ...)
+            ents = []
+            for o in range(v, nxt, 4):
+                val = struct.unpack_from("<I", blobs[n], o)[0]
+                ex = None
+                for m in names:
+                    if BASE[m] <= val < BASE[m] + 0x100000:
+                        ex = f"(hb_{m}+{val - BASE[m]})"
+                if val >= EXT:
+                    ex = f"((const unsigned char*){list(ext)[(val - EXT) >> 12]})"
+                ents.append(ex)
+            out.append(f"const unsigned char *const {sname}[] = {{{','.join(ents)}}};")
+        else:
+            out.append(f'__asm__(".globl {sname}\\n.set {sname}, hb_{n}+{v}");')
+    # symbol -> pseudo address, so the harness can find AI scripts etc. by name
+    out.append("const struct { const char *name; unsigned addr; } hb_syms[] = {"
+               + ",".join(f'{{"{s}",{BASE[n] + v}u}}' for s, (n, v) in allsyms.items()) + "};")
+    out.append(f"const unsigned hb_syms_count = {len(allsyms)};")
+    write_if_changed(os.path.join(GEN, "hb_blob.c"), "\n".join(out) + "\n")
+
+
+# ---------------------------------------------------------------- link + stubs
+def link():
+    objs = sorted(glob.glob(os.path.join(OBJ, "*.o")))
+    objs = [o for o in objs if not o.endswith(".arm.o") and not o.endswith("zz_stubs.o")]
+    lib = os.path.join(B, "libminasim.so")
+    stubs_c = os.path.join(GEN, "stubs_auto.c")
+    stub_o = os.path.join(OBJ, "zz_stubs.o")
+    texts = ""
+    for f in glob.glob(os.path.join(OBJ, "*.i")):
+        texts += read(f)
+    called = set(re.findall(r"\b([A-Za-z_]\w*)\s*\(", texts))
+    stubs = {}
+    for it in range(6):
+        write_if_changed(stubs_c, render_stubs(stubs))
+        subprocess.run(["gcc"] + CFLAGS + ["-c", stubs_c, "-o", stub_o], check=True)
+        cmd = ["gcc", "-shared", "-m64", "-Wl,--gc-sections", "-Wl,--no-undefined",
+               f"-Wl,--version-script={HOST}/exports.map", "-o", lib] + objs + [stub_o, "-lm"]
+        r = subprocess.run(cmd, capture_output=True, text=True)
+        if r.returncode == 0:
+            break
+        und = set(re.findall(r"undefined reference to `(\w+)'", r.stderr))
+        if not und:
+            sys.stderr.write(r.stderr)
+            sys.exit("link failed")
+        for u in und:
+            stubs[u] = "F" if u in called else "D"
+    else:
+        sys.stderr.write(r.stderr)
+        sys.exit("link did not converge")
+    with open(os.path.join(B, "stubs.txt"), "w") as f:
+        for s in sorted(stubs):
+            f.write(f"{stubs[s]} {s}\n")
+    print(f"libminasim.so linked, {len(stubs)} auto-stubbed symbols")
+
+
+def render_stubs(stubs):
+    out = ["/* generated by gen.py link: symbols the sources reference that the host layer does not define */"]
+    for s, k in sorted(stubs.items()):
+        if k == "F":
+            out.append(f"long {s}() {{ return 0; }}")
+        else:
+            out.append(f"char {s}[1 << 16] __attribute__((aligned(16)));")
+    return "\n".join(out) + "\n"
+
+
+if __name__ == "__main__":
+    {"ctrl": gen_ctrl, "blob": gen_blob, "link": link}[sys.argv[1]]()

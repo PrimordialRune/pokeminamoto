@@ -1,0 +1,94 @@
+# minasim targets and policy parameters. Everything the tool needs that is not in the game data.
+# Bands are [low, high] first-try win rates; PLACEHOLDERS kept from Omar's first decisions (2026-10-27).
+bands:
+  wild:    {average: [0.95, 1.00], skilled: [0.97, 1.00]}
+  trainer: {average: [0.85, 0.97], skilled: [0.92, 1.00]}
+  rival:   {average: [0.60, 0.80], skilled: [0.75, 0.95]}
+  gym:     {average: [0.55, 0.75], skilled: [0.75, 0.95]}
+  boss:    {average: [0.40, 0.60], skilled: [0.60, 0.85]}
+
+# Player bands
+policies:
+  average:                       # an average player of Pokemon ROM hacks
+    policy: average
+    mistake_rate: 0.10           # probability a turn picks a random legal move
+    switch_below_hp: 0.25        # swaps a nearly dead mon for a healthy one when it cannot heal
+    switch_matchup_prob: 0.7     # forced switches pick the type-advantage member this often (else the first alive)
+    lead_matchup_prob: 0.7       # before a fight, leads with the best type matchup this often
+    heal_below_hp: 0.30          # uses a Potion when the active mon is under this HP fraction
+    level_offset: -1             # plays at (foe ace level + offset)
+    bench_offset: -3             # other party members relative to the lead
+    uses_tp_planning: false
+    uses_talk: false
+    uses_special: false
+    special_awake_prob: 0.3      # share of party mons whose Special is unsealed (conditions are not simulated)
+    party_size_base: 2           # party size = min(6, base + badges * per_badge)
+    party_per_badge: 0.7
+    potions_base: 3              # bag Potions at stage, plus per badge
+    potions_per_badge: 1.5
+  skilled:
+    policy: skilled
+    mistake_rate: 0.0
+    switch_below_hp: 0.3
+    switch_matchup_prob: 1.0
+    lead_matchup_prob: 1.0
+    heal_below_hp: 0.35
+    level_offset: 0
+    bench_offset: -1
+    uses_tp_planning: true
+    uses_talk: true
+    uses_special: true
+    talk_mode: smart             # none | unnerve | provoke | smart
+    special_awake_prob: 0.85
+    lookahead: 2
+    party_size_base: 3
+    party_per_badge: 0.8
+    potions_base: 5
+    potions_per_badge: 2.5
+
+# Flag thresholds
+flags:
+  band_gap_pts: 0.25             # skilled - average above this = rewards knowledge too much
+  starter_spread_pts: 0.30       # best - worst starter on a gym or rival (design target 0.15, flag at 2x)
+  species_z_amber: 2.0
+  species_z_red: 3.0
+  species_win_weak: 0.30
+  species_win_strong: 0.70
+  move_dominant_delta: 0.10
+  move_dead_usage: 0.03
+  item_strong_delta: 0.08
+  item_dead_delta: 0.01
+  tp_battles_per_rest: [8, 15]
+  tp_gym_arrival: [0.25, 0.75]
+  lead_delta_over: 6             # skilled lead - foe ace above this for a stage = outleveled
+  lead_delta_under: -3           # average below this at a gym = grind wall
+  max_flags_listed: 400
+
+# Run sizes: battles per cell at scale 1.0 (full); --quick multiplies by quick_scale.
+sample:
+  quick_scale: 0.08
+  fight_n: 400                   # trainer fights, per band
+  gym_n: 600                     # gyms and rivals, per band and starter
+  species_pool: 12               # opponents per (species, stage) cell
+  species_n: 4                   # duels per opponent
+  move_n: 200
+  item_n: 300
+  tp_runs: 60
+  max_cells_species: 40          # species per stage kept (obtainable, strongest-prior first)
+  max_moves: 400
+  turn_cap: 200
+
+# Income model (money from prize x level, for item affordability)
+income:
+  prize_per_level: 24            # per trainer mon level, mean trainer
+  trainers_per_stage: 6
+
+# Money-less item list that the item signal evaluates (battle relevant), with the stage they become buyable
+items:
+  evaluate: [POTION, SUPER_POTION, HYPER_POTION, MAX_POTION, FULL_RESTORE, ANTIDOTE, PARALYZE_HEAL, AWAKENING, BURN_HEAL, ICE_HEAL, FULL_HEAL, X_ATTACK, X_DEFENSE, X_SPEED, GUARD_SPEC, DIRE_HIT, LEFTOVERS]
+
+# Gym leader Focus Sash dropped (Omar, 2026-10-27).
+gym_focus_sash: false
+
+# Charisma the player has at a stage (mechanics.md: 0-15 start .. 75-100 endgame); feeds Talk odds. PLACEHOLDER.
+charisma: {base: 8, per_badge: 11}
