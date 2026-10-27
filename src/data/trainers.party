@@ -726,10 +726,10 @@ Music: Male
 Double Battle: No
 
 Squirtle
-Level: 8
+Level: 17
 
 Metapod
-Level: 7
+Level: 15
 
 === TRAINER_KEN_FOREST_2 ===
 Name: KEN
@@ -740,10 +740,10 @@ Music: Male
 Double Battle: No
 
 Bulbasaur
-Level: 8
+Level: 19
 
 Metapod
-Level: 7
+Level: 17
 
 === TRAINER_KEN_FOREST_3 ===
 Name: KEN
@@ -754,10 +754,10 @@ Music: Male
 Double Battle: No
 
 Charmander
-Level: 8
+Level: 20
 
 Metapod
-Level: 7
+Level: 18
 
 === TRAINER_BUG_CATCHER_FOREST_1 ===
 Name: RICK
@@ -768,10 +768,10 @@ Music: Male
 Double Battle: No
 
 Weedle
-Level: 6
+Level: 17
 
 Caterpie
-Level: 6
+Level: 17
 
 === TRAINER_BUG_CATCHER_FOREST_2 ===
 Name: DOUG
@@ -782,13 +782,13 @@ Music: Male
 Double Battle: No
 
 Weedle
-Level: 7
+Level: 17
 
 Kakuna
-Level: 7
+Level: 17
 
 Weedle
-Level: 7
+Level: 17
 
 === TRAINER_BUG_CATCHER_FOREST_3 ===
 Name: ANTHONY
@@ -799,7 +799,7 @@ Music: Male
 Double Battle: No
 
 Weedle
-Level: 9
+Level: 21
 
 /* END north */
 
