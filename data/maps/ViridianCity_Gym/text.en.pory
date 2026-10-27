@@ -1,8 +1,162 @@
-// ViridianCity_Gym dialogue (English). Logic: scripts.pory. Translations: text.<lang>.pory
+// Tokiwa PMC (ViridianCity_Gym) dialogue (English). Logic: scripts.pory. Translations: text.<lang>.pory
 // with the same block names; see docs/engineering/map-text.md.
+// Owner: tokiwa-spine. R/G line first, Tokiwa v5 / script list after it; joins tagged [new].
 
-// Barrier box and sign while the PMC is shut (slice-plan TOK-004; tokiwa-town owns it from wave 2).
-// PLACEHOLDER wording until tokiwa-town's TOK-004 pass confirms it.
+// TOK-004: the barrier box and the sign while the arena is shut. No hours, no reason. [Tokiwa v5 §11]
 text ViridianCity_Gym_Text_Closed {
     format("Closed.")
+}
+
+// TOK-223 + teaching channel 1 (slice-plan 4.1, Q86-91 default; Q102 asks Omar to confirm the channels).
+// R/G leaves the leader's name blank on this sign. The second box is the rule, in plain physics, no numbers.
+text TokiwaPMC_Text_ArenaSign {
+    format("TOKIWA CITY ARENA\nLeader: ")
+}
+
+text TokiwaPMC_Text_ArenaSignRule {
+    format("Air vents feed the arena. Birds ride the updraft; whoever moves first strikes truer.") // PLACEHOLDER Q86-91
+}
+
+// TOK-003 / TOK-005 / TOK-006 / TOK-101, Fujimoto Aoi. [Tokiwa v5 §6] + [new gate, OQ 5 / Q98]
+text TokiwaPMC_Text_AoiNoSeal {
+    format("Welcome to the Tokiwa Pokémon Championship.\pRegistration for a minor needs a guardian's seal on the form.")
+}
+
+text TokiwaPMC_Text_AoiGiveForm {
+    format("Here is the form.\pBring it back stamped and I'll open your record.")
+}
+
+text TokiwaPMC_Text_AoiNeedsSeal {
+    format("It needs the seal first.")
+}
+
+text TokiwaPMC_Text_AoiBagFull {
+    format("Your bag is full. I can't hand you the kit.\pMake room and come back.")
+}
+
+text TokiwaPMC_Text_AoiRegister1 {
+    format("The seal is in order. I'll open your record.")
+}
+
+text TokiwaPMC_Text_AoiRegister2 {
+    format("Your Trainer Card.\pAnd the Silph Welcome Kit: three Poké Balls and a Potion.\pEnrolment material. It isn't a sale.") // PLACEHOLDER: kit contents are the lab's lever (Q101)
+}
+
+text TokiwaPMC_Text_AoiRegister3 {
+    format("Inns on the circuit give registered trainers the Ume room. Use it.")
+}
+
+text TokiwaPMC_Text_AoiWhereYujirou {
+    format("You've seen the arena door.\pHe lives by the canal.")
+}
+
+text TokiwaPMC_Text_AoiCircuit {
+    format("The circuit keeps a record of every official match.\pYour ranking is built from it.\pThe ranking that counts is kept in Yamabuki.")
+}
+
+text TokiwaPMC_Text_AoiGossip {
+    format("Not much happens in Tokiwa. People stay at the inns, people pass.\pYujirou holds the arena. He opens it when he likes.") // [new] T1
+}
+
+text TokiwaPMC_Text_AoiSite {
+    format("The PMC stands where something else stood before, I'm told.\pI don't think it matters.") // [new] T3, erasure pair E
+}
+
+// TOK-122, the lobby pair. [R/G Center, adapted to inns]
+text TokiwaPMC_Text_LobbyPC {
+    format("You can use that PC in the corner.\pThe receptionist told me. So kind!")
+}
+
+text TokiwaPMC_Text_LobbyInn {
+    format("There's an inn in every town ahead.\pThe Ume room doesn't cost anything.")
+}
+
+// TOK-229, the PC terminal.
+text TokiwaPMC_Text_PCWhich {
+    format("A terminal on the wall. Which service?")
+}
+
+text TokiwaPMC_Text_PCStorage { "STORAGE" }
+text TokiwaPMC_Text_PCOkido { "OKIDO'S PC" }
+text TokiwaPMC_Text_PCLogOff { "LOG OFF" }
+
+// TOK-205, the brochure (K5's only place in scope; no name, no year, OQ 12).
+text TokiwaPMC_Text_Brochure {
+    format("TOKIWA POKÉMON CHAMPIONSHIP\nCircuit rules and rankings.\pEvery official match is recorded.\pThe Poké Ball: a Silph Co. invention, in every home.")
+}
+
+// TOK-230, the sponsorship rack (after the Card). Silph surface, never commented.
+text TokiwaPMC_Text_Sponsorship {
+    format("Sponsorship programme: ranked trainers only.\pOne slot is empty.")
+}
+
+// TOK-202, TOK-204, TOK-226: the arena's walls. [Tokiwa v5 §6] + [new, GDD Talk]
+text TokiwaPMC_Text_SideWindow {
+    format("Beyond the glass, very tall trees.\pThey must have been there before the building.")
+}
+
+text TokiwaPMC_Text_CarvedSeat {
+    format("A name scratched into the seat with a key.\pSomeone was very bored here.")
+}
+
+text TokiwaPMC_Text_TalkTip {
+    format("In a match, press R to Talk.\pSome trainers give themselves away.")
+}
+
+// TOK-503 / TOK-504, circuit trainers (teaching channel 3: practice with the arena live; one-line hint each).
+text TokiwaPMC_Text_Circuit1Intro {
+    format("The vents are running. A good day for birds.") // [new] PLACEHOLDER Q86-91
+}
+
+text TokiwaPMC_Text_Circuit1Defeat {
+    format("Grounded.")
+}
+
+text TokiwaPMC_Text_Circuit1After {
+    format("Birds fly truer when the vents run. Choke the vents and we're only birds.") // channel 3 hint, PLACEHOLDER Q86-91
+}
+
+text TokiwaPMC_Text_Circuit2Intro {
+    format("Hey. Want a practice match before the leader?") // [new]
+}
+
+text TokiwaPMC_Text_Circuit2Defeat {
+    format("You read it.")
+}
+
+text TokiwaPMC_Text_Circuit2After {
+    format("Block the vents and my birds come down to earth.") // channel 3 hint, PLACEHOLDER Q86-91
+}
+
+// TOK-501 / TOK-124 / TOK-304, Yujirou, leader. Omar's character: ignores you, no recognition. [Tokiwa v5 §11]
+text TokiwaPMC_Text_YujirouIntro {
+    format("You walked the easy road from Masara.\pLet's see what it left you.") // jab from Tokiwa v5 §11, wording [new]
+}
+
+text TokiwaPMC_Text_YujirouAgain {
+    format("Again. Fine.") // TOK-124
+}
+
+text TokiwaPMC_Text_YujirouDefeat {
+    format("...The Farfetch'd was tired.")
+}
+
+text TokiwaPMC_Text_YujirouAdmits {
+    format("I should have switched it out sooner. That's mine, not yours.\pTake the badge anyway.")
+}
+
+text TokiwaPMC_Text_ReceivedBadge {
+    format("{PLAYER} received the WING BADGE!")
+}
+
+text TokiwaPMC_Text_YujirouTM {
+    format("That's a TM. Whirlwind. A bird's trick.\pUse it or don't.") // PLACEHOLDER OQ 7: the Gen 1 TM
+}
+
+text TokiwaPMC_Text_YujirouTMLater {
+    format("Your bag is full. Make room and ask me again.")
+}
+
+text TokiwaPMC_Text_YujirouAfter {
+    format("...Leave me. I have a page to rewrite.")
 }

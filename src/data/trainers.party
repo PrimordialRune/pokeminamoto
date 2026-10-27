@@ -596,6 +596,13 @@ Level: 2
 
 /* BEGIN tokiwa-spine */
 
+/*
+ * Yujirou, Omar's canon party (tokiwa_city_v5 section 11, arena-ecology answers 56-62, 79-81):
+ * Spearow 7 [Peck, Growl, Leer], Pidgey 8 [Tackle, Sand Attack], Farfetch'd 9 [Cut, Sand Attack, Leer],
+ * no held item. LEEK SLAP is Farfetch'd's unlocked Signature (ShouldTrainerUseSpecial), so it is not
+ * listed. Never change the species, levels, moves or items; tune the arena knobs, the AI flags or the
+ * IVs (PLACEHOLDER: IVs are a lab lever, owner thread "Design arena ecology for gym battles").
+ */
 === TRAINER_YUJIROU ===
 Name: YUJIROU
 Class: Leader
@@ -605,9 +612,31 @@ Music: Male
 Double Battle: No
 AI: Check Bad Move / Try To Faint / Check Viability
 
-Rattata
-Level: 2
+Spearow
+Level: 7
+IVs: 12 HP / 12 Atk / 12 Def / 12 SpA / 12 SpD / 12 Spe
+- Peck
+- Growl
+- Leer
 
+Pidgey
+Level: 8
+IVs: 12 HP / 12 Atk / 12 Def / 12 SpA / 12 SpD / 12 Spe
+- Tackle
+- Sand Attack
+
+Farfetch'd
+Level: 9
+IVs: 12 HP / 12 Atk / 12 Def / 12 SpA / 12 SpD / 12 Spe
+- Cut
+- Sand Attack
+- Leer
+
+/*
+ * PMC circuit trainers (TOK-503, TOK-504). PLACEHOLDER parties from the lab scenario
+ * (masara_nibi.yaml): circuit 1 Spearow 7 + Pidgey 7, circuit 2 Pidgey 9. Owner thread
+ * "Design arena ecology for gym battles"; the lab gate may move them (levels, then moves).
+ */
 === TRAINER_CIRCUIT_TOKIWA_1 ===
 Name: CIRCUIT
 Class: Bird Keeper
@@ -615,9 +644,15 @@ Pic: Bird Keeper
 Gender: Male
 Music: Male
 Double Battle: No
+AI: Check Bad Move
 
-Rattata
-Level: 2
+Spearow
+Level: 7
+IVs: 8 HP / 8 Atk / 8 Def / 8 SpA / 8 SpD / 8 Spe
+
+Pidgey
+Level: 7
+IVs: 8 HP / 8 Atk / 8 Def / 8 SpA / 8 SpD / 8 Spe
 
 === TRAINER_CIRCUIT_TOKIWA_2 ===
 Name: CIRCUIT
@@ -626,9 +661,11 @@ Pic: Youngster
 Gender: Male
 Music: Male
 Double Battle: No
+AI: Check Bad Move
 
-Rattata
-Level: 2
+Pidgey
+Level: 9
+IVs: 8 HP / 8 Atk / 8 Def / 8 SpA / 8 SpD / 8 Spe
 
 === TRAINER_SLICE_TOKIWA_SPINE_SPARE_1 ===
 Name: SPARE

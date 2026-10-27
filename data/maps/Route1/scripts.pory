@@ -1,2 +1,149 @@
-// Placeholder imported from FireRed (tools/frlg_import). No events yet.
-mapscripts Route1_MapScripts {}
+// Route 1 (tokiwa-spine). Rows R01-001, 101, 102, 201, 202, 301/302, 401, W1 (the wild table is
+// src/data/wild_encounters.json). Contracts: C1 (the tagged Rattata), C5 (Nanami's herb).
+// Never set VAR_TEMP_F here: the Masara seam coord events (data/slice_doors.inc) fire on it.
+
+mapscripts Route1_MapScripts {
+    MAP_SCRIPT_ON_TRANSITION {
+        // C1: the fixed Rattata shows while the tag is asked for and not yet resolved here.
+        setflag(FLAG_HIDE_R01_RATTATA)
+        if (var(VAR_Q_TAG) == 1) {
+            if (!flag(FLAG_Q_TAG_FLED) && !flag(FLAG_Q_TAG_KO) && !flag(FLAG_Q_TAG_CAUGHT)) {
+                clearflag(FLAG_HIDE_R01_RATTATA)
+            }
+        }
+        // R01-401: Kimura stands at the midpoint at 21 (facing north) and 23 (facing south). He is
+        // at the Tokiwa CVS at 22 (TOK-405) and home from 24.
+        showduringhours(FLAG_HIDE_R01_KIMURA_21, 21, 22)
+        showduringhours(FLAG_HIDE_R01_KIMURA_23, 23, 24)
+    }
+}
+
+script Route1_EventScript_RouteSign {
+    msgbox(Route1_Text_RouteSign, MSGBOX_SIGN)
+    end
+}
+
+// R01-101. The R/G free sample: one Potion, once. No shop, no repeating Potion (Q101).
+script Route1_EventScript_Vendor {
+    lock
+    faceplayer
+    if (var(VAR_Q_VENDOR) == 0) {
+        msgbox(Route1_Text_VendorSample)
+        giveitem(ITEM_POTION)
+        if (var(VAR_RESULT) == FALSE) {
+            msgbox(Route1_Text_VendorBagFull)
+            release
+            end
+        }
+        setvar(VAR_Q_VENDOR, 1)
+    }
+    msgbox(Route1_Text_VendorFather)
+    release
+    end
+}
+
+script Route1_EventScript_LedgeBoy {
+    msgbox(Route1_Text_LedgeBoy, MSGBOX_NPC)
+    end
+}
+
+// R01-201 (C5): a hidden-item style examine in the ditch, live from VAR_Q_HERB = 1 until picked.
+script Route1_EventScript_Herb {
+    if (var(VAR_Q_HERB) == 1) {
+        lockall
+        setflag(FLAG_HIDDEN_ITEM_R01_HERB)
+        setvar(VAR_Q_HERB, 2)
+        msgbox(Route1_Text_HerbPicked)
+        releaseall
+    }
+    end
+}
+
+// R01-202 (MAS-302): treasure spot 3, opened with the TREASURE MAP once the Index is in the bag.
+script Route1_EventScript_TreasureSpot {
+    if (flag(FLAG_SYS_POKEDEX_GET) && !flag(FLAG_HIDDEN_ITEM_R01_TREASURE)) {
+        checkitem(ITEM_TREASURE_MAP)
+        if (var(VAR_RESULT) == TRUE) {
+            lockall
+            msgbox(Route1_Text_TreasureFound)
+            giveitem(ITEM_POTION)
+            if (var(VAR_RESULT) == TRUE) {
+                setflag(FLAG_HIDDEN_ITEM_R01_TREASURE)
+                msgbox(Route1_Text_TreasureIssue)
+            }
+            releaseall
+        }
+    }
+    end
+}
+
+// R01-301 (C1): talk to the fixed Rattata. Caught: the tag comes out of the Ball. Knocked out: the
+// tag lies in the grass (Route1_EventScript_TagInGrass). Ran: FLAG_Q_TAG_FLED (north's R22-302 takes over).
+script Route1_EventScript_TagRattata {
+    lock
+    faceplayer
+    msgbox(Route1_Text_TagRattataWatches)
+    setwildbattle(SPECIES_RATTATA, 4)
+    dowildbattle
+    specialvar(VAR_RESULT, GetBattleOutcome)
+    switch (var(VAR_RESULT)) {
+        case B_OUTCOME_CAUGHT:
+            goto(Route1_EventScript_TagCaught)
+        case B_OUTCOME_WON:
+            goto(Route1_EventScript_TagKnockedOut)
+        default:
+            goto(Route1_EventScript_TagFled)
+    }
+}
+
+script Route1_EventScript_TagCaught {
+    setflag(FLAG_Q_TAG_CAUGHT)
+    setflag(FLAG_HIDE_R01_RATTATA)
+    removeobject(LOCALID_R01_TAG_RATTATA)
+    msgbox(Route1_Text_TagCaught)
+    giveitem(ITEM_OLD_EAR_TAG)
+    setvar(VAR_Q_TAG, 2)
+    msgbox(Route1_Text_TagReads)
+    release
+    end
+}
+
+script Route1_EventScript_TagKnockedOut {
+    setflag(FLAG_Q_TAG_KO)
+    setflag(FLAG_HIDE_R01_RATTATA)
+    removeobject(LOCALID_R01_TAG_RATTATA)
+    msgbox(Route1_Text_TagKnockedOut)
+    release
+    end
+}
+
+script Route1_EventScript_TagFled {
+    setflag(FLAG_Q_TAG_FLED)
+    setflag(FLAG_HIDE_R01_RATTATA)
+    removeobject(LOCALID_R01_TAG_RATTATA)
+    msgbox(Route1_Text_TagFled)
+    release
+    end
+}
+
+// The one-time pickup after a knock-out (R01-301). Live only while the tag is still asked for.
+script Route1_EventScript_TagInGrass {
+    if (flag(FLAG_Q_TAG_KO) && !flag(FLAG_HIDDEN_ITEM_R01_TAG) && var(VAR_Q_TAG) == 1) {
+        lockall
+        msgbox(Route1_Text_TagInGrass)
+        giveitem(ITEM_OLD_EAR_TAG)
+        if (var(VAR_RESULT) == TRUE) {
+            setflag(FLAG_HIDDEN_ITEM_R01_TAG)
+            setvar(VAR_Q_TAG, 2)
+            msgbox(Route1_Text_TagReads)
+        }
+        releaseall
+    }
+    end
+}
+
+// R01-401: silent (the same old man as Masara; he is a mystery you solve by seeing him in both towns).
+script Route1_EventScript_Kimura {
+    msgbox(Route1_Text_KimuraSilent, MSGBOX_NPC)
+    end
+}
