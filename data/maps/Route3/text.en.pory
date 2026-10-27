@@ -1,2 +1,7 @@
 // Route3 dialogue (English). Logic: scripts.pory. Translations: text.<lang>.pory
 // with the same block names; see docs/engineering/map-text.md.
+
+// PLACEHOLDER (thread "Define Minamoto narrative direction"): hiker at the Route 3 rockfall wall.
+text Route3_Text_WallHiker {
+    format("The Otsukimi road's shut past here. Rockfall took the whole pass.\pYou'll have to turn back toward NIBI for now.")
+}

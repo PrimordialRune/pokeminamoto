@@ -78,3 +78,16 @@ Slice_EventScript_LockedDoor::
 
 Slice_Text_NobodyAnswers:
 	.string "Nobody answers.$"
+
+@ Tokiwa PMC (ViridianCity_Gym): the barrier box and its sign both read "Closed." until the
+@ arena opens. Text from slice-plan TOK-004. PLACEHOLDER script: no gating yet; tokiwa-town replaces
+@ it with its own (barrier lifts on FLAG_Q_YUJI_SLEPT, TOK-009; thread "Design arena ecology for gym battles").
+Slice_EventScript_TokiwaPMCClosed::
+	msgbox ViridianCity_Gym_Text_Closed, MSGBOX_SIGN
+	end
+
+@ Route 3 wall hiker in front of the rockfall at x=31 (omar-questions Q112).
+@ PLACEHOLDER line (refine in thread "Define Minamoto narrative direction"; Route 3 owner later).
+Slice_EventScript_Route3WallHiker::
+	msgbox Route3_Text_WallHiker, MSGBOX_NPC
+	end

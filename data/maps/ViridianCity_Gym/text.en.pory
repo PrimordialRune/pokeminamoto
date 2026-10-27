@@ -1,2 +1,8 @@
 // ViridianCity_Gym dialogue (English). Logic: scripts.pory. Translations: text.<lang>.pory
 // with the same block names; see docs/engineering/map-text.md.
+
+// Barrier box and sign while the PMC is shut (slice-plan TOK-004; tokiwa-town owns it from wave 2).
+// PLACEHOLDER wording until tokiwa-town's TOK-004 pass confirms it.
+text ViridianCity_Gym_Text_Closed {
+    format("Closed.")
+}
