@@ -56,7 +56,7 @@ steps:
   - fight: yujirou
     name: Yujirou
     class: gym
-    team: ["SPEAROW:7[PECK/GROWL/LEER]", "PIDGEY:8[TACKLE/GUST/SAND_ATTACK]", "FARFETCHD:9[PECK/SAND_ATTACK/LEER]@LEEK"]
+    team: ["SPEAROW:7[PECK/GROWL/LEER]", "PIDGEY:8[TACKLE/SAND_ATTACK]", "FARFETCHD:9[CUT/SAND_ATTACK/LEER]@LEEK"]
 
   - segment: Route 2 and forest
   - catch_slot: 3

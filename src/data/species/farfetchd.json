@@ -22,7 +22,7 @@
         [1, "PECK"],
         [1, "SAND_ATTACK"],
         [7, "LEER"],
-        [11, "CUT"],
+        [9, "CUT"],
         [15, "FURY_ATTACK"],
         [21, "SWORDS_DANCE"],
         [27, "WING_ATTACK"],

@@ -19,9 +19,10 @@
     "cry": "sound/direct_sound_samples/cries/pidgey.bin",
     "evolutions": [{"method": "LEVEL", "param": 18, "into": "PIDGEOTTO"}],
     "levelUpMoves": [
-        [1, "GUST"],
+        [1, "TACKLE"],
         [5, "SAND_ATTACK"],
-        [9, "QUICK_ATTACK"],
+        [9, "GUST"],
+        [12, "QUICK_ATTACK"],
         [15, "WHIRLWIND"],
         [21, "WING_ATTACK"],
         [29, "AGILITY"],
