@@ -15,9 +15,9 @@
   "connections": null,
   "object_events": [
     {
-      "local_id": "LOCALID_VIRIDIAN_NURSE",
+      "local_id": "LOCALID_TOKIWA_INN_FUMIKO",
       "type": "object",
-      "graphics_id": "OBJ_EVENT_GFX_FRLG_NURSE",
+      "graphics_id": "OBJ_EVENT_GFX_WOMAN_2",
       "x": 7,
       "y": 2,
       "elevation": 3,
