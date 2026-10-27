@@ -457,7 +457,6 @@ script PalletTown_ProfessorOaksLab_EventScript_MAS006_Scene {
     applymovement(LOCALID_OAKS_LAB_PROF_OAK, Common_Movement_FacePlayer)
     waitmovement(0)
     msgbox(PalletTown_ProfessorOaksLab_Text_MAS006_HowIsMyOldMon)
-    msgbox(PalletTown_ProfessorOaksLab_Text_MAS006_SomethingForMe)
     setvar(VAR_0x8004, ITEM_OAKS_PARCEL)
     call(Common_EventScript_PlayerHandedOverTheItem)
     msgbox(PalletTown_ProfessorOaksLab_Text_MAS006_CustomBall)

@@ -126,10 +126,6 @@ text PalletTown_ProfessorOaksLab_Text_MAS006_HowIsMyOldMon {
     format("OKIDO: Oh, {PLAYER}!\pHow is my old POKéMON?\pWell, it seems to like you a lot. You must be talented as a POKéMON trainer!\pWhat? You have something for me?")
 }
 
-text PalletTown_ProfessorOaksLab_Text_MAS006_SomethingForMe {
-    format("{PLAYER} delivered OKIDO's PARCEL.")
-}
-
 text PalletTown_ProfessorOaksLab_Text_MAS006_CustomBall {
     format("Ah! This is the custom POKé BALL I ordered! Thank you!")
 }
