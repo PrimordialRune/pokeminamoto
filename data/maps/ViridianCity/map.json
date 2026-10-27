@@ -31,76 +31,92 @@
   ],
   "object_events": [
     {
+      "local_id": "LOCALID_TOKIWA_FUJIWARA",
       "type": "object",
-      "graphics_id": "OBJ_EVENT_GFX_FRLG_FAT_MAN",
-      "x": 8,
-      "y": 26,
+      "graphics_id": "OBJ_EVENT_GFX_FRLG_OLD_MAN_1",
+      "x": 21,
+      "y": 6,
+      "elevation": 3,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "movement_range_x": 0,
+      "movement_range_y": 0,
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "trainer_sight_or_berry_tree_id": "0",
+      "script": "TokiwaCity_EventScript_Fujiwara",
+      "flag": "0"
+    },
+    {
+      "local_id": "LOCALID_TOKIWA_HAMADA",
+      "type": "object",
+      "graphics_id": "OBJ_EVENT_GFX_FRLG_MAN",
+      "x": 22,
+      "y": 5,
       "elevation": 3,
       "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
       "movement_range_x": 0,
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
-      "script": "0",
-      "flag": "0"
+      "script": "TokiwaCity_EventScript_Hamada",
+      "flag": "FLAG_HIDE_TOKIWA_HAMADA"
+    },
+    {
+      "local_id": "LOCALID_TOKIWA_HIROSHI",
+      "type": "object",
+      "graphics_id": "OBJ_EVENT_GFX_FRLG_GENTLEMAN",
+      "x": 17,
+      "y": 27,
+      "elevation": 3,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "movement_range_x": 0,
+      "movement_range_y": 0,
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "trainer_sight_or_berry_tree_id": "0",
+      "script": "TokiwaCity_EventScript_HiroshiCanal",
+      "flag": "FLAG_HIDE_TOKIWA_HIROSHI"
+    },
+    {
+      "local_id": "LOCALID_TOKIWA_YUKI",
+      "type": "object",
+      "graphics_id": "OBJ_EVENT_GFX_FRLG_LASS",
+      "x": 17,
+      "y": 29,
+      "elevation": 3,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "movement_range_x": 0,
+      "movement_range_y": 0,
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "trainer_sight_or_berry_tree_id": "0",
+      "script": "TokiwaCity_EventScript_YukiCanal",
+      "flag": "FLAG_HIDE_TOKIWA_YUKI"
+    },
+    {
+      "local_id": "LOCALID_TOKIWA_BISCOTTO",
+      "type": "object",
+      "graphics_id": "OBJ_EVENT_GFX_FRLG_NIDORAN_M",
+      "x": 18,
+      "y": 29,
+      "elevation": 3,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "movement_range_x": 0,
+      "movement_range_y": 0,
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "trainer_sight_or_berry_tree_id": "0",
+      "script": "TokiwaCity_EventScript_BiscottoCanal",
+      "flag": "FLAG_HIDE_TOKIWA_YUKI"
     },
     {
       "type": "object",
-      "graphics_id": "OBJ_EVENT_GFX_FRLG_CUT_TREE",
-      "x": 11,
-      "y": 24,
+      "graphics_id": "OBJ_EVENT_GFX_FRLG_BOY",
+      "x": 15,
+      "y": 25,
       "elevation": 3,
-      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
       "movement_range_x": 1,
       "movement_range_y": 1,
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
-      "script": "0",
-      "flag": "0"
-    },
-    {
-      "local_id": "LOCALID_VIRIDIAN_OLD_MAN",
-      "type": "object",
-      "graphics_id": "OBJ_EVENT_GFX_FRLG_OLD_MAN_1",
-      "x": 34,
-      "y": 11,
-      "elevation": 3,
-      "movement_type": "MOVEMENT_TYPE_FACE_UP",
-      "movement_range_x": 0,
-      "movement_range_y": 0,
-      "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "0",
-      "script": "0",
-      "flag": "0"
-    },
-    {
-      "local_id": "LOCALID_TUTORIAL_MAN",
-      "type": "object",
-      "graphics_id": "OBJ_EVENT_GFX_VAR_0",
-      "x": 21,
-      "y": 6,
-      "elevation": 3,
-      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
-      "movement_range_x": 2,
-      "movement_range_y": 3,
-      "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "0",
-      "script": "0",
-      "flag": "0"
-    },
-    {
-      "local_id": "LOCALID_VIRIDIAN_WOMAN",
-      "type": "object",
-      "graphics_id": "OBJ_EVENT_GFX_FRLG_WOMAN_3",
-      "x": 20,
-      "y": 12,
-      "elevation": 3,
-      "movement_type": "MOVEMENT_TYPE_FACE_UP",
-      "movement_range_x": 1,
-      "movement_range_y": 3,
-      "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "0",
-      "script": "0",
+      "script": "TokiwaCity_EventScript_CaterpieBoy",
       "flag": "0"
     },
     {
@@ -114,21 +130,7 @@
       "movement_range_y": 2,
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
-      "script": "0",
-      "flag": "0"
-    },
-    {
-      "type": "object",
-      "graphics_id": "OBJ_EVENT_GFX_FRLG_BOY",
-      "x": 18,
-      "y": 25,
-      "elevation": 3,
-      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
-      "movement_range_x": 1,
-      "movement_range_y": 2,
-      "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "0",
-      "script": "0",
+      "script": "TokiwaCity_EventScript_Youngster",
       "flag": "0"
     },
     {
@@ -148,16 +150,16 @@
     },
     {
       "type": "object",
-      "graphics_id": "OBJ_EVENT_GFX_FRLG_ITEM_BALL",
-      "x": 17,
-      "y": 5,
+      "graphics_id": "OBJ_EVENT_GFX_FRLG_BALDING_MAN",
+      "x": 34,
+      "y": 11,
       "elevation": 3,
-      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
-      "movement_range_x": 1,
-      "movement_range_y": 1,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "movement_range_x": 0,
+      "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
-      "script": "0",
+      "script": "TokiwaCity_EventScript_ArenaWatcher",
       "flag": "0"
     }
   ],
@@ -205,15 +207,61 @@
       "dest_warp_id": "1"
     }
   ],
-  "coord_events": [],
+  "coord_events": [
+    {
+      "type": "trigger",
+      "x": 19,
+      "y": 4,
+      "elevation": 3,
+      "var": "VAR_TEMP_0",
+      "var_value": "0",
+      "script": "TokiwaCity_EventScript_NorthBlock"
+    },
+    {
+      "type": "trigger",
+      "x": 20,
+      "y": 4,
+      "elevation": 3,
+      "var": "VAR_TEMP_0",
+      "var_value": "0",
+      "script": "TokiwaCity_EventScript_NorthBlock"
+    },
+    {
+      "type": "trigger",
+      "x": 21,
+      "y": 4,
+      "elevation": 3,
+      "var": "VAR_TEMP_0",
+      "var_value": "0",
+      "script": "TokiwaCity_EventScript_NorthBlock"
+    },
+    {
+      "type": "trigger",
+      "x": 22,
+      "y": 4,
+      "elevation": 3,
+      "var": "VAR_TEMP_0",
+      "var_value": "0",
+      "script": "TokiwaCity_EventScript_NorthBlock"
+    },
+    {
+      "type": "trigger",
+      "x": 23,
+      "y": 4,
+      "elevation": 3,
+      "var": "VAR_TEMP_0",
+      "var_value": "0",
+      "script": "TokiwaCity_EventScript_NorthBlock"
+    }
+  ],
   "bg_events": [
     {
       "type": "sign",
       "x": 23,
       "y": 1,
-      "elevation": 3,
+      "elevation": 0,
       "player_facing_dir": "BG_EVENT_PLAYER_FACING_ANY",
-      "script": "0"
+      "script": "TokiwaCity_EventScript_TrainerTipsTP"
     },
     {
       "type": "sign",
@@ -221,7 +269,7 @@
       "y": 10,
       "elevation": 0,
       "player_facing_dir": "BG_EVENT_PLAYER_FACING_ANY",
-      "script": "0"
+      "script": "TokiwaCity_EventScript_PMCPlaque"
     },
     {
       "type": "sign",
@@ -229,7 +277,7 @@
       "y": 31,
       "elevation": 0,
       "player_facing_dir": "BG_EVENT_PLAYER_FACING_ANY",
-      "script": "0"
+      "script": "TokiwaCity_EventScript_TownSign"
     },
     {
       "type": "sign",
@@ -237,15 +285,7 @@
       "y": 16,
       "elevation": 0,
       "player_facing_dir": "BG_EVENT_PLAYER_FACING_ANY",
-      "script": "0"
-    },
-    {
-      "type": "sign",
-      "x": 36,
-      "y": 10,
-      "elevation": 0,
-      "player_facing_dir": "BG_EVENT_PLAYER_FACING_ANY",
-      "script": "0"
+      "script": "TokiwaCity_EventScript_TrainerTipsCatch"
     },
     {
       "type": "sign",
@@ -253,7 +293,39 @@
       "y": 26,
       "elevation": 0,
       "player_facing_dir": "BG_EVENT_PLAYER_FACING_NORTH",
-      "script": "Slice_EventScript_LockedDoor"
+      "script": "TokiwaCity_EventScript_HamadaDoor"
+    },
+    {
+      "type": "sign",
+      "x": 13,
+      "y": 16,
+      "elevation": 0,
+      "player_facing_dir": "BG_EVENT_PLAYER_FACING_NORTH",
+      "script": "TokiwaCity_EventScript_ShrineFence"
+    },
+    {
+      "type": "sign",
+      "x": 9,
+      "y": 9,
+      "elevation": 0,
+      "player_facing_dir": "BG_EVENT_PLAYER_FACING_EAST",
+      "script": "TokiwaCity_EventScript_MemorialStone"
+    },
+    {
+      "type": "sign",
+      "x": 34,
+      "y": 19,
+      "elevation": 0,
+      "player_facing_dir": "BG_EVENT_PLAYER_FACING_NORTH",
+      "script": "TokiwaCity_EventScript_CVSBoard"
+    },
+    {
+      "type": "sign",
+      "x": 25,
+      "y": 26,
+      "elevation": 0,
+      "player_facing_dir": "BG_EVENT_PLAYER_FACING_NORTH",
+      "script": "TokiwaCity_EventScript_InnSign"
     }
   ]
 }

@@ -1,2 +1,260 @@
-// Placeholder imported from FireRed (tools/frlg_import). No events yet.
-mapscripts ViridianCity_School_MapScripts {}
+// Kurosawa house (ViridianCity_School), workstream tokiwa-town. Rows: script list TOK-109, 110, 218, 219, 303
+// (three sessions), 407. Dialogue lives in text.en.pory.
+//
+// VAR_Q_KUROSAWA (TOK-303): 0 no lesson yet, 1 session 1 (types) done, 2 session 2 (catching) done, 3 session 3 (growth) done.
+//   Session 1 plays at once on the first talk. Session 2 needs 3 or more species seen (ScriptGetPokedexInfo).
+//   Session 3 needs FLAG_BADGE01_GET (Tokiwa v5 s10: the Wing Badge). Each first completion gives Charisma +1
+//   (she vouches for you). Finished sessions can be asked for again from the menu, as the R/G old man lets you.
+//   Session 2 ships as text plus the R/G notebook page: no restaged tutorial battle (slice-plan 3.2).
+// The pupil (TOK-110, TOK-407) sits at the low table hours 09-12 and is the only reason the notebook (TOK-219)
+// answers "Don't look at my notes!" in that slot.
+
+const KUROSAWA_SEEN_NEEDED = 3 // TOK-303: species seen before session 2 (script list)
+
+const KUR_TYPES = 0
+const KUR_CATCH = 1
+const KUR_GROWTH = 2
+const KUR_CHAT = 3
+const KUR_LEAVE = 4
+
+mapscripts ViridianCity_School_MapScripts {
+    MAP_SCRIPT_ON_TRANSITION {
+        // TOK-407: the pupil is here 09-12 (getgamehour: exact under REGRESS SET_HOUR).
+        getgamehour
+        if (var(VAR_RESULT) >= 9 && var(VAR_RESULT) < 12) {
+            clearflag(FLAG_HIDE_KUROSAWA_PUPIL)
+        } else {
+            setflag(FLAG_HIDE_KUROSAWA_PUPIL)
+        }
+    }
+}
+
+// ---------------------------------------------------------------------------------------------
+// Kurosawa Megumi.
+// ---------------------------------------------------------------------------------------------
+script TokiwaKurosawa_EventScript_Kurosawa {
+    lock
+    faceplayer
+    if (var(VAR_Q_KUROSAWA) == 0) {
+        msgbox(TokiwaKurosawa_Text_Welcome)
+        call(TokiwaKurosawa_EventScript_SessionTypes)
+        setvar(VAR_Q_KUROSAWA, 1)
+        addcharisma(1)
+        msgbox(TokiwaKurosawa_Text_Vouch)
+        msgbox(TokiwaKurosawa_Text_Session1Next)
+        release
+        end
+    }
+    // A return after accepting Hida's offer (C10): the researcher line, once.
+    if (var(VAR_Q_KUROSAWA) >= 2 && flag(FLAG_Q_HIDA_ACCEPTED) && !flag(FLAG_P_KUROSAWA_HIDA)) {
+        setflag(FLAG_P_KUROSAWA_HIDA)
+        msgbox(TokiwaKurosawa_Text_Researchers)
+    }
+    msgbox(TokiwaKurosawa_Text_WhatToday)
+    dynmultichoice(20, 3, FALSE, 5, 0, DYN_MULTICHOICE_CB_NONE, TokiwaKurosawa_Text_ChoiceTypes, TokiwaKurosawa_Text_ChoiceCatch, TokiwaKurosawa_Text_ChoiceGrowth, TokiwaKurosawa_Text_ChoiceChat, TokiwaKurosawa_Text_ChoiceLeave)
+    switch (var(VAR_RESULT)) {
+        case KUR_TYPES:
+            call(TokiwaKurosawa_EventScript_SessionTypes)
+        case KUR_CATCH:
+            call(TokiwaKurosawa_EventScript_AskCatch)
+        case KUR_GROWTH:
+            call(TokiwaKurosawa_EventScript_AskGrowth)
+        case KUR_CHAT:
+            call(TokiwaKurosawa_EventScript_Chat)
+        default:
+            msgbox(TokiwaKurosawa_Text_Leave)
+    }
+    release
+    end
+}
+
+// ---- Session 1: types and multipliers -----------------------------------------------------
+script TokiwaKurosawa_EventScript_SessionTypes {
+    msgbox(TokiwaKurosawa_Text_S1Intro)
+    msgbox(TokiwaKurosawa_Text_S1Same)
+    playse(SE_SUPER_EFFECTIVE)
+    msgbox(TokiwaKurosawa_Text_S1Fire)
+    playse(SE_NOT_EFFECTIVE)
+    msgbox(TokiwaKurosawa_Text_S1Grass)
+    playmoncry(SPECIES_EEVEE, CRY_MODE_NORMAL)
+    msgbox(TokiwaKurosawa_Text_S1Eevee)
+    waitmoncry
+    msgbox(TokiwaKurosawa_Text_S1Arrows)
+    msgbox(TokiwaKurosawa_Text_S1QuizOffer, MSGBOX_YESNO)
+    if (var(VAR_RESULT) == YES) {
+        msgbox(TokiwaKurosawa_Text_S1Question)
+        dynmultichoice(20, 3, FALSE, 3, 0, DYN_MULTICHOICE_CB_NONE, TokiwaKurosawa_Text_QuizDouble, TokiwaKurosawa_Text_QuizHalf, TokiwaKurosawa_Text_QuizSame)
+        if (var(VAR_RESULT) == 0) {
+            msgbox(TokiwaKurosawa_Text_QuizRight)
+        } else {
+            msgbox(TokiwaKurosawa_Text_QuizWrong)
+        }
+    } else {
+        msgbox(TokiwaKurosawa_Text_QuizSkip)
+    }
+    return
+}
+
+// ---- Session 2: catching (text plus the R/G notebook page) ---------------------------------
+script TokiwaKurosawa_EventScript_AskCatch {
+    if (var(VAR_Q_KUROSAWA) < 1) {
+        // Cannot happen (session 1 plays on the first talk); kept so the menu can never skip a lesson.
+        msgbox(TokiwaKurosawa_Text_TypesFirst)
+        return
+    }
+    setvar(VAR_0x8004, 0)
+    specialvar(VAR_RESULT, ScriptGetPokedexInfo)
+    if (var(VAR_0x8005) < KUROSAWA_SEEN_NEEDED) {
+        msgbox(TokiwaKurosawa_Text_S2NotYet)
+        return
+    }
+    msgbox(TokiwaKurosawa_Text_S2Intro)
+    msgbox(TokiwaKurosawa_Text_S2Healthy)
+    msgbox(TokiwaKurosawa_Text_S2Weaken)
+    msgbox(TokiwaKurosawa_Text_S2Status)
+    msgbox(TokiwaKurosawa_Text_S2Three)
+    msgbox(TokiwaKurosawa_Text_S2Notebook)
+    msgbox(TokiwaKurosawa_Text_Page2)
+    if (flag(FLAG_Q_HIDA_ACCEPTED)) {
+        setflag(FLAG_P_KUROSAWA_HIDA)
+        msgbox(TokiwaKurosawa_Text_Researchers)
+    }
+    if (var(VAR_Q_KUROSAWA) == 1) {
+        setvar(VAR_Q_KUROSAWA, 2)
+        addcharisma(1)
+        msgbox(TokiwaKurosawa_Text_Vouch)
+        msgbox(TokiwaKurosawa_Text_Session2Next)
+    }
+    return
+}
+
+// ---- Session 3: stats and growth (after B1) ----------------------------------------------------
+script TokiwaKurosawa_EventScript_AskGrowth {
+    if (!flag(FLAG_BADGE01_GET)) {
+        msgbox(TokiwaKurosawa_Text_S3Badge)
+        return
+    }
+    if (var(VAR_Q_KUROSAWA) < 2) {
+        msgbox(TokiwaKurosawa_Text_S3CatchFirst)
+        return
+    }
+    msgbox(TokiwaKurosawa_Text_S3Intro)
+    bufferpartymonnick(STR_VAR_1, 0)
+    msgbox(TokiwaKurosawa_Text_S3Beside)
+    msgbox(TokiwaKurosawa_Text_S3Differ)
+    msgbox(TokiwaKurosawa_Text_S3Born)
+    msgbox(TokiwaKurosawa_Text_S3Levels)
+    if (var(VAR_Q_KUROSAWA) == 2) {
+        setvar(VAR_Q_KUROSAWA, 3)
+        addcharisma(1)
+        msgbox(TokiwaKurosawa_Text_Vouch)
+    }
+    return
+}
+
+// ---- Conversation outside the sessions (TOK-109) -------------------------------------------
+script TokiwaKurosawa_EventScript_Chat {
+    if (!flag(FLAG_P_KUROSAWA_WHY)) {
+        setflag(FLAG_P_KUROSAWA_WHY)
+        msgbox(TokiwaKurosawa_Text_ChatWhy)
+        msgbox(TokiwaKurosawa_Text_ChatWhy2)
+    } else {
+        clearflag(FLAG_P_KUROSAWA_WHY)
+        msgbox(TokiwaKurosawa_Text_ChatWho)
+        msgbox(TokiwaKurosawa_Text_ChatWho2)
+    }
+    checkcharisma(CHARISMA_TIERS_TOKIWA)
+    if (var(VAR_RESULT) >= CHARISMA_TIER_HIGH) {
+        setflag(FLAG_P_KUROSAWA_T3)
+        msgbox(TokiwaKurosawa_Text_ChatQuit)
+    }
+    return
+}
+
+// ---------------------------------------------------------------------------------------------
+// The pupil (TOK-110) and the notebook (TOK-219).
+// ---------------------------------------------------------------------------------------------
+script TokiwaKurosawa_EventScript_Pupil {
+    msgbox(TokiwaKurosawa_Text_Pupil, MSGBOX_NPC)
+    end
+}
+
+script TokiwaKurosawa_EventScript_Notebook {
+    lockall
+    if (!flag(FLAG_HIDE_KUROSAWA_PUPIL)) {
+        // TOK-110: the pupil is at the table.
+        msgbox(TokiwaKurosawa_Text_DontLook)
+        releaseall
+        end
+    }
+    msgbox(TokiwaKurosawa_Text_NotebookIntro)
+    msgbox(TokiwaKurosawa_Text_Page1)
+    msgbox(TokiwaKurosawa_Text_Turn, MSGBOX_YESNO)
+    if (var(VAR_RESULT) == YES) {
+        msgbox(TokiwaKurosawa_Text_Page2)
+        msgbox(TokiwaKurosawa_Text_Turn, MSGBOX_YESNO)
+        if (var(VAR_RESULT) == YES) {
+            msgbox(TokiwaKurosawa_Text_Page3)
+            msgbox(TokiwaKurosawa_Text_Turn, MSGBOX_YESNO)
+            if (var(VAR_RESULT) == YES) {
+                msgbox(TokiwaKurosawa_Text_Page4)
+            }
+        }
+    }
+    releaseall
+    end
+}
+
+// ---------------------------------------------------------------------------------------------
+// TOK-218: blackboard, the status list in its corner, books, photo; Eevee.
+// ---------------------------------------------------------------------------------------------
+script TokiwaKurosawa_EventScript_BlackboardTypes {
+    msgbox(TokiwaKurosawa_Text_BoardTypes, MSGBOX_SIGN)
+    end
+}
+
+script TokiwaKurosawa_EventScript_BlackboardStatus {
+    lockall
+    msgbox(TokiwaKurosawa_Text_BoardStatus)
+    call(TokiwaKurosawa_EventScript_StatusMenu)
+    releaseall
+    end
+}
+
+script TokiwaKurosawa_EventScript_StatusMenu {
+    dynmultichoice(20, 2, FALSE, 5, 0, DYN_MULTICHOICE_CB_NONE, TokiwaKurosawa_Text_StSleep, TokiwaKurosawa_Text_StPoison, TokiwaKurosawa_Text_StParalysis, TokiwaKurosawa_Text_StBurn, TokiwaKurosawa_Text_StFreeze)
+    switch (var(VAR_RESULT)) {
+        case 0:
+            msgbox(TokiwaKurosawa_Text_Sleep)
+        case 1:
+            msgbox(TokiwaKurosawa_Text_Poison)
+        case 2:
+            msgbox(TokiwaKurosawa_Text_Paralysis)
+        case 3:
+            msgbox(TokiwaKurosawa_Text_Burn)
+        case 4:
+            msgbox(TokiwaKurosawa_Text_Freeze)
+    }
+    return
+}
+
+script TokiwaKurosawa_EventScript_Books {
+    msgbox(TokiwaKurosawa_Text_Books, MSGBOX_SIGN)
+    end
+}
+
+script TokiwaKurosawa_EventScript_Photo {
+    msgbox(TokiwaKurosawa_Text_Photo, MSGBOX_SIGN)
+    end
+}
+
+// Eevee is the demonstration subject, not a mascot (Tokiwa v5 s10). Sprite is a PLACEHOLDER (art: Eevee overworld).
+script TokiwaKurosawa_EventScript_Eevee {
+    lock
+    faceplayer
+    playmoncry(SPECIES_EEVEE, CRY_MODE_NORMAL)
+    msgbox(TokiwaKurosawa_Text_Eevee)
+    waitmoncry
+    release
+    end
+}

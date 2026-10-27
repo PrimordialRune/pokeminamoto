@@ -7,29 +7,29 @@
 #define GUARD_CONSTANTS_SLICE_FLAGS_TOKIWA_TOWN_H
 
 // Story flags 0x03C-0x04F (20)
-#define FLAG_SLICE_TOKIWA_TOWN_00                0x03C
-#define FLAG_SLICE_TOKIWA_TOWN_01                0x03D
-#define FLAG_SLICE_TOKIWA_TOWN_02                0x03E
-#define FLAG_SLICE_TOKIWA_TOWN_03                0x03F
-#define FLAG_SLICE_TOKIWA_TOWN_04                0x040
-#define FLAG_SLICE_TOKIWA_TOWN_05                0x041
-#define FLAG_SLICE_TOKIWA_TOWN_06                0x042
-#define FLAG_SLICE_TOKIWA_TOWN_07                0x043
-#define FLAG_SLICE_TOKIWA_TOWN_08                0x044
-#define FLAG_SLICE_TOKIWA_TOWN_09                0x045
-#define FLAG_SLICE_TOKIWA_TOWN_10                0x046
-#define FLAG_SLICE_TOKIWA_TOWN_11                0x047
-#define FLAG_SLICE_TOKIWA_TOWN_12                0x048
-#define FLAG_SLICE_TOKIWA_TOWN_13                0x049
-#define FLAG_SLICE_TOKIWA_TOWN_14                0x04A
-#define FLAG_SLICE_TOKIWA_TOWN_15                0x04B
-#define FLAG_SLICE_TOKIWA_TOWN_16                0x04C
-#define FLAG_SLICE_TOKIWA_TOWN_17                0x04D
-#define FLAG_SLICE_TOKIWA_TOWN_18                0x04E
-#define FLAG_SLICE_TOKIWA_TOWN_19                0x04F
+#define FLAG_HIDE_TOKIWA_HAMADA                  0x03C // hide flag: Hamada on the street (hidden before the north-block scene and at NITE)
+#define FLAG_HIDE_TOKIWA_HIROSHI                 0x03D // hide flag: Hiroshi on the canal bench (shown hours 14-18, C8)
+#define FLAG_HIDE_TOKIWA_YUKI                    0x03E // hide flag: Yuki and Biscotto at the canal (after Q_CARD, not at NITE unless VAR_Q_PIDGEY is 2)
+#define FLAG_HIDE_INOUE_YUKI                     0x03F // hide flag: Yuki and Biscotto in the Inoue house (when they are not at the canal)
+#define FLAG_HIDE_INOUE_GRANDMA                  0x040 // H_TKW_GRANDMA: Grandma Inoue, shown from the second entry after Q_CARD
+#define FLAG_HIDE_KUROSAWA_PUPIL                 0x041 // hide flag: the pupil at the low table (hours 09-12, TOK-407)
+#define FLAG_Q_TKW_NORTH_SEEN                    0x042 // TOK-010: the north-block scene has played
+#define FLAG_Q_INOUE_VISIT1                      0x043 // TOK-113: first entry to the Inoue house after Q_CARD happened
+#define FLAG_Q_FUJIWARA_NIGHT                    0x044 // TOK-307/408: heard Fujiwara at night (pays off at Otsukimi)
+#define FLAG_P_HIROSHI_CANAL_PIDGEY              0x045 // TOK-104: the canal Hiroshi said "The bird. Good."
+#define FLAG_P_HIROSHI_CANAL_SEASONS             0x046 // TOK-104: the canal Hiroshi said the Genbei water line (next: the seasons line)
+#define FLAG_P_YUKI_NAMES                        0x047 // TOK-112: Yuki said "He is mine" (next: the names line)
+#define FLAG_P_MASAKO_GUARD                      0x048 // TOK-111: toggle between the town line and the Biscotto line
+#define FLAG_P_INOUE_LETTER_ASKED                0x049 // TOK-305: Grandma asked once about the undelivered letter
+#define FLAG_P_INOUE_LETTER                      0x04A // TOK-125: Grandma asked whether the letter was read
+#define FLAG_P_KUROSAWA_WHY                      0x04B // TOK-109: toggle between the tutor line and the pupils line
+#define FLAG_P_GRANDMA_WAR                       0x04C // TOK-113: toggle between the hatago line and the war line
+#define FLAG_P_HAMADA_YUJI                       0x04D // TOK-115: toggle between the case line and the Yujirou line
+#define FLAG_P_KUROSAWA_HIDA                     0x04E // TOK-303: Kurosawa said the researcher line (once, on a return after FLAG_Q_HIDA_ACCEPTED)
+#define FLAG_P_KUROSAWA_T3                       0x04F // TOK-109: Kurosawa said the quitting-competition line (once)
 
 // Story flags 0x2B0-0x2BB (12)
-#define FLAG_SLICE_TOKIWA_TOWN_20                0x2B0
+#define FLAG_P_MASAKO_LIGHT                      0x2B0 // TOK-111: Masako said the Yujirou's-light line (second step of her rotation)
 #define FLAG_SLICE_TOKIWA_TOWN_21                0x2B1
 #define FLAG_SLICE_TOKIWA_TOWN_22                0x2B2
 #define FLAG_SLICE_TOKIWA_TOWN_23                0x2B3

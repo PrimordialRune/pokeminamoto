@@ -1,2 +1,158 @@
 // ViridianCity_House dialogue (English). Logic: scripts.pory. Translations: text.<lang>.pory
 // with the same block names; see docs/engineering/map-text.md.
+// Inoue house, workstream tokiwa-town. Canon: Tokiwa v5 s13 (Inoue Masako 38, Yuki 14, Grandma Inoue 78, once the
+// owner of the Noguchi hatago). Grandma never names the building and never mentions the PMC.
+// Tags: [Tokiwa v5] city doc, [new] join. Studio decisions are PLACEHOLDER with the thread that should refine them.
+
+// ---- Masako (TOK-111) -------------------------------------------------------------------------
+
+// [Tokiwa v5 s13] the town and how it changes: who stayed, who left
+text TokiwaInoue_Text_MasakoTown {
+    format("MASAKO: Tokiwa changes. Some people stayed, some left. You notice the empty rooms more than the people.")
+}
+
+text TokiwaInoue_Text_MasakoTown2 {
+    format("My husband works in the capital. We see him on Sundays, when the trains let us.")
+}
+
+// [Tokiwa v5 s13] Yujirou and the light; second source for TOK-006
+text TokiwaInoue_Text_MasakoLight {
+    format("MASAKO: Yujirou's light is on at night, over the canal.\pWhoever is up that late is working, or not sleeping.")
+}
+
+// [Tokiwa v5 s13] after B1: indirect, from the neighbourhood kids
+text TokiwaInoue_Text_MasakoB1 {
+    format("MASAKO: The children say the next leader is harder. They hear things.")
+}
+
+// [Tokiwa v5 s13, JP utilitarian line] said to Yuki in front of the player; Yuki does not answer
+text TokiwaInoue_Text_MasakoGuard {
+    format("MASAKO: When he's grown, Biscotto can stand guard at night. Better than a dog. Cheaper to keep.")
+}
+
+text TokiwaInoue_Text_MasakoGuardYuki {
+    format("Yuki doesn't answer. She strokes Biscotto.")
+}
+
+// ---- Yuki at home (TOK-112) ----------------------------------------------------------------------
+
+// [Tokiwa v5 s13] "È mio."
+text TokiwaInoue_Text_YukiMine {
+    format("YUKI: Biscotto? He's mine.")
+}
+
+// [R/G nickname house folded in]
+text TokiwaInoue_Text_YukiNames {
+    format("YUKI: Coming up with names is hard. Simple ones are the easiest to call.")
+}
+
+// [Tokiwa v5 s13] she greets Satoshi by name after the Pidgey is released
+text TokiwaInoue_Text_YukiGreets {
+    format("YUKI: {PLAYER}. Hello.")
+}
+
+// [new: kept line]
+text TokiwaInoue_Text_YukiKept {
+    format("YUKI: Does it fly for you?")
+}
+
+text TokiwaInoue_Text_YukiKeptBiscotto {
+    format("Biscotto is watching your bird, very still.")
+}
+
+text TokiwaInoue_Text_Biscotto {
+    format("Biscotto looks up at you. His whiskers twitch.")
+}
+
+// ---- Grandma Inoue (TOK-113, 305, 125) ---------------------------------------------------------------
+
+// [Tokiwa v5 s13] how it was before: the travellers and the ironworks across the road
+text TokiwaInoue_Text_GrandmaFirst {
+    format("GRANDMA: Come in, come in. I don't get many visitors in the back.")
+}
+
+text TokiwaInoue_Text_GrandmaFirst2 {
+    format("Before, there were travellers on this road every night. And the ironworks across the way never slept. You could hear it from every room.")
+}
+
+// [Tokiwa v5 s13] the letter, with no explanation
+text TokiwaInoue_Text_LetterAsk {
+    format("GRANDMA: You're going to Nibi, I think. Would you take this for me? For the innkeeper of the Akagi-ya.")
+}
+
+text TokiwaInoue_Text_LetterGiven {
+    format("GRANDMA: Thank you. She'll know who it's from.")
+}
+
+text TokiwaInoue_Text_LetterNoRoom {
+    format("GRANDMA: Your hands are full. Come back when you have room, and I'll still be here.")
+}
+
+// [Tokiwa v5 s13] undelivered: she asks once on a later visit, then stops
+text TokiwaInoue_Text_LetterStill {
+    format("GRANDMA: You haven't been to Nibi yet? No hurry. Letters keep.")
+}
+
+// TOK-125 [Tokiwa v5 s13] + [new join]
+text TokiwaInoue_Text_LetterRead {
+    format("GRANDMA: Did she read it?")
+}
+
+text TokiwaInoue_Text_ChoiceNod {
+    format("NOD")
+}
+
+text TokiwaInoue_Text_ChoiceSilent {
+    format("SAY NOTHING")
+}
+
+text TokiwaInoue_Text_LetterNod {
+    format("GRANDMA: Then she's still there.")
+}
+
+text TokiwaInoue_Text_LetterSilent {
+    format("GRANDMA: Mm. Have you eaten? Masako always makes too much.")
+}
+
+text TokiwaInoue_Text_GrandmaWhat {
+    format("GRANDMA: Sit down. What shall we talk about?")
+}
+
+text TokiwaInoue_Text_ChoiceOldDays {
+    format("THE OLD DAYS")
+}
+
+text TokiwaInoue_Text_ChoiceArena {
+    format("THE ARENA")
+}
+
+// [Tokiwa v5 s13] the travellers, the ironworks
+text TokiwaInoue_Text_GrandmaHatago {
+    format("GRANDMA: Every kind of traveller stopped here. Pedlars, pilgrims, the boys who walked the whole road for a bet. And the ironworks across the street, singing all night.")
+}
+
+// [new: war line, script list TOK-113; no year, no names]
+text TokiwaInoue_Text_GrandmaWar {
+    format("GRANDMA: In the war the travellers were soldiers. Then nobody, for a while.")
+}
+
+// [Tokiwa v5 s13] asked about the PMC she changes the subject, naturally
+text TokiwaInoue_Text_GrandmaArena {
+    format("GRANDMA: Hm? Oh, the tea. Is that the kettle?\pIt does that. Sit, sit.")
+}
+
+// ---- TOK-220 objects --------------------------------------------------------------------------------
+
+// [Tokiwa v5 s13]
+text TokiwaInoue_Text_Calendar {
+    format("Red circles on different dates. Some are months old.")
+}
+
+text TokiwaInoue_Text_FamilyPhoto {
+    format("A family photo. There are more people in it than live here now.")
+}
+
+// [Tokiwa v5 s13] before Grandma appears the door is only ajar
+text TokiwaInoue_Text_BackDoor {
+    format("A door ajar. Someone is moving about inside.")
+}

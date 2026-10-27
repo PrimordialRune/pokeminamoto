@@ -1,2 +1,292 @@
 // ViridianCity dialogue (English). Logic: scripts.pory. Translations: text.<lang>.pory
 // with the same block names; see docs/engineering/map-text.md.
+// Tokiwa City exterior, workstream tokiwa-town. R/G lines first (tagged [R/G]), then Tokiwa v5, then joins (tagged [new]).
+// Anything the studio decided alone is tagged PLACEHOLDER with the thread that should refine it.
+
+// ---- Signs and examines -------------------------------------------------------------------
+
+// TOK-001 [Tokiwa v5 s2]
+text TokiwaCity_Text_TOK001_TownSign {
+    format("Tokiwa City.")
+}
+
+// TOK-201 [Tokiwa v5 s6]
+text TokiwaCity_Text_TOK201_Plaque {
+    format("TOKIWA POKéMON CHAMPIONSHIP\nOfficial Silph Co. circuit.")
+}
+
+// TOK-203 [R/G slogan] + [Tokiwa v5 s2]
+text TokiwaCity_Text_TOK203_ShrineFence {
+    format("Evergreen trees behind white gravel. They don't change colour with the seasons.")
+}
+
+// TOK-224, optional texture. No year until OQ 1 (slice-plan 4.2).
+text TokiwaCity_Text_TOK224_Stone {
+    format("A small stone with names. Fresh flowers.")
+}
+
+// TOK-207 [Tokiwa v5 s7]
+text TokiwaCity_Text_TOK207_InnSign {
+    format("Ryokan Tôkaidô-ya, brushed by hand on wood. The corners are worn.")
+}
+
+// TOK-222 [R/G, PP rewritten as TP]
+text TokiwaCity_Text_TOK222_TipsCatch {
+    format("Trainer Tips!\pCatch Pokémon and expand your collection! The more you have, the easier it is to battle!")
+}
+
+text TokiwaCity_Text_TOK222_TipsTP {
+    format("Trainer Tips!\pMoves are limited by TP. Rest at an inn to restore it.")
+}
+
+// TOK-212 [Tokiwa v5 s8-9] + [new: evenings]
+text TokiwaCity_Text_TOK212_Notice {
+    format("NOTICE\pA Pokémon out of its usual range has been seen near Route 22.\pAsk for Ômura at the inn. Evenings, at the Tôkaidô-ya.")
+}
+
+text TokiwaCity_Text_TOK212_Old {
+    format("Old flyers and a lost-umbrella card. Nothing new.")
+}
+
+// Hamada's house (Tokiwa v5 building 6). PLACEHOLDER: the note after B1 (world's "I'm at the bench"); owner thread
+// "Define Minamoto narrative direction".
+text TokiwaCity_Text_NobodyAnswers {
+    format("Nobody answers.")
+}
+
+text TokiwaCity_Text_HamadaNote {
+    format("A note is pinned to the door.\pAt the bench.")
+}
+
+// ---- TOK-010 The north block, played once ------------------------------------------------------
+// Tone: sad, never comic. Fujiwara is urgent, not slurred. The speech is never finished.
+
+// [R/G Green drunk] "You can't go through here! This is private property!" (verify JP)
+text TokiwaCity_Text_TOK010_Stop {
+    format("You can't go through here!\nThis is private property!")
+}
+
+// [Tokiwa v5 s12] the speech about Nibi
+text TokiwaCity_Text_TOK010_Nibi {
+    format("Nibi. Listen to me. I've walked that road. I know it better than the men who built it.")
+}
+
+// [Tokiwa v5 s12] something in the caves
+text TokiwaCity_Text_TOK010_Caves {
+    format("There's something in the caves. Not far from the town. At night you could hear it, if you stood still, if you-")
+}
+
+// [new join] he loses the thread
+text TokiwaCity_Text_TOK010_Lost {
+    format("No. Wait. You have to know before you go. What was it? It was right here...")
+}
+
+// [new join] Hamada calls him by name
+text TokiwaCity_Text_TOK010_Name {
+    format("HAMADA: Tetsuo.\pThat's enough now. Come and sit.")
+}
+
+// [Tokiwa v5 s12] "not dangerous, but can block the road for hours"
+text TokiwaCity_Text_TOK010_NotDangerous {
+    format("HAMADA: He does this. He isn't dangerous. But he can hold up a road for hours.")
+}
+
+// [Tokiwa v5 s12] you can't go north anyway; you haven't shown enough
+text TokiwaCity_Text_TOK010_NotYet {
+    format("You can't go north in any case. Not yet. You haven't shown enough for what's up there.")
+}
+
+// [Tokiwa v5 s12] Takeshi's name, as a fact. [new join] the last sentence points at the arena here.
+text TokiwaCity_Text_TOK010_Takeshi {
+    format("Takeshi runs the arena in Nibi. Nobody has beaten him.\pStart with the leader here.")
+}
+
+// [Tokiwa v5 s12] the half-line after the scene (Fujiwara, still on the bench)
+text TokiwaCity_Text_TOK010_HalfLine {
+    format("FUJIWARA: ...the caves. No. Not now.")
+}
+
+// ---- TOK-116 / 307 / 408 Fujiwara ---------------------------------------------------------------
+
+text TokiwaCity_Text_FujiwaraDozing {
+    format("A man dozes on the bench, a sake jar in his hand. He doesn't wake.")
+}
+
+// [Tokiwa v5 s12] Tokiwa when travellers really stopped
+text TokiwaCity_Text_FujiwaraTravellers {
+    format("When I was young the travellers really stopped here. They stayed the night and talked until the lamps burned low.")
+}
+
+// [Tokiwa v5 s12] the caves, always lost halfway. TOK-307: the day version says "lights".
+text TokiwaCity_Text_FujiwaraCavesDay {
+    format("Up in the caves there were lights. I was sure of it. Lights, in the caves, and I...")
+}
+
+// [Tokiwa v5 s15] Charisma tier 3
+text TokiwaCity_Text_FujiwaraT3 {
+    format("You seem different from the ones who pass through.")
+}
+
+// TOK-408 night version, cut off.
+// PLACEHOLDER OQ14: Omar to write. Proposal from the script list, owner thread "Define Minamoto narrative direction".
+text TokiwaCity_Text_FujiwaraNight {
+    format("We carried the lamps ourselves, as boys. Nobody asked us to. We just...")
+}
+
+// ---- TOK-115 / 011 Hamada ---------------------------------------------------------------------
+
+// [Tokiwa v5 s12] his old job, never named
+text TokiwaCity_Text_HamadaCase {
+    format("A case, four years. It didn't add up.")
+}
+
+// [Tokiwa v5 s12]
+text TokiwaCity_Text_HamadaYujirou {
+    format("The boy at the arena imitates someone he doesn't know. That's a starting point.")
+}
+
+// [Tokiwa v5 s12, s15] TOK-011
+text TokiwaCity_Text_TOK011_GoOn {
+    format("Go on, then.")
+}
+
+// ---- TOK-104 Hiroshi at the canal (spine's inn copies use the first three) -------------------------
+
+// [Tokiwa v5 s7]
+text TokiwaCity_Text_HiroshiWater {
+    format("The Genbei water comes from Fuji. It has a taste.")
+}
+
+text TokiwaCity_Text_HiroshiB1 {
+    format("He was angry at something that had nothing to do with you.")
+}
+
+text TokiwaCity_Text_HiroshiPidgey {
+    format("The bird. Good.")
+}
+
+// [Tokiwa v5 s7] the trainer seasons he's learned to read
+text TokiwaCity_Text_HiroshiSeasons {
+    format("Every season the trainers come through. You learn which ones will come back.")
+}
+
+// ---- TOK-302 / 112 Yuki at the canal -----------------------------------------------------------
+// C4. Yuki is 14 and quiet. No hesitation text on Keep (slice-plan 3.2).
+
+text TokiwaCity_Text_PidgeyFound {
+    format("YUKI: ...This was in the reeds by the water.")
+}
+
+text TokiwaCity_Text_PidgeyWing {
+    format("One wing is bent. It can't fly.")
+}
+
+text TokiwaCity_Text_PidgeyInn {
+    format("The inn is quiet. Maybe Fumiko knows what to do for it.")
+}
+
+text TokiwaCity_Text_PidgeyCareful {
+    format("Please be careful with it.")
+}
+
+text TokiwaCity_Text_PidgeyNoRoom {
+    format("Your bag is full of important things. I'll keep it a little longer.")
+}
+
+text TokiwaCity_Text_PidgeyWaiting {
+    format("Fumiko will know. The inn is quiet.")
+}
+
+text TokiwaCity_Text_PidgeyStanding {
+    format("Look. It's standing.\pWhat will you do?")
+}
+
+text TokiwaCity_Text_ChoiceRelease {
+    format("LET IT GO")
+}
+
+text TokiwaCity_Text_ChoiceKeep {
+    format("KEEP IT")
+}
+
+text TokiwaCity_Text_ChoiceNotYet {
+    format("NOT YET")
+}
+
+text TokiwaCity_Text_PidgeyTakeYourTime {
+    format("Take your time.")
+}
+
+text TokiwaCity_Text_PidgeyReleaseA {
+    format("You hold the bird out over the water.")
+}
+
+text TokiwaCity_Text_PidgeyReleaseB {
+    format("It stays a moment. Then it takes the air and is gone over the shrine trees.")
+}
+
+text TokiwaCity_Text_YukiThanks {
+    format("YUKI: Thank you, {PLAYER}.")
+}
+
+text TokiwaCity_Text_PidgeyKeptParty {
+    format("The bird settles in your arms. PIDGEY joined your party.")
+}
+
+text TokiwaCity_Text_PidgeyKeptBox {
+    format("The bird settles in your arms. PIDGEY was sent to a Box.")
+}
+
+text TokiwaCity_Text_PidgeyNoRoomParty {
+    format("Your party and your Boxes are full. There's no room for it.")
+}
+
+text TokiwaCity_Text_PidgeyKeptYuki {
+    format("YUKI: Oh. All right.\pTake care of it.")
+}
+
+// [Tokiwa v5 s13] released: she greets Satoshi by name from now on
+text TokiwaCity_Text_YukiGreets {
+    format("{PLAYER}. Hello.")
+}
+
+// [new: kept line] TOK-112
+text TokiwaCity_Text_YukiKeptLine {
+    format("Does it fly for you?")
+}
+
+text TokiwaCity_Text_YukiKeptBiscotto {
+    format("Biscotto is watching your bird, very still.")
+}
+
+// [Tokiwa v5 s13] Yuki's Rattata. Cry plays first.
+text TokiwaCity_Text_Biscotto {
+    format("Biscotto looks up at you. His whiskers twitch.")
+}
+
+// ---- TOK-117 The arena watcher ---------------------------------------------------------------
+
+// [R/G]
+text TokiwaCity_Text_WatcherBefore {
+    format("This arena is always closed. I wonder who the leader is?")
+}
+
+// [Tokiwa v5]
+text TokiwaCity_Text_WatcherAfter {
+    format("He only opens it when he feels like it.")
+}
+
+// Teaching channel 2 (slice-plan 4.1, Q86-91): the guide line. PLACEHOLDER, owner thread "Design arena ecology for gym battles".
+text TokiwaCity_Text_WatcherGuide {
+    format("When the vents choke, his birds come down to earth.")
+}
+
+// ---- TOK-118 / 120 [R/G] --------------------------------------------------------------------
+
+text TokiwaCity_Text_CaterpieBoy {
+    format("Caterpie has no poison, but Weedle does. Watch out for its Poison Sting!")
+}
+
+text TokiwaCity_Text_Youngster {
+    format("Those Poké Balls at your waist! You have Pokémon! It's great that you can carry and use them any time, anywhere!")
+}
