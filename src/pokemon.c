@@ -1,6 +1,7 @@
 #include "global.h"
 #include "malloc.h"
 #include "battle.h"
+#include "arena_ecology.h"
 #include "battle_anim.h"
 #include "battle_controllers.h"
 #include "battle_message.h"
@@ -1274,6 +1275,8 @@ s32 CalculateBaseDamage(struct BattlePokemon *attacker, struct BattlePokemon *de
     // Self-destruct / Explosion cut defense in half
     if (gMovesInfo[gCurrentMove].effect == EFFECT_EXPLOSION)
         defense /= 2;
+
+    ArenaModifyDamage(attacker, defender, type, &defense, &spDefense);
 
     if (type == TYPE_MYSTERY)
         return 2; // is ??? type: 0 damage, plus the flat +2 every move gets below

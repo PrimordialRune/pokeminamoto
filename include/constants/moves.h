@@ -359,8 +359,9 @@
 
 // Minamoto Specials (signature moves), used only through gSpecialMoves
 #define MOVE_FLAME_CLAWS 355
+#define MOVE_LEEK_SLAP 356
 
-#define MOVES_COUNT 356
+#define MOVES_COUNT 357
 
 // Used for checks for moves affected by Disable, Mimic, etc.
 #define MOVE_UNAVAILABLE 0xFFFF

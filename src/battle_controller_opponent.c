@@ -5,6 +5,7 @@
 #include "battle_arena.h"
 #include "battle_controllers.h"
 #include "battle_message.h"
+#include "special_move.h"
 #include "battle_interface.h"
 #include "battle_setup.h"
 #include "battle_talk.h"
@@ -1428,9 +1429,17 @@ static void OpponentHandleChooseMove(void)
                 BtlController_EmitTwoReturnValues(B_COMM_TO_ENGINE, 15, gBattlerTarget);
                 break;
             default:
-                if (gMovesInfo[moveInfo->moves[chosenMoveId]].target & (MOVE_TARGET_USER_OR_SELECTED | MOVE_TARGET_USER))
+            {
+                u16 move = moveInfo->moves[chosenMoveId];
+
+                if (ShouldTrainerUseSpecial(gActiveBattler, move))
+                {
+                    chosenMoveId = SPECIAL_MOVE_POS;
+                    move = GetBattlerSpecialMove(gActiveBattler);
+                }
+                if (gMovesInfo[move].target & (MOVE_TARGET_USER_OR_SELECTED | MOVE_TARGET_USER))
                     gBattlerTarget = gActiveBattler;
-                if (gMovesInfo[moveInfo->moves[chosenMoveId]].target & MOVE_TARGET_BOTH)
+                if (gMovesInfo[move].target & MOVE_TARGET_BOTH)
                 {
                     gBattlerTarget = GetBattlerAtPosition(B_POSITION_PLAYER_LEFT);
                     if (gAbsentBattlerFlags & gBitTable[gBattlerTarget])
@@ -1438,6 +1447,7 @@ static void OpponentHandleChooseMove(void)
                 }
                 BtlController_EmitTwoReturnValues(B_COMM_TO_ENGINE, 10, (chosenMoveId) | (gBattlerTarget << 8));
                 break;
+            }
             }
             OpponentBufferExecCompleted();
         }

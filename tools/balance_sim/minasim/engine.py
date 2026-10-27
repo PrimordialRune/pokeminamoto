@@ -136,7 +136,7 @@ class HbIn(C.Structure):
                 ("log", u8), ("charisma", u8), ("turn_cap", u16), ("use_trainer", u8), ("foe_is_trainer", u8),
                 ("trainer_class", u8), ("n_foe_items", u8), ("foe_items", u16 * 4), ("ai_flags", u32),
                 ("player", HbMonIn * HB_PARTY), ("foe", HbMonIn * HB_PARTY),
-                ("bag_item", u16 * HB_BAG), ("bag_count", u16 * HB_BAG), ("n_bag", u8), ("pad", u8 * 3)]
+                ("bag_item", u16 * HB_BAG), ("bag_count", u16 * HB_BAG), ("n_bag", u8), ("arena", u8), ("pad", u8 * 2)]
 
 
 class HbMonOut(C.Structure):
@@ -389,7 +389,8 @@ class Engine:
 
     # -------------------------------------------------------------- run
     def battle(self, seed=1, player=None, foe=None, trainer=None, player_policy="greedy", foe_policy="rom", log=False,
-               bag=None, charisma=0, turn_cap=200, is_trainer=None, trainer_class=None, ai_flags=None, foe_items=None, max_turns=None):
+               bag=None, charisma=0, turn_cap=200, is_trainer=None, trainer_class=None, ai_flags=None, foe_items=None, max_turns=None,
+               arena=0):
         """One battle. Returns the dict described in CONTRACT.md plus: "exp" per player mon (exp_gained),
         "stats" (per-side moves_used, items_used, talk_used, special_used, struggles, min_tp, switches),
         "error" (None, "frame cap", "policy loop"), "illegal" (illegal actions replaced), "leaked_blocks"."""
@@ -397,6 +398,7 @@ class Engine:
             turn_cap = max_turns
         hin = self._prepare(seed, player or [], foe, trainer, player_policy, foe_policy, log, bag, charisma, turn_cap,
                             is_trainer, trainer_class, ai_flags, foe_items)
+        hin.arena = arena                  # ARENA_* (minasim/arena.py)
         self._install_callback()
         out = self._out
         self.lib.hb_battle(C.byref(hin), C.byref(out))

@@ -4,6 +4,11 @@
 #include "pokemon.h"
 #include "special_move.h"
 #include "util.h"
+#include "battle_script_commands.h"
+#include "battle_util.h"
+#include "battle_setup.h"
+#include "data.h"
+#include "constants/trainers.h"
 #include "constants/moves.h"
 #include "constants/species.h"
 
@@ -27,13 +32,29 @@ bool8 IsMonSpecialAwakened(struct Pokemon *mon)
     return GetMonSpecialMove(mon) != MOVE_NONE && GetMonData(mon, MON_DATA_SPECIAL_AWAKENED);
 }
 
-// Only the player's mons use Signatures for now: trainers never do (v1)
+// A gym leader's ace (the last mon of the party) has its Signature unlocked (Omar, 2026-10-27)
+static bool8 IsLeaderAce(u8 battler)
+{
+    u32 last = 0, i;
+
+    if (!(gBattleTypeFlags & BATTLE_TYPE_TRAINER) || (gBattleTypeFlags & BATTLE_TYPE_LINK)
+     || gTrainers[gTrainerBattleOpponent_A].trainerClass != TRAINER_CLASS_LEADER)
+        return FALSE;
+    for (i = 0; i < PARTY_SIZE; i++)
+        if (GetMonData(&gEnemyParty[i], MON_DATA_SPECIES) != SPECIES_NONE)
+            last = i;
+    return gBattlerPartyIndexes[battler] == last;
+}
+
+// The player's mons once awakened; on the foe side only a gym leader's ace
 u16 GetBattlerSpecialMove(u8 battler)
 {
     struct Pokemon *mon;
 
-    if (GetBattlerSide(battler) != B_SIDE_PLAYER || (gBattleTypeFlags & BATTLE_TYPE_LINK))
+    if (gBattleTypeFlags & BATTLE_TYPE_LINK)
         return MOVE_NONE;
+    if (GetBattlerSide(battler) != B_SIDE_PLAYER)
+        return IsLeaderAce(battler) ? GetMonSpecialMove(&gEnemyParty[gBattlerPartyIndexes[battler]]) : MOVE_NONE;
     mon = &gPlayerParty[gBattlerPartyIndexes[battler]];
     if (!IsMonSpecialAwakened(mon))
         return MOVE_NONE;
@@ -157,3 +178,16 @@ void SpecialMove_DebugSealParty(void)
     }
 }
 #endif
+
+// Trainer AI: the ace swaps the move its AI picked for its Signature when it can pay for it, the
+// target isn't immune and the Signature hits at least as hard (trainer AI proper comes after the beta)
+bool8 ShouldTrainerUseSpecial(u8 battler, u16 aiMove)
+{
+    u16 move = GetBattlerSpecialMove(battler);
+
+    if (move == MOVE_NONE || !CanBattlerAffordMoveSlot(battler, SPECIAL_MOVE_POS))
+        return FALSE;
+    if (AI_TypeCalc(move, gBattleMons[gBattlerTarget].species, gBattleMons[gBattlerTarget].ability) & MOVE_RESULT_NO_EFFECT)
+        return FALSE;
+    return gMovesInfo[move].power >= gMovesInfo[aiMove].power;
+}

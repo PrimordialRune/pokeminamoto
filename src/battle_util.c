@@ -2,6 +2,7 @@
 #include "battle.h"
 #include "battle_anim.h"
 #include "battle_arena.h"
+#include "arena_ecology.h"
 #include "battle_pyramid.h"
 #include "battle_util.h"
 #include "pokemon.h"
@@ -1340,6 +1341,7 @@ u8 DoFieldEndTurnEffects(void)
             gBattleStruct->turnCountersTracker++;
             break;
         case ENDTURN_TRAINER_STATE:
+            ArenaEndTurn();
             if (TrainerStateEndTurn())
             {
                 BattleScriptExecute(BattleScript_TrainerStateEnds);
@@ -1431,7 +1433,7 @@ u8 DoBattlerEndTurnEffects(void)
                  && gBattleMons[gActiveBattler].hp != 0)
                 {
                     gBattlerTarget = gStatuses3[gActiveBattler] & STATUS3_LEECHSEED_BATTLER; // Notice gBattlerTarget is actually the HP receiver.
-                    gBattleMoveDamage = gBattleMons[gActiveBattler].maxHP / 8;
+                    gBattleMoveDamage = ArenaLeechSeedDrain(gBattleMons[gActiveBattler].maxHP / 8);
                     if (gBattleMoveDamage == 0)
                         gBattleMoveDamage = 1;
                     gBattleScripting.animArg1 = gBattlerTarget;

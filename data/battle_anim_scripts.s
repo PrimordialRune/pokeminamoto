@@ -372,6 +372,7 @@ gBattleAnims_Moves::
 	.4byte Move_DOOM_DESIRE
 	.4byte Move_PSYCHO_BOOST
 	.4byte Move_FIRE_PUNCH @ MOVE_FLAME_CLAWS, placeholder until it has its own animation
+	.4byte Move_SLASH @ MOVE_LEEK_SLAP, placeholder until it has its own animation
 	.4byte Move_COUNT @ cannot be reached, because last move is Flame Claws
 
 	.align 2

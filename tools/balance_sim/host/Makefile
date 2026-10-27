@@ -12,7 +12,7 @@ LIB   := $(B)/libminasim.so
 # Real sources compiled unchanged (src/NAME.c)
 SRCS := battle_gfx_sfx_util trig battle_main battle_script_commands battle_util battle_util2 pokemon random \
         battle_ai_script_commands battle_ai_switch_items battle_talk battle_controllers battle_message \
-        strings data string_util util math_util event_data item special_move
+        strings data string_util util math_util event_data item special_move arena_ecology
 # Host layer (this directory)
 HOSTSRCS := hb_ptr hb_platform hb_api
 
@@ -27,6 +27,8 @@ HOSTCF   := $(CFLAGS) -iquote $(HOST)/hostinc -iquote include
 
 # data.c: gTrainers must be writable so the harness can build a trainer for foe parties given explicitly
 SEDX_data := -e 's/const struct Trainer gTrainers/struct Trainer gTrainers/'
+# arena_ecology.c: the arena knobs are swept by the lab (minasim/arena.py)
+SEDX_arena_ecology := -e 's/const struct ArenaTuning gArenaTuning/struct ArenaTuning gArenaTuning/'
 
 ALLOBJ := $(SRCS:%=$(OBJ)/%.o) $(OBJ)/hb_ctrl_gen.o $(OBJ)/hb_blob.o $(HOSTSRCS:%=$(OBJ)/%.o)
 

@@ -349,7 +349,10 @@ struct BattleStruct
     u8 trainerStateTurns:3; // turns the state has left, counted down at the end of each turn
     u8 talkedThisTurn:1;    // Talk can be used once per turn
     u8 foeInfoCounted;      // enemy party slots already counted for the SEL. info screen this battle
-    u8 unused_7[0x26];
+    u8 arenaId;              // ARENA_*, read from VAR_BATTLE_ARENA when the battle starts (include/arena_ecology.h)
+    u8 arenaVentsBlocked;    // Lucky Strike: turns the vents stay blocked (0 = running)
+    u8 arenaWet[NUM_BATTLE_SIDES]; // Grunge Rock: turns each side stays wet
+    u8 unused_7[0x22];
     u8 AI_monToSwitchIntoId[MAX_BATTLERS_COUNT];
     s8 arenaMindPoints[2];
     s8 arenaSkillPoints[2];

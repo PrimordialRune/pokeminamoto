@@ -82,6 +82,9 @@ static struct TrainerMon sSynthParty[PARTY_SIZE];
 
 HB_EXPORT void hb_set_callback(HbPolicyFn cb) { sCallback = cb; }
 HB_EXPORT HbLogEv *hb_log(void) { return sLog; }
+/* the arena knobs (struct ArenaTuning, include/arena_ecology.h), writable in the host build */
+extern char gArenaTuning[];
+HB_EXPORT void *hb_arena_tuning(void) { return gArenaTuning; }
 
 HB_EXPORT void hb_abi(int *o)
 {
@@ -618,6 +621,7 @@ HB_EXPORT int hb_battle(const HbIn *in, HbOut *out)
     memset(&gBattleResults, 0, sizeof(gBattleResults));
     sSb2.optionsBattleStyle = OPTIONS_BATTLE_STYLE_SET; /* no free "switch before the foe's next mon" prompt */
     VarSet(VAR_CHARISMA, in->charisma);
+    VarSet(VAR_BATTLE_ARENA, in->arena);
 
     gRngValue = in->seed;
     ZeroPlayerPartyMons(); ZeroEnemyPartyMons();

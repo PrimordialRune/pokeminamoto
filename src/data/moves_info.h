@@ -1280,6 +1280,10 @@ static const u8 sFlameClawsDescription[] = _(
     "Rakes the foe with blazing\n"
     "claws. May cause a burn.");
 
+static const u8 sLeekSlapDescription[] = _(
+    "Slaps the foe with a leek.\n"
+    "High critical-hit ratio.");
+
 static const u8 sOdorSleuthDescription[] = _(
     "Negates the foe's efforts\n"
     "to heighten evasiveness.");
@@ -6780,5 +6784,22 @@ const struct MoveInfo gMovesInfo[MOVES_COUNT] =
         .flags = FLAG_MAKES_CONTACT | FLAG_PROTECT_AFFECTED | FLAG_KINGS_ROCK_AFFECTED,
         .signatureSpecies = SPECIES_CHARMANDER,
         .description = sFlameClawsDescription,
+    },
+
+    // Farfetch'd (Notion Moves DB: SIGNATURE, NORMAL, 60, 100, high crit)
+    [MOVE_LEEK_SLAP] =
+    {
+        .name = _("LEEK SLAP"),
+        .effect = EFFECT_HIGH_CRITICAL,
+        .power = 60,
+        .type = TYPE_NORMAL,
+        .accuracy = 100,
+        .tpCost = 40,
+        .secondaryEffectChance = 0,
+        .target = MOVE_TARGET_SELECTED,
+        .priority = 0,
+        .flags = FLAG_MAKES_CONTACT | FLAG_PROTECT_AFFECTED | FLAG_MIRROR_MOVE_AFFECTED | FLAG_KINGS_ROCK_AFFECTED,
+        .signatureSpecies = SPECIES_FARFETCHD,
+        .description = sLeekSlapDescription,
     },
 };

@@ -33,6 +33,7 @@
 #include "overworld.h"
 #include "party_menu.h"
 #include "battle_arena.h"
+#include "arena_ecology.h"
 #include "battle_pike.h"
 #include "battle_pyramid.h"
 #include "field_specials.h"
@@ -731,6 +732,7 @@ static const u16 sMovesForbiddenToCopy[] =
     MOVE_SKETCH,
     MOVE_MIMIC,
     MOVE_FLAME_CLAWS, // Specials belong to their species line
+    MOVE_LEEK_SLAP,
     MIMIC_FORBIDDEN_END,
     MOVE_COUNTER,
     MOVE_MIRROR_COAT,
@@ -1134,7 +1136,7 @@ static void Cmd_accuracycheck(void)
         else
         {
             u8 acc = gBattleMons[gBattlerAttacker].statStages[STAT_ACC];
-            buff = acc + DEFAULT_STAT_STAGE - gBattleMons[gBattlerTarget].statStages[STAT_EVASION];
+            buff = acc + DEFAULT_STAT_STAGE - gBattleMons[gBattlerTarget].statStages[STAT_EVASION] - ArenaEvasionStages(gBattlerTarget);
         }
 
         if (buff < MIN_STAT_STAGE)
@@ -1254,7 +1256,8 @@ static void Cmd_critcalc(void)
                 + (gMovesInfo[gCurrentMove].effect == EFFECT_POISON_TAIL)
                 + (holdEffect == HOLD_EFFECT_SCOPE_LENS)
                 + 2 * (holdEffect == HOLD_EFFECT_LUCKY_PUNCH && gBattleMons[gBattlerAttacker].species == SPECIES_CHANSEY)
-                + 2 * (holdEffect == HOLD_EFFECT_STICK && gBattleMons[gBattlerAttacker].species == SPECIES_FARFETCHD);
+                + 2 * (holdEffect == HOLD_EFFECT_STICK && gBattleMons[gBattlerAttacker].species == SPECIES_FARFETCHD)
+                + ArenaCritStages(gBattlerAttacker);
 
     if (critChance >= ARRAY_COUNT(sCriticalHitChance))
         critChance = ARRAY_COUNT(sCriticalHitChance) - 1;
@@ -1262,7 +1265,7 @@ static void Cmd_critcalc(void)
     if ((gBattleMons[gBattlerTarget].ability != ABILITY_BATTLE_ARMOR && gBattleMons[gBattlerTarget].ability != ABILITY_SHELL_ARMOR)
      && !(gStatuses3[gBattlerAttacker] & STATUS3_CANT_SCORE_A_CRIT)
      && !(gBattleTypeFlags & (BATTLE_TYPE_WALLY_TUTORIAL | BATTLE_TYPE_FIRST_BATTLE))
-     && !(Random() % sCriticalHitChance[critChance]))
+     && (ArenaForcesCrit(gBattlerAttacker) || !(Random() % sCriticalHitChance[critChance])))
         gCritMultiplier = 2;
     else
         gCritMultiplier = 1;
@@ -4157,6 +4160,7 @@ static void Cmd_moveend(void)
         switch (gBattleScripting.moveendState)
         {
         case MOVEEND_RAGE: // rage check
+            ArenaAfterMove(gCurrentMove, gBattlerAttacker, gBattlerTarget);
             if (gBattleMons[gBattlerTarget].status2 & STATUS2_RAGE
                 && gBattleMons[gBattlerTarget].hp != 0
                 && gBattlerAttacker != gBattlerTarget

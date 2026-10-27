@@ -3,6 +3,7 @@
 #include "battle_anim.h"
 #include "battle_ai_script_commands.h"
 #include "battle_arena.h"
+#include "arena_ecology.h"
 #include "battle_controllers.h"
 #include "battle_interface.h"
 #include "battle_foe_info.h"
@@ -2627,6 +2628,7 @@ static void BattleStartClearSetData(void)
     gBattleStruct->safariEscapeFactor = 3;
     gBattleStruct->wildVictorySong = 0;
     gBattleStruct->moneyMultiplier = 1;
+    ArenaBattleStart();
 
     for (i = 0; i < 8; i++)
     {
@@ -4005,6 +4007,8 @@ u8 GetWhoStrikesFirst(u8 battler1, u8 battler2, bool8 ignoreChosenMoves)
                 * (gStatStageRatios[gBattleMons[battler1].statStages[STAT_SPEED]][0])
                 / (gStatStageRatios[gBattleMons[battler1].statStages[STAT_SPEED]][1]);
 
+    speedBattler1 = ArenaModifySpeed(battler1, speedBattler1);
+
     holdEffect = GetItemHoldEffect(gBattleMons[battler1].item);
     holdEffectParam = GetItemHoldEffectParam(gBattleMons[battler1].item);
 
@@ -4022,6 +4026,8 @@ u8 GetWhoStrikesFirst(u8 battler1, u8 battler2, bool8 ignoreChosenMoves)
     speedBattler2 = (gBattleMons[battler2].speed * speedMultiplierBattler2)
                 * (gStatStageRatios[gBattleMons[battler2].statStages[STAT_SPEED]][0])
                 / (gStatStageRatios[gBattleMons[battler2].statStages[STAT_SPEED]][1]);
+
+    speedBattler2 = ArenaModifySpeed(battler2, speedBattler2);
 
     holdEffect = GetItemHoldEffect(gBattleMons[battler2].item);
     holdEffectParam = GetItemHoldEffectParam(gBattleMons[battler2].item);

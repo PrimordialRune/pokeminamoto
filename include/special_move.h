@@ -41,6 +41,7 @@ extern const struct SpecialMoveInfo gSpecialMoves[];
 u16 GetMonSpecialMove(struct Pokemon *mon);
 bool8 IsMonSpecialAwakened(struct Pokemon *mon);
 u16 GetBattlerSpecialMove(u8 battler);
+bool8 ShouldTrainerUseSpecial(u8 battler, u16 aiMove);
 void SpecialMove_OnFoeFainted(u8 foeBattler);
 void SpecialMove_OnBattleWon(void);
 s32 SpecialMove_TryAwakenNext(void);

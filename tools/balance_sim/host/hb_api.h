@@ -37,7 +37,7 @@ typedef struct {
     uint32_t ai_flags;
     HbMonIn player[HB_PARTY], foe[HB_PARTY];
     uint16_t bag_item[HB_BAG], bag_count[HB_BAG];
-    uint8_t n_bag; uint8_t pad[3];
+    uint8_t n_bag; uint8_t arena; uint8_t pad[2];   /* arena: ARENA_* (include/arena_ecology.h) */
 } HbIn;
 
 typedef struct {

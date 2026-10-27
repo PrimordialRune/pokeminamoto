@@ -22,4 +22,7 @@ const struct SpecialMoveInfo gSpecialMoves[NUM_SPECIES] =
     [SPECIES_CHARMANDER] = CHARMANDER_LINE_SPECIAL,
     [SPECIES_CHARMELEON] = CHARMANDER_LINE_SPECIAL,
     [SPECIES_CHARIZARD]  = CHARMANDER_LINE_SPECIAL,
+
+    // No unlock condition designed yet (Bond fallback). A gym leader's ace has it unlocked.
+    [SPECIES_FARFETCHD] = {.move = MOVE_LEEK_SLAP, .condition = SPECIAL_COND_BOND},
 };

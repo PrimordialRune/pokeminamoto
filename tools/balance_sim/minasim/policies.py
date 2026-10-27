@@ -179,11 +179,42 @@ def average_policy(state, params=None):
         sw = _best_switch(g, state, 0.5)
         if sw:
             return sw
+    act = _arena_action(state, dict(p, arena_use=p.get("arena_use", ARENA["average_use"])), g, me, foe, ms)
+    if act:
+        return act
     # strongest-looking move: power x effectiveness x STAB x accuracy, ignores TP cost; avoids immune moves
     return max(ms, key=lambda a: move_value(g, me, foe, _mv(me, a)) + 1e-4 * g.moves.get(_mv(me, a), {"power": 0})["power"])
 
 
 _SEEDED = set()
+
+# Arena ecology in force for the current battle (set by journey.battle; minasim/arena.py)
+ARENA = {"id": 0, "knobs": {}, "blockers": set(), "average_use": 0.5}
+_ARENA_MEM = {}
+
+
+def _arena_action(state, p, g, me, foe, ms):
+    """Lucky Strike: block the vents against a Flying foe, raise the sandstorm once. `arena_use` is the
+    chance per decision that the player thinks of the arena at all (the gym hint, the trainers' talk)."""
+    if ARENA["id"] != 1 or not ms or _rng(state, 11).random() >= p.get("arena_use", 1.0):
+        return None
+    if len(_ARENA_MEM) > 4096:
+        _ARENA_MEM.clear()
+    mem = _ARENA_MEM.setdefault(state.get("seed"), {"blocked_until": -1, "sand": False})
+    k = ARENA["knobs"]
+    flying = "FLYING" in g.species[foe["species"]]["types"]
+    if flying and state["turn"] > mem["blocked_until"]:
+        for a in ms:
+            if _mv(me, a) in ARENA["blockers"]:
+                n = k.get("ventBlockTurns", 255)
+                mem["blocked_until"] = 10 ** 6 if n == 255 else state["turn"] + max(1, n) - 1
+                return a
+    if flying and k.get("sandAttackStormTurns") and not mem["sand"] and me["hp"] > me["max_hp"] / 2:
+        for a in ms:
+            if _mv(me, a) == "SAND_ATTACK":
+                mem["sand"] = True
+                return a
+    return None
 
 
 def skilled_policy(state, params=None):
@@ -237,6 +268,9 @@ def skilled_policy(state, params=None):
                 return talks.get("unnerve") or best[2]
             if mode == "provoke":
                 return talks.get("provoke") or best[2]
+    act = _arena_action(state, p, g, me, foe, ms)
+    if act:
+        return act
     # sleep or paralyse a healthy foe first when the fight will take a while (status moves score ~0 above);
     # Leech Seed once per foe (the state has no seeded flag, so the policy remembers what it seeded this battle)
     if p.get("uses_status", True) and my_turns > 2.0 and foe_frac > 0.5:

@@ -31,7 +31,7 @@ from collections import Counter, defaultdict
 
 import yaml
 
-from . import policies, stats
+from . import arena as ARENA, policies, stats
 from .fights import RIVAL_OF, STARTERS, parse_mon
 from .gamedata import Game, SIM_ROOT
 from .policies import move_value, stat
@@ -159,7 +159,7 @@ def order_lead(g, team, foe, rng, prob):
     team.sort(key=score, reverse=True)
 
 
-def battle(g, team, bag, foes, band, seed, cls):
+def battle(g, team, bag, foes, band, seed, cls, arena=0):
     alive = [m for m in team if m["hp"] > 0]
     order = alive + [m for m in team if m["hp"] <= 0]
     mons = C.make_mons([{"species": m["species"], "level": m["level"], "moves": m["moves"], "item": None} for m in order],
@@ -170,8 +170,9 @@ def battle(g, team, bag, foes, band, seed, cls):
     if cls != "wild":
         kw = {"is_trainer": True, "ai_flags": GYM_AI if cls in ("gym", "rival") else ["CHECK_BAD_MOVE"],
               "trainer_class": {"gym": "LEADER", "rival": "RIVAL"}.get(cls, "YOUNGSTER")}
+    policies.ARENA["id"] = arena
     res = C.battle(None, seed=seed, player=mons, foe=C.make_mons(foes), player_policy=band, foe_policy="rom", bag=dict(bag),
-                   max_turns=200, **kw)
+                   max_turns=200, arena=arena, **kw)
     for m, r in zip(order, res["player"]):
         m["hp"] = max(0, r["hp"]) / max(1, r["max_hp"])
         m["tp"] = r["tp"] / max(1, r["tp_max"])
@@ -192,6 +193,8 @@ def battle(g, team, bag, foes, band, seed, cls):
 def run_one(job):
     sc, starter, band, seed = job
     g = Game.get()
+    knobs = ARENA.apply(C.engine(), sc.get("arena_tuning"))
+    policies.ARENA.update(knobs=knobs, blockers=ARENA.blockers(knobs), average_use=sc.get("arena_use", 0.5))
     P = dict(BAND[band], **(sc.get("bands", {}).get(band, {})))
     rng = random.Random(seed)
     team = [new_mon(g, starter, sc.get("starter_level", 5))]
@@ -223,7 +226,7 @@ def run_one(job):
         elif tp < P["rest_tp"]:
             rest("tp")
 
-    def fight(foes, cls, fid=None, no_whiteout=False):
+    def fight(foes, cls, fid=None, no_whiteout=False, arena=0):
         won, tries = False, 0
         for tries in range(1, MAX_TRIES + 1):
             maybe_walk_back()
@@ -238,7 +241,7 @@ def run_one(job):
                     team.insert(0, low)
             before = [(m["species"], m["level"]) for m in team]
             k[0] += 1
-            res = battle(g, team, bag, foes, band, seed * 7919 + k[0], cls)
+            res = battle(g, team, bag, foes, band, seed * 7919 + k[0], cls, arena)
             rec["battles"] += 1
             rec["segments"][seg]["battles"] += 1
             won = res["winner"] == 0
@@ -285,7 +288,8 @@ def run_one(job):
                 _wild_battle(g, team, table, rng, size, P, rec, fight)
         if "fight" in st:
             foes = foe_party(g, st["_party"], starter)
-            fight(foes, st.get("class", "trainer"), st["fight"], st.get("no_whiteout", False))
+            ar = 0 if sc.get("no_arena") else ARENA.ARENAS[st.get("arena", "NONE")]
+            fight(foes, st.get("class", "trainer"), st["fight"], st.get("no_whiteout", False), ar)
     rec["segments"] = dict(rec["segments"])
     rec["final"] = [(m["species"], m["level"]) for m in team]
     return rec
@@ -374,8 +378,14 @@ def main(argv=None):
     p.add_argument("--starters", default=",".join(STARTERS))
     p.add_argument("--jobs", type=int, default=os.cpu_count())
     p.add_argument("--json")
+    p.add_argument("--arena", action="append", metavar="KNOB=VALUE", help="override an arena knob (minasim/arena.py)")
+    p.add_argument("--no-arena", action="store_true", help="fight every gym without its arena")
+    p.add_argument("--arena-use", type=float, default=0.5, help="chance per turn that an average player plays the arena")
     a = p.parse_args(argv)
     sc = load(a.scenario)
+    sc["arena_tuning"] = dict(sc.get("arena_tuning") or {}, **ARENA.parse_overrides(a.arena))
+    sc["no_arena"] = a.no_arena
+    sc["arena_use"] = a.arena_use
     jobs = [(sc, s, b, C.seed_of("journey", s, b, i)) for b in a.bands.split(",") for s in a.starters.split(",") for i in range(a.runs)]
     if a.jobs > 1:
         import multiprocessing as mp

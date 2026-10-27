@@ -56,7 +56,8 @@ steps:
   - fight: yujirou
     name: Yujirou
     class: gym
-    team: ["SPEAROW:7[PECK/GROWL/LEER]", "PIDGEY:8[TACKLE/SAND_ATTACK]", "FARFETCHD:9[CUT/SAND_ATTACK/LEER]@LEEK"]
+    arena: LUCKY_STRIKE
+    team: ["SPEAROW:7[PECK/GROWL/LEER]", "PIDGEY:8[TACKLE/SAND_ATTACK]", "FARFETCHD:9[CUT/SAND_ATTACK/LEER]"]
 
   - segment: Route 2 and forest
   - catch_slot: 3
@@ -92,4 +93,5 @@ steps:
   - fight: takeshi
     name: Takeshi
     class: gym
+    arena: GRUNGE_ROCK
     team: ["GEODUDE:12", "ONIX:14"]
