@@ -21,13 +21,13 @@ u16 GetMonSpecialMove(struct Pokemon *mon)
     return GetMonSpecialInfo(mon)->move;
 }
 
-// A species with no Special yet stays sealed even if the mon's bit is set
+// A species with no Signature yet stays sealed even if the mon's bit is set
 bool8 IsMonSpecialAwakened(struct Pokemon *mon)
 {
     return GetMonSpecialMove(mon) != MOVE_NONE && GetMonData(mon, MON_DATA_SPECIAL_AWAKENED);
 }
 
-// Only the player's mons use Specials for now: trainers never do (v1)
+// Only the player's mons use Signatures for now: trainers never do (v1)
 u16 GetBattlerSpecialMove(u8 battler)
 {
     struct Pokemon *mon;

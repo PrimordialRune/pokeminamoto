@@ -1,7 +1,7 @@
-"""Signals 3.8/3.9: Special and Talk. Paired ablations of the skilled policy (same draw, same seed):
+"""Signals 3.8/3.9: Signature and Talk. Paired ablations of the skilled policy (same draw, same seed):
   talk:    each talk mode (unnerve / provoke / smart) vs never talking; Charisma follows the stage, leaders and the
            rival carry the ROM's 30-point Talk malus (trainer_class is passed to the engine).
-  special: every party mon awakened, Special allowed vs Special never used.
+  special: every party mon awakened, Signature allowed vs Signature never used.
 The default skilled policy uses talk_mode "smart" (targets.yaml); the numbers here show which mode pays."""
 import random
 
@@ -42,7 +42,7 @@ def run(ctx):
     sec = C.Section()
     n = max(20, int(300 * ctx.scale))
     if "skilled" not in ctx.bands:
-        sec.notes.append("skilled band not run: Special/Talk not evaluated")
+        sec.notes.append("skilled band not run: Signature/Talk not evaluated")
         return sec
     fights = [f for f in ctx.catalog.fights if f["class"] in ("gym", "rival", "boss")]
     fights += [f for f in ctx.catalog.fights if f["class"] == "trainer" and f["source"] != "placeholder"][:12]
@@ -72,7 +72,7 @@ def run(ctx):
         d, se, used, nn = agg(rows)
         ph = all(r["source"] == "placeholder" for r in rows)
         kind = name.split(":")[0]
-        title = ("Special" if kind == "special" else "Talk (%s)" % name.split(":")[1])
+        title = ("Signature" if kind == "special" else "Talk (%s)" % name.split(":")[1])
         base = dict(band="skilled", metric={"name": "delta_win", "value": round(d, 3), "ci": [round(d - 1.96 * se, 3), round(d + 1.96 * se, 3)],
                                             "target": [fl["item_dead_delta"], 0.15]})
         if used < 0.02:

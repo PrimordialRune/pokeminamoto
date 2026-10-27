@@ -111,7 +111,7 @@ Four GDD categories (plus the separate 22-category *ecology* taxonomy in arena_e
 
 - **Natural / "Normals"** - learned in normal growth; use body parts to deal damage; subcategory BODY, ARMS, FISTS, KICKS, TEETH, CLAWS, HORNS, TAIL. Have a **move rank**.
 - **Elemental / "Elementals"** - elemental-type moves, strongly governed by type effectiveness; can be learned by Pokemon not sharing the type if "logical requirements" are met. Have a **move rank**.
-- **Signature / Special Moves** - exclusive to one species or evolutionary line; **not overwritable; exempt from the 4-move limit**; always usable if the TP cost can be paid; scale on SPECIAL via Special Factor.
+- **Signature Moves** - exclusive to one species or evolutionary line; **not overwritable; exempt from the 4-move limit**; always usable if the TP cost can be paid; scale on SPECIAL via Special Factor.
 - **Learnable** - everything else; learnable via level-up or Move Machine (artificial disc, i.e. TM equivalent); shared across species.
 
 Notion Moves DB counts: NORMAL 24, ELEMENTAL 39, MOVE MACHINE 48, SIGNATURE 150, plus one uncategorised row. (Counts may not equal final design; the "Learnable" doc category maps to Notion "MOVE MACHINE".) The Cost column in the sampled rows is empty, so TP costs are not populated yet.

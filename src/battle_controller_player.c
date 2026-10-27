@@ -1764,7 +1764,7 @@ static void MoveSelectionCreateCursorAt(u8 cursorPosition, u8 baseTileNum)
     MoveSelectionDrawMoveNames();
 }
 
-// The Special page: one full-width row in place of the grid. Awakened, the Special's name in
+// The Signature page: one full-width row in place of the grid. Awakened, the Signature's name in
 // gold inside an amber double frame (textbox palette slots 9 and 10); sealed, a dashed grey
 // frame (slot 13) around "???". No new tiles or palettes.
 #define SPECIAL_ROW_X  3
@@ -1772,7 +1772,7 @@ static void MoveSelectionCreateCursorAt(u8 cursorPosition, u8 baseTileNum)
 #define SPECIAL_ROW_W 112
 #define SPECIAL_ROW_H 20
 
-static const u8 sText_SpecialPage[] = _("SPECIAL");
+static const u8 sText_SpecialPage[] = _("SIGNATURE");
 
 static void MoveSelectionDrawSpecialPage(void)
 {

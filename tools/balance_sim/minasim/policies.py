@@ -12,8 +12,8 @@ section of tools/balance_sim/targets.yaml (see `load_targets`).
 random   uniform over legal moves                              (floor)
 greedy   max expected damage, no items, switches only on faint (what ROM trainer AI roughly does)
 average  an average ROM-hack player: type chart, strongest super-effective move, heals low, ~10% mistakes,
-         never plans TP, never talks, no Special
-skilled  1-2 ply lookahead, TP thrift, switches on bad matchups, Talk and Special when they pay
+         never plans TP, never talks, no Signature
+skilled  1-2 ply lookahead, TP thrift, switches on bad matchups, Talk and Signature when they pay
 """
 import functools
 import os
@@ -255,7 +255,7 @@ def skilled_policy(state, params=None):
                     and not (m["type"] == "ELECTRIC" and "GROUND" in g.species[foe["species"]]["types"]) \
                     and g.effectiveness(m["type"], g.species[foe["species"]]["types"]) > 0:
                 return a
-    # Special when it beats the best normal move
+    # Signature when it beats the best normal move
     if p.get("uses_special"):
         sp = _legal(state, "special")
         if sp and me.get("special"):

@@ -96,7 +96,7 @@ def consts():
 class Mon:
     """species/moves/item are constant names without prefix. ivs: None (random), an int (all six) or six ints
     in the order HP, ATK, DEF, SPE, SPA, SPD. hp/status/exp/tp_spent carry state between battles;
-    awakened = the Special is unsealed."""
+    awakened = the Signature is unsealed."""
 
     __slots__ = ("species", "level", "moves", "item", "ivs", "nature", "tp_spent", "hp", "status", "exp", "awakened", "special_progress", "friendship")
 
