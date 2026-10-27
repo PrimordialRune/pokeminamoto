@@ -9,6 +9,7 @@ enum
     ARENA_NONE,
     ARENA_LUCKY_STRIKE, // Yujirou, Tokiwa: air vents, first-mover crits
     ARENA_GRUNGE_ROCK,  // Takeshi, Nibi: rocky ground, humid air
+    ARENA_FAULT_LINE,   // Takeshi, Nibi (slice): no effect yet, every arena hook treats it as ARENA_NONE until the takeshi workstream implements it
     ARENA_COUNT
 };
 
