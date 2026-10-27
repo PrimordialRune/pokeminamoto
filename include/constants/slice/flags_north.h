@@ -7,17 +7,17 @@
 #define GUARD_CONSTANTS_SLICE_FLAGS_NORTH_H
 
 // Story flags 0x28C-0x2A3 (24)
-#define FLAG_SLICE_NORTH_00                      0x28C
-#define FLAG_SLICE_NORTH_01                      0x28D
-#define FLAG_SLICE_NORTH_02                      0x28E
-#define FLAG_SLICE_NORTH_03                      0x28F
-#define FLAG_SLICE_NORTH_04                      0x290
-#define FLAG_SLICE_NORTH_05                      0x291
-#define FLAG_SLICE_NORTH_06                      0x292
-#define FLAG_SLICE_NORTH_07                      0x293
-#define FLAG_SLICE_NORTH_08                      0x294
-#define FLAG_SLICE_NORTH_09                      0x295
-#define FLAG_SLICE_NORTH_10                      0x296
+#define FLAG_Q_R22_DONE                          0x28C
+#define FLAG_Q_R22_SKIPPED                       0x28D
+#define FLAG_R22_TAG_GONE                        0x28E
+#define FLAG_HIDE_R22_RIVAL                      0x28F
+#define FLAG_HIDE_R22_SANDSHREW                  0x290
+#define FLAG_HIDE_R22_TAG                        0x291
+#define FLAG_HIDE_FOREST_KEN                     0x292
+#define FLAG_Q_KEN1_WIN                          0x293
+#define FLAG_FOREST_BC1_TALKED                   0x294
+#define FLAG_FOREST_BC2_TALKED                   0x295
+#define FLAG_R22_RIVAL_ENGAGED                   0x296
 #define FLAG_SLICE_NORTH_11                      0x297
 #define FLAG_SLICE_NORTH_12                      0x298
 #define FLAG_SLICE_NORTH_13                      0x299
@@ -51,11 +51,11 @@
 #define FLAG_SLICE_NORTH_39                      0x4A8
 
 // Item balls 0x400-0x417 (dead Hoenn FLAG_ITEM_* ids; use as the object's "flag")
-#define FLAG_ITEM_SLICE_NORTH_00                 0x400
-#define FLAG_ITEM_SLICE_NORTH_01                 0x401
-#define FLAG_ITEM_SLICE_NORTH_02                 0x402
-#define FLAG_ITEM_SLICE_NORTH_03                 0x403
-#define FLAG_ITEM_SLICE_NORTH_04                 0x404
+#define FLAG_ITEM_R02_MOON_STONE                 0x400
+#define FLAG_ITEM_R02_HP_UP                      0x401
+#define FLAG_ITEM_FOREST_ANTIDOTE                0x402
+#define FLAG_ITEM_FOREST_POTION                  0x403
+#define FLAG_ITEM_FOREST_POKE_BALL               0x404
 #define FLAG_ITEM_SLICE_NORTH_05                 0x405
 #define FLAG_ITEM_SLICE_NORTH_06                 0x406
 #define FLAG_ITEM_SLICE_NORTH_07                 0x407
@@ -77,7 +77,7 @@
 #define FLAG_ITEM_SLICE_NORTH_23                 0x417
 
 // Hidden items 0x20C-0x21B (dead Hoenn FLAG_HIDDEN_ITEM_* ids; bg_hidden_item_event "flag")
-#define FLAG_HIDDEN_ITEM_SLICE_NORTH_00          (FLAG_HIDDEN_ITEMS_START + 0x18)
+#define FLAG_HIDDEN_ITEM_R22_TAG                 (FLAG_HIDDEN_ITEMS_START + 0x18)
 #define FLAG_HIDDEN_ITEM_SLICE_NORTH_01          (FLAG_HIDDEN_ITEMS_START + 0x19)
 #define FLAG_HIDDEN_ITEM_SLICE_NORTH_02          (FLAG_HIDDEN_ITEMS_START + 0x1A)
 #define FLAG_HIDDEN_ITEM_SLICE_NORTH_03          (FLAG_HIDDEN_ITEMS_START + 0x1B)

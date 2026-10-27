@@ -1,2 +1,17 @@
 // Route2 dialogue (English). Logic: scripts.pory. Translations: text.<lang>.pory
 // with the same block names; see docs/engineering/map-text.md.
+
+// R02-001 [R/G]
+text Route2_Text_RouteSign {
+    format("ROUTE 2\nTOKIWA CITY - NIBI CITY")
+}
+
+// R02-204 [R/G]
+text Route2_Text_DiglettSign {
+    format("DIGLETT's CAVE")
+}
+
+// R02-202 [R/G]
+text Route2_Text_CutTree {
+    format("This tree looks like it can be cut down.")
+}

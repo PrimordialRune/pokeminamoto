@@ -1,2 +1,35 @@
-// Placeholder imported from FireRed (tools/frlg_import). No events yet.
+// Route 2 (north). Rows R02-001, 202, 203, 204, W1 (wild table: lab). R02-101 and R02-104 (the aide's Flash,
+// the trade house) stay behind Cut and are not in this slice. R02-201 (police box) is not shipped (optional texture).
+// Route2_House and Route2_EastBuilding are unreachable (world deleted their warps), so no lines there.
+
 mapscripts Route2_MapScripts {}
+
+// R02-001 [R/G]
+script Route2_EventScript_RouteSign {
+    msgbox(Route2_Text_RouteSign, MSGBOX_SIGN)
+    end
+}
+
+// R02-204 [R/G]: Diglett's Cave mouth, east side. A hook for a later return; there is no warp.
+script Route2_EventScript_DiglettSign {
+    msgbox(Route2_Text_DiglettSign, MSGBOX_SIGN)
+    end
+}
+
+// R02-202 [R/G]: the slice has no Cut, so the tree is only a sign of what is ahead.
+script Route2_EventScript_CutTree {
+    msgbox(Route2_Text_CutTree, MSGBOX_SIGN)
+    end
+}
+
+// R02-203 [R/G]: pokered's Route 2 items (Moon Stone, HP Up). In this layout both lie east of the Cut trees,
+// so neither can be reached in the slice; they are kept for the later return.
+script Route2_EventScript_MoonStone {
+    finditem(ITEM_MOON_STONE)
+    end
+}
+
+script Route2_EventScript_HPUp {
+    finditem(ITEM_HP_UP)
+    end
+}

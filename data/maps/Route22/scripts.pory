@@ -1,2 +1,284 @@
-// Placeholder imported from FireRed (tools/frlg_import). No events yet.
-mapscripts Route22_MapScripts {}
+// Route 22 (north). Rows R22-001, 202, 301, 302, 501, W1 (wild table: lab, src/data/wild_encounters.json).
+// Contracts: C1 (the tagged Rattata, second sighting), C2 (Omura's Sandshrew). Never in this map:
+// heals. The only recovery is core's no-whiteout heal after a lost rival fight (PLACEHOLDER Q96).
+//
+// VAR_ROUTE22_STATE: 0 Shigeru still to fight (trigger live), 1 beaten (FLAG_Q_R22_DONE),
+//                    2 expired: the player entered Tokiwa Forest first (FLAG_Q_R22_SKIPPED, set by the forest).
+
+mapscripts Route22_MapScripts {
+    MAP_SCRIPT_ON_TRANSITION {
+        // Shigeru is only ever added by his trigger; the object starts hidden every visit.
+        setflag(FLAG_HIDE_R22_RIVAL)
+        // C2: the Sandshrew shows while Omura's notice is read (1) or Omura has been met (2).
+        setflag(FLAG_HIDE_R22_SANDSHREW)
+        if (var(VAR_Q_SANDSHREW) == 1 || var(VAR_Q_SANDSHREW) == 2) {
+            clearflag(FLAG_HIDE_R22_SANDSHREW)
+        }
+        // C1: the fixed Rattata shows once, after it fled on Route 1, while the tag is still asked for.
+        setflag(FLAG_HIDE_R22_TAG)
+        if (var(VAR_Q_TAG) == 1 && flag(FLAG_Q_TAG_FLED) && !flag(FLAG_R22_TAG_GONE)) {
+            clearflag(FLAG_HIDE_R22_TAG)
+        }
+    }
+}
+
+// R22-001
+script Route22_EventScript_LeagueSign {
+    msgbox(Route22_Text_LeagueSign, MSGBOX_SIGN)
+    end
+}
+
+// R22-202: claw marks, once the Sandshrew is gone (caught, fainted or taken by someone else).
+script Route22_EventScript_ClawMarks {
+    if (flag(FLAG_HIDE_R22_SANDSHREW)) {
+        msgbox(Route22_Text_ClawMarks, MSGBOX_SIGN)
+    }
+    end
+}
+
+// ---------------------------------------------------------------------------
+// R22-301 (C2): the Sandshrew at the west wall. Running away is allowed; the sprite stays until it
+// is caught (var 3, FLAG_Q_SANDSHREW_R22) or faints (var 6). The capture happens on this map, so its
+// met location is MAPSEC_ROUTE_22. PLACEHOLDER: Lv 9 (lab's scenario uses 9); gfx is a stand-in
+// (art swaps OBJ_EVENT_GFX_MON_SANDSHREW).
+// ---------------------------------------------------------------------------
+
+script Route22_EventScript_Sandshrew {
+    lock
+    faceplayer
+    setvar(VAR_RESULT, 0)
+    checkitem(ITEM_POKE_BALL)
+    if (var(VAR_RESULT) == FALSE) {
+        checkitem(ITEM_GREAT_BALL)
+    }
+    if (var(VAR_RESULT) == FALSE) {
+        checkitem(ITEM_ULTRA_BALL)
+    }
+    if (var(VAR_RESULT) == FALSE) {
+        checkitem(ITEM_MASTER_BALL)
+    }
+    if (var(VAR_RESULT) == FALSE) {
+        msgbox(Route22_Text_SandshrewCurls)
+        release
+        end
+    }
+    msgbox(Route22_Text_SandshrewWatches)
+    setwildbattle(SPECIES_SANDSHREW, 9)
+    dowildbattle
+    specialvar(VAR_RESULT, GetBattleOutcome)
+    switch (var(VAR_RESULT)) {
+        case B_OUTCOME_CAUGHT:
+            setflag(FLAG_Q_SANDSHREW_R22)
+            setvar(VAR_Q_SANDSHREW, 3)
+            setflag(FLAG_HIDE_R22_SANDSHREW)
+            removeobject(LOCALID_R22_SANDSHREW)
+        case B_OUTCOME_WON:
+            setvar(VAR_Q_SANDSHREW, 6)
+            setflag(FLAG_HIDE_R22_SANDSHREW)
+            removeobject(LOCALID_R22_SANDSHREW)
+        default:
+            // ran, or it ran: it is still here
+    }
+    release
+    end
+}
+
+// ---------------------------------------------------------------------------
+// R22-302 (C1): the tagged Rattata, second sighting. Same behaviour as Route 1: caught gives the tag,
+// knocked out leaves it in the grass (the object's cell), ran away sets FLAG_R22_TAG_GONE and
+// Ken has the tag in the forest. PLACEHOLDER: Rattata Lv 4 as on Route 1 (OQ 3).
+// ---------------------------------------------------------------------------
+
+script Route22_EventScript_TagRattata {
+    lock
+    faceplayer
+    msgbox(Route22_Text_TagRattataWatches)
+    setwildbattle(SPECIES_RATTATA, 4)
+    dowildbattle
+    specialvar(VAR_RESULT, GetBattleOutcome)
+    switch (var(VAR_RESULT)) {
+        case B_OUTCOME_CAUGHT:
+            goto(Route22_EventScript_TagCaught)
+        case B_OUTCOME_WON:
+            goto(Route22_EventScript_TagKnockedOut)
+        default:
+            goto(Route22_EventScript_TagGone)
+    }
+}
+
+script Route22_EventScript_TagCaught {
+    setflag(FLAG_Q_TAG_CAUGHT)
+    setflag(FLAG_R22_TAG_GONE)
+    setflag(FLAG_HIDE_R22_TAG)
+    removeobject(LOCALID_R22_TAG)
+    msgbox(Route22_Text_TagCaught)
+    giveitem(ITEM_OLD_EAR_TAG)
+    setvar(VAR_Q_TAG, 2)
+    msgbox(Route22_Text_TagReads)
+    release
+    end
+}
+
+script Route22_EventScript_TagKnockedOut {
+    setflag(FLAG_Q_TAG_KO)
+    setflag(FLAG_R22_TAG_GONE)
+    setflag(FLAG_HIDE_R22_TAG)
+    removeobject(LOCALID_R22_TAG)
+    msgbox(Route22_Text_TagKnockedOut)
+    release
+    end
+}
+
+script Route22_EventScript_TagGone {
+    setflag(FLAG_R22_TAG_GONE)
+    setflag(FLAG_HIDE_R22_TAG)
+    removeobject(LOCALID_R22_TAG)
+    msgbox(Route22_Text_TagGone)
+    release
+    end
+}
+
+// The one-time pickup after a knock-out here. Live only while the tag is still asked for.
+script Route22_EventScript_TagInGrass {
+    if (flag(FLAG_Q_TAG_KO) && flag(FLAG_R22_TAG_GONE) && !flag(FLAG_HIDDEN_ITEM_R22_TAG) && var(VAR_Q_TAG) == 1) {
+        lockall
+        msgbox(Route22_Text_TagInGrass)
+        giveitem(ITEM_OLD_EAR_TAG)
+        if (var(VAR_RESULT) == TRUE) {
+            setflag(FLAG_HIDDEN_ITEM_R22_TAG)
+            setvar(VAR_Q_TAG, 2)
+            msgbox(Route22_Text_TagReads)
+        }
+        releaseall
+    }
+    end
+}
+
+// ---------------------------------------------------------------------------
+// R22-501: Shigeru, optional, no whiteout (PLACEHOLDER Q100: a lost fight costs nothing and can be
+// retried by talking to him). The trigger line is x = 32 (rows 4-6 are the only way west).
+// Three parties by VAR_STARTER_MON: 0 Bulbasaur -> _1 (Charmander), 1 Charmander -> _2 (Squirtle),
+// 2 Squirtle -> _3 (Bulbasaur). The trigger waits for the Index (FLAG_SYS_POKEDEX_GET).
+// ---------------------------------------------------------------------------
+
+script Route22_EventScript_ShigeruTrigger0 {
+    lockall
+    if (!flag(FLAG_SYS_POKEDEX_GET)) {
+        releaseall
+        end
+    }
+    if (!flag(FLAG_HIDE_R22_RIVAL)) {
+        goto(Route22_EventScript_ShigeruRetry)
+    }
+    setobjectxyperm(LOCALID_ROUTE22_RIVAL, 29, 4)
+    goto(Route22_EventScript_ShigeruScene)
+}
+
+script Route22_EventScript_ShigeruTrigger1 {
+    lockall
+    if (!flag(FLAG_SYS_POKEDEX_GET)) {
+        releaseall
+        end
+    }
+    if (!flag(FLAG_HIDE_R22_RIVAL)) {
+        goto(Route22_EventScript_ShigeruRetry)
+    }
+    setobjectxyperm(LOCALID_ROUTE22_RIVAL, 29, 5)
+    goto(Route22_EventScript_ShigeruScene)
+}
+
+script Route22_EventScript_ShigeruTrigger2 {
+    lockall
+    if (!flag(FLAG_SYS_POKEDEX_GET)) {
+        releaseall
+        end
+    }
+    if (!flag(FLAG_HIDE_R22_RIVAL)) {
+        goto(Route22_EventScript_ShigeruRetry)
+    }
+    setobjectxyperm(LOCALID_ROUTE22_RIVAL, 29, 6)
+    goto(Route22_EventScript_ShigeruScene)
+}
+
+script Route22_EventScript_ShigeruScene {
+    clearflag(FLAG_HIDE_R22_RIVAL)
+    addobject(LOCALID_ROUTE22_RIVAL)
+    playbgm(MUS_RG_ENCOUNTER_RIVAL, FALSE)
+    applymovement(OBJ_EVENT_ID_PLAYER, Route22_Movement_FaceLeft)
+    applymovement(LOCALID_ROUTE22_RIVAL, Common_Movement_ExclamationMark)
+    waitmovement(0)
+    applymovement(LOCALID_ROUTE22_RIVAL, Route22_Movement_RivalApproach)
+    waitmovement(0)
+    msgbox(Route22_Text_RivalMeet)
+    if (flag(FLAG_Q_RIVAL1_WIN)) {
+        msgbox(Route22_Text_RivalCallbackWon)
+    } else {
+        msgbox(Route22_Text_RivalCallbackLost)
+    }
+    goto(Route22_EventScript_ShigeruFight)
+}
+
+// Talking to him again after a lost fight (he stays where he stood). Also the object's own script.
+script Route22_EventScript_Shigeru {
+    lock
+    faceplayer
+    goto(Route22_EventScript_ShigeruRetry)
+}
+
+script Route22_EventScript_ShigeruRetry {
+    lockall
+    msgbox(Route22_Text_RivalAgain)
+    goto(Route22_EventScript_ShigeruFight)
+}
+
+script Route22_EventScript_ShigeruFight {
+    switch (var(VAR_STARTER_MON)) {
+        case 0:
+            trainerbattle_early_rival(TRAINER_SHIGERU_ROUTE22_1, Route22_Text_RivalIntro, Route22_Text_RivalDefeated, Route22_Text_RivalVictory, Route22_EventScript_ShigeruAfter)
+        case 1:
+            trainerbattle_early_rival(TRAINER_SHIGERU_ROUTE22_2, Route22_Text_RivalIntro, Route22_Text_RivalDefeated, Route22_Text_RivalVictory, Route22_EventScript_ShigeruAfter)
+        default:
+            trainerbattle_early_rival(TRAINER_SHIGERU_ROUTE22_3, Route22_Text_RivalIntro, Route22_Text_RivalDefeated, Route22_Text_RivalVictory, Route22_EventScript_ShigeruAfter)
+    }
+    releaseall
+    end
+}
+
+// Runs after the fight with VAR_RESULT 1 (won) or 0 (lost). Read it first.
+script Route22_EventScript_ShigeruAfter {
+    if (var(VAR_RESULT) == 1) {
+        setflag(FLAG_Q_R22_DONE)
+        setvar(VAR_ROUTE22_STATE, 1)
+        msgbox(Route22_Text_RivalAfter)
+        applymovement(LOCALID_ROUTE22_RIVAL, Route22_Movement_RivalLeave)
+        waitmovement(0)
+        removeobject(LOCALID_ROUTE22_RIVAL)
+        setflag(FLAG_HIDE_R22_RIVAL)
+        fadedefaultbgm
+    } else {
+        // PLACEHOLDER (Q96): one line for the free heal.
+        msgbox(Route22_Text_RivalLostLine)
+        fadedefaultbgm
+    }
+    releaseall
+    end
+}
+
+movement Route22_Movement_FaceLeft {
+    face_left
+}
+
+movement Route22_Movement_RivalApproach {
+    walk_right
+    walk_right
+    face_right
+}
+
+movement Route22_Movement_RivalLeave {
+    walk_left
+    walk_left
+    walk_left
+    walk_left
+    walk_left
+    walk_left
+}

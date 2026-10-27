@@ -1,2 +1,12 @@
-// Placeholder imported from FireRed (tools/frlg_import). No events yet.
+// Forest south gatehouse (north). R02-102.
 mapscripts Route2_ViridianForest_SouthEntrance_MapScripts {}
+
+script Route2SouthGate_EventScript_Girl {
+    msgbox(Route2SouthGate_Text_Girl, MSGBOX_NPC)
+    end
+}
+
+script Route2SouthGate_EventScript_LittleGirl {
+    msgbox(Route2SouthGate_Text_LittleGirl, MSGBOX_NPC)
+    end
+}

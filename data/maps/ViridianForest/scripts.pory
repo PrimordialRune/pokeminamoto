@@ -1,2 +1,250 @@
-// Placeholder imported from FireRed (tools/frlg_import). No events yet.
-mapscripts ViridianForest_MapScripts {}
+// Tokiwa Forest (north). Rows FOR-001, 002, 003, 101-104, 201-206, 501-503, W1 (wild table: lab).
+// Contracts: C1 (FOR-003, Ken has the tag), R22-501's expiry (set here on the first entry).
+// VAR_FOREST_STATE: 0 Ken's clearing scene still to play, 1 played (FLAG_Q_KEN1_DONE).
+
+mapscripts ViridianForest_MapScripts {
+    MAP_SCRIPT_ON_TRANSITION {
+        // R22-501 expiry (PLACEHOLDER Q100, the script list's invention): entering the forest with
+        // Shigeru unfought hides him for good and Ken's scene gets one extra box.
+        if (var(VAR_ROUTE22_STATE) == 0) {
+            setvar(VAR_ROUTE22_STATE, 2)
+            setflag(FLAG_Q_R22_SKIPPED)
+        }
+        // Ken waits in the clearing until the scene has played. If the bag was full at FOR-003 he waits on.
+        setflag(FLAG_HIDE_FOREST_KEN)
+        if (var(VAR_FOREST_STATE) == 0) {
+            clearflag(FLAG_HIDE_FOREST_KEN)
+        }
+        if (var(VAR_FOREST_STATE) == 1 && var(VAR_Q_TAG) == 1 && flag(FLAG_Q_KEN1_DONE) && !flag(FLAG_Q_TAG_CAUGHT) && !flag(FLAG_Q_TAG_KO)) {
+            // Tag still owed (bag was full): Ken stays in the clearing.
+            clearflag(FLAG_HIDE_FOREST_KEN)
+        }
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Boards
+// ---------------------------------------------------------------------------
+
+script Forest_EventScript_BoardSouth {
+    msgbox(Forest_Text_BoardSouth, MSGBOX_SIGN)
+    end
+}
+
+script Forest_EventScript_BoardNorth {
+    msgbox(Forest_Text_BoardNorth, MSGBOX_SIGN)
+    end
+}
+
+script Forest_EventScript_BoardGrass {
+    msgbox(Forest_Text_BoardGrass, MSGBOX_SIGN)
+    end
+}
+
+script Forest_EventScript_BoardPoison {
+    msgbox(Forest_Text_BoardPoison, MSGBOX_SIGN)
+    end
+}
+
+script Forest_EventScript_BoardIndex {
+    msgbox(Forest_Text_BoardIndex, MSGBOX_SIGN)
+    end
+}
+
+script Forest_EventScript_BoardStealing {
+    msgbox(Forest_Text_BoardStealing, MSGBOX_SIGN)
+    end
+}
+
+script Forest_EventScript_BoardWeaken {
+    msgbox(Forest_Text_BoardWeaken, MSGBOX_SIGN)
+    end
+}
+
+// ---------------------------------------------------------------------------
+// Items (FOR-206): pokered's three item balls. pokered has no hidden items in this forest.
+// ---------------------------------------------------------------------------
+
+script Forest_EventScript_ItemPotion {
+    finditem(ITEM_POTION)
+    end
+}
+
+script Forest_EventScript_ItemAntidote {
+    finditem(ITEM_ANTIDOTE)
+    end
+}
+
+script Forest_EventScript_ItemPokeBall {
+    finditem(ITEM_POKE_BALL)
+    end
+}
+
+// ---------------------------------------------------------------------------
+// FOR-101, 102 [R/G]
+// ---------------------------------------------------------------------------
+
+script Forest_EventScript_Youngster1 {
+    msgbox(Forest_Text_Youngster1, MSGBOX_NPC)
+    end
+}
+
+script Forest_EventScript_Youngster2 {
+    msgbox(Forest_Text_Youngster2, MSGBOX_NPC)
+    end
+}
+
+// ---------------------------------------------------------------------------
+// FOR-501-503 Bug Catchers [R/G pokered parties, PLACEHOLDER levels owned by lab]. These scripts must start
+// with the trainerbattle command (sight triggers read it directly). The canon line is shown right after the
+// battle; later talks give the invented second line (FOR-104, FOR-103); Bug Catcher 3 keeps his canon line.
+// ---------------------------------------------------------------------------
+
+script Forest_EventScript_BugCatcher1 {
+    trainerbattle_single(TRAINER_BUG_CATCHER_FOREST_1, Forest_Text_BC1Intro, Forest_Text_BC1Defeat, Forest_EventScript_BC1Won)
+    msgbox(Forest_Text_BC1Second, MSGBOX_AUTOCLOSE)
+    end
+}
+
+script Forest_EventScript_BC1Won {
+    msgbox(Forest_Text_BC1After)
+    releaseall
+    end
+}
+
+script Forest_EventScript_BugCatcher2 {
+    trainerbattle_single(TRAINER_BUG_CATCHER_FOREST_2, Forest_Text_BC2Intro, Forest_Text_BC2Defeat, Forest_EventScript_BC2Won)
+    msgbox(Forest_Text_BC2Second, MSGBOX_AUTOCLOSE)
+    end
+}
+
+script Forest_EventScript_BC2Won {
+    msgbox(Forest_Text_BC2After)
+    releaseall
+    end
+}
+
+script Forest_EventScript_BugCatcher3 {
+    trainerbattle_single(TRAINER_BUG_CATCHER_FOREST_3, Forest_Text_BC3Intro, Forest_Text_BC3Defeat, Forest_EventScript_BC3Won)
+    msgbox(Forest_Text_BC3After, MSGBOX_AUTOCLOSE)
+    end
+}
+
+script Forest_EventScript_BC3Won {
+    msgbox(Forest_Text_BC3After)
+    releaseall
+    end
+}
+
+// ---------------------------------------------------------------------------
+// FOR-003 + FOR-002: Ken in the clearing before the north gate. Every player crosses row 12 at x 4 or 5,
+// so the scene always plays once. The result is free: no whiteout (core's early-rival mode, PLACEHOLDER Q96
+// for the heal and its one line). Ken's party is the leftover starter Lv 8 + Metapod Lv 7 (OQ13 PLACEHOLDER).
+// ---------------------------------------------------------------------------
+
+script Forest_EventScript_KenTriggerLeft {
+    lockall
+    applymovement(OBJ_EVENT_ID_PLAYER, Forest_Movement_StepRightFaceUp)
+    waitmovement(0)
+    goto(Forest_EventScript_KenScene)
+}
+
+script Forest_EventScript_KenTriggerMid {
+    lockall
+    applymovement(OBJ_EVENT_ID_PLAYER, Forest_Movement_FaceUp)
+    waitmovement(0)
+    goto(Forest_EventScript_KenScene)
+}
+
+script Forest_EventScript_KenScene {
+    // FOR-003 first: the tag, when Okido asked for it and the player never got it.
+    if (var(VAR_Q_TAG) == 1) {
+        msgbox(Forest_Text_KenTag)
+        giveitem(ITEM_OLD_EAR_TAG)
+        if (var(VAR_RESULT) == TRUE) {
+            setflag(FLAG_Q_TAG_KEN)
+            setvar(VAR_Q_TAG, 2)
+            msgbox(Forest_Text_TagReads)
+        } else {
+            // Bag full: Ken keeps it and waits (his talk script hands it over later).
+            msgbox(Forest_Text_KenTagLater)
+        }
+    }
+    msgbox(Forest_Text_KenSketches)
+    if (flag(FLAG_Q_R22_SKIPPED)) {
+        msgbox(Forest_Text_KenShigeru)
+    }
+    goto(Forest_EventScript_KenFight)
+}
+
+script Forest_EventScript_KenFight {
+    switch (var(VAR_STARTER_MON)) {
+        case 0:
+            trainerbattle_early_rival(TRAINER_KEN_FOREST_1, Forest_Text_KenIntro, Forest_Text_KenDefeated, Forest_Text_KenVictory, Forest_EventScript_KenAfter)
+        case 1:
+            trainerbattle_early_rival(TRAINER_KEN_FOREST_2, Forest_Text_KenIntro, Forest_Text_KenDefeated, Forest_Text_KenVictory, Forest_EventScript_KenAfter)
+        default:
+            trainerbattle_early_rival(TRAINER_KEN_FOREST_3, Forest_Text_KenIntro, Forest_Text_KenDefeated, Forest_Text_KenVictory, Forest_EventScript_KenAfter)
+    }
+    releaseall
+    end
+}
+
+// After the fight, VAR_RESULT 1 (won) or 0 (lost). Read it first.
+script Forest_EventScript_KenAfter {
+    setflag(FLAG_Q_KEN1_DONE)
+    setvar(VAR_FOREST_STATE, 1)
+    if (var(VAR_RESULT) == 1) {
+        setflag(FLAG_Q_KEN1_WIN)
+    } else {
+        // PLACEHOLDER (Q96): the line over core's free heal.
+        msgbox(Forest_Text_KenSit)
+    }
+    if (var(VAR_Q_TAG) != 1) {
+        applymovement(LOCALID_FOREST_KEN, Forest_Movement_KenLeaves)
+        waitmovement(0)
+        removeobject(LOCALID_FOREST_KEN)
+        setflag(FLAG_HIDE_FOREST_KEN)
+    }
+    releaseall
+    end
+}
+
+// Ken's own script: only live while the tag is still owed (bag was full); otherwise he is gone.
+script Forest_EventScript_Ken {
+    lock
+    faceplayer
+    if (var(VAR_Q_TAG) == 1) {
+        msgbox(Forest_Text_KenTag)
+        giveitem(ITEM_OLD_EAR_TAG)
+        if (var(VAR_RESULT) == TRUE) {
+            setflag(FLAG_Q_TAG_KEN)
+            setvar(VAR_Q_TAG, 2)
+            msgbox(Forest_Text_TagReads)
+            applymovement(LOCALID_FOREST_KEN, Forest_Movement_KenLeaves)
+            waitmovement(0)
+            removeobject(LOCALID_FOREST_KEN)
+            setflag(FLAG_HIDE_FOREST_KEN)
+        } else {
+            msgbox(Forest_Text_KenTagLater)
+        }
+    } else {
+        msgbox(Forest_Text_KenSketchesAgain)
+    }
+    release
+    end
+}
+
+movement Forest_Movement_StepRightFaceUp {
+    walk_right
+    face_up
+}
+
+movement Forest_Movement_FaceUp {
+    face_up
+}
+
+movement Forest_Movement_KenLeaves {
+    walk_up
+    walk_up
+}

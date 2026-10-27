@@ -1,2 +1,11 @@
 // Route2_ViridianForest_SouthEntrance dialogue (English). Logic: scripts.pory. Translations: text.<lang>.pory
 // with the same block names; see docs/engineering/map-text.md.
+
+// R02-102 [R/G] pokered Viridian Forest south gate.
+text Route2SouthGate_Text_Girl {
+    format("Are you going to the forest? Be careful, it's a natural maze!")
+}
+
+text Route2SouthGate_Text_LittleGirl {
+    format("RATTATA may be small, but its bite is wicked! Did you get one?")
+}

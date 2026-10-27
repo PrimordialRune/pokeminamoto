@@ -1,2 +1,16 @@
 // Route22_NorthEntrance dialogue (English). Logic: scripts.pory. Translations: text.<lang>.pory
 // with the same block names; see docs/engineering/map-text.md.
+
+// R22-101 [R/G] pokered Route22Gate guard.
+text Route22Gate_Text_Guard1NoBadge {
+    format("Only truly skilled trainers are allowed through.\pYou don't have the BOULDER BADGE yet!\pThe rules are rules. I can't let you pass.")
+}
+
+text Route22Gate_Text_Guard1Badge {
+    format("Oh! That is the BOULDER BADGE!\pGo right ahead!")
+}
+
+// Guard 2 [R/G] pokered Route 23 first guard (CASCADE BADGE), relocated into the gate.
+text Route22Gate_Text_Guard2 {
+    format("You can pass here only if you have the CASCADE BADGE!\pYou don't have the CASCADE BADGE yet!\pYou have to have it to get to POKéMON LEAGUE!")
+}

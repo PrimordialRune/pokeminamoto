@@ -1,2 +1,12 @@
-// Placeholder imported from FireRed (tools/frlg_import). No events yet.
+// Forest north gatehouse (north). R02-103.
 mapscripts Route2_ViridianForest_NorthEntrance_MapScripts {}
+
+script Route2NorthGate_EventScript_Youngster {
+    msgbox(Route2NorthGate_Text_Youngster, MSGBOX_NPC)
+    end
+}
+
+script Route2NorthGate_EventScript_OldMan {
+    msgbox(Route2NorthGate_Text_OldMan, MSGBOX_NPC)
+    end
+}

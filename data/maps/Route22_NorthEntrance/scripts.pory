@@ -1,2 +1,41 @@
-// Placeholder imported from FireRed (tools/frlg_import). No events yet.
-mapscripts Route22_NorthEntrance_MapScripts {}
+// League front gate (north). R22-101 guard 1, plus guard 2 (the R/G Route 23 first guard, relocated).
+// There is no north warp: nothing in this slice goes past these two.
+
+mapscripts Route22_NorthEntrance_MapScripts {
+    MAP_SCRIPT_ON_TRANSITION {
+        // With the Boulder Badge guard 1 stands one tile aside (his cell stays a wall of people for guard 2).
+        if (flag(FLAG_BADGE02_GET)) {
+            setobjectxyperm(LOCALID_R22_GATE_GUARD_1, 9, 2)
+        }
+    }
+}
+
+// R22-101 [R/G]: BOULDER BADGE (B2).
+script Route22Gate_EventScript_Guard1 {
+    lock
+    faceplayer
+    if (flag(FLAG_BADGE02_GET)) {
+        msgbox(Route22Gate_Text_Guard1Badge)
+        applymovement(LOCALID_R22_GATE_GUARD_1, Route22Gate_Movement_SideStep)
+        waitmovement(0)
+        setobjectxyperm(LOCALID_R22_GATE_GUARD_1, 9, 2)
+    } else {
+        msgbox(Route22Gate_Text_Guard1NoBadge)
+    }
+    release
+    end
+}
+
+// Guard 2 [R/G Route 23 first guard]: CASCADE BADGE, never lifted in this slice.
+script Route22Gate_EventScript_Guard2 {
+    lock
+    faceplayer
+    msgbox(Route22Gate_Text_Guard2)
+    release
+    end
+}
+
+movement Route22Gate_Movement_SideStep {
+    walk_right
+    face_down
+}
