@@ -26,9 +26,8 @@
         [21, "FURY_SWIPES"],
         [27, "FOCUS_ENERGY"],
         [33, "SEISMIC_TOSS"],
-        [39, "KARATE_CHOP"],
-        [45, "SCREECH"],
-        [51, "THRASH"]
+        [39, "THRASH"],
+        [45, "SCREECH"]
     ],
     "tmhm": [
         "MEGA_PUNCH",

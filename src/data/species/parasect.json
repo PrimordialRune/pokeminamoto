@@ -20,16 +20,15 @@
     "cry": "sound/direct_sound_samples/cries/parasect.bin",
     "levelUpMoves": [
         [1, "SCRATCH"],
+        [1, "ABSORB"],
         [1, "STUN_SPORE"],
-        [1, "POISON_POWDER"],
         [7, "STUN_SPORE"],
-        [13, "POISON_POWDER"],
-        [19, "LEECH_LIFE"],
-        [27, "SPORE"],
-        [35, "SLASH"],
-        [43, "GROWTH"],
-        [51, "MEGA_DRAIN"],
-        [59, "RECOVER"]
+        [13, "LEECH_LIFE"],
+        [19, "POISON_POWDER"],
+        [24, "SPORE"],
+        [30, "SLASH"],
+        [36, "GROWTH"],
+        [42, "MEGA_DRAIN"]
     ],
     "tmhm": [
         "SWORDS_DANCE",

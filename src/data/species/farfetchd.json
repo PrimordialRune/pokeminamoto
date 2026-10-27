@@ -20,15 +20,14 @@
     "cry": "sound/direct_sound_samples/cries/farfetchd.bin",
     "levelUpMoves": [
         [1, "PECK"],
-        [6, "SAND_ATTACK"],
-        [11, "LEER"],
-        [16, "FURY_ATTACK"],
-        [21, "SCRATCH"],
-        [26, "FURY_SWIPES"],
-        [31, "SWORDS_DANCE"],
-        [36, "AGILITY"],
-        [41, "SLASH"],
-        [46, "SLASH"]
+        [1, "SAND_ATTACK"],
+        [7, "LEER"],
+        [11, "CUT"],
+        [15, "FURY_ATTACK"],
+        [21, "SWORDS_DANCE"],
+        [27, "WING_ATTACK"],
+        [32, "AGILITY"],
+        [37, "SLASH"]
     ],
     "tmhm": [
         "RAZOR_WIND",

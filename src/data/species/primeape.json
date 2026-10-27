@@ -21,16 +21,14 @@
         [1, "SCRATCH"],
         [1, "LEER"],
         [1, "LOW_KICK"],
-        [1, "RAGE"],
         [9, "LOW_KICK"],
         [15, "KARATE_CHOP"],
         [21, "FURY_SWIPES"],
         [27, "FOCUS_ENERGY"],
         [28, "RAGE"],
         [36, "SEISMIC_TOSS"],
-        [45, "KARATE_CHOP"],
-        [54, "SCREECH"],
-        [63, "THRASH"]
+        [45, "THRASH"],
+        [54, "SCREECH"]
     ],
     "tmhm": [
         "MEGA_PUNCH",

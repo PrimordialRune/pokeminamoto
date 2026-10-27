@@ -183,6 +183,9 @@ def average_policy(state, params=None):
     return max(ms, key=lambda a: move_value(g, me, foe, _mv(me, a)) + 1e-4 * g.moves.get(_mv(me, a), {"power": 0})["power"])
 
 
+_SEEDED = set()
+
+
 def skilled_policy(state, params=None):
     p = params or policy_params("skilled")
     g = Game.get()
@@ -234,6 +237,24 @@ def skilled_policy(state, params=None):
                 return talks.get("unnerve") or best[2]
             if mode == "provoke":
                 return talks.get("provoke") or best[2]
+    # sleep or paralyse a healthy foe first when the fight will take a while (status moves score ~0 above);
+    # Leech Seed once per foe (the state has no seeded flag, so the policy remembers what it seeded this battle)
+    if p.get("uses_status", True) and my_turns > 2.0 and foe_frac > 0.5:
+        key = (state.get("seed"), foe["species"], foe["max_hp"])
+        for a in ms:
+            if _mv(me, a) == "LEECH_SEED" and key not in _SEEDED and "GRASS" not in g.species[foe["species"]]["types"] \
+                    and hp_frac > 0.5:
+                if len(_SEEDED) > 4096:
+                    _SEEDED.clear()
+                _SEEDED.add(key)
+                return a
+    if p.get("uses_status", True) and not foe.get("status") and my_turns > 2.0 and foe_frac > 0.5:
+        for a in ms:
+            m = g.moves.get(_mv(me, a))
+            if m and m["power"] == 0 and m["effect"] in ("SLEEP", "PARALYZE") and (m["acc"] or 100) >= 70 \
+                    and not (m["type"] == "ELECTRIC" and "GROUND" in g.species[foe["species"]]["types"]) \
+                    and g.effectiveness(m["type"], g.species[foe["species"]]["types"]) > 0:
+                return a
     # Special when it beats the best normal move
     if p.get("uses_special"):
         sp = _legal(state, "special")

@@ -22,11 +22,11 @@
         [1, "TACKLE"],
         [1, "TAIL_WHIP"],
         [7, "QUICK_ATTACK"],
-        [13, "HYPER_FANG"],
+        [14, "HYPER_FANG"],
         [20, "FOCUS_ENERGY"],
-        [27, "TACKLE"],
+        [27, "BITE"],
         [34, "SUPER_FANG"],
-        [41, "COUNTER"]
+        [41, "TAKE_DOWN"]
     ],
     "tmhm": [
         "TOXIC",

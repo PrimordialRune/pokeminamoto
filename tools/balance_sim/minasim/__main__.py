@@ -1,4 +1,4 @@
-"""python3 -m minasim run [--quick] [--jobs N] [--baseline RUN] | duel ... | gui"""
+"""python3 -m minasim run [--quick] [--jobs N] [--baseline RUN] | duel ... | journey SCENARIO | gui"""
 import argparse
 import json
 import random
@@ -113,7 +113,12 @@ def main(argv=None):
     l.set_defaults(fn=cmd_lint)
     g = sub.add_parser("gui", help="local web GUI")
     g.add_argument("rest", nargs=argparse.REMAINDER)
+    j = sub.add_parser("journey", help="play one scripted chapter (scenarios/*.yaml) battle after battle")
+    j.add_argument("rest", nargs=argparse.REMAINDER)
     a = p.parse_args(argv)
+    if a.cmd == "journey":
+        from . import journey
+        return journey.main(a.rest)
     if a.cmd == "gui":
         from .gui import server
         sys.argv = ["minasim gui"] + a.rest
