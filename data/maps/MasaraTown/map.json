@@ -85,7 +85,36 @@
       "flag": "FLAG_HIDE_MASARA_KIMURA_NIGHT"
     }
   ],
-  "warp_events": [],
+  "warp_events": [
+    {
+      "x": 5,
+      "y": 8,
+      "elevation": 0,
+      "dest_map": "MAP_PALLET_TOWN_PLAYERS_HOUSE_1F",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 24,
+      "y": 11,
+      "elevation": 0,
+      "dest_map": "MAP_PALLET_TOWN_RIVALS_HOUSE",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 27,
+      "y": 20,
+      "elevation": 0,
+      "dest_map": "MAP_PALLET_TOWN_PROFESSOR_OAKS_LAB",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 10,
+      "y": 19,
+      "elevation": 0,
+      "dest_map": "MAP_MASARA_TOWN_OKADA_SHOP",
+      "dest_warp_id": "1"
+    }
+  ],
   "coord_events": [
     {
       "type": "trigger",
@@ -94,7 +123,7 @@
       "elevation": 3,
       "var": "VAR_TEMP_F",
       "var_value": "0",
-      "script": "MasaraTown_EventScript_ToLittleroot"
+      "script": "Slice_EventScript_MasaraToRoute1West"
     },
     {
       "type": "trigger",
@@ -103,7 +132,43 @@
       "elevation": 3,
       "var": "VAR_TEMP_F",
       "var_value": "0",
-      "script": "MasaraTown_EventScript_ToLittleroot"
+      "script": "Slice_EventScript_MasaraToRoute1East"
+    },
+    {
+      "type": "trigger",
+      "x": 5,
+      "y": 7,
+      "elevation": 3,
+      "var": "VAR_TEMP_F",
+      "var_value": "0",
+      "script": "Slice_EventScript_MasaraDoorHome"
+    },
+    {
+      "type": "trigger",
+      "x": 24,
+      "y": 10,
+      "elevation": 3,
+      "var": "VAR_TEMP_F",
+      "var_value": "0",
+      "script": "Slice_EventScript_MasaraDoorOkidoHouse"
+    },
+    {
+      "type": "trigger",
+      "x": 27,
+      "y": 19,
+      "elevation": 3,
+      "var": "VAR_TEMP_F",
+      "var_value": "0",
+      "script": "Slice_EventScript_MasaraDoorLab"
+    },
+    {
+      "type": "trigger",
+      "x": 10,
+      "y": 18,
+      "elevation": 3,
+      "var": "VAR_TEMP_F",
+      "var_value": "0",
+      "script": "Slice_EventScript_MasaraDoorOkadaShop"
     }
   ],
   "bg_events": [
@@ -146,6 +211,22 @@
       "elevation": 0,
       "player_facing_dir": "BG_EVENT_PLAYER_FACING_NORTH",
       "script": "MasaraTown_EventScript_KimuraWindow"
+    },
+    {
+      "type": "sign",
+      "x": 15,
+      "y": 9,
+      "elevation": 0,
+      "player_facing_dir": "BG_EVENT_PLAYER_FACING_NORTH",
+      "script": "Slice_EventScript_LockedDoor"
+    },
+    {
+      "type": "sign",
+      "x": 21,
+      "y": 10,
+      "elevation": 0,
+      "player_facing_dir": "BG_EVENT_PLAYER_FACING_NORTH",
+      "script": "Slice_EventScript_LockedDoor"
     }
   ]
 }
