@@ -20,15 +20,16 @@
     "evolutions": [{"method": "LEVEL", "param": 16, "into": "CHARMELEON"}],
     "levelUpMoves": [
         [1, "SCRATCH"],
-        [1, "GROWL"],
-        [7, "EMBER"],
-        [13, "SMOKESCREEN"],
-        [19, "RAGE"],
-        [25, "LEER"],
-        [31, "FLAMETHROWER"],
-        [37, "SLASH"],
+        [5, "GROWL"],
+        [10, "EMBER"],
+        [13, "LEER"],
+        [17, "CUT"],
+        [21, "SLAM"],
+        [25, "FLAMETHROWER"],
+        [31, "SLASH"],
+        [37, "FIRE_SPIN"],
         [43, "DRAGON_RAGE"],
-        [49, "FIRE_SPIN"]
+        [49, "FIRE_BLAST"]
     ],
     "tmhm": [
         "MEGA_PUNCH",

@@ -17,7 +17,20 @@
     "safariZoneFleeRate": 0,
     "bodyColor": "PURPLE",
     "cry": "sound/direct_sound_samples/cries/nidoking.bin",
-    "levelUpMoves": [[1, "PECK"], [1, "FOCUS_ENERGY"], [1, "DOUBLE_KICK"], [1, "POISON_STING"], [23, "THRASH"]],
+    "levelUpMoves": [
+        [1, "TACKLE"],
+        [1, "HORN_ATTACK"],
+        [1, "DOUBLE_KICK"],
+        [1, "THRASH"],
+        [6, "POISON_STING"],
+        [8, "HORN_ATTACK"],
+        [10, "DOUBLE_KICK"],
+        [17, "FOCUS_ENERGY"],
+        [24, "FURY_ATTACK"],
+        [32, "HORN_DRILL"],
+        [38, "STRENGTH"],
+        [46, "EARTHQUAKE"]
+    ],
     "tmhm": [
         "MEGA_PUNCH",
         "MEGA_KICK",

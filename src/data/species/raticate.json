@@ -22,11 +22,12 @@
         [1, "TAIL_WHIP"],
         [1, "QUICK_ATTACK"],
         [7, "QUICK_ATTACK"],
-        [13, "HYPER_FANG"],
-        [20, "LEER"],
-        [30, "TACKLE"],
-        [40, "SUPER_FANG"],
-        [50, "COUNTER"]
+        [14, "HYPER_FANG"],
+        [20, "BITE"],
+        [24, "FOCUS_ENERGY"],
+        [32, "SUPER_FANG"],
+        [40, "TAKE_DOWN"],
+        [48, "DOUBLE_EDGE"]
     ],
     "tmhm": [
         "TOXIC",

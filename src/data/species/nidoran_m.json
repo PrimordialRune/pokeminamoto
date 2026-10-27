@@ -20,15 +20,14 @@
     "evolutions": [{"method": "LEVEL", "param": 16, "into": "NIDORINO"}],
     "levelUpMoves": [
         [1, "LEER"],
-        [1, "PECK"],
-        [8, "FOCUS_ENERGY"],
-        [12, "DOUBLE_KICK"],
-        [17, "POISON_STING"],
-        [20, "HORN_ATTACK"],
-        [23, "GROWL"],
-        [30, "FURY_ATTACK"],
-        [38, "CONFUSE_RAY"],
-        [47, "HORN_DRILL"]
+        [1, "TACKLE"],
+        [6, "POISON_STING"],
+        [8, "HORN_ATTACK"],
+        [10, "DOUBLE_KICK"],
+        [17, "FOCUS_ENERGY"],
+        [23, "FURY_ATTACK"],
+        [30, "HORN_DRILL"],
+        [37, "THRASH"]
     ],
     "tmhm": [
         "TOXIC",

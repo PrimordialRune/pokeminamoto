@@ -23,13 +23,11 @@
         [1, "SAND_ATTACK"],
         [1, "GROWL"],
         [5, "GROWL"],
-        [9, "EARTHQUAKE"],
-        [17, "DIG"],
-        [25, "SAND_ATTACK"],
-        [26, "WRAP"],
-        [38, "SLASH"],
-        [51, "EARTHQUAKE"],
-        [64, "FISSURE"]
+        [11, "DIG"],
+        [18, "FURY_SWIPES"],
+        [28, "SLASH"],
+        [37, "EARTHQUAKE"],
+        [47, "FISSURE"]
     ],
     "tmhm": [
         "TOXIC",

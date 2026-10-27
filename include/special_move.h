@@ -1,13 +1,13 @@
 #ifndef GUARD_SPECIAL_MOVE_H
 #define GUARD_SPECIAL_MOVE_H
 
-// The Special: each species line's signature move, outside the 4 move slots. It is sealed
-// ("???") until the mon meets its species' condition, then it can be used from the Special page
+// The Signature: each species line's own move, outside the 4 move slots. It is sealed
+// ("???") until the mon meets its species' condition, then it can be used from the Signature page
 // of the FIGHT menu (SELECT). Per mon it costs no new save data: MON_DATA_SPECIAL_AWAKENED and
 // MON_DATA_SPECIAL_PROGRESS (docs/engineering/per-mon-data.md). Design:
 // /mnt/project-files/research/special-move-research-v1.md sections 2.3-2.7.
 
-// How a species' Special is unsealed
+// How a species' Signature is unsealed
 enum {
     SPECIAL_COND_BOND,    // friendship >= threshold (0 means SPECIAL_BOND_FRIENDSHIP)
     SPECIAL_COND_DEED,    // the deed done threshold times, counted in MON_DATA_SPECIAL_PROGRESS
@@ -24,12 +24,12 @@ enum {
 // Friendship that unseals a species with no condition of its own
 #define SPECIAL_BOND_FRIENDSHIP 220
 
-// The move position the FIGHT menu sends when the Special is chosen (slots are 0-3)
+// The move position the FIGHT menu sends when the Signature is chosen (slots are 0-3)
 #define SPECIAL_MOVE_POS MAX_MON_MOVES
 
 struct SpecialMoveInfo
 {
-    u16 move;       // MOVE_NONE: the species has no Special yet and stays sealed
+    u16 move;       // MOVE_NONE: the species has no Signature yet and stays sealed
     u8 condition;   // SPECIAL_COND_*
     u8 threshold;   // friendship for Bond, deed count for Deed
     u8 deed;        // SPECIAL_DEED_*

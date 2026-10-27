@@ -21,7 +21,7 @@ policies:
     uses_tp_planning: false
     uses_talk: false
     uses_special: false
-    special_awake_prob: 0.3      # share of party mons whose Special is unsealed (conditions are not simulated)
+    special_awake_prob: 0.3      # share of party mons whose Signature is unsealed (conditions are not simulated)
     party_size_base: 2           # party size = min(6, base + badges * per_badge)
     party_per_badge: 0.7
     potions_base: 3              # bag Potions at stage, plus per badge

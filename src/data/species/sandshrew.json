@@ -21,14 +21,14 @@
     "evolutions": [{"method": "LEVEL", "param": 22, "into": "SANDSLASH"}],
     "levelUpMoves": [
         [1, "SCRATCH"],
-        [6, "DEFENSE_CURL"],
-        [11, "SAND_ATTACK"],
+        [1, "DEFENSE_CURL"],
+        [6, "SAND_ATTACK"],
+        [10, "DIG"],
         [17, "POISON_STING"],
-        [23, "SLASH"],
-        [30, "SWIFT"],
-        [37, "FURY_SWIPES"],
-        [45, "WRAP"],
-        [53, "SAND_ATTACK"]
+        [21, "SLASH"],
+        [27, "SWIFT"],
+        [34, "FURY_SWIPES"],
+        [42, "EARTHQUAKE"]
     ],
     "tmhm": [
         "SWORDS_DANCE",

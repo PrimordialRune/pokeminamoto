@@ -22,14 +22,14 @@
         [1, "SCRATCH"],
         [1, "DEFENSE_CURL"],
         [1, "SAND_ATTACK"],
-        [6, "DEFENSE_CURL"],
-        [11, "SAND_ATTACK"],
+        [6, "SAND_ATTACK"],
+        [10, "DIG"],
         [17, "POISON_STING"],
-        [24, "SLASH"],
-        [33, "SWIFT"],
-        [42, "FURY_SWIPES"],
-        [52, "WRAP"],
-        [62, "SAND_ATTACK"]
+        [21, "SLASH"],
+        [22, "SWORDS_DANCE"],
+        [30, "SWIFT"],
+        [38, "FURY_SWIPES"],
+        [46, "EARTHQUAKE"]
     ],
     "tmhm": [
         "SWORDS_DANCE",

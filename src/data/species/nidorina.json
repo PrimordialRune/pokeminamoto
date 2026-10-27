@@ -20,15 +20,14 @@
     "evolutions": [{"method": "ITEM", "param": "MOON_STONE", "into": "NIDOQUEEN"}],
     "levelUpMoves": [
         [1, "GROWL"],
-        [1, "SCRATCH"],
+        [1, "TACKLE"],
+        [6, "POISON_STING"],
         [8, "TAIL_WHIP"],
-        [12, "DOUBLE_KICK"],
-        [18, "POISON_STING"],
+        [10, "DOUBLE_KICK"],
+        [17, "SCRATCH"],
         [22, "BITE"],
-        [26, "GROWL"],
-        [34, "FURY_SWIPES"],
-        [43, "CONFUSE_RAY"],
-        [53, "BITE"]
+        [30, "FURY_SWIPES"],
+        [38, "BODY_SLAM"]
     ],
     "tmhm": [
         "TOXIC",

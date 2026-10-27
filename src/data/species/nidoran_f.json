@@ -20,15 +20,14 @@
     "evolutions": [{"method": "LEVEL", "param": 16, "into": "NIDORINA"}],
     "levelUpMoves": [
         [1, "GROWL"],
-        [1, "SCRATCH"],
+        [1, "TACKLE"],
+        [6, "POISON_STING"],
         [8, "TAIL_WHIP"],
-        [12, "DOUBLE_KICK"],
-        [17, "POISON_STING"],
-        [20, "BITE"],
-        [23, "GROWL"],
-        [30, "FURY_SWIPES"],
-        [38, "CONFUSE_RAY"],
-        [47, "BITE"]
+        [10, "DOUBLE_KICK"],
+        [17, "SCRATCH"],
+        [21, "BITE"],
+        [28, "FURY_SWIPES"],
+        [35, "BODY_SLAM"]
     ],
     "tmhm": [
         "TOXIC",

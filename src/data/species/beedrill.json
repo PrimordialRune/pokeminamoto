@@ -21,13 +21,12 @@
     "levelUpMoves": [
         [1, "FURY_ATTACK"],
         [10, "FURY_ATTACK"],
-        [15, "FOCUS_ENERGY"],
-        [20, "TWINEEDLE"],
-        [25, "RAGE"],
-        [30, "TACKLE"],
-        [35, "PIN_MISSILE"],
-        [40, "AGILITY"],
-        [45, "COUNTER"]
+        [13, "FOCUS_ENERGY"],
+        [16, "TWINEEDLE"],
+        [21, "RAGE"],
+        [26, "PIN_MISSILE"],
+        [32, "AGILITY"],
+        [38, "SWORDS_DANCE"]
     ],
     "tmhm": [
         "SWORDS_DANCE",

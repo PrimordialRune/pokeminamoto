@@ -17,7 +17,19 @@
     "safariZoneFleeRate": 0,
     "bodyColor": "BLUE",
     "cry": "sound/direct_sound_samples/cries/nidoqueen.bin",
-    "levelUpMoves": [[1, "SCRATCH"], [1, "TAIL_WHIP"], [1, "DOUBLE_KICK"], [1, "POISON_STING"], [23, "BODY_SLAM"]],
+    "levelUpMoves": [
+        [1, "TACKLE"],
+        [1, "TAIL_WHIP"],
+        [1, "DOUBLE_KICK"],
+        [1, "BODY_SLAM"],
+        [6, "POISON_STING"],
+        [8, "TAIL_WHIP"],
+        [10, "DOUBLE_KICK"],
+        [22, "BITE"],
+        [30, "FURY_SWIPES"],
+        [38, "STRENGTH"],
+        [46, "EARTHQUAKE"]
+    ],
     "tmhm": [
         "MEGA_PUNCH",
         "MEGA_KICK",

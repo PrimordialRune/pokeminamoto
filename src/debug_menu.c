@@ -225,8 +225,8 @@ static const struct DebugMenuEntry sMenu_Pokemon[] =
     {(const u8[])_("Give Pokémon…"), DebugAction_GiveMon},
     {(const u8[])_("Dex: all 151"),  DebugAction_DexAll},
     {(const u8[])_("Dex: reset"),    DebugAction_DexReset},
-    {(const u8[])_("Special: deed+1"), DebugAction_SpecialProgress},
-    {(const u8[])_("Special: seal"), DebugAction_SpecialSeal},
+    {(const u8[])_("Signature: deed+1"), DebugAction_SpecialProgress},
+    {(const u8[])_("Signature: seal"), DebugAction_SpecialSeal},
     {(const u8[])_("Pokédex"),       DebugAction_TogglePokedex, 0, TOGGLE_POKEDEX},
 };
 
@@ -908,14 +908,14 @@ static void DebugAction_SpecialProgress(void)
 {
     SpecialMove_DebugAddProgress();
     PlaySE(SE_SELECT);
-    DebugMessage((const u8[])_("Party Special deeds +1.\nWin a battle to awaken."));
+    DebugMessage((const u8[])_("Party Signature deeds +1.\nWin a battle to awaken."));
 }
 
 static void DebugAction_SpecialSeal(void)
 {
     SpecialMove_DebugSealParty();
     PlaySE(SE_SELECT);
-    DebugMessage((const u8[])_("Party Specials sealed."));
+    DebugMessage((const u8[])_("Party Signatures sealed."));
 }
 
 static void DebugAction_TogglePokedex(void)

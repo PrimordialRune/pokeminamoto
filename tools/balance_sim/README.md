@@ -22,7 +22,7 @@ Interfaces between engine, analysis and GUI: `CONTRACT.md`. GUI design spec: `mi
 
 ## Engine (host build of the real battle code)
 
-`minasim/engine.py` drives the game's own battle code (battle scripts, damage, AI, TP, Talk, Special, EXP)
+`minasim/engine.py` drives the game's own battle code (battle scripts, damage, AI, TP, Talk, Signature, EXP)
 compiled for x86-64 as `build/host/libminasim.so`. Nothing is re-implemented in Python; the interface is in
 `CONTRACT.md` ("Engine API").
 
