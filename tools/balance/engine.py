@@ -81,7 +81,7 @@ class Rules:
     badge_types: list = field(default_factory=lambda: ["FLYING", "GROUND", "WATER", "ELECTRIC", "GHOST", "POISON", "FIRE", "MYSTERY"])
     badge3_speed: bool = False      # Emerald's x1.1 speed for badge 3 (removed in PR #9)
     stab: float = 1.5
-    gym_sash: bool = True           # arena_ecology 0.1, not in the ROM yet
+    gym_sash: bool = False          # dropped 2026-10-27 (never in the ROM); --set gym_sash=true to test
     exp_trainer_mult: float = 1.5
     pinch_abilities: bool = True
 

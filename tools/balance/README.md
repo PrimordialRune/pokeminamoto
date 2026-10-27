@@ -1,9 +1,14 @@
-# Balance model
+# Balance model (retired battle engine)
+
+> **Retired 2026-10-27.** Balance questions now go to `tools/balance_sim/` (minasim), which runs the
+> game's real battle code. Keep this model only for "what if" tests of rules that aren't in the ROM yet
+> (`--set rule=value`). `costcurve.py` and `tp_model.json` stay: they generate the ROM's TP costs and
+> `make check` uses them.
 
 A Monte Carlo battle simulator for tuning Minamoto's early game. It rebuilds Omar's MATH MODELS
 simulator (Notion page "MATH MODELS", summarised in `docs/design/research-and-sources.md` section 4)
 on top of the ROM's own data, and adds the Minamoto rules: TP, crit stages, the damage formula without
-the flat +2, type badge boosts and the gym leader Focus Sash.
+the flat +2, type badge boosts and (off by default) the dropped gym leader Focus Sash.
 
 Nothing is copied by hand. `gamedata.py` parses the decomp sources each run, so a change to
 `src/data/moves_info.h` (a TP cost), a learnset or a base stat shows up in the model immediately.
@@ -61,7 +66,7 @@ of its level-up learnset, like a wild or trainer mon in Emerald.
 | `flat_plus2` | true | `CalculateBaseDamage` (PR #9 removed it, Omar restored it) |
 | `badge_boost`, `badge_types` | 1.25; Flying, Ground, Water, Electric, Ghost, Poison, Fire | `sBadgeTypes[]` |
 | `badge3_speed` | false | Emerald's x1.1 speed for badge 3, removed in PR #9 |
-| `gym_sash` | true | arena_ecology rule 0.1, **not in the ROM yet** |
+| `gym_sash` | false | arena_ecology rule 0.1, dropped 2026-10-27 (not in the ROM) |
 | `stab`, `crit_mult`, `exp_trainer_mult` | 1.5, 2, 1.5 | as Emerald |
 
 Damage follows the engine's integer order: base damage (stat stages, burn, badge boost, +2),

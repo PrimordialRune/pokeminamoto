@@ -174,7 +174,7 @@ MAKEFLAGS += --no-print-directory
 # Delete files that weren't built properly
 .DELETE_ON_ERROR:
 
-RULES_NO_SCAN += libagbsyscall clean clean-assets tidy generated clean-generated
+RULES_NO_SCAN += libagbsyscall clean clean-assets tidy generated clean-generated balance-lib balance-check
 .PHONY: all rom modern release
 .PHONY: $(RULES_NO_SCAN)
 
@@ -251,11 +251,24 @@ release: all
 # Other rules
 rom: $(ROM)
 
+# Balance simulator engine (tools/balance_sim/README.md): the real battle code host-compiled into
+# build/host/libminasim.so. Needs the generated sources (species, trainers, data) first.
+.PHONY: balance-lib balance-check
+balance-lib:
+	@$(MAKE) -f make_tools.mk > /dev/null
+	@$(MAKE) generated > /dev/null
+	@$(MAKE) -f tools/balance_sim/host/Makefile
+
+# Fails when the set of auto-stubbed host symbols changes (tools/balance_sim/host/stubs_allowlist.txt)
+balance-check: balance-lib
+	python3 tools/balance_sim/host/check_stubs.py
+
 # Rule tests: data checks, then the test ROM in gbaemu (tools/test/run_tests.py)
 .PHONY: check
 check:
 	python3 tools/check_data.py
 	python3 tools/balance/costcurve.py --check
+	$(MAKE) balance-check
 	$(MAKE) release TEST=1
 	python3 tools/test/run_tests.py $(FILE_NAME)_modern_release_test.gba
 
