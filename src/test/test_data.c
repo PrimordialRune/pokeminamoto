@@ -16,6 +16,7 @@
 #include "pokemon.h"
 #include "special_move.h"
 #include "constants/battle.h"
+#include "constants/battle_move_effects.h"
 #include "constants/moves.h"
 #include "constants/species.h"
 #include "constants/trainers.h"
