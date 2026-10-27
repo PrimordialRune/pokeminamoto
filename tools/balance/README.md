@@ -63,6 +63,7 @@ of its level-up learnset, like a wild or trainer mon in Emerald.
 | `tp_formula` | ROM `tpCost` | any Python expression of `power`, `acc`, `status`, `rank`, `pp` (the move's old PP, from `move_pp.csv`); `round5()` available |
 | `rank_costs`, `rank_status_costs` | off | cost by move rank, e.g. `5,15,40` and `10,20,30` (rank: Notion stars for family moves, else a power tier) |
 | `crit_table` | 16,8,4,2,1 | `sCriticalHitChance[]` (1 in N per stage) |
+| `type_split` | false | Gen 3 Attack vs Defense for every move (`type_split=true` for the old physical/special by type); the ROM uses Attack vs Defense for every move since 2026-10-27 and the Special Factor for signature moves |
 | `flat_plus2` | true | `CalculateBaseDamage` (PR #9 removed it, Omar restored it) |
 | `badge_boost`, `badge_types` | 1.25; Flying, Ground, Water, Electric, Ghost, Poison, Fire | `sBadgeTypes[]` |
 | `badge3_speed` | false | Emerald's x1.1 speed for badge 3, removed in PR #9 |
@@ -76,8 +77,8 @@ then crit x2, STAB, each defending type, then the 85-100% roll. `run --segments`
 
 ## What it models and what it doesn't
 
-Modelled: stats from base stats and a random IV (no EVs, neutral nature), physical/special by type
-(Gen 3), accuracy and evasion stages, stat-stage moves, sleep, poison, burn, paralysis, freeze,
+Modelled: stats from base stats and a random IV (no EVs, neutral nature), Attack vs Defense for every move (`type_split=true` for the old Gen 3
+physical/special by type), accuracy and evasion stages, stat-stage moves, sleep, poison, burn, paralysis, freeze,
 confusion, flinch, Leech Seed, multi-hit, recoil, drain, fixed-damage moves, two-turn moves, Struggle,
 Blaze/Torrent/Overgrow/Swarm, Intimidate, Leek on Farfetch'd, EXP (yield x level / 7, split among
 participants, x1.5 for trainers), level-up moves, level evolutions, Potions between battles.

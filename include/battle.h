@@ -377,8 +377,9 @@ STATIC_ASSERT(sizeof(((struct BattleStruct *)0)->palaceFlags) * 8 >= MAX_BATTLER
         typeArg = gMovesInfo[move].type;                            \
 }
 
-#define IS_TYPE_PHYSICAL(moveType) (moveType < TYPE_MYSTERY)
-#define IS_TYPE_SPECIAL(moveType) (moveType > TYPE_MYSTERY)
+// No physical/special split (Gen-1 design, Omar 2026-10-27): every damaging move uses Attack vs Defense.
+// Signature moves (the Specials) also scale with the Special Factor, see CalculateBaseDamage.
+#define IS_MOVE_SIGNATURE(move) (gMovesInfo[move].signatureSpecies != SPECIES_NONE)
 
 #define TARGET_TURN_DAMAGED ((gSpecialStatuses[gBattlerTarget].physicalDmg != 0 || gSpecialStatuses[gBattlerTarget].specialDmg != 0))
 

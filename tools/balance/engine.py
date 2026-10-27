@@ -76,6 +76,7 @@ class Rules:
     rank_status_costs: list = field(default_factory=list)   # e.g. 10,20,30 for status moves; defaults to rank_costs
     crit_table: list = field(default_factory=lambda: [16, 8, 4, 2, 1])   # 1 in N per stage
     crit_mult: int = 2
+    type_split: bool = False        # Gen 3 physical/special by type; the ROM dropped it 2026-10-27 (all moves Atk vs Def)
     flat_plus2: bool = True         # Emerald's +2 before the return (PR #9 removed it, Omar restored it)
     badge_boost: float = 1.25
     badge_types: list = field(default_factory=lambda: ["FLYING", "GROUND", "WATER", "ELECTRIC", "GHOST", "POISON", "FIRE", "MYSTERY"])
@@ -268,7 +269,7 @@ class Battle:
         mtype = move["type"]
         if r.pinch_abilities and PINCH_ABILITY.get(attacker.base["ability"]) == mtype and attacker.hp <= attacker.maxhp // 3:
             power = power * 150 // 100
-        if mtype in PHYSICAL_TYPES or mtype == "MYSTERY":
+        if not r.type_split or mtype in PHYSICAL_TYPES or mtype == "MYSTERY":
             a_key, d_key = "atk", "def"
         else:
             a_key, d_key = "spa", "spd"
@@ -278,8 +279,14 @@ class Battle:
         dmg = a * power
         dmg *= 2 * attacker.level // 5 + 2
         dmg //= max(1, d)
+        if move.get("special") and not r.type_split:
+            # Special Factor, as CalculateBaseDamage: x Sp. Atk / Sp. Def x 1.15
+            sa_st, sd_st = attacker.stages["spa"], defender.stages["spd"]
+            sa = stage_stat(attacker.stats["spa"], sa_st if not (crit and sa_st < 0) else 0)
+            sd = stage_stat(defender.stats["spd"], sd_st if not (crit and sd_st > 0) else 0)
+            dmg = dmg * sa * 115 // (max(1, sd) * 100)
         dmg //= 50
-        if a_key == "atk" and attacker.status == "brn":
+        if (a_key == "atk" or not r.type_split) and attacker.status == "brn":
             dmg //= 2
         if r.flat_plus2:
             dmg += 2

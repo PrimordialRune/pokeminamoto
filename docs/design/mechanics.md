@@ -77,6 +77,8 @@ $\mathsf{Damage=\Bigg[\frac{\left ( \frac{2\times Level}{5}+2 \right )\: \times\
 
 **In the game (2026-10-22):** Emerald's flat +2 is kept on purpose (Omar's call): without it, Lv 5 fights took about twice as long in the early-game balance model (`/mnt/project-files/balance-model/FINDINGS.md` §2).
 
+**In the game (2026-10-27):** no physical/special split. Every damaging move uses Attack vs Defense, whatever its type (`CalculateBaseDamage` in `src/pokemon.c`). Burn, Reflect, Thick Fat, type-boost items and weather apply to every move. Signature moves (`IS_MOVE_SIGNATURE`: `signatureSpecies` set in `gMovesInfo`) also multiply by the Special Factor below; Light Screen halves only them and Mirror Coat only answers them, Counter answers every regular move. Until Sp. Atk and Sp. Def merge into one stored Special (a save-layout change), the attacker's Sp. Atk and the defender's Sp. Def stand in for the two Specials. Growth, Amnesia, Light Screen and Psychic's Sp. Def drop now only matter for Signature moves.
+
 $\mathsf{ Modifier = Badges \times Critical \times RNG \times STAB \times Type \times Other }$
 
 - **Badges**: a move used by a player's Pokemon that has the same type as a defeated badge: x1.25, else x1. (See Badge boost below.)
@@ -125,7 +127,7 @@ $\mathsf{Damage=\Bigg(\frac{\left ( \frac{2\times Level}{5}+2 \right )\: \times\
 
 $\mathsf{SF=\left(\frac{Attack}{Defense}\right)\times\left(\frac{SpecialAtt}{SpecialDef}\right)\times 1,15}$
 
-SpecialAtt = attacker's Special; SpecialDef = defender's Special (single stat used on both sides). **Engine impact (inferred):** new damage branch in `CalculateBaseDamage`; Signature move storage per species (Notion: 150 signature moves, effectively one+ per Pokemon); exemption from the 4-move cap means a 5th move slot, derived at runtime from species (no extra save data if stored by species lookup rather than per-mon, **but** ROM species->signature table needed). The summary screen / battle menu needs a 5th entry (UI work, `battle_controller_player.c` move selection, `battle_interface.c`).
+SpecialAtt = attacker's Special; SpecialDef = defender's Special (single stat used on both sides). **In the game (2026-10-27):** `damage x SpAtk x 115 / (SpDef x 100)` after the Attack/Defense step, with stat stages and the crit rules applied to both Specials. **Engine impact (inferred):** new damage branch in `CalculateBaseDamage`; Signature move storage per species (Notion: 150 signature moves, effectively one+ per Pokemon); exemption from the 4-move cap means a 5th move slot, derived at runtime from species (no extra save data if stored by species lookup rather than per-mon, **but** ROM species->signature table needed). The summary screen / battle menu needs a 5th entry (UI work, `battle_controller_player.c` move selection, `battle_interface.c`).
 
 ## 4. Level-up and leveling
 Level 1-100. Move upgrades by rank at thresholds (see above). Evolution by level and (lore) trading remains for the trade-evolution lineage.
