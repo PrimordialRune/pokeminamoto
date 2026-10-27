@@ -14,11 +14,6 @@
   "battle_scene": "MAP_BATTLE_SCENE_NORMAL",
   "connections": [
     {
-      "map": "MAP_ROUTE23",
-      "offset": 0,
-      "direction": "up"
-    },
-    {
       "map": "MAP_VIRIDIAN_CITY",
       "offset": -10,
       "direction": "right"
@@ -47,14 +42,14 @@
       "y": 5,
       "elevation": 0,
       "dest_map": "MAP_ROUTE22_NORTH_ENTRANCE",
-      "dest_warp_id": "2"
+      "dest_warp_id": "1"
     },
     {
       "x": 9,
       "y": 5,
       "elevation": 0,
       "dest_map": "MAP_ROUTE22_NORTH_ENTRANCE",
-      "dest_warp_id": "2"
+      "dest_warp_id": "1"
     }
   ],
   "coord_events": [],
