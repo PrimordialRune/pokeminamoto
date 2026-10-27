@@ -1,2 +1,122 @@
 // PalletTown_PlayersHouse_1F dialogue (English). Logic: scripts.pory. Translations: text.<lang>.pory
 // with the same block names; see docs/engineering/map-text.md.
+//
+// Tags: [R/G] pret/pokered text/RedsHouse1F.asm; [new] studio join; PLACEHOLDER names the owning thread.
+
+// MAS-001 [R/G: MOM: Right. All boys leave home some day. It said so on TV. (R/G adds "PROF.OAK, next door,
+// is looking for you."; the script list drops it, bible 1.4: no Okido goal.)]
+text PalletTown_PlayersHouse_1F_Text_MAS001_Mom1 {
+    format("MOM: Right. All boys leave home some day. It said so on TV.")
+}
+
+// [new: the Fiora signpost]
+text PalletTown_PlayersHouse_1F_Text_MAS001_Mom2 {
+    format("MOM: The Okada girl is home for one night, did you hear?")
+}
+
+// MAS-011 [new, OQ5 / Q98]
+text PalletTown_PlayersHouse_1F_Text_MAS011_Reads {
+    format("MOM: What's this? ...A form for the PMC. It wants a parent's seal.")
+}
+
+text PalletTown_PlayersHouse_1F_Text_MAS011_Drawer {
+    format("MOM opens the drawer and takes out a small seal.\pShe holds it for a moment.")
+}
+
+text PalletTown_PlayersHouse_1F_Text_MAS011_Pause {
+    format("The seal stays in her hand.")
+}
+
+text PalletTown_PlayersHouse_1F_Text_MAS011_Wait {
+    format("MOM presses the seal to the form.\pMOM: Your father's seal is still in this drawer.")
+}
+
+text PalletTown_PlayersHouse_1F_Text_MAS011_TakeIt {
+    format("MOM stamps the form, lets go of it, and says nothing.")
+}
+
+text PalletTown_PlayersHouse_1F_Text_MAS011_Sealed {
+    format("The PMC FORM carries a red seal now.")
+}
+
+// MAS-101 line only. PLACEHOLDER Q95 (owner thread "Make TP need rest, with town toolkit"): Mom does not
+// heal; the line points at the inns.
+text PalletTown_PlayersHouse_1F_Text_MAS101_Tired {
+    format("MOM: You look tired. The inns in TOKIWA take trainers.")
+}
+
+// MAS-102 [new: always via the TV, never the plot]
+text PalletTown_PlayersHouse_1F_Text_MAS102_Index {
+    format("MOM: The TV says it'll rain in TOKIWA.")
+}
+
+text PalletTown_PlayersHouse_1F_Text_MAS102_B1 {
+    format("MOM: The TV says birds are flying low over TOKIWA. Wrap up warm.")
+}
+
+text PalletTown_PlayersHouse_1F_Text_MAS102_B2 {
+    format("MOM: The TV says there's been a rockfall out toward NIBI. You'll be careful.")
+}
+
+// MAS-103 [bible 1.15 C1: only what she can see]
+text PalletTown_PlayersHouse_1F_Text_MAS103_Pidgey {
+    format("MOM: That bird's feathers are growing back.")
+}
+
+text PalletTown_PlayersHouse_1F_Text_MAS103_Sandshrew {
+    format("MOM: That one's not from around here, is it?")
+}
+
+text PalletTown_PlayersHouse_1F_Text_MAS103_Takeshi {
+    format("MOM: You look tired. Eat something.")
+}
+
+// MAS-401 / MAS-402 [new, optional texture]. The NITE row said "Rest, then." and healed: Mom does not heal (Q95).
+text PalletTown_PlayersHouse_1F_Text_MAS401_Morning {
+    format("MOM: Good morning.")
+}
+
+text PalletTown_PlayersHouse_1F_Text_MAS402_Night {
+    format("MOM: ...Mm? Oh, it's you. The TV's still on.")
+}
+
+// C14 whiteout line. PLACEHOLDER (stub wording kept).
+text PalletTown_PlayersHouse_1F_Text_Whiteout {
+    format("MOM: Oh. You're home. Sit, sit.")
+}
+
+// MAS-203 [R/G: There's a movie on TV. Four boys are walking on railroad tracks. I better go too.]
+text PalletTown_PlayersHouse_1F_Text_MAS203_Movie {
+    format("There's a movie on TV. Four boys are walking on railroad tracks.\pI'd better go too.")
+}
+
+// face #1: the chairman, unnamed, no "inventor" (bible 1.19)
+text PalletTown_PlayersHouse_1F_Text_MAS203_Ribbon {
+    format("The news. SILPH's chairman is cutting a ribbon, seen from far away.")
+}
+
+text PalletTown_PlayersHouse_1F_Text_MAS203_Land {
+    format("The news. Land prices are up again.")
+}
+
+text PalletTown_PlayersHouse_1F_Text_MAS203_Typhoon {
+    format("The news. A typhoon is moving up from the south.")
+}
+
+text PalletTown_PlayersHouse_1F_Text_MAS203_LowVolume {
+    format("The sound is turned down low.")
+}
+
+// MAS-206 [bible 1.21: never explained; no unit, no insignia, no date until OQ1]
+text PalletTown_PlayersHouse_1F_Text_MAS206_Altar {
+    format("The family altar. A memorial tablet, a photograph of a man in uniform.\pA stick of incense, burned halfway.")
+}
+
+// MAS-217 [Notion]
+text PalletTown_PlayersHouse_1F_Text_MAS217_TeaSet {
+    format("A tea set for guests.")
+}
+
+text PalletTown_PlayersHouse_1F_Text_MAS217_Cookbooks {
+    format("Cookbooks, and a guide to raising POKéMON.")
+}

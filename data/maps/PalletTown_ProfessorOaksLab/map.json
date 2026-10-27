@@ -15,6 +15,52 @@
   "connections": null,
   "object_events": [
     {
+      "local_id": "LOCALID_OAKS_LAB_PROF_OAK",
+      "type": "object",
+      "graphics_id": "OBJ_EVENT_GFX_FRLG_PROF_OAK",
+      "x": 6,
+      "y": 3,
+      "elevation": 3,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "movement_range_x": 0,
+      "movement_range_y": 0,
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "trainer_sight_or_berry_tree_id": "0",
+      "script": "PalletTown_ProfessorOaksLab_EventScript_Okido",
+      "flag": "0"
+    },
+    {
+      "local_id": "LOCALID_OAKS_LAB_RIVAL",
+      "type": "object",
+      "graphics_id": "OBJ_EVENT_GFX_FRLG_BLUE",
+      "x": 5,
+      "y": 4,
+      "elevation": 3,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "movement_range_x": 0,
+      "movement_range_y": 0,
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "trainer_sight_or_berry_tree_id": "0",
+      "script": "PalletTown_ProfessorOaksLab_EventScript_ShigeruIdle",
+      "flag": "FLAG_TEMP_4"
+    },
+    {
+      "local_id": "LOCALID_MASARA_LAB_KEN",
+      "type": "object",
+      "graphics_id": "OBJ_EVENT_GFX_FRLG_BOY",
+      "x": 7,
+      "y": 7,
+      "elevation": 3,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "movement_range_x": 0,
+      "movement_range_y": 0,
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "trainer_sight_or_berry_tree_id": "0",
+      "script": "PalletTown_ProfessorOaksLab_EventScript_Ken",
+      "flag": "FLAG_TEMP_5"
+    },
+    {
+      "local_id": "LOCALID_MASARA_LAB_AIDE_1",
       "type": "object",
       "graphics_id": "OBJ_EVENT_GFX_FRLG_SCIENTIST",
       "x": 3,
@@ -25,26 +71,13 @@
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
-      "script": "0",
+      "script": "PalletTown_ProfessorOaksLab_EventScript_MAS106_Aide1",
       "flag": "0"
     },
     {
+      "local_id": "LOCALID_MASARA_LAB_AIDE_2",
       "type": "object",
       "graphics_id": "OBJ_EVENT_GFX_FRLG_WORKER_F",
-      "x": 2,
-      "y": 10,
-      "elevation": 3,
-      "movement_type": "MOVEMENT_TYPE_WANDER_UP_AND_DOWN",
-      "movement_range_x": 0,
-      "movement_range_y": 4,
-      "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "0",
-      "script": "0",
-      "flag": "0"
-    },
-    {
-      "type": "object",
-      "graphics_id": "OBJ_EVENT_GFX_FRLG_SCIENTIST",
       "x": 11,
       "y": 10,
       "elevation": 3,
@@ -53,22 +86,7 @@
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
-      "script": "0",
-      "flag": "0"
-    },
-    {
-      "local_id": "LOCALID_OAKS_LAB_PROF_OAK",
-      "type": "object",
-      "graphics_id": "OBJ_EVENT_GFX_FRLG_PROF_OAK",
-      "x": 6,
-      "y": 3,
-      "elevation": 3,
-      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
-      "movement_range_x": 1,
-      "movement_range_y": 1,
-      "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "0",
-      "script": "0",
+      "script": "PalletTown_ProfessorOaksLab_EventScript_MAS107_Aide2",
       "flag": "0"
     },
     {
@@ -83,8 +101,8 @@
       "movement_range_y": 1,
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
-      "script": "0",
-      "flag": "0"
+      "script": "PalletTown_ProfessorOaksLab_EventScript_BallBulbasaur",
+      "flag": "FLAG_TEMP_1"
     },
     {
       "local_id": "LOCALID_SQUIRTLE_BALL",
@@ -98,8 +116,8 @@
       "movement_range_y": 1,
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
-      "script": "0",
-      "flag": "0"
+      "script": "PalletTown_ProfessorOaksLab_EventScript_BallSquirtle",
+      "flag": "FLAG_TEMP_2"
     },
     {
       "local_id": "LOCALID_CHARMANDER_BALL",
@@ -113,23 +131,8 @@
       "movement_range_y": 1,
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
-      "script": "0",
-      "flag": "0"
-    },
-    {
-      "local_id": "LOCALID_OAKS_LAB_RIVAL",
-      "type": "object",
-      "graphics_id": "OBJ_EVENT_GFX_FRLG_BLUE",
-      "x": 5,
-      "y": 4,
-      "elevation": 3,
-      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
-      "movement_range_x": 1,
-      "movement_range_y": 1,
-      "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "0",
-      "script": "0",
-      "flag": "0"
+      "script": "PalletTown_ProfessorOaksLab_EventScript_BallCharmander",
+      "flag": "FLAG_TEMP_3"
     },
     {
       "local_id": "LOCALID_POKEDEX_1",
@@ -143,8 +146,8 @@
       "movement_range_y": 1,
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
-      "script": "0",
-      "flag": "0"
+      "script": "PalletTown_ProfessorOaksLab_EventScript_IndexOnDesk",
+      "flag": "FLAG_TEMP_6"
     },
     {
       "local_id": "LOCALID_POKEDEX_2",
@@ -158,8 +161,8 @@
       "movement_range_y": 1,
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
-      "script": "0",
-      "flag": "0"
+      "script": "PalletTown_ProfessorOaksLab_EventScript_IndexOnDesk",
+      "flag": "FLAG_TEMP_7"
     }
   ],
   "warp_events": [
@@ -185,7 +188,179 @@
       "dest_warp_id": "2"
     }
   ],
-  "coord_events": [],
+  "coord_events": [
+    {
+      "type": "trigger",
+      "x": 5,
+      "y": 8,
+      "elevation": 3,
+      "var": "VAR_MASARA_LAB_STATE",
+      "var_value": "3",
+      "script": "PalletTown_ProfessorOaksLab_EventScript_MAS006_ParcelCheck"
+    },
+    {
+      "type": "trigger",
+      "x": 5,
+      "y": 8,
+      "elevation": 3,
+      "var": "VAR_MASARA_LAB_STATE",
+      "var_value": "2",
+      "script": "PalletTown_ProfessorOaksLab_EventScript_MAS004_Challenge"
+    },
+    {
+      "type": "trigger",
+      "x": 6,
+      "y": 8,
+      "elevation": 3,
+      "var": "VAR_MASARA_LAB_STATE",
+      "var_value": "3",
+      "script": "PalletTown_ProfessorOaksLab_EventScript_MAS006_ParcelCheck"
+    },
+    {
+      "type": "trigger",
+      "x": 6,
+      "y": 8,
+      "elevation": 3,
+      "var": "VAR_MASARA_LAB_STATE",
+      "var_value": "2",
+      "script": "PalletTown_ProfessorOaksLab_EventScript_MAS004_Challenge"
+    },
+    {
+      "type": "trigger",
+      "x": 7,
+      "y": 8,
+      "elevation": 3,
+      "var": "VAR_MASARA_LAB_STATE",
+      "var_value": "3",
+      "script": "PalletTown_ProfessorOaksLab_EventScript_MAS006_ParcelCheck"
+    },
+    {
+      "type": "trigger",
+      "x": 7,
+      "y": 8,
+      "elevation": 3,
+      "var": "VAR_MASARA_LAB_STATE",
+      "var_value": "2",
+      "script": "PalletTown_ProfessorOaksLab_EventScript_MAS004_Challenge"
+    },
+    {
+      "type": "trigger",
+      "x": 0,
+      "y": 11,
+      "elevation": 3,
+      "var": "VAR_MASARA_LAB_STATE",
+      "var_value": "1",
+      "script": "PalletTown_ProfessorOaksLab_EventScript_DontGoAway"
+    },
+    {
+      "type": "trigger",
+      "x": 1,
+      "y": 11,
+      "elevation": 3,
+      "var": "VAR_MASARA_LAB_STATE",
+      "var_value": "1",
+      "script": "PalletTown_ProfessorOaksLab_EventScript_DontGoAway"
+    },
+    {
+      "type": "trigger",
+      "x": 2,
+      "y": 11,
+      "elevation": 3,
+      "var": "VAR_MASARA_LAB_STATE",
+      "var_value": "1",
+      "script": "PalletTown_ProfessorOaksLab_EventScript_DontGoAway"
+    },
+    {
+      "type": "trigger",
+      "x": 3,
+      "y": 11,
+      "elevation": 3,
+      "var": "VAR_MASARA_LAB_STATE",
+      "var_value": "1",
+      "script": "PalletTown_ProfessorOaksLab_EventScript_DontGoAway"
+    },
+    {
+      "type": "trigger",
+      "x": 4,
+      "y": 11,
+      "elevation": 3,
+      "var": "VAR_MASARA_LAB_STATE",
+      "var_value": "1",
+      "script": "PalletTown_ProfessorOaksLab_EventScript_DontGoAway"
+    },
+    {
+      "type": "trigger",
+      "x": 5,
+      "y": 11,
+      "elevation": 3,
+      "var": "VAR_MASARA_LAB_STATE",
+      "var_value": "1",
+      "script": "PalletTown_ProfessorOaksLab_EventScript_DontGoAway"
+    },
+    {
+      "type": "trigger",
+      "x": 6,
+      "y": 11,
+      "elevation": 3,
+      "var": "VAR_MASARA_LAB_STATE",
+      "var_value": "1",
+      "script": "PalletTown_ProfessorOaksLab_EventScript_DontGoAway"
+    },
+    {
+      "type": "trigger",
+      "x": 7,
+      "y": 11,
+      "elevation": 3,
+      "var": "VAR_MASARA_LAB_STATE",
+      "var_value": "1",
+      "script": "PalletTown_ProfessorOaksLab_EventScript_DontGoAway"
+    },
+    {
+      "type": "trigger",
+      "x": 8,
+      "y": 11,
+      "elevation": 3,
+      "var": "VAR_MASARA_LAB_STATE",
+      "var_value": "1",
+      "script": "PalletTown_ProfessorOaksLab_EventScript_DontGoAway"
+    },
+    {
+      "type": "trigger",
+      "x": 9,
+      "y": 11,
+      "elevation": 3,
+      "var": "VAR_MASARA_LAB_STATE",
+      "var_value": "1",
+      "script": "PalletTown_ProfessorOaksLab_EventScript_DontGoAway"
+    },
+    {
+      "type": "trigger",
+      "x": 10,
+      "y": 11,
+      "elevation": 3,
+      "var": "VAR_MASARA_LAB_STATE",
+      "var_value": "1",
+      "script": "PalletTown_ProfessorOaksLab_EventScript_DontGoAway"
+    },
+    {
+      "type": "trigger",
+      "x": 11,
+      "y": 11,
+      "elevation": 3,
+      "var": "VAR_MASARA_LAB_STATE",
+      "var_value": "1",
+      "script": "PalletTown_ProfessorOaksLab_EventScript_DontGoAway"
+    },
+    {
+      "type": "trigger",
+      "x": 12,
+      "y": 11,
+      "elevation": 3,
+      "var": "VAR_MASARA_LAB_STATE",
+      "var_value": "1",
+      "script": "PalletTown_ProfessorOaksLab_EventScript_DontGoAway"
+    }
+  ],
   "bg_events": [
     {
       "type": "sign",
@@ -193,7 +368,7 @@
       "y": 1,
       "elevation": 0,
       "player_facing_dir": "BG_EVENT_PLAYER_FACING_ANY",
-      "script": "0"
+      "script": "PalletTown_ProfessorOaksLab_EventScript_MAS211_PC"
     },
     {
       "type": "sign",
@@ -201,7 +376,7 @@
       "y": 1,
       "elevation": 0,
       "player_facing_dir": "BG_EVENT_PLAYER_FACING_ANY",
-      "script": "0"
+      "script": "PalletTown_ProfessorOaksLab_EventScript_MAS219_Notebook"
     },
     {
       "type": "sign",
@@ -209,7 +384,7 @@
       "y": 1,
       "elevation": 0,
       "player_facing_dir": "BG_EVENT_PLAYER_FACING_ANY",
-      "script": "0"
+      "script": "PalletTown_ProfessorOaksLab_EventScript_MAS210_PosterStart"
     },
     {
       "type": "sign",
@@ -217,7 +392,135 @@
       "y": 1,
       "elevation": 0,
       "player_facing_dir": "BG_EVENT_PLAYER_FACING_ANY",
-      "script": "0"
+      "script": "PalletTown_ProfessorOaksLab_EventScript_MAS210_PosterSave"
+    },
+    {
+      "type": "sign",
+      "x": 9,
+      "y": 1,
+      "elevation": 0,
+      "player_facing_dir": "BG_EVENT_PLAYER_FACING_ANY",
+      "script": "PalletTown_ProfessorOaksLab_EventScript_MAS212_Books"
+    },
+    {
+      "type": "sign",
+      "x": 10,
+      "y": 1,
+      "elevation": 0,
+      "player_facing_dir": "BG_EVENT_PLAYER_FACING_ANY",
+      "script": "PalletTown_ProfessorOaksLab_EventScript_MAS212_Books"
+    },
+    {
+      "type": "sign",
+      "x": 11,
+      "y": 1,
+      "elevation": 0,
+      "player_facing_dir": "BG_EVENT_PLAYER_FACING_ANY",
+      "script": "PalletTown_ProfessorOaksLab_EventScript_MAS212_Books"
+    },
+    {
+      "type": "sign",
+      "x": 12,
+      "y": 1,
+      "elevation": 0,
+      "player_facing_dir": "BG_EVENT_PLAYER_FACING_ANY",
+      "script": "PalletTown_ProfessorOaksLab_EventScript_MAS221_MedalBox"
+    },
+    {
+      "type": "sign",
+      "x": 2,
+      "y": 4,
+      "elevation": 0,
+      "player_facing_dir": "BG_EVENT_PLAYER_FACING_ANY",
+      "script": "PalletTown_ProfessorOaksLab_EventScript_MAS213_Pen"
+    },
+    {
+      "type": "sign",
+      "x": 2,
+      "y": 5,
+      "elevation": 0,
+      "player_facing_dir": "BG_EVENT_PLAYER_FACING_ANY",
+      "script": "PalletTown_ProfessorOaksLab_EventScript_MAS213_Pen"
+    },
+    {
+      "type": "sign",
+      "x": 0,
+      "y": 8,
+      "elevation": 0,
+      "player_facing_dir": "BG_EVENT_PLAYER_FACING_ANY",
+      "script": "PalletTown_ProfessorOaksLab_EventScript_MAS212_Books"
+    },
+    {
+      "type": "sign",
+      "x": 1,
+      "y": 8,
+      "elevation": 0,
+      "player_facing_dir": "BG_EVENT_PLAYER_FACING_ANY",
+      "script": "PalletTown_ProfessorOaksLab_EventScript_MAS212_Books"
+    },
+    {
+      "type": "sign",
+      "x": 2,
+      "y": 8,
+      "elevation": 0,
+      "player_facing_dir": "BG_EVENT_PLAYER_FACING_ANY",
+      "script": "PalletTown_ProfessorOaksLab_EventScript_MAS212_Books"
+    },
+    {
+      "type": "sign",
+      "x": 3,
+      "y": 8,
+      "elevation": 0,
+      "player_facing_dir": "BG_EVENT_PLAYER_FACING_ANY",
+      "script": "PalletTown_ProfessorOaksLab_EventScript_MAS212_Books"
+    },
+    {
+      "type": "sign",
+      "x": 4,
+      "y": 8,
+      "elevation": 0,
+      "player_facing_dir": "BG_EVENT_PLAYER_FACING_ANY",
+      "script": "PalletTown_ProfessorOaksLab_EventScript_MAS212_Books"
+    },
+    {
+      "type": "sign",
+      "x": 8,
+      "y": 8,
+      "elevation": 0,
+      "player_facing_dir": "BG_EVENT_PLAYER_FACING_ANY",
+      "script": "PalletTown_ProfessorOaksLab_EventScript_MAS212_Books"
+    },
+    {
+      "type": "sign",
+      "x": 9,
+      "y": 8,
+      "elevation": 0,
+      "player_facing_dir": "BG_EVENT_PLAYER_FACING_ANY",
+      "script": "PalletTown_ProfessorOaksLab_EventScript_MAS212_Books"
+    },
+    {
+      "type": "sign",
+      "x": 10,
+      "y": 8,
+      "elevation": 0,
+      "player_facing_dir": "BG_EVENT_PLAYER_FACING_ANY",
+      "script": "PalletTown_ProfessorOaksLab_EventScript_MAS212_Books"
+    },
+    {
+      "type": "sign",
+      "x": 11,
+      "y": 8,
+      "elevation": 0,
+      "player_facing_dir": "BG_EVENT_PLAYER_FACING_ANY",
+      "script": "PalletTown_ProfessorOaksLab_EventScript_MAS212_Books"
+    },
+    {
+      "type": "sign",
+      "x": 12,
+      "y": 8,
+      "elevation": 0,
+      "player_facing_dir": "BG_EVENT_PLAYER_FACING_ANY",
+      "script": "PalletTown_ProfessorOaksLab_EventScript_MAS212_Books"
     }
   ]
 }

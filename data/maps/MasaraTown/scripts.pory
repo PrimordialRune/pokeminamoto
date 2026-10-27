@@ -1,88 +1,202 @@
+// Masara Town (workstream masara; studio slice). Rows: script list MAS-002, 108, 113-115, 201, 202,
+// 207, 208, 302 (spots 1-2), 303 (seeds). Dialogue lives in text.en.pory.
+//
+// Rules for this map:
+//  - Never set VAR_TEMP_F here: the door and seam coord events (data/slice_doors.inc) fire on VAR_TEMP_F == 0.
+//  - Visibility is derived in ON_TRANSITION from story state (FLAG_TEMP_* hide flags clear on every warp).
+//  - The old NewGameSetup (Littleroot flags and respawn) and ToLittleroot are gone: a new game starts in
+//    Satoshi's room (core) and the north edge is a warp pair to Route 1 (world).
+//
+// VAR_MASARA_STATE (alias of VAR_LITTLEROOT_TOWN_STATE, 0x4050):
+//   0 new game          1 Okido stopped the player, lab pick pending     2 starter picked, Shigeru's fight pending
+//   3 fight done        4 Index scene done (parcel delivered)
+// VAR_MASARA_LAB_STATE (0x4058) is the lab's own step counter (see PalletTown_ProfessorOaksLab/scripts.pory).
+
 mapscripts MasaraTown_MapScripts {
     MAP_SCRIPT_ON_TRANSITION {
-        if (var(VAR_LITTLEROOT_INTRO_STATE) == 0) {
-            call(MasaraTown_EventScript_NewGameSetup)
-        }
-        // Kimura only goes out at night (MasaraTown_EventScript_KimuraNight).
-        showduringtime(FLAG_HIDE_MASARA_KIMURA_NIGHT, TIME_OF_DAY_NITE)
+        // MAS-002 actors (outdoor Okido, Ken) exist only inside their scene.
+        setflag(FLAG_TEMP_2)
+        setflag(FLAG_TEMP_3)
+        // PR #21: Kimura goes out at night. PLACEHOLDER window 18-23: from 23 he is home and the lamp is on
+        // (MAS-208); the window is whole hours as the script list requires.
+        showduringhours(FLAG_HIDE_MASARA_KIMURA_NIGHT, 18, 23)
     }
 }
 
-// A new game starts here instead of in the moving truck. Put Littleroot in the
-// state the truck intro, the move-in and the clock scene would leave it in, so
-// its cutscenes don't fire and the route to Prof. Birch is open.
-script MasaraTown_EventScript_NewGameSetup {
-    checkplayergender
-    if (var(VAR_RESULT) == MALE) {
-        setrespawn(HEAL_LOCATION_LITTLEROOT_TOWN_BRENDANS_HOUSE_2F)
-        setflag(FLAG_HIDE_LITTLEROOT_TOWN_MAYS_HOUSE_MOM)
-        setflag(FLAG_HIDE_LITTLEROOT_TOWN_MAYS_HOUSE_TRUCK)
-        setflag(FLAG_HIDE_LITTLEROOT_TOWN_BRENDANS_HOUSE_TRUCK)
-        setflag(FLAG_HIDE_LITTLEROOT_TOWN_BRENDANS_HOUSE_RIVAL_MOM)
-        setflag(FLAG_HIDE_LITTLEROOT_TOWN_BRENDANS_HOUSE_RIVAL_SIBLING)
-        setflag(FLAG_HIDE_LITTLEROOT_TOWN_BRENDANS_HOUSE_2F_POKE_BALL)
-        setvar(VAR_LITTLEROOT_HOUSES_STATE_BRENDAN, 1)
+// ---------------------------------------------------------------------------
+// MAS-002 The tall grass. Step triggers on the two cells just inside the north seam while
+// VAR_MASARA_STATE == 0. Okido stops at the edge of the road and does not step in; Ken runs
+// past him and walks Satoshi out. No wild battle. Then the lab (MAS-003 plays there).
+// ---------------------------------------------------------------------------
+script MasaraTown_EventScript_MAS002_TallGrass {
+    lockall
+    msgbox(MasaraTown_Text_MAS002_HeyWait)
+    closemessage
+    applymovement(LOCALID_PLAYER, MasaraTown_Movement_PlayerFaceDown)
+    waitmovement(0)
+    setobjectxyperm(LOCALID_MASARA_OKIDO, 12, 3)
+    setobjectxyperm(LOCALID_MASARA_KEN, 12, 4)
+    clearflag(FLAG_TEMP_2)
+    clearflag(FLAG_TEMP_3)
+    addobject(LOCALID_MASARA_OKIDO)
+    addobject(LOCALID_MASARA_KEN)
+    playse(SE_PIN)
+    applymovement(LOCALID_MASARA_OKIDO, MasaraTown_Movement_OkidoToTheEdge)
+    getplayerxy(VAR_0x8000, VAR_0x8001)
+    if (var(VAR_0x8000) == 16) {
+        applymovement(LOCALID_MASARA_KEN, MasaraTown_Movement_KenRunsToEast)
     } else {
-        setrespawn(HEAL_LOCATION_LITTLEROOT_TOWN_MAYS_HOUSE_2F)
-        setflag(FLAG_HIDE_LITTLEROOT_TOWN_BRENDANS_HOUSE_MOM)
-        setflag(FLAG_HIDE_LITTLEROOT_TOWN_BRENDANS_HOUSE_TRUCK)
-        setflag(FLAG_HIDE_LITTLEROOT_TOWN_MAYS_HOUSE_TRUCK)
-        setflag(FLAG_HIDE_LITTLEROOT_TOWN_MAYS_HOUSE_RIVAL_MOM)
-        setflag(FLAG_HIDE_LITTLEROOT_TOWN_MAYS_HOUSE_RIVAL_SIBLING)
-        setflag(FLAG_HIDE_LITTLEROOT_TOWN_MAYS_HOUSE_2F_POKE_BALL)
-        setvar(VAR_LITTLEROOT_HOUSES_STATE_MAY, 1)
+        applymovement(LOCALID_MASARA_KEN, MasaraTown_Movement_KenRunsToWest)
     }
-    setflag(FLAG_HIDE_LITTLEROOT_TOWN_MOM_OUTSIDE)
-    clearflag(FLAG_HIDE_LITTLEROOT_TOWN_FAT_MAN)
-    setvar(VAR_LITTLEROOT_INTRO_STATE, 7)
-    setvar(VAR_LITTLEROOT_TOWN_STATE, 1)
+    waitmovement(LOCALID_MASARA_OKIDO)
+    waitmovement(LOCALID_MASARA_KEN)
+    applymovement(LOCALID_MASARA_OKIDO, MasaraTown_Movement_OkidoFacesUp)
+    waitmovement(LOCALID_MASARA_OKIDO)
+    msgbox(MasaraTown_Text_MAS002_Unsafe)
+    msgbox(MasaraTown_Text_MAS002_YouNeedOne)
+    // [new, v0.4 reduced] Ken, a question
+    msgbox(MasaraTown_Text_MAS002_KenQuestion)
+    closemessage
+    applymovement(LOCALID_MASARA_KEN, MasaraTown_Movement_KenWalksDown)
+    applymovement(LOCALID_PLAYER, MasaraTown_Movement_PlayerFollows)
+    waitmovement(LOCALID_MASARA_KEN)
+    waitmovement(LOCALID_PLAYER)
+    fadescreen(FADE_TO_BLACK)
+    removeobject(LOCALID_MASARA_OKIDO)
+    removeobject(LOCALID_MASARA_KEN)
+    setflag(FLAG_TEMP_2)
+    setflag(FLAG_TEMP_3)
+    setvar(VAR_MASARA_STATE, 1)
+    setvar(VAR_MASARA_LAB_STATE, 0)
+    warp(MAP_PALLET_TOWN_PROFESSOR_OAKS_LAB, 6, 12)
+    waitstate
+    releaseall
+    end
 }
 
+movement MasaraTown_Movement_PlayerFaceDown {
+    face_down
+}
+
+movement MasaraTown_Movement_OkidoToTheEdge {
+    walk_fast_right * 2
+}
+
+movement MasaraTown_Movement_OkidoFacesUp {
+    face_up
+}
+
+// Ken passes along the lower road row and stops just below Satoshi (who stands at x 15 or 16, y 1).
+movement MasaraTown_Movement_KenRunsToWest {
+    walk_fast_right * 3
+    walk_fast_up * 2
+}
+
+movement MasaraTown_Movement_KenRunsToEast {
+    walk_fast_right * 4
+    walk_fast_up * 2
+}
+
+movement MasaraTown_Movement_KenWalksDown {
+    walk_down * 2
+}
+
+movement MasaraTown_Movement_PlayerFollows {
+    walk_down * 2
+}
+
+// ---------------------------------------------------------------------------
+// Signs. MAS-201 town sign (the "(Test) Change the time of day?" prompt is debug-only now: it lives in
+// the raw block below, behind DEBUG_MENUS, and a release build calls an empty stub), MAS-202 building
+// signs, route sign.
+// ---------------------------------------------------------------------------
 script MasaraTown_EventScript_TownSign {
     lockall
     msgbox(MasaraTown_Text_TownSign)
-    // Test builds: cycle the time of day so day/night can be checked anywhere.
-    msgbox(MasaraTown_Text_TestChangeTime, MSGBOX_YESNO)
-    if (var(VAR_RESULT) == YES) {
-        addvar(VAR_TIME_OF_DAY_OVERRIDE, 1)
-        if (var(VAR_TIME_OF_DAY_OVERRIDE) > 3) {
-            setvar(VAR_TIME_OF_DAY_OVERRIDE, 0)
-        }
-        switch (var(VAR_TIME_OF_DAY_OVERRIDE)) {
-            case 1: msgbox(MasaraTown_Text_TestMorning)
-            case 2: msgbox(MasaraTown_Text_TestDaytime)
-            case 3: msgbox(MasaraTown_Text_TestNight)
-            default: msgbox(MasaraTown_Text_TestClock)
-        }
-        // The field picks the change up by itself at the end of the frame.
-        closemessage
-    }
+    call(MasaraTown_EventScript_DebugTimePrompt)
     releaseall
 }
+
+raw `
+@ Test builds only (every modern build except make release): cycle the time of day so day/night
+@ can be checked anywhere. Release builds get the empty stub, and no strings.
+MasaraTown_EventScript_DebugTimePrompt::
+#ifdef DEBUG_MENUS
+	msgbox MasaraTown_DebugText_ChangeTime, MSGBOX_YESNO
+	goto_if_ne VAR_RESULT, YES, MasaraTown_EventScript_DebugTimeDone
+	addvar VAR_TIME_OF_DAY_OVERRIDE, 1
+	goto_if_le VAR_TIME_OF_DAY_OVERRIDE, 3, MasaraTown_EventScript_DebugTimeSay
+	setvar VAR_TIME_OF_DAY_OVERRIDE, 0
+MasaraTown_EventScript_DebugTimeSay:
+	switch VAR_TIME_OF_DAY_OVERRIDE
+	case 1, MasaraTown_EventScript_DebugTimeMorning
+	case 2, MasaraTown_EventScript_DebugTimeDay
+	case 3, MasaraTown_EventScript_DebugTimeNight
+	msgbox MasaraTown_DebugText_Clock, MSGBOX_DEFAULT
+	goto MasaraTown_EventScript_DebugTimeDone
+
+MasaraTown_EventScript_DebugTimeMorning:
+	msgbox MasaraTown_DebugText_Morning, MSGBOX_DEFAULT
+	goto MasaraTown_EventScript_DebugTimeDone
+
+MasaraTown_EventScript_DebugTimeDay:
+	msgbox MasaraTown_DebugText_Daytime, MSGBOX_DEFAULT
+	goto MasaraTown_EventScript_DebugTimeDone
+
+MasaraTown_EventScript_DebugTimeNight:
+	msgbox MasaraTown_DebugText_Night, MSGBOX_DEFAULT
+
+MasaraTown_EventScript_DebugTimeDone:
+	closemessage
+	return
+
+MasaraTown_DebugText_ChangeTime:
+	.string "(Test) Change the time of day?$"
+
+MasaraTown_DebugText_Morning:
+	.string "It's morning.$"
+
+MasaraTown_DebugText_Daytime:
+	.string "It's daytime.$"
+
+MasaraTown_DebugText_Night:
+	.string "It's night.$"
+
+MasaraTown_DebugText_Clock:
+	.string "The time follows the clock again.$"
+#else
+	return
+#endif
+`
 
 script MasaraTown_EventScript_RouteSign {
     msgbox(MasaraTown_Text_RouteSign, MSGBOX_SIGN)
 }
 
-script MasaraTown_EventScript_ToLittleroot {
-    lockall
-    // Fiora leaves the same morning the player does, talked to or not.
-    setflag(FLAG_HIDE_MASARA_FIORA)
-    warp(MAP_LITTLEROOT_TOWN, 10, 18)
-    waitstate
-    releaseall
+script MasaraTown_EventScript_MAS202_HomeSign {
+    msgbox(MasaraTown_Text_MAS202_HomeSign, MSGBOX_SIGN)
+}
+
+script MasaraTown_EventScript_MAS202_OkidoHouseSign {
+    msgbox(MasaraTown_Text_MAS202_OkidoHouseSign, MSGBOX_SIGN)
+}
+
+script MasaraTown_EventScript_MAS202_LabSign {
+    msgbox(MasaraTown_Text_MAS202_LabSign, MSGBOX_SIGN)
+}
+
+script MasaraTown_EventScript_MAS202_ShopSign {
+    msgbox(MasaraTown_Text_MAS202_ShopSign, MSGBOX_SIGN)
 }
 
 // ---------------------------------------------------------------------------
-// Opening events (design: masara-tokiwa-events-v2.md). The logic is here; the
-// dialogue of the MasaraTown_Text_* labels is in text.en.pory (translations in
-// text.<lang>.pory, see docs/engineering/map-text.md).
-//
-// Save cost: flags 0x493-0x498, no vars.
+// Kimura (PR #21, kept: MAS-113 door, MAS-207 bowl, MAS-208 window, the night walk). MAS-303 is
+// the seed only: nothing here states the backstory.
 // ---------------------------------------------------------------------------
 
-// Old Kimura: he won't open the door. The bowl, the leash and the photo are
-// the seeds; his payoff is a mid-game event.
+// MAS-113. The knock: first knock sets FLAG_MASARA_KNOCKED_KIMURA. Before the Wing Badge he sends
+// Okido's errand boys away (PR #21 line); after it, the script list's line. While he is out on his
+// night walk the lights are off.
 script MasaraTown_EventScript_KimuraDoor {
     lockall
     if (!flag(FLAG_HIDE_MASARA_KIMURA_NIGHT)) {
@@ -90,10 +204,18 @@ script MasaraTown_EventScript_KimuraDoor {
     } elif (!flag(FLAG_MASARA_KNOCKED_KIMURA)) {
         setflag(FLAG_MASARA_KNOCKED_KIMURA)
         msgbox(MasaraTown_Text_Knock)
-        msgbox(MasaraTown_Text_KimuraGoAway)
+        if (flag(FLAG_BADGE01_GET)) {
+            msgbox(MasaraTown_Text_KimuraGoAwayB1)
+        } else {
+            msgbox(MasaraTown_Text_KimuraGoAway)
+        }
     } else {
         msgbox(MasaraTown_Text_Knock)
-        msgbox(MasaraTown_Text_KimuraNoAnswer)
+        if (flag(FLAG_BADGE01_GET)) {
+            msgbox(MasaraTown_Text_KimuraGoAwayB1)
+        } else {
+            msgbox(MasaraTown_Text_KimuraNoAnswer)
+        }
     }
     releaseall
 }
@@ -103,13 +225,28 @@ script MasaraTown_EventScript_KimuraBowl {
     msgbox(MasaraTown_Text_KimuraBowl, MSGBOX_SIGN)
 }
 
+// MAS-208. Photo by day; at night "Dark" until 23:00, then the lamp is on (he is home again).
 script MasaraTown_EventScript_KimuraWindow {
-    setflag(FLAG_SEEN_KIMURA_PHOTO)
-    msgbox(MasaraTown_Text_KimuraWindow, MSGBOX_SIGN)
+    lockall
+    checktimeofday
+    if (var(VAR_RESULT) == TIME_OF_DAY_NITE) {
+        getgamehour
+        if (var(VAR_RESULT) >= 23) {
+            msgbox(MasaraTown_Text_KimuraWindowLamp)
+        } elif (var(VAR_RESULT) < 4) {
+            msgbox(MasaraTown_Text_KimuraWindowLamp)
+        } else {
+            msgbox(MasaraTown_Text_KimuraWindowDark)
+        }
+    } else {
+        setflag(FLAG_SEEN_KIMURA_PHOTO)
+        msgbox(MasaraTown_Text_KimuraWindow)
+    }
+    releaseall
 }
 
-// At night he walks to Tokiwa for his magazine: shown only at night by
-// showduringtime in MAP_SCRIPT_ON_TRANSITION.
+// At night he walks to Tokiwa for his magazine: shown only 18-23 by showduringhours in
+// MAP_SCRIPT_ON_TRANSITION. (Route 1's R01-401 is tokiwa-spine's.)
 script MasaraTown_EventScript_KimuraNight {
     lock
     faceplayer
@@ -123,12 +260,18 @@ script MasaraTown_EventScript_KimuraNight {
     release
 }
 
-// Fiora: leaving for the circuit the same morning. After the talk she walks
-// up the north road toward Route 1 and is gone.
+// ---------------------------------------------------------------------------
+// MAS-108 Fiora in the square (doesn't wait #1). PR #21, kept: visible from FLAG_SYS_POKEMON_GET
+// until she has talked (she leaves) or tokiwa-town's first Tokiwa entry sets FLAG_HIDE_MASARA_FIORA.
+// The flag is set at new game (Satoshi's room) and cleared at the starter pick (lab).
+// ---------------------------------------------------------------------------
 script MasaraTown_EventScript_Fiora {
     lock
     faceplayer
-    msgbox(MasaraTown_Text_Fiora)
+    setflag(FLAG_Q_FIORA_MET)
+    msgbox(MasaraTown_Text_Fiora1)
+    msgbox(MasaraTown_Text_Fiora2)
+    msgbox(MasaraTown_Text_Fiora3)
     closemessage
     // Go round the player if they stand in her way north.
     if (var(VAR_FACING) == DIR_SOUTH) {
@@ -151,53 +294,58 @@ movement MasaraTown_Movement_FioraLeaveAround {
     walk_up * 7
 }
 
-// Okido outside his institute. The "something sealed" line seeds the Special
-// (it belongs in the starter scene once the Kanto lab exists). He changes the
-// subject if the player has seen the photo in Kimura's window.
-script MasaraTown_EventScript_Okido {
+// ---------------------------------------------------------------------------
+// MAS-114 the girl, MAS-115 the technology man (R/G lines, public mood, no clue).
+// ---------------------------------------------------------------------------
+script MasaraTown_EventScript_MAS114_Girl {
     lock
     faceplayer
-    if (!flag(FLAG_MASARA_OKIDO_SEALED)) {
-        setflag(FLAG_MASARA_OKIDO_SEALED)
-        msgbox(MasaraTown_Text_OkidoSealed)
+    if (flag(FLAG_BADGE01_GET)) {
+        msgbox(MasaraTown_Text_MAS114_GirlB1)
     } else {
-        msgbox(MasaraTown_Text_OkidoSealedAgain)
-    }
-    if (flag(FLAG_SEEN_KIMURA_PHOTO)) {
-        msgbox(MasaraTown_Text_OkidoChangesSubject)
+        msgbox(MasaraTown_Text_MAS114_Girl)
     }
     release
 }
 
-// Nanami tends her herbs by the Okido house. Once the player has seen
-// Kimura's bowl she remembers what he used to buy.
-script MasaraTown_EventScript_Nanami {
+script MasaraTown_EventScript_MAS115_TechMan {
     lock
     faceplayer
-    msgbox(MasaraTown_Text_NanamiHerbs)
-    if (flag(FLAG_SEEN_KIMURA_BOWL)) {
-        msgbox(MasaraTown_Text_NanamiKimura)
-    }
-    closemessage
-    applymovement(LOCALID_MASARA_NANAMI, Common_Movement_FaceOriginalDirection)
-    waitmovement(0)
+    msgbox(MasaraTown_Text_MAS115_TechMan)
     release
 }
 
-// Okada food shop: the mother outside asks after Fiora, the father answers
-// from inside and pretends not to care.
-script MasaraTown_EventScript_OkadaMother {
-    lock
-    faceplayer
-    if (flag(FLAG_SYS_POKEMON_GET)) {
-        msgbox(MasaraTown_Text_OkadaMotherTrainer)
-        msgbox(MasaraTown_Text_OkadaFatherTrainer)
-    } elif (!flag(FLAG_HIDE_MASARA_FIORA)) {
-        msgbox(MasaraTown_Text_OkadaMotherFioraHere)
-        msgbox(MasaraTown_Text_OkadaFatherFioraHere)
-    } else {
-        msgbox(MasaraTown_Text_OkadaMotherFioraGone)
-        msgbox(MasaraTown_Text_OkadaFatherFioraGone)
+// ---------------------------------------------------------------------------
+// MAS-302 Ken's treasure map, spots 1 and 2 (spot 3 is Route 1's R01-202, tokiwa-spine).
+// An examine tutorial: with the TREASURE MAP in the bag, face the marked tile and press A.
+// Without the map the tile says nothing. PLACEHOLDER positions (two bushes); art may move them.
+// ---------------------------------------------------------------------------
+script MasaraTown_EventScript_MAS302_Spot1 {
+    lockall
+    checkitem(ITEM_TREASURE_MAP)
+    if (var(VAR_RESULT) == TRUE) {
+        if (!flag(FLAG_HIDDEN_ITEM_MASARA_TREASURE_1)) {
+            setflag(FLAG_HIDDEN_ITEM_MASARA_TREASURE_1)
+            playse(SE_PIN)
+            msgbox(MasaraTown_Text_MAS302_Spot1)
+        } else {
+            msgbox(MasaraTown_Text_MAS302_SpotAgain)
+        }
     }
-    release
+    releaseall
+}
+
+script MasaraTown_EventScript_MAS302_Spot2 {
+    lockall
+    checkitem(ITEM_TREASURE_MAP)
+    if (var(VAR_RESULT) == TRUE) {
+        if (!flag(FLAG_HIDDEN_ITEM_MASARA_TREASURE_2)) {
+            setflag(FLAG_HIDDEN_ITEM_MASARA_TREASURE_2)
+            playse(SE_PIN)
+            msgbox(MasaraTown_Text_MAS302_Spot2)
+        } else {
+            msgbox(MasaraTown_Text_MAS302_SpotAgain)
+        }
+    }
+    releaseall
 }

@@ -1,40 +1,64 @@
 // Masara Town dialogue (English). Logic: scripts.pory. Translations: text.<lang>.pory
 // with the same block names; see docs/engineering/map-text.md.
+//
+// Tags: [R/G] real Red/Green line (checked against pret/pokered, text/PalletTown.asm); [PR #21] kept from
+// the opening events PR; [new] a join written by the studio; PLACEHOLDER = an invention for the owning thread.
 
 text MasaraTown_Text_TownSign {
     format("MASARA TOWN\nThe pure white beginning.")
-}
-
-text MasaraTown_Text_TestChangeTime {
-    format("(Test) Change the time of day?")
-}
-
-text MasaraTown_Text_TestMorning {
-    format("It's morning.")
-}
-
-text MasaraTown_Text_TestDaytime {
-    format("It's daytime.")
-}
-
-text MasaraTown_Text_TestNight {
-    format("It's night.")
-}
-
-text MasaraTown_Text_TestClock {
-    format("The time follows the clock again.")
 }
 
 text MasaraTown_Text_RouteSign {
     format("ROUTE 1\nMASARA TOWN - TOKIWA CITY")
 }
 
+// MAS-002 [R/G: OAK: Hey! Wait! Don't go out! / It's unsafe! Wild POKéMON live in tall grass! ...]
+text MasaraTown_Text_MAS002_HeyWait {
+    format("OKIDO: Hey! Wait! Don't go out!")
+}
+
+text MasaraTown_Text_MAS002_Unsafe {
+    format("OKIDO: It's unsafe! Wild POKéMON live in tall grass!")
+}
+
+text MasaraTown_Text_MAS002_YouNeedOne {
+    format("You need your own POKéMON for your protection.\pI know! Here, come with me!")
+}
+
+// [new, v0.4 reduced] Ken only asks.
+text MasaraTown_Text_MAS002_KenQuestion {
+    format("KEN: ...Were you really going to walk in there with nothing?")
+}
+
+// MAS-202 [R/G + Notion]
+text MasaraTown_Text_MAS202_HomeSign {
+    format("{PLAYER}'s house")
+}
+
+text MasaraTown_Text_MAS202_OkidoHouseSign {
+    format("OKIDO house")
+}
+
+text MasaraTown_Text_MAS202_LabSign {
+    format("OKIDO POKéMON RESEARCH INSTITUTE")
+}
+
+// PLACEHOLDER: the Okada shop's name is not in canon beyond "the Okadas' food shop" (PR #21).
+text MasaraTown_Text_MAS202_ShopSign {
+    format("OKADA\nFood shop")
+}
+
+// MAS-113 Kimura's door [PR #21, kept] + the after-B1 line from the script list.
 text MasaraTown_Text_Knock {
     format("(Knock, knock...)")
 }
 
 text MasaraTown_Text_KimuraGoAway {
     format("...Go away. I'm not one of Okido's errand boys.")
+}
+
+text MasaraTown_Text_KimuraGoAwayB1 {
+    format("...Go away. I've nothing for Okido's errand boys.")
 }
 
 text MasaraTown_Text_KimuraNoAnswer {
@@ -45,12 +69,22 @@ text MasaraTown_Text_KimuraDoorNight {
     format("The lights are off. Nobody answers.")
 }
 
+// MAS-207
 text MasaraTown_Text_KimuraBowl {
     format("An empty POKéMON food bowl, and an old leash on a hook by the door.\pThe bowl is clean. Someone still washes it.")
 }
 
+// MAS-208 [PR #21 photo by day; the night lines are from the script list / ev2 2.1]
 text MasaraTown_Text_KimuraWindow {
     format("A faded photo hangs inside the window.\pA young man with a POKéMON at his feet, and someone in a lab coat beside him. Both are smiling.")
+}
+
+text MasaraTown_Text_KimuraWindowDark {
+    format("Dark. Nobody's home.")
+}
+
+text MasaraTown_Text_KimuraWindowLamp {
+    format("A lamp is on. Someone's home again.")
 }
 
 text MasaraTown_Text_KimuraStaring {
@@ -61,50 +95,43 @@ text MasaraTown_Text_KimuraDontPoke {
     format("...Don't go poking around other people's doors.")
 }
 
-text MasaraTown_Text_Fiora {
-    format("Hm? You're {PLAYER}, from the red roof.\pI'm Fiora. The Okadas' daughter, from the food shop. I was home for two days, and I'm off again this morning.\pThe circuit doesn't wait. Miss the qualifier in TOKIWA and you've missed the season.\pTell the PROFESSOR his INDEX still has my ODDISH under the wrong habitat.\pAnd if SHIGERU's still asleep, tell him that at this rate he'll never catch me.\pSee you on the road. Maybe.")
+// MAS-108 Fiora. Box 1 and 2 are the script list's; box 3 condenses the PR #21 speech (the rest of it,
+// the ODDISH complaint, moved to Okido's lab talk).
+text MasaraTown_Text_Fiora1 {
+    format("Your first? I remember mine.")
 }
 
-text MasaraTown_Text_OkidoSealed {
-    format("Ah, {PLAYER}. Up early, unlike my grandson.\pForty years I've been filling the POKéMON INDEX. Habitats, weights, how they evolve. All of it measurable.\pBut every POKéMON I've examined has something in it I can't measure. Something sealed.\pI've never managed to document it. Perhaps you'll see it before I do.")
+text MasaraTown_Text_Fiora2 {
+    format("SHIGERU ran past me just now. He never says hello.")
 }
 
-text MasaraTown_Text_OkidoSealedAgain {
-    format("Something sealed... One day I'll find a way to put it in the INDEX.")
+text MasaraTown_Text_Fiora3 {
+    format("I'm Fiora, the Okadas' girl. The circuit doesn't wait, and the qualifier's in TOKIWA.\pSee you on the road. Maybe.")
 }
 
-text MasaraTown_Text_OkidoChangesSubject {
-    format("The photo in Kimura's window? ...Hm.\pHave you seen the sky this morning? Lovely weather. Off you go.")
+// MAS-114 [R/G: I'm raising POKéMON too! When they get strong, they can protect me!] + [new variant]
+text MasaraTown_Text_MAS114_Girl {
+    format("I'm raising POKéMON too!\pWhen they get strong, they can protect me!")
 }
 
-text MasaraTown_Text_NanamiHerbs {
-    format("Morning, {PLAYER}. I'm drying herbs for the Okada shop.\pFood fills a POKéMON up. Herbs are different: they work on what's wrong, not on the hunger.\pGrandpa calls it folk medicine. He still drinks my tea.")
+text MasaraTown_Text_MAS114_GirlB1 {
+    format("You came back. Is TOKIWA safe?")
 }
 
-text MasaraTown_Text_NanamiKimura {
-    format("...Mr. Kimura's bowl? He used to buy calming herbs from me, for a POKéMON.\pThat POKéMON's been gone for years. He still keeps the bowl out.")
+// MAS-115 [R/G, the fisher by the lab]
+text MasaraTown_Text_MAS115_TechMan {
+    format("Technology is incredible!\pYou can now store and recall items and POKéMON as data via PC!")
 }
 
-text MasaraTown_Text_OkadaMotherFioraHere {
-    format("Fiora's leaving again this morning. She's in the square saying goodbye to half the town.\pTo half the town, and not to her father.")
+// MAS-302 spots 1 and 2 [Notion + ev1 + new]. PLACEHOLDER positions: two bushes.
+text MasaraTown_Text_MAS302_Spot1 {
+    format("A scrap of ribbon is tied to a branch. A small K is inked on it.\pThe map has the same mark. One of three.")
 }
 
-text MasaraTown_Text_OkadaFatherFioraHere {
-    format("(A voice from inside the shop)\nSomebody has to mind the shop!")
+text MasaraTown_Text_MAS302_Spot2 {
+    format("Another ribbon, another K. Two of three.\pThe last mark on the map is by a ledge on ROUTE 1.")
 }
 
-text MasaraTown_Text_OkadaMotherFioraGone {
-    format("She's gone already. She took a whole bag of rice crackers and didn't pay for one.")
-}
-
-text MasaraTown_Text_OkadaFatherFioraGone {
-    format("(A voice from inside the shop)\n...She'll be back when she's hungry.")
-}
-
-text MasaraTown_Text_OkadaMotherTrainer {
-    format("A POKéMON of your own! If you see Fiora on the road, tell her to eat something that isn't from a vending machine.")
-}
-
-text MasaraTown_Text_OkadaFatherTrainer {
-    format("(A voice from inside the shop)\nDon't tell her anything. ...Unless she asks.")
+text MasaraTown_Text_MAS302_SpotAgain {
+    format("A ribbon with a K on it. You've been here already.")
 }

@@ -1,2 +1,738 @@
-// Placeholder imported from FireRed (tools/frlg_import). No events yet.
-mapscripts PalletTown_ProfessorOaksLab_MapScripts {}
+// Okido's institute (the lab). Workstream masara. Rows: MAS-003 / 012 / 220 (three balls), MAS-004 (Shigeru,
+// no-whiteout fight), MAS-005 and MAS-106/107 (aides), MAS-006 / 007 / 009 / 008 (the parcel, the Index,
+// Okido's tag, the five balls: one scene), MAS-104 / 105 / 116 / 117 (Okido), MAS-210..213, 219, 221, MAS-305
+// (the tag report, lab only). Dialogue: text.en.pory.
+//
+// VAR_MASARA_LAB_STATE (the lab's step counter; VAR_MASARA_STATE follows it, see MasaraTown/scripts.pory):
+//   0 arrived (MAS-003 plays on the first frame)      1 Okido has spoken, the three balls can be examined
+//   2 starter picked, Shigeru has his; leaving starts the fight (MAS-004)
+//   3 fight over, Shigeru and Ken gone; the parcel scene waits for OKIDO PARCEL (MAS-006)
+//   4 Index scene done
+// Visibility is derived from these in ON_TRANSITION (FLAG_TEMP_*): 1-3 balls, 4 Shigeru, 5 Ken, 6-7 INDEX objects.
+//
+// The lab is split at row 8: only (5,8), (6,8), (7,8) are open between the entrance hall and the table, so the
+// triggers for the fight and the parcel sit on those three cells.
+
+mapscripts PalletTown_ProfessorOaksLab_MapScripts {
+    MAP_SCRIPT_ON_TRANSITION {
+        if (var(VAR_MASARA_LAB_STATE) >= 3) {
+            setflag(FLAG_TEMP_1)
+            setflag(FLAG_TEMP_2)
+            setflag(FLAG_TEMP_3)
+            setflag(FLAG_TEMP_4)
+            setflag(FLAG_TEMP_5)
+        } elif (var(VAR_MASARA_LAB_STATE) == 2) {
+            // the player's ball and Shigeru's (the one that beats it) are gone; the last one stays (MAS-220)
+            switch (var(VAR_STARTER_MON)) {
+                case 0:
+                    setflag(FLAG_TEMP_1)
+                    setflag(FLAG_TEMP_3)
+                case 1:
+                    setflag(FLAG_TEMP_3)
+                    setflag(FLAG_TEMP_2)
+                case 2:
+                    setflag(FLAG_TEMP_2)
+                    setflag(FLAG_TEMP_1)
+            }
+        }
+        if (var(VAR_MASARA_LAB_STATE) >= 4) {
+            setflag(FLAG_TEMP_6)
+            setflag(FLAG_TEMP_7)
+        }
+    }
+    MAP_SCRIPT_ON_FRAME_TABLE [
+        VAR_MASARA_LAB_STATE, 0: PalletTown_ProfessorOaksLab_EventScript_MAS003_Intro
+    ]
+}
+
+// ---------------------------------------------------------------------------
+// MAS-003 Three balls. Plays when the player arrives (from the tall grass, MAS-002, or by the door).
+// ---------------------------------------------------------------------------
+script PalletTown_ProfessorOaksLab_EventScript_MAS003_Intro {
+    lockall
+    if (var(VAR_MASARA_STATE) == 0) {
+        setvar(VAR_MASARA_STATE, 1)
+    }
+    applymovement(LOCALID_PLAYER, PalletTown_ProfessorOaksLab_Movement_WalkToTable)
+    waitmovement(0)
+    applymovement(LOCALID_OAKS_LAB_RIVAL, Common_Movement_FacePlayer)
+    waitmovement(0)
+    msgbox(PalletTown_ProfessorOaksLab_Text_MAS003_ShigeruWaiting)
+    applymovement(LOCALID_OAKS_LAB_PROF_OAK, Common_Movement_FacePlayer)
+    waitmovement(0)
+    msgbox(PalletTown_ProfessorOaksLab_Text_MAS003_OkidoRemembers)
+    msgbox(PalletTown_ProfessorOaksLab_Text_MAS003_ThreeHere)
+    msgbox(PalletTown_ProfessorOaksLab_Text_MAS003_OnlyThreeLeft)
+    msgbox(PalletTown_ProfessorOaksLab_Text_MAS003_ShigeruWhatAboutMe)
+    msgbox(PalletTown_ProfessorOaksLab_Text_MAS003_OkidoBePatient)
+    msgbox(PalletTown_ProfessorOaksLab_Text_MAS003_ShigeruGoAhead)
+    applymovement(LOCALID_OAKS_LAB_PROF_OAK, Common_Movement_FaceOriginalDirection)
+    applymovement(LOCALID_OAKS_LAB_RIVAL, Common_Movement_FaceOriginalDirection)
+    waitmovement(0)
+    setvar(VAR_MASARA_LAB_STATE, 1)
+    releaseall
+    end
+}
+
+movement PalletTown_ProfessorOaksLab_Movement_WalkToTable {
+    walk_up * 5
+}
+
+// Stepping back toward the door before the pick: R/G "Hey! Don't go away yet!"
+script PalletTown_ProfessorOaksLab_EventScript_DontGoAway {
+    lockall
+    msgbox(PalletTown_ProfessorOaksLab_Text_MAS003_DontGoAway)
+    closemessage
+    applymovement(LOCALID_PLAYER, PalletTown_ProfessorOaksLab_Movement_StepUp)
+    waitmovement(0)
+    releaseall
+    end
+}
+
+movement PalletTown_ProfessorOaksLab_Movement_StepUp {
+    walk_up * 2
+}
+
+// ---------------------------------------------------------------------------
+// MAS-012 The three ball examines (replace Emerald's bag chooser). Species, cry, "So! You want the ...?"
+// Yes runs the rest of MAS-003: the pick, then Shigeru takes the type that beats it.
+// MAS-220: after the pick the last ball says its line until Ken takes it (MAS-004).
+// ---------------------------------------------------------------------------
+script PalletTown_ProfessorOaksLab_EventScript_BallBulbasaur {
+    lock
+    if (var(VAR_MASARA_LAB_STATE) != 1) {
+        goto(PalletTown_ProfessorOaksLab_EventScript_MAS220_LastBall)
+    }
+    playmoncry(SPECIES_BULBASAUR, CRY_MODE_NORMAL)
+    waitmoncry
+    msgbox(PalletTown_ProfessorOaksLab_Text_WantBulbasaur, MSGBOX_YESNO)
+    if (var(VAR_RESULT) == YES) {
+        goto(PalletTown_ProfessorOaksLab_EventScript_TakeBulbasaur)
+    }
+    release
+    end
+}
+
+script PalletTown_ProfessorOaksLab_EventScript_BallCharmander {
+    lock
+    if (var(VAR_MASARA_LAB_STATE) != 1) {
+        goto(PalletTown_ProfessorOaksLab_EventScript_MAS220_LastBall)
+    }
+    playmoncry(SPECIES_CHARMANDER, CRY_MODE_NORMAL)
+    waitmoncry
+    msgbox(PalletTown_ProfessorOaksLab_Text_WantCharmander, MSGBOX_YESNO)
+    if (var(VAR_RESULT) == YES) {
+        goto(PalletTown_ProfessorOaksLab_EventScript_TakeCharmander)
+    }
+    release
+    end
+}
+
+script PalletTown_ProfessorOaksLab_EventScript_BallSquirtle {
+    lock
+    if (var(VAR_MASARA_LAB_STATE) != 1) {
+        goto(PalletTown_ProfessorOaksLab_EventScript_MAS220_LastBall)
+    }
+    playmoncry(SPECIES_SQUIRTLE, CRY_MODE_NORMAL)
+    waitmoncry
+    msgbox(PalletTown_ProfessorOaksLab_Text_WantSquirtle, MSGBOX_YESNO)
+    if (var(VAR_RESULT) == YES) {
+        goto(PalletTown_ProfessorOaksLab_EventScript_TakeSquirtle)
+    }
+    release
+    end
+}
+
+script PalletTown_ProfessorOaksLab_EventScript_MAS220_LastBall {
+    msgbox(PalletTown_ProfessorOaksLab_Text_MAS220_LastBall)
+    release
+    end
+}
+
+script PalletTown_ProfessorOaksLab_EventScript_TakeBulbasaur {
+    msgbox(PalletTown_ProfessorOaksLab_Text_MonEnergetic)
+    setvar(VAR_STARTER_MON, 0)
+    removeobject(LOCALID_BULBASAUR_BALL)
+    setflag(FLAG_TEMP_1)
+    givemon(SPECIES_BULBASAUR, 5)
+    playfanfare(MUS_OBTAIN_ITEM)
+    message(PalletTown_ProfessorOaksLab_Text_ReceivedBulbasaur)
+    waitmessage
+    waitfanfare
+    bufferspeciesname(STR_VAR_1, SPECIES_BULBASAUR)
+    goto(PalletTown_ProfessorOaksLab_EventScript_Nickname)
+}
+
+script PalletTown_ProfessorOaksLab_EventScript_TakeCharmander {
+    msgbox(PalletTown_ProfessorOaksLab_Text_MonEnergetic)
+    setvar(VAR_STARTER_MON, 1)
+    removeobject(LOCALID_CHARMANDER_BALL)
+    setflag(FLAG_TEMP_3)
+    givemon(SPECIES_CHARMANDER, 5)
+    playfanfare(MUS_OBTAIN_ITEM)
+    message(PalletTown_ProfessorOaksLab_Text_ReceivedCharmander)
+    waitmessage
+    waitfanfare
+    bufferspeciesname(STR_VAR_1, SPECIES_CHARMANDER)
+    goto(PalletTown_ProfessorOaksLab_EventScript_Nickname)
+}
+
+script PalletTown_ProfessorOaksLab_EventScript_TakeSquirtle {
+    msgbox(PalletTown_ProfessorOaksLab_Text_MonEnergetic)
+    setvar(VAR_STARTER_MON, 2)
+    removeobject(LOCALID_SQUIRTLE_BALL)
+    setflag(FLAG_TEMP_2)
+    givemon(SPECIES_SQUIRTLE, 5)
+    playfanfare(MUS_OBTAIN_ITEM)
+    message(PalletTown_ProfessorOaksLab_Text_ReceivedSquirtle)
+    waitmessage
+    waitfanfare
+    bufferspeciesname(STR_VAR_1, SPECIES_SQUIRTLE)
+    goto(PalletTown_ProfessorOaksLab_EventScript_Nickname)
+}
+
+script PalletTown_ProfessorOaksLab_EventScript_Nickname {
+    setflag(FLAG_SYS_POKEMON_GET)
+    // MAS-108: Fiora is in the square from now on (set at new game in Satoshi's room).
+    clearflag(FLAG_HIDE_MASARA_FIORA)
+    msgbox(gText_NicknameThisPokemon, MSGBOX_YESNO)
+    if (var(VAR_RESULT) == YES) {
+        setvar(VAR_0x8004, 0)
+        call(Common_EventScript_NameReceivedPartyMon)
+    }
+    // Shigeru takes the type that beats it: Bulbasaur -> Charmander, Charmander -> Squirtle, Squirtle -> Bulbasaur.
+    msgbox(PalletTown_ProfessorOaksLab_Text_ShigeruIllTakeThis)
+    closemessage
+    switch (var(VAR_STARTER_MON)) {
+        case 0:
+            applymovement(LOCALID_OAKS_LAB_RIVAL, PalletTown_ProfessorOaksLab_Movement_ShigeruToCharmander)
+            waitmovement(0)
+            removeobject(LOCALID_CHARMANDER_BALL)
+            setflag(FLAG_TEMP_3)
+            msgbox(PalletTown_ProfessorOaksLab_Text_ShigeruReceivedCharmander)
+            applymovement(LOCALID_OAKS_LAB_RIVAL, PalletTown_ProfessorOaksLab_Movement_ShigeruBackFromCharmander)
+        case 1:
+            applymovement(LOCALID_OAKS_LAB_RIVAL, PalletTown_ProfessorOaksLab_Movement_ShigeruToSquirtle)
+            waitmovement(0)
+            removeobject(LOCALID_SQUIRTLE_BALL)
+            setflag(FLAG_TEMP_2)
+            msgbox(PalletTown_ProfessorOaksLab_Text_ShigeruReceivedSquirtle)
+            applymovement(LOCALID_OAKS_LAB_RIVAL, PalletTown_ProfessorOaksLab_Movement_ShigeruBackFromSquirtle)
+        case 2:
+            applymovement(LOCALID_OAKS_LAB_RIVAL, PalletTown_ProfessorOaksLab_Movement_ShigeruToBulbasaur)
+            waitmovement(0)
+            removeobject(LOCALID_BULBASAUR_BALL)
+            setflag(FLAG_TEMP_1)
+            msgbox(PalletTown_ProfessorOaksLab_Text_ShigeruReceivedBulbasaur)
+            applymovement(LOCALID_OAKS_LAB_RIVAL, PalletTown_ProfessorOaksLab_Movement_ShigeruBackFromBulbasaur)
+    }
+    waitmovement(0)
+    setvar(VAR_MASARA_LAB_STATE, 2)
+    setvar(VAR_MASARA_STATE, 2)
+    releaseall
+    end
+}
+
+// Shigeru walks the lower row (row 6) so the player, at row 5 in front of the table, never blocks him.
+movement PalletTown_ProfessorOaksLab_Movement_ShigeruToCharmander {
+    walk_down * 2
+    walk_right * 5
+    walk_up
+    face_up
+}
+
+movement PalletTown_ProfessorOaksLab_Movement_ShigeruBackFromCharmander {
+    walk_down
+    walk_left * 5
+    walk_up * 2
+    face_down
+}
+
+movement PalletTown_ProfessorOaksLab_Movement_ShigeruToSquirtle {
+    walk_down * 2
+    walk_right * 4
+    walk_up
+    face_up
+}
+
+movement PalletTown_ProfessorOaksLab_Movement_ShigeruBackFromSquirtle {
+    walk_down
+    walk_left * 4
+    walk_up * 2
+    face_down
+}
+
+movement PalletTown_ProfessorOaksLab_Movement_ShigeruToBulbasaur {
+    walk_down * 2
+    walk_right * 3
+    walk_up
+    face_up
+}
+
+movement PalletTown_ProfessorOaksLab_Movement_ShigeruBackFromBulbasaur {
+    walk_down
+    walk_left * 3
+    walk_up * 2
+    face_down
+}
+
+// ---------------------------------------------------------------------------
+// MAS-004 Shigeru, lab battle. Trying to leave after the pick (the choke at row 8). Lv 5 vs Lv 5, no whiteout:
+// TRAINER_BATTLE_EARLY_RIVAL (core). Three party variants keyed on VAR_STARTER_MON.
+// ---------------------------------------------------------------------------
+script PalletTown_ProfessorOaksLab_EventScript_MAS004_Challenge {
+    lockall
+    playse(SE_PIN)
+    applymovement(LOCALID_PLAYER, PalletTown_ProfessorOaksLab_Movement_FaceUp)
+    waitmovement(0)
+    getplayerxy(VAR_0x8000, VAR_0x8001)
+    switch (var(VAR_0x8000)) {
+        case 5:
+            applymovement(LOCALID_OAKS_LAB_RIVAL, PalletTown_ProfessorOaksLab_Movement_ShigeruChallenge5)
+        case 6:
+            applymovement(LOCALID_OAKS_LAB_RIVAL, PalletTown_ProfessorOaksLab_Movement_ShigeruChallenge6)
+        default:
+            applymovement(LOCALID_OAKS_LAB_RIVAL, PalletTown_ProfessorOaksLab_Movement_ShigeruChallenge7)
+    }
+    waitmovement(0)
+    switch (var(VAR_STARTER_MON)) {
+        case 0:
+            trainerbattle_early_rival(TRAINER_SHIGERU_LAB_1, PalletTown_ProfessorOaksLab_Text_MAS004_Intro, PalletTown_ProfessorOaksLab_Text_MAS004_WonByPlayer, PalletTown_ProfessorOaksLab_Text_MAS004_WonByShigeru, PalletTown_ProfessorOaksLab_EventScript_MAS004_After)
+        case 1:
+            trainerbattle_early_rival(TRAINER_SHIGERU_LAB_2, PalletTown_ProfessorOaksLab_Text_MAS004_Intro, PalletTown_ProfessorOaksLab_Text_MAS004_WonByPlayer, PalletTown_ProfessorOaksLab_Text_MAS004_WonByShigeru, PalletTown_ProfessorOaksLab_EventScript_MAS004_After)
+        default:
+            trainerbattle_early_rival(TRAINER_SHIGERU_LAB_3, PalletTown_ProfessorOaksLab_Text_MAS004_Intro, PalletTown_ProfessorOaksLab_Text_MAS004_WonByPlayer, PalletTown_ProfessorOaksLab_Text_MAS004_WonByShigeru, PalletTown_ProfessorOaksLab_EventScript_MAS004_After)
+    }
+    // already beaten: the macro fell through
+    goto(PalletTown_ProfessorOaksLab_EventScript_MAS004_After)
+}
+
+movement PalletTown_ProfessorOaksLab_Movement_FaceUp {
+    face_up
+}
+
+// Shigeru comes down the left side of the hall and stops in front of the player (at 5, 6 or 7, row 8).
+movement PalletTown_ProfessorOaksLab_Movement_ShigeruChallenge5 {
+    walk_fast_down * 3
+    face_down
+}
+
+movement PalletTown_ProfessorOaksLab_Movement_ShigeruChallenge6 {
+    walk_fast_down * 3
+    walk_fast_right
+    face_down
+}
+
+movement PalletTown_ProfessorOaksLab_Movement_ShigeruChallenge7 {
+    walk_fast_down * 3
+    walk_fast_right * 2
+    face_down
+}
+
+// After the fight. VAR_RESULT is 1 (the player won) or 0 (lost); read it before anything else clobbers it.
+script PalletTown_ProfessorOaksLab_EventScript_MAS004_After {
+    if (var(VAR_RESULT) == 1) {
+        setflag(FLAG_Q_RIVAL1_WIN)
+    } else {
+        // core healed HP and status (not TP); one line, PLACEHOLDER Q96
+        msgbox(PalletTown_ProfessorOaksLab_Text_MAS004_SitAMinute)
+    }
+    msgbox(PalletTown_ProfessorOaksLab_Text_MAS004_SmellYouLater)
+    closemessage
+    // Shigeru goes round the player and out of the door.
+    getplayerxy(VAR_0x8000, VAR_0x8001)
+    if (var(VAR_0x8000) == 7) {
+        applymovement(LOCALID_OAKS_LAB_RIVAL, PalletTown_ProfessorOaksLab_Movement_ShigeruLeaveLeft)
+    } else {
+        applymovement(LOCALID_OAKS_LAB_RIVAL, PalletTown_ProfessorOaksLab_Movement_ShigeruLeaveRight)
+    }
+    waitmovement(0)
+    removeobject(LOCALID_OAKS_LAB_RIVAL)
+    setflag(FLAG_TEMP_4)
+    // Ken looks at the last ball a long time before he picks it up (an act, no line).
+    switch (var(VAR_STARTER_MON)) {
+        case 0:
+            applymovement(LOCALID_MASARA_LAB_KEN, PalletTown_ProfessorOaksLab_Movement_KenToBall9)
+            waitmovement(0)
+            msgbox(PalletTown_ProfessorOaksLab_Text_MAS004_KenLastBall)
+            removeobject(LOCALID_SQUIRTLE_BALL)
+            setflag(FLAG_TEMP_2)
+            applymovement(LOCALID_MASARA_LAB_KEN, PalletTown_ProfessorOaksLab_Movement_KenLeaveFromBall9)
+        case 1:
+            applymovement(LOCALID_MASARA_LAB_KEN, PalletTown_ProfessorOaksLab_Movement_KenToBall8)
+            waitmovement(0)
+            msgbox(PalletTown_ProfessorOaksLab_Text_MAS004_KenLastBall)
+            removeobject(LOCALID_BULBASAUR_BALL)
+            setflag(FLAG_TEMP_1)
+            applymovement(LOCALID_MASARA_LAB_KEN, PalletTown_ProfessorOaksLab_Movement_KenLeaveFromBall8)
+        default:
+            applymovement(LOCALID_MASARA_LAB_KEN, PalletTown_ProfessorOaksLab_Movement_KenToBall10)
+            waitmovement(0)
+            msgbox(PalletTown_ProfessorOaksLab_Text_MAS004_KenLastBall)
+            removeobject(LOCALID_CHARMANDER_BALL)
+            setflag(FLAG_TEMP_3)
+            applymovement(LOCALID_MASARA_LAB_KEN, PalletTown_ProfessorOaksLab_Movement_KenLeaveFromBall10)
+    }
+    waitmovement(0)
+    removeobject(LOCALID_MASARA_LAB_KEN)
+    setflag(FLAG_TEMP_5)
+    setvar(VAR_MASARA_LAB_STATE, 3)
+    setvar(VAR_MASARA_STATE, 3)
+    releaseall
+    end
+}
+
+movement PalletTown_ProfessorOaksLab_Movement_ShigeruLeaveRight {
+    walk_right
+    walk_down * 4
+}
+
+movement PalletTown_ProfessorOaksLab_Movement_ShigeruLeaveLeft {
+    walk_left
+    walk_down * 4
+}
+
+// Ken starts at (7,7); the ball he takes is at (8..10, 4), reached from row 5.
+movement PalletTown_ProfessorOaksLab_Movement_KenToBall8 {
+    walk_up * 2
+    walk_right
+    face_up
+}
+
+movement PalletTown_ProfessorOaksLab_Movement_KenLeaveFromBall8 {
+    walk_down
+    walk_left
+    walk_down * 5
+}
+
+movement PalletTown_ProfessorOaksLab_Movement_KenToBall9 {
+    walk_up * 2
+    walk_right * 2
+    face_up
+}
+
+movement PalletTown_ProfessorOaksLab_Movement_KenLeaveFromBall9 {
+    walk_down
+    walk_left * 2
+    walk_down * 5
+}
+
+movement PalletTown_ProfessorOaksLab_Movement_KenToBall10 {
+    walk_up * 2
+    walk_right * 3
+    face_up
+}
+
+movement PalletTown_ProfessorOaksLab_Movement_KenLeaveFromBall10 {
+    walk_down
+    walk_left * 3
+    walk_down * 5
+}
+
+// ---------------------------------------------------------------------------
+// MAS-006 / 007 / 009 / 008: the parcel, the Index, the form, Okido's tag, the five balls. One scene.
+// Fires at the choke while the lab is at step 3 and the player holds OKIDO PARCEL (TOK-001/002); with
+// no parcel the trigger does nothing.
+// ---------------------------------------------------------------------------
+script PalletTown_ProfessorOaksLab_EventScript_MAS006_ParcelCheck {
+    checkitem(ITEM_OAKS_PARCEL)
+    if (var(VAR_RESULT) == FALSE) {
+        end
+    }
+    goto(PalletTown_ProfessorOaksLab_EventScript_MAS006_Scene)
+}
+
+script PalletTown_ProfessorOaksLab_EventScript_MAS006_Scene {
+    lockall
+    getplayerxy(VAR_0x8000, VAR_0x8001)
+    switch (var(VAR_0x8000)) {
+        case 5:
+            applymovement(LOCALID_PLAYER, PalletTown_ProfessorOaksLab_Movement_ParcelFrom5)
+        case 6:
+            applymovement(LOCALID_PLAYER, PalletTown_ProfessorOaksLab_Movement_ParcelFrom6)
+        default:
+            applymovement(LOCALID_PLAYER, PalletTown_ProfessorOaksLab_Movement_ParcelFrom7)
+    }
+    waitmovement(0)
+    applymovement(LOCALID_OAKS_LAB_PROF_OAK, Common_Movement_FacePlayer)
+    waitmovement(0)
+    msgbox(PalletTown_ProfessorOaksLab_Text_MAS006_HowIsMyOldMon)
+    msgbox(PalletTown_ProfessorOaksLab_Text_MAS006_SomethingForMe)
+    setvar(VAR_0x8004, ITEM_OAKS_PARCEL)
+    call(Common_EventScript_PlayerHandedOverTheItem)
+    msgbox(PalletTown_ProfessorOaksLab_Text_MAS006_CustomBall)
+    closemessage
+    // Shigeru and Ken come in through the door.
+    setobjectxyperm(LOCALID_OAKS_LAB_RIVAL, 7, 12)
+    setobjectxyperm(LOCALID_MASARA_LAB_KEN, 5, 12)
+    clearflag(FLAG_TEMP_4)
+    clearflag(FLAG_TEMP_5)
+    addobject(LOCALID_OAKS_LAB_RIVAL)
+    addobject(LOCALID_MASARA_LAB_KEN)
+    applymovement(LOCALID_OAKS_LAB_RIVAL, PalletTown_ProfessorOaksLab_Movement_ComeInShigeru)
+    applymovement(LOCALID_MASARA_LAB_KEN, PalletTown_ProfessorOaksLab_Movement_ComeInKen)
+    waitmovement(LOCALID_OAKS_LAB_RIVAL)
+    waitmovement(LOCALID_MASARA_LAB_KEN)
+    msgbox(PalletTown_ProfessorOaksLab_Text_MAS006_ShigeruWhatDidYouCall)
+    // MAS-007 The Index
+    msgbox(PalletTown_ProfessorOaksLab_Text_MAS007_Request)
+    msgbox(PalletTown_ProfessorOaksLab_Text_MAS007_OnTheDesk)
+    msgbox(PalletTown_ProfessorOaksLab_Text_MAS007_TakeThese)
+    removeobject(LOCALID_POKEDEX_1)
+    removeobject(LOCALID_POKEDEX_2)
+    setflag(FLAG_TEMP_6)
+    setflag(FLAG_TEMP_7)
+    playfanfare(MUS_OBTAIN_ITEM)
+    message(PalletTown_ProfessorOaksLab_Text_MAS007_GotIndex)
+    waitmessage
+    waitfanfare
+    setflag(FLAG_SYS_POKEDEX_GET)
+    msgbox(PalletTown_ProfessorOaksLab_Text_MAS007_KenDraw)
+    msgbox(PalletTown_ProfessorOaksLab_Text_MAS007_OkidoLaughs)
+    msgbox(PalletTown_ProfessorOaksLab_Text_MAS007_Dream)
+    msgbox(PalletTown_ProfessorOaksLab_Text_MAS007_GetMoving)
+    msgbox(PalletTown_ProfessorOaksLab_Text_MAS007_ShigeruLeaveItToMe)
+    closemessage
+    // Shigeru and Ken leave.
+    applymovement(LOCALID_OAKS_LAB_RIVAL, PalletTown_ProfessorOaksLab_Movement_LeaveShigeru)
+    applymovement(LOCALID_MASARA_LAB_KEN, PalletTown_ProfessorOaksLab_Movement_LeaveKen)
+    waitmovement(LOCALID_OAKS_LAB_RIVAL)
+    waitmovement(LOCALID_MASARA_LAB_KEN)
+    removeobject(LOCALID_OAKS_LAB_RIVAL)
+    removeobject(LOCALID_MASARA_LAB_KEN)
+    setflag(FLAG_TEMP_4)
+    setflag(FLAG_TEMP_5)
+    // The PMC form, unless the player already has one (TOK-003) or it is already sealed.
+    checkitem(ITEM_PMC_FORM)
+    if (var(VAR_RESULT) == FALSE && !flag(FLAG_Q_FORM_SEALED)) {
+        msgbox(PalletTown_ProfessorOaksLab_Text_MAS007_Form)
+        giveitem(ITEM_PMC_FORM)
+    }
+    // MAS-009 Okido's tagged Pokémon, step 1
+    msgbox(PalletTown_ProfessorOaksLab_Text_MAS009_InMyDay)
+    msgbox(PalletTown_ProfessorOaksLab_Text_MAS009_WatchTag)
+    setvar(VAR_Q_TAG, 1)
+    // MAS-008 Five balls
+    call(PalletTown_ProfessorOaksLab_EventScript_MAS008_GiveBalls)
+    setvar(VAR_MASARA_LAB_STATE, 4)
+    setvar(VAR_MASARA_STATE, 4)
+    releaseall
+    end
+}
+
+// Okido's talk repeats this until the balls are taken (the bag may have been full).
+script PalletTown_ProfessorOaksLab_EventScript_MAS008_GiveBalls {
+    msgbox(PalletTown_ProfessorOaksLab_Text_MAS008_Catch)
+    giveitem(ITEM_POKE_BALL, 5)
+    if (var(VAR_RESULT) == TRUE) {
+        setflag(FLAG_MASARA_BALLS_GIVEN)
+    }
+    return
+}
+
+movement PalletTown_ProfessorOaksLab_Movement_ParcelFrom5 {
+    walk_up * 4
+    walk_right
+    face_up
+}
+
+movement PalletTown_ProfessorOaksLab_Movement_ParcelFrom6 {
+    walk_up * 4
+    face_up
+}
+
+movement PalletTown_ProfessorOaksLab_Movement_ParcelFrom7 {
+    walk_up * 4
+    walk_left
+    face_up
+}
+
+movement PalletTown_ProfessorOaksLab_Movement_ComeInShigeru {
+    walk_up * 7
+    face_up
+}
+
+movement PalletTown_ProfessorOaksLab_Movement_ComeInKen {
+    walk_up * 7
+    face_up
+}
+
+movement PalletTown_ProfessorOaksLab_Movement_LeaveShigeru {
+    walk_down * 7
+}
+
+movement PalletTown_ProfessorOaksLab_Movement_LeaveKen {
+    walk_down * 7
+}
+
+// ---------------------------------------------------------------------------
+// Okido. States: before the Index (MAS-116 / 117 one-shots, then the R/G line), the tag report (MAS-305),
+// and after the Index (the R/G rating, MAS-104, with one rotating extra: MAS-009 reminder, MAS-305 B2 line,
+// MAS-105 badge line, or the PR #21 "something sealed" talk).
+// ---------------------------------------------------------------------------
+script PalletTown_ProfessorOaksLab_EventScript_Okido {
+    lock
+    faceplayer
+    // Before the pick.
+    if (!flag(FLAG_SYS_POKEMON_GET)) {
+        msgbox(PalletTown_ProfessorOaksLab_Text_Okido_WhichMon)
+        goto(PalletTown_ProfessorOaksLab_EventScript_OkidoDone)
+    }
+    // MAS-116 then MAS-117, each once, before the Index.
+    if (!flag(FLAG_SYS_POKEDEX_GET)) {
+        if (!flag(FLAG_MASARA_P_OKIDO_FIGHT_LINE)) {
+            setflag(FLAG_MASARA_P_OKIDO_FIGHT_LINE)
+            msgbox(PalletTown_ProfessorOaksLab_Text_MAS116_Fight)
+            goto(PalletTown_ProfessorOaksLab_EventScript_OkidoDone)
+        }
+        if (!flag(FLAG_MASARA_P_OKIDO_SEALED)) {
+            setflag(FLAG_MASARA_P_OKIDO_SEALED)
+            msgbox(PalletTown_ProfessorOaksLab_Text_MAS117_Sealed)
+            goto(PalletTown_ProfessorOaksLab_EventScript_OkidoDone)
+        }
+        msgbox(PalletTown_ProfessorOaksLab_Text_MAS105_RaiseYoung)
+        goto(PalletTown_ProfessorOaksLab_EventScript_OkidoDone)
+    }
+    // The balls, if the bag was full during the scene (MAS-008).
+    if (!flag(FLAG_MASARA_BALLS_GIVEN)) {
+        call(PalletTown_ProfessorOaksLab_EventScript_MAS008_GiveBalls)
+        goto(PalletTown_ProfessorOaksLab_EventScript_OkidoDone)
+    }
+    // MAS-305 the tag report, lab only (the PC does not give it this build).
+    if (var(VAR_Q_TAG) == 2) {
+        goto(PalletTown_ProfessorOaksLab_EventScript_MAS305_Report)
+    }
+    // After the Index: the R/G rating (MAS-104).
+    msgbox(PalletTown_ProfessorOaksLab_Text_MAS104_HowIsIt)
+    call(ProfBirch_EventScript_RatePokedex)
+    msgbox(PalletTown_ProfessorOaksLab_Text_MAS104_ComeSee)
+    // One extra line.
+    if (var(VAR_Q_TAG) == 1) {
+        msgbox(PalletTown_ProfessorOaksLab_Text_MAS009_WatchTag)
+    } elif (var(VAR_Q_TAG) == 3 && flag(FLAG_BADGE02_GET)) {
+        msgbox(PalletTown_ProfessorOaksLab_Text_MAS305_StillNothing)
+    } elif (flag(FLAG_BADGE02_GET)) {
+        msgbox(PalletTown_ProfessorOaksLab_Text_MAS105_B2)
+    } elif (flag(FLAG_BADGE01_GET)) {
+        msgbox(PalletTown_ProfessorOaksLab_Text_MAS105_B1)
+    } elif (!flag(FLAG_MASARA_OKIDO_SEALED)) {
+        setflag(FLAG_MASARA_OKIDO_SEALED)
+        msgbox(PalletTown_ProfessorOaksLab_Text_OkidoSealed)
+    } else {
+        msgbox(PalletTown_ProfessorOaksLab_Text_OkidoSealedAgain)
+    }
+    if (flag(FLAG_SEEN_KIMURA_PHOTO)) {
+        msgbox(PalletTown_ProfessorOaksLab_Text_OkidoChangesSubject)
+    }
+    goto(PalletTown_ProfessorOaksLab_EventScript_OkidoDone)
+}
+
+script PalletTown_ProfessorOaksLab_EventScript_OkidoDone {
+    closemessage
+    applymovement(LOCALID_OAKS_LAB_PROF_OAK, Common_Movement_FaceOriginalDirection)
+    waitmovement(0)
+    release
+    end
+}
+
+// MAS-305: calm, by how the tag came. No anxiety, no explanation. Var 2 -> 3.
+script PalletTown_ProfessorOaksLab_EventScript_MAS305_Report {
+    if (flag(FLAG_Q_TAG_CAUGHT)) {
+        msgbox(PalletTown_ProfessorOaksLab_Text_MAS305_Caught)
+    } elif (flag(FLAG_Q_TAG_KO)) {
+        msgbox(PalletTown_ProfessorOaksLab_Text_MAS305_Ko)
+    } elif (flag(FLAG_Q_TAG_KEN)) {
+        msgbox(PalletTown_ProfessorOaksLab_Text_MAS305_Ken)
+    }
+    msgbox(PalletTown_ProfessorOaksLab_Text_MAS305_Keep)
+    setvar(VAR_Q_TAG, 3)
+    goto(PalletTown_ProfessorOaksLab_EventScript_OkidoDone)
+}
+
+// Shigeru before the fight (talking to him while the lab is at step 1 or 2). [R/G lines]
+script PalletTown_ProfessorOaksLab_EventScript_ShigeruIdle {
+    lock
+    faceplayer
+    if (var(VAR_MASARA_LAB_STATE) >= 2) {
+        msgbox(PalletTown_ProfessorOaksLab_Text_Shigeru_Stronger)
+    } else {
+        msgbox(PalletTown_ProfessorOaksLab_Text_MAS003_ShigeruGoAhead)
+    }
+    release
+    end
+}
+
+// Ken in the lab (steps 0-2), one question. [new]
+script PalletTown_ProfessorOaksLab_EventScript_Ken {
+    lock
+    faceplayer
+    msgbox(PalletTown_ProfessorOaksLab_Text_Ken_Question)
+    release
+    end
+}
+
+// ---------------------------------------------------------------------------
+// The aides. MAS-106 (TP line after the fight; Mom does not heal), MAS-107 (+ MAS-005 after the fight).
+// ---------------------------------------------------------------------------
+script PalletTown_ProfessorOaksLab_EventScript_MAS106_Aide1 {
+    lock
+    faceplayer
+    msgbox(PalletTown_ProfessorOaksLab_Text_MAS106_Aide)
+    if (var(VAR_MASARA_LAB_STATE) >= 3) {
+        msgbox(PalletTown_ProfessorOaksLab_Text_MAS106_Tp)
+    }
+    release
+    end
+}
+
+script PalletTown_ProfessorOaksLab_EventScript_MAS107_Aide2 {
+    lock
+    faceplayer
+    msgbox(PalletTown_ProfessorOaksLab_Text_MAS107_Aide)
+    if (var(VAR_MASARA_LAB_STATE) >= 3) {
+        msgbox(PalletTown_ProfessorOaksLab_Text_MAS005_WayNorth)
+    }
+    release
+    end
+}
+
+// ---------------------------------------------------------------------------
+// Objects and examines.
+// ---------------------------------------------------------------------------
+// The two INDEX copies on the desk (until the scene hands them out). [R/G]
+script PalletTown_ProfessorOaksLab_EventScript_IndexOnDesk {
+    msgbox(PalletTown_ProfessorOaksLab_Text_IndexOnDesk, MSGBOX_NPC)
+}
+
+script PalletTown_ProfessorOaksLab_EventScript_MAS210_PosterStart {
+    msgbox(PalletTown_ProfessorOaksLab_Text_MAS210_Start, MSGBOX_SIGN)
+}
+
+script PalletTown_ProfessorOaksLab_EventScript_MAS210_PosterSave {
+    msgbox(PalletTown_ProfessorOaksLab_Text_MAS210_Save, MSGBOX_SIGN)
+}
+
+script PalletTown_ProfessorOaksLab_EventScript_MAS211_PC {
+    msgbox(PalletTown_ProfessorOaksLab_Text_MAS211_Mail, MSGBOX_SIGN)
+}
+
+script PalletTown_ProfessorOaksLab_EventScript_MAS212_Books {
+    msgbox(PalletTown_ProfessorOaksLab_Text_MAS212_Books, MSGBOX_SIGN)
+}
+
+script PalletTown_ProfessorOaksLab_EventScript_MAS213_Pen {
+    msgbox(PalletTown_ProfessorOaksLab_Text_MAS213_Pen, MSGBOX_SIGN)
+}
+
+// MAS-219: the reminder for the tag thread (no quest log); before Okido's request it is just a notebook.
+script PalletTown_ProfessorOaksLab_EventScript_MAS219_Notebook {
+    if (var(VAR_Q_TAG) >= 1) {
+        msgbox(PalletTown_ProfessorOaksLab_Text_MAS219_Page, MSGBOX_SIGN)
+    } else {
+        msgbox(PalletTown_ProfessorOaksLab_Text_MAS219_Closed, MSGBOX_SIGN)
+    }
+}
+
+script PalletTown_ProfessorOaksLab_EventScript_MAS221_MedalBox {
+    msgbox(PalletTown_ProfessorOaksLab_Text_MAS221_Medals, MSGBOX_SIGN)
+}

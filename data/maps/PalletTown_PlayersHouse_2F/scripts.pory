@@ -1,2 +1,23 @@
-// Placeholder imported from FireRed (tools/frlg_import). No events yet.
-mapscripts PalletTown_PlayersHouse_2F_MapScripts {}
+// Satoshi's room (workstream masara). A new game starts here (core: SYS-000, respawn = home).
+// Rows: MAS-204 the console, MAS-205 the bedroom PC (the Potion waits in item storage: the item-storage
+// tutorial). Fiora's hide flag is set here while the game is new and cleared at the starter pick (lab).
+
+mapscripts PalletTown_PlayersHouse_2F_MapScripts {
+    MAP_SCRIPT_ON_TRANSITION {
+        // MAS-108: Fiora is in the square from the starter pick (FLAG_SYS_POKEMON_GET) until her talk or the
+        // first Tokiwa entry. Hidden until then: set at new game, cleared in the lab.
+        if (var(VAR_MASARA_STATE) == 0) {
+            setflag(FLAG_HIDE_MASARA_FIORA)
+        }
+    }
+}
+
+// [R/G framing] {PLAYER} is playing the SNES... Famicom is an era choice (PLACEHOLDER, OQ1).
+script PalletTown_PlayersHouse_2F_EventScript_MAS204_Console {
+    msgbox(PalletTown_PlayersHouse_2F_Text_MAS204_Console, MSGBOX_SIGN)
+}
+
+// [R/G] the bedroom PC: storage, with the Potion in the item storage (player_pc.c).
+script PalletTown_PlayersHouse_2F_EventScript_MAS205_PC {
+    goto(EventScript_PC)
+}

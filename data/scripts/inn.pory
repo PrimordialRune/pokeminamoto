@@ -126,9 +126,3 @@ script NibiInn_EventScript_WhiteoutLine {
     msgbox(format("FUMIE: There you are. Your room is still warm."))
     return
 }
-
-// Stub: owner masara replaces it. PLACEHOLDER line (Mom, before the first inn rest).
-script MasaraHome_EventScript_WhiteoutLine {
-    msgbox(format("MOM: Oh. You're home. Sit, sit."))
-    return
-}

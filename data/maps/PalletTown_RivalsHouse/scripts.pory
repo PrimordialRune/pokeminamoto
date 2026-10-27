@@ -1,2 +1,138 @@
-// Placeholder imported from FireRed (tools/frlg_import). No events yet.
-mapscripts PalletTown_RivalsHouse_MapScripts {}
+// The Okido house (Shigeru's and Nanami's home; Ken has the back room). Workstream masara.
+// Rows: MAS-109 / 010 (Nanami, the TOWN MAP), MAS-301 (the herb errand, Nanami side), MAS-112 / 302 (Ken,
+// the TREASURE MAP), MAS-214 / 215 / 216 (examines). Dialogue: text.en.pory.
+// Visibility: the TOWN MAP object is gone once it was given; Ken lives here after the Index (VAR_MASARA_STATE >= 4).
+
+mapscripts PalletTown_RivalsHouse_MapScripts {
+    MAP_SCRIPT_ON_TRANSITION {
+        if (flag(FLAG_MASARA_TOWNMAP_GIVEN)) {
+            setflag(FLAG_TEMP_1)
+        }
+        if (var(VAR_MASARA_STATE) < 4) {
+            setflag(FLAG_TEMP_2)
+        }
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Nanami. States, in order: before the Index (R/G Daisy line) / the TOWN MAP (MAS-010) / the herb errand
+// (MAS-301: 0 -> 1 ask, 1 reminder, 2 hand-in -> 3) / the default lines.
+// The hand-in is accepted at any time; she stops asking for the herb after the first badge.
+// ---------------------------------------------------------------------------
+script PalletTown_RivalsHouse_EventScript_Nanami {
+    lock
+    faceplayer
+    if (!flag(FLAG_SYS_POKEDEX_GET)) {
+        msgbox(PalletTown_RivalsHouse_Text_NanamiRivalAtLab)
+        release
+        end
+    }
+    if (!flag(FLAG_MASARA_TOWNMAP_GIVEN)) {
+        goto(PalletTown_RivalsHouse_EventScript_MAS010_TownMap)
+    }
+    if (var(VAR_Q_HERB) == 2) {
+        goto(PalletTown_RivalsHouse_EventScript_MAS301_HandIn)
+    }
+    if (var(VAR_Q_HERB) == 0 && !flag(FLAG_BADGE01_GET)) {
+        goto(PalletTown_RivalsHouse_EventScript_MAS301_Ask)
+    }
+    if (var(VAR_Q_HERB) == 1) {
+        msgbox(PalletTown_RivalsHouse_Text_MAS301_Reminder)
+        release
+        end
+    }
+    msgbox(PalletTown_RivalsHouse_Text_NanamiUseMap)
+    if (flag(FLAG_SEEN_KIMURA_BOWL)) {
+        msgbox(PalletTown_RivalsHouse_Text_NanamiKimura)
+    } else {
+        msgbox(PalletTown_RivalsHouse_Text_NanamiRest)
+    }
+    release
+    end
+}
+
+// MAS-010 [R/G Daisy] + the optional tag box [new].
+script PalletTown_RivalsHouse_EventScript_MAS010_TownMap {
+    msgbox(PalletTown_RivalsHouse_Text_MAS010_OfferMap)
+    checkitemspace(ITEM_TOWN_MAP)
+    if (var(VAR_RESULT) == FALSE) {
+        msgbox(PalletTown_RivalsHouse_Text_NanamiBagFull)
+        release
+        end
+    }
+    giveitem(ITEM_TOWN_MAP)
+    setflag(FLAG_MASARA_TOWNMAP_GIVEN)
+    removeobject(LOCALID_TOWN_MAP)
+    setflag(FLAG_TEMP_1)
+    if (var(VAR_Q_TAG) == 1) {
+        msgbox(PalletTown_RivalsHouse_Text_MAS010_TagBox)
+    }
+    release
+    end
+}
+
+// MAS-301, her side. PLACEHOLDER: the food reward ships with the food system (owner: food-system thread);
+// until then a POTION and a thank-you, no system talk.
+script PalletTown_RivalsHouse_EventScript_MAS301_Ask {
+    msgbox(PalletTown_RivalsHouse_Text_MAS301_Ask)
+    setvar(VAR_Q_HERB, 1)
+    release
+    end
+}
+
+script PalletTown_RivalsHouse_EventScript_MAS301_HandIn {
+    msgbox(PalletTown_RivalsHouse_Text_MAS301_Thanks)
+    checkitemspace(ITEM_POTION)
+    if (var(VAR_RESULT) == FALSE) {
+        msgbox(PalletTown_RivalsHouse_Text_NanamiBagFull)
+        release
+        end
+    }
+    giveitem(ITEM_POTION)
+    setvar(VAR_Q_HERB, 3)
+    release
+    end
+}
+
+// The TOWN MAP on the table (before Nanami gives it). [R/G]
+script PalletTown_RivalsHouse_EventScript_TownMapObject {
+    msgbox(PalletTown_RivalsHouse_Text_TownMapBig, MSGBOX_NPC)
+    end
+}
+
+// ---------------------------------------------------------------------------
+// Ken, MAS-112 (drawing line) and MAS-302 (the TREASURE MAP, once; then a reminder).
+// ---------------------------------------------------------------------------
+script PalletTown_RivalsHouse_EventScript_MAS112_Ken {
+    lock
+    faceplayer
+    if (!flag(FLAG_MASARA_KEN_MAP_GIVEN)) {
+        msgbox(PalletTown_RivalsHouse_Text_MAS112_Pidgey)
+        msgbox(PalletTown_RivalsHouse_Text_MAS302_GiveMap)
+        giveitem(ITEM_TREASURE_MAP)
+        if (var(VAR_RESULT) == TRUE) {
+            setflag(FLAG_MASARA_KEN_MAP_GIVEN)
+        }
+        release
+        end
+    }
+    msgbox(PalletTown_RivalsHouse_Text_MAS302_Reminder)
+    release
+    end
+}
+
+// MAS-214 / 215 / 216
+script PalletTown_RivalsHouse_EventScript_MAS214_Herbs {
+    msgbox(PalletTown_RivalsHouse_Text_MAS214_Herbs, MSGBOX_SIGN)
+    end
+}
+
+script PalletTown_RivalsHouse_EventScript_MAS215_Games {
+    msgbox(PalletTown_RivalsHouse_Text_MAS215_Games, MSGBOX_SIGN)
+    end
+}
+
+script PalletTown_RivalsHouse_EventScript_MAS216_Drawings {
+    msgbox(PalletTown_RivalsHouse_Text_MAS216_Drawings, MSGBOX_SIGN)
+    end
+}

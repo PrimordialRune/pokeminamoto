@@ -1,2 +1,178 @@
-// Placeholder imported from FireRed (tools/frlg_import). No events yet.
-mapscripts PalletTown_PlayersHouse_1F_MapScripts {}
+// Satoshi's house, 1F (workstream masara). Rows: MAS-001 (send-off), MAS-011 (Mom's seal), MAS-101..103
+// (Mom; she does NOT heal: only inns heal, Q95), MAS-203 TV, MAS-206 altar, MAS-217 tea set and cookbooks,
+// MAS-401/402 (timed Mom), and the C14 whiteout line. Dialogue: text.en.pory.
+//
+// Mom's states (four, by the dialogue priority of the script list 0.4):
+//   1 before the starter   2 after the starter (MAS-101, the Q95 line)   3 after the Index (the TV line)
+//   4 per badge (the TV again); MORN and NITE replace 2-4 with the timed rows. One-shot reactions
+//   (MAS-103, three P_ flags) come first.
+
+mapscripts PalletTown_PlayersHouse_1F_MapScripts {
+    MAP_SCRIPT_ON_TRANSITION {
+        // MAS-401: in the morning Mom kneels at the family altar (PLACEHOLDER spot: the cabinet, 4,1).
+        checktimeofday
+        if (var(VAR_RESULT) == TIME_OF_DAY_MORN) {
+            setobjectxyperm(LOCALID_MOM, 4, 2)
+            setobjectmovementtype(LOCALID_MOM, MOVEMENT_TYPE_FACE_UP)
+        }
+    }
+    MAP_SCRIPT_ON_FRAME_TABLE [
+        VAR_TEMP_0, 0: PalletTown_PlayersHouse_1F_EventScript_OnEnter
+    ]
+}
+
+// Runs once per entry (VAR_TEMP_0 is 0 after every warp): MAS-001 the first time downstairs, MAS-011
+// the first entry holding the PMC FORM.
+script PalletTown_PlayersHouse_1F_EventScript_OnEnter {
+    setvar(VAR_TEMP_0, 1)
+    if (!flag(FLAG_MASARA_SENDOFF_PLAYED) && var(VAR_MASARA_STATE) == 0) {
+        goto(PalletTown_PlayersHouse_1F_EventScript_MAS001_SendOff)
+    }
+    if (!flag(FLAG_Q_FORM_SEALED)) {
+        checkitem(ITEM_PMC_FORM)
+        if (var(VAR_RESULT) == TRUE) {
+            goto(PalletTown_PlayersHouse_1F_EventScript_MAS011_Seal)
+        }
+    }
+    end
+}
+
+// MAS-001 Wake-up and send-off. Two boxes, no act choice, no Okido line (bible 1.4).
+script PalletTown_PlayersHouse_1F_EventScript_MAS001_SendOff {
+    lockall
+    applymovement(LOCALID_MOM, Common_Movement_FacePlayer)
+    waitmovement(0)
+    msgbox(PalletTown_PlayersHouse_1F_Text_MAS001_Mom1)
+    msgbox(PalletTown_PlayersHouse_1F_Text_MAS001_Mom2)
+    setflag(FLAG_MASARA_SENDOFF_PLAYED)
+    releaseall
+    end
+}
+
+// MAS-011 Mom's seal. [new, connecting; OQ5, Q98] Her only plot act: Wait / Take it.
+script PalletTown_PlayersHouse_1F_EventScript_MAS011_Seal {
+    lockall
+    applymovement(LOCALID_MOM, Common_Movement_FacePlayer)
+    waitmovement(0)
+    msgbox(PalletTown_PlayersHouse_1F_Text_MAS011_Reads)
+    msgbox(PalletTown_PlayersHouse_1F_Text_MAS011_Drawer)
+    message(PalletTown_PlayersHouse_1F_Text_MAS011_Pause)
+    waitmessage
+    dynmultichoice(21, 9, TRUE, 2, 0, DYN_MULTICHOICE_CB_NONE, PalletTown_PlayersHouse_1F_Text_ActWait, PalletTown_PlayersHouse_1F_Text_ActTakeIt)
+    if (var(VAR_RESULT) == 0) {
+        msgbox(PalletTown_PlayersHouse_1F_Text_MAS011_Wait)
+    } else {
+        msgbox(PalletTown_PlayersHouse_1F_Text_MAS011_TakeIt)
+    }
+    setflag(FLAG_Q_FORM_SEALED)
+    msgbox(PalletTown_PlayersHouse_1F_Text_MAS011_Sealed)
+    releaseall
+    end
+}
+
+text PalletTown_PlayersHouse_1F_Text_ActWait { "WAIT" }
+text PalletTown_PlayersHouse_1F_Text_ActTakeIt { "TAKE IT" }
+
+// Mom. MAS-101 line only (does not heal), MAS-102 state lines, MAS-103 one-shot reactions,
+// MAS-401 / MAS-402 timed.
+script PalletTown_PlayersHouse_1F_EventScript_Mom {
+    lock
+    faceplayer
+    // MAS-103: she only says what she can see. Priority 1, each once.
+    if (flag(FLAG_Q_PIDGEY_KEPT) && !flag(FLAG_MASARA_P_MOM_PIDGEY)) {
+        setflag(FLAG_MASARA_P_MOM_PIDGEY)
+        msgbox(PalletTown_PlayersHouse_1F_Text_MAS103_Pidgey)
+        goto(PalletTown_PlayersHouse_1F_EventScript_MomDone)
+    }
+    if (flag(FLAG_Q_SANDSHREW_KEPT) && !flag(FLAG_MASARA_P_MOM_SANDSHREW)) {
+        setflag(FLAG_MASARA_P_MOM_SANDSHREW)
+        msgbox(PalletTown_PlayersHouse_1F_Text_MAS103_Sandshrew)
+        goto(PalletTown_PlayersHouse_1F_EventScript_MomDone)
+    }
+    if (flag(FLAG_Q_LOST_TAKESHI) && !flag(FLAG_MASARA_P_MOM_TAKESHI)) {
+        setflag(FLAG_MASARA_P_MOM_TAKESHI)
+        msgbox(PalletTown_PlayersHouse_1F_Text_MAS103_Takeshi)
+        goto(PalletTown_PlayersHouse_1F_EventScript_MomDone)
+    }
+    // State 1: before the starter (R/G line again).
+    if (!flag(FLAG_SYS_POKEMON_GET)) {
+        msgbox(PalletTown_PlayersHouse_1F_Text_MAS001_Mom1)
+        goto(PalletTown_PlayersHouse_1F_EventScript_MomDone)
+    }
+    // Timed rows replace the progress lines.
+    checktimeofday
+    if (var(VAR_RESULT) == TIME_OF_DAY_MORN) {
+        msgbox(PalletTown_PlayersHouse_1F_Text_MAS401_Morning)
+        goto(PalletTown_PlayersHouse_1F_EventScript_MomDone)
+    }
+    if (var(VAR_RESULT) == TIME_OF_DAY_NITE) {
+        msgbox(PalletTown_PlayersHouse_1F_Text_MAS402_Night)
+        goto(PalletTown_PlayersHouse_1F_EventScript_MomDone)
+    }
+    // States 4, 3, 2 by progress.
+    if (flag(FLAG_BADGE02_GET)) {
+        msgbox(PalletTown_PlayersHouse_1F_Text_MAS102_B2)
+    } elif (flag(FLAG_BADGE01_GET)) {
+        msgbox(PalletTown_PlayersHouse_1F_Text_MAS102_B1)
+    } elif (flag(FLAG_SYS_POKEDEX_GET)) {
+        msgbox(PalletTown_PlayersHouse_1F_Text_MAS102_Index)
+    } else {
+        msgbox(PalletTown_PlayersHouse_1F_Text_MAS101_Tired)
+    }
+    goto(PalletTown_PlayersHouse_1F_EventScript_MomDone)
+}
+
+script PalletTown_PlayersHouse_1F_EventScript_MomDone {
+    closemessage
+    applymovement(LOCALID_MOM, Common_Movement_FaceOriginalDirection)
+    waitmovement(0)
+    release
+    end
+}
+
+// C14 (SYS-002): after a whiteout the player wakes at home (the respawn point until the first inn rest).
+// Called by EventScript_WhiteoutArrival, which locks and releases the player: end with return.
+// PLACEHOLDER line (Mom, one line); owner thread "Define Minamoto narrative direction". Mom does not heal:
+// whiteout already rested the party (DoWhiteOut).
+script MasaraHome_EventScript_WhiteoutLine {
+    applymovement(LOCALID_MOM, Common_Movement_FacePlayer)
+    waitmovement(0)
+    msgbox(PalletTown_PlayersHouse_1F_Text_Whiteout)
+    return
+}
+
+// MAS-203 TV. Before the starter and until the Index: the R/G movie. After the Index: face #1 once
+// (the ribbon-cutting), then one headline per visit. At night the volume is low.
+script PalletTown_PlayersHouse_1F_EventScript_MAS203_TV {
+    lockall
+    checktimeofday
+    if (var(VAR_RESULT) == TIME_OF_DAY_NITE) {
+        msgbox(PalletTown_PlayersHouse_1F_Text_MAS203_LowVolume)
+    }
+    if (!flag(FLAG_SYS_POKEDEX_GET)) {
+        msgbox(PalletTown_PlayersHouse_1F_Text_MAS203_Movie)
+    } elif (!flag(FLAG_MASARA_TV_RIBBON_SEEN)) {
+        setflag(FLAG_MASARA_TV_RIBBON_SEEN)
+        msgbox(PalletTown_PlayersHouse_1F_Text_MAS203_Ribbon)
+    } else {
+        random(2)
+        if (var(VAR_RESULT) == 0) {
+            msgbox(PalletTown_PlayersHouse_1F_Text_MAS203_Land)
+        } else {
+            msgbox(PalletTown_PlayersHouse_1F_Text_MAS203_Typhoon)
+        }
+    }
+    releaseall
+}
+
+script PalletTown_PlayersHouse_1F_EventScript_MAS206_Altar {
+    msgbox(PalletTown_PlayersHouse_1F_Text_MAS206_Altar, MSGBOX_SIGN)
+}
+
+script PalletTown_PlayersHouse_1F_EventScript_MAS217_TeaSet {
+    msgbox(PalletTown_PlayersHouse_1F_Text_MAS217_TeaSet, MSGBOX_SIGN)
+}
+
+script PalletTown_PlayersHouse_1F_EventScript_MAS217_Cookbooks {
+    msgbox(PalletTown_PlayersHouse_1F_Text_MAS217_Cookbooks, MSGBOX_SIGN)
+}
