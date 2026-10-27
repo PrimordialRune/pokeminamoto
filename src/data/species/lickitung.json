@@ -18,16 +18,14 @@
     "bodyColor": "PINK",
     "cry": "sound/direct_sound_samples/cries/lickitung.bin",
     "levelUpMoves": [
-        [1, "LICK"],
-        [7, "SUPERSONIC"],
-        [12, "DEFENSE_CURL"],
-        [18, "SCRATCH"],
-        [23, "STOMP"],
-        [29, "WRAP"],
-        [34, "DISABLE"],
-        [40, "SLAM"],
-        [45, "SCREECH"],
-        [51, "RECOVER"]
+        [1, "WRAP"],
+        [1, "SUPERSONIC"],
+        [7, "STOMP"],
+        [15, "DISABLE"],
+        [23, "DEFENSE_CURL"],
+        [31, "SLAM"],
+        [39, "SCREECH"],
+        [46, "BODY_SLAM"]
     ],
     "tmhm": [
         "MEGA_PUNCH",

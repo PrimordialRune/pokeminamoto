@@ -20,18 +20,14 @@
     "cry": "sound/direct_sound_samples/cries/jynx.bin",
     "levelUpMoves": [
         [1, "POUND"],
-        [1, "LICK"],
         [1, "LOVELY_KISS"],
-        [1, "ICE_BEAM"],
-        [9, "LOVELY_KISS"],
-        [13, "ICE_BEAM"],
-        [21, "DOUBLE_SLAP"],
-        [25, "ICE_PUNCH"],
-        [35, "LEER"],
-        [41, "LEER"],
-        [51, "BODY_SLAM"],
-        [57, "SING"],
-        [67, "BLIZZARD"]
+        [9, "LICK"],
+        [15, "DOUBLE_SLAP"],
+        [19, "ICE_PUNCH"],
+        [31, "BODY_SLAM"],
+        [39, "THRASH"],
+        [47, "ICE_BEAM"],
+        [58, "BLIZZARD"]
     ],
     "tmhm": [
         "MEGA_PUNCH",

@@ -18,20 +18,15 @@
     "bodyColor": "YELLOW",
     "cry": "sound/direct_sound_samples/cries/rapidash.bin",
     "levelUpMoves": [
-        [1, "TACKLE"],
-        [1, "GROWL"],
-        [1, "TAIL_WHIP"],
         [1, "EMBER"],
-        [5, "GROWL"],
-        [9, "TAIL_WHIP"],
-        [14, "EMBER"],
-        [19, "STOMP"],
-        [25, "FIRE_SPIN"],
-        [31, "TAKE_DOWN"],
-        [38, "AGILITY"],
-        [40, "FURY_ATTACK"],
-        [50, "FLY"],
-        [63, "FIRE_BLAST"]
+        [1, "TAIL_WHIP"],
+        [1, "GROWL"],
+        [1, "STOMP"],
+        [20, "FIRE_SPIN"],
+        [28, "TAKE_DOWN"],
+        [34, "AGILITY"],
+        [38, "FLAMETHROWER"],
+        [50, "FIRE_BLAST"]
     ],
     "tmhm": [
         "TOXIC",

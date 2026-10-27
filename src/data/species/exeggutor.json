@@ -17,7 +17,17 @@
     "safariZoneFleeRate": 0,
     "bodyColor": "YELLOW",
     "cry": "sound/direct_sound_samples/cries/exeggutor.bin",
-    "levelUpMoves": [[1, "BARRAGE"], [1, "HYPNOSIS"], [1, "CONFUSION"], [19, "STOMP"], [31, "EGG_BOMB"]],
+    "levelUpMoves": [
+        [1, "BARRAGE"],
+        [1, "HYPNOSIS"],
+        [1, "CONFUSION"],
+        [1, "REFLECT"],
+        [19, "LEECH_SEED"],
+        [28, "STOMP"],
+        [35, "EGG_BOMB"],
+        [43, "SOLAR_BEAM"],
+        [48, "SLEEP_POWDER"]
+    ],
     "tmhm": [
         "TOXIC",
         "TAKE_DOWN",

@@ -18,17 +18,13 @@
     "bodyColor": "PINK",
     "cry": "sound/direct_sound_samples/cries/porygon.bin",
     "levelUpMoves": [
-        [1, "CONVERSION"],
         [1, "TACKLE"],
+        [1, "SHARPEN"],
         [1, "CONVERSION"],
-        [9, "AGILITY"],
-        [12, "PSYBEAM"],
-        [20, "RECOVER"],
-        [24, "SHARPEN"],
-        [32, "LEER"],
-        [36, "TRI_ATTACK"],
-        [44, "RECOVER"],
-        [48, "THUNDER"]
+        [23, "PSYBEAM"],
+        [28, "RECOVER"],
+        [35, "AGILITY"],
+        [42, "TRI_ATTACK"]
     ],
     "tmhm": [
         "TOXIC",

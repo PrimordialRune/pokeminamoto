@@ -4,7 +4,7 @@
     "nationalDex": 81,
     "dex": 81,
     "baseStats": {"hp": 25, "attack": 35, "defense": 70, "speed": 45, "spAttack": 95, "spDefense": 55},
-    "types": ["ELECTRIC", "STEEL"],
+    "types": ["ELECTRIC", "ELECTRIC"],
     "catchRate": 190,
     "expYield": 89,
     "evYield": {"spAttack": 1},
@@ -20,17 +20,14 @@
     "cry": "sound/direct_sound_samples/cries/magnemite.bin",
     "evolutions": [{"method": "LEVEL", "param": 30, "into": "MAGNETON"}],
     "levelUpMoves": [
-        [1, "SCREECH"],
         [1, "TACKLE"],
         [6, "THUNDER_SHOCK"],
         [11, "SUPERSONIC"],
         [16, "SONIC_BOOM"],
         [21, "THUNDER_WAVE"],
-        [26, "THUNDER_SHOCK"],
-        [32, "LEER"],
-        [38, "SWIFT"],
-        [44, "SCREECH"],
-        [50, "THUNDER"]
+        [29, "SWIFT"],
+        [35, "SCREECH"],
+        [42, "THUNDERBOLT"]
     ],
     "tmhm": [
         "TOXIC",

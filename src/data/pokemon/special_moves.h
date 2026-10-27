@@ -15,8 +15,39 @@
     .deedArgs = {TYPE_ROCK, TYPE_WATER},                \
 }
 
+#if STARTER_SIGNATURES_PROPOSAL
+// PLACEHOLDER (Q97): Omar's future names GREEDY PLANT and SKULL BASH with invented numbers, off by default.
+// Thread "Research TCG attacks as lost moves" owns the real design.
+#define BULBASAUR_LINE_SPECIAL                          \
+{                                                       \
+    .move = MOVE_GREEDY_PLANT,                          \
+    .condition = SPECIAL_COND_DEED,                     \
+    .threshold = 3,                                     \
+    .deed = SPECIAL_DEED_WIN_VS_TYPES,                  \
+    .deedArgs = {TYPE_ROCK, TYPE_GROUND},               \
+}
+
+#define SQUIRTLE_LINE_SPECIAL                           \
+{                                                       \
+    .move = MOVE_SKULL_BASH_SIGNATURE,                  \
+    .condition = SPECIAL_COND_DEED,                     \
+    .threshold = 4,                                     \
+    .deed = SPECIAL_DEED_WIN_VS_TYPES,                  \
+    .deedArgs = {TYPE_BUG, TYPE_POISON},                \
+}
+#endif
+
 const struct SpecialMoveInfo gSpecialMoves[NUM_SPECIES] =
 {
+#if STARTER_SIGNATURES_PROPOSAL
+    [SPECIES_BULBASAUR]  = BULBASAUR_LINE_SPECIAL,
+    [SPECIES_IVYSAUR]    = BULBASAUR_LINE_SPECIAL,
+    [SPECIES_VENUSAUR]   = BULBASAUR_LINE_SPECIAL,
+    [SPECIES_SQUIRTLE]   = SQUIRTLE_LINE_SPECIAL,
+    [SPECIES_WARTORTLE]  = SQUIRTLE_LINE_SPECIAL,
+    [SPECIES_BLASTOISE]  = SQUIRTLE_LINE_SPECIAL,
+#endif
+
     // The tail flame burns hottest when it faces what it fears: win 3 battles in which a Rock
     // or Water foe fainted while it was on the field.
     [SPECIES_CHARMANDER] = CHARMANDER_LINE_SPECIAL,

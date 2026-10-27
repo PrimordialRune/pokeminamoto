@@ -18,17 +18,7 @@
     "bodyColor": "PURPLE",
     "cry": "sound/direct_sound_samples/cries/gastly.bin",
     "evolutions": [{"method": "LEVEL", "param": 25, "into": "HAUNTER"}],
-    "levelUpMoves": [
-        [1, "HYPNOSIS"],
-        [1, "LICK"],
-        [8, "DISABLE"],
-        [13, "LEER"],
-        [16, "GROWL"],
-        [21, "NIGHT_SHADE"],
-        [28, "CONFUSE_RAY"],
-        [33, "DREAM_EATER"],
-        [36, "SELF_DESTRUCT"]
-    ],
+    "levelUpMoves": [[1, "LICK"], [1, "CONFUSE_RAY"], [1, "NIGHT_SHADE"], [27, "HYPNOSIS"], [35, "DREAM_EATER"]],
     "tmhm": [
         "TOXIC",
         "RAGE",

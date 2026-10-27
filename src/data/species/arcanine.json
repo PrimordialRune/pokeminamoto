@@ -18,7 +18,17 @@
     "safariZoneFleeRate": 0,
     "bodyColor": "BROWN",
     "cry": "sound/direct_sound_samples/cries/arcanine.bin",
-    "levelUpMoves": [[1, "BITE"], [1, "ROAR"], [1, "EMBER"], [1, "LEER"], [49, "QUICK_ATTACK"]],
+    "levelUpMoves": [
+        [1, "BITE"],
+        [1, "ROAR"],
+        [1, "EMBER"],
+        [1, "AGILITY"],
+        [20, "HEADBUTT"],
+        [25, "FIRE_SPIN"],
+        [32, "DOUBLE_EDGE"],
+        [34, "FLAMETHROWER"],
+        [45, "FIRE_BLAST"]
+    ],
     "tmhm": [
         "TOXIC",
         "BODY_SLAM",

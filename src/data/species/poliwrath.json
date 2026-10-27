@@ -24,8 +24,9 @@
         [1, "HYPNOSIS"],
         [1, "DOUBLE_SLAP"],
         [1, "SUBMISSION"],
-        [35, "SUBMISSION"],
-        [51, "LEER"]
+        [30, "BODY_SLAM"],
+        [38, "AMNESIA"],
+        [46, "HYDRO_PUMP"]
     ],
     "tmhm": [
         "MEGA_PUNCH",

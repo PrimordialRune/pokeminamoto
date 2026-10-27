@@ -20,15 +20,14 @@
     "levelUpMoves": [
         [1, "TACKLE"],
         [1, "TAIL_WHIP"],
-        [1, "GROWL"],
-        [8, "SAND_ATTACK"],
-        [16, "THUNDER_SHOCK"],
-        [23, "QUICK_ATTACK"],
-        [30, "DOUBLE_KICK"],
-        [36, "PIN_MISSILE"],
-        [42, "THUNDER_WAVE"],
-        [47, "AGILITY"],
-        [52, "THUNDER"]
+        [1, "SAND_ATTACK"],
+        [1, "QUICK_ATTACK"],
+        [1, "THUNDER_SHOCK"],
+        [23, "DOUBLE_KICK"],
+        [31, "THUNDER_WAVE"],
+        [37, "PIN_MISSILE"],
+        [42, "AGILITY"],
+        [48, "THUNDER"]
     ],
     "tmhm": [
         "TOXIC",

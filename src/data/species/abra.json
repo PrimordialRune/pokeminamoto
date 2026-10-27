@@ -19,7 +19,7 @@
     "bodyColor": "BROWN",
     "cry": "sound/direct_sound_samples/cries/abra.bin",
     "evolutions": [{"method": "LEVEL", "param": 16, "into": "KADABRA"}],
-    "levelUpMoves": [[1, "TELEPORT"]],
+    "levelUpMoves": [[1, "TELEPORT"], [8, "CONFUSION"], [14, "DISABLE"]],
     "tmhm": [
         "MEGA_PUNCH",
         "MEGA_KICK",

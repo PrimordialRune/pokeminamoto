@@ -21,15 +21,12 @@
     "levelUpMoves": [
         [1, "WRAP"],
         [1, "LEER"],
-        [8, "POISON_STING"],
-        [13, "BITE"],
+        [5, "POISON_STING"],
+        [9, "BITE"],
         [20, "GLARE"],
-        [25, "SCREECH"],
+        [26, "SCREECH"],
         [32, "ACID"],
-        [37, "HARDEN"],
-        [37, "RECOVER"],
-        [37, "TACKLE"],
-        [44, "HAZE"]
+        [40, "SLUDGE"]
     ],
     "tmhm": [
         "TOXIC",

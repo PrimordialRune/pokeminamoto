@@ -18,19 +18,14 @@
     "bodyColor": "RED",
     "cry": "sound/direct_sound_samples/cries/electrode.bin",
     "levelUpMoves": [
-        [1, "THUNDER_WAVE"],
         [1, "TACKLE"],
         [1, "SCREECH"],
+        [1, "THUNDER_SHOCK"],
         [1, "SONIC_BOOM"],
-        [8, "SCREECH"],
-        [15, "SONIC_BOOM"],
-        [21, "THUNDER_SHOCK"],
-        [27, "SELF_DESTRUCT"],
-        [34, "TACKLE"],
-        [41, "LIGHT_SCREEN"],
-        [48, "SWIFT"],
-        [54, "EXPLOSION"],
-        [59, "COUNTER"]
+        [22, "SELF_DESTRUCT"],
+        [29, "LIGHT_SCREEN"],
+        [40, "SWIFT"],
+        [50, "EXPLOSION"]
     ],
     "tmhm": [
         "TOXIC",

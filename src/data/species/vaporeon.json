@@ -20,15 +20,14 @@
     "levelUpMoves": [
         [1, "TACKLE"],
         [1, "TAIL_WHIP"],
-        [1, "GROWL"],
-        [8, "SAND_ATTACK"],
-        [16, "WATER_GUN"],
-        [23, "QUICK_ATTACK"],
-        [30, "BITE"],
-        [36, "AURORA_BEAM"],
-        [42, "HAZE"],
-        [47, "ACID_ARMOR"],
-        [52, "HYDRO_PUMP"]
+        [1, "SAND_ATTACK"],
+        [1, "QUICK_ATTACK"],
+        [1, "WATER_GUN"],
+        [23, "BITE"],
+        [31, "AURORA_BEAM"],
+        [36, "ACID_ARMOR"],
+        [40, "HAZE"],
+        [44, "HYDRO_PUMP"]
     ],
     "tmhm": [
         "TOXIC",

@@ -23,15 +23,10 @@
         [1, "WRAP"],
         [1, "LEER"],
         [1, "THUNDER_WAVE"],
-        [1, "GUST"],
-        [8, "THUNDER_WAVE"],
-        [15, "GUST"],
-        [22, "DRAGON_RAGE"],
-        [29, "SLAM"],
-        [38, "AGILITY"],
-        [47, "LIGHT_SCREEN"],
-        [56, "THRASH"],
-        [65, "HYPER_BEAM"]
+        [1, "DRAGON_RAGE"],
+        [20, "AGILITY"],
+        [30, "SLAM"],
+        [50, "HYPER_BEAM"]
     ],
     "tmhm": [
         "TOXIC",

@@ -18,7 +18,16 @@
     "safariZoneFleeRate": 0,
     "bodyColor": "YELLOW",
     "cry": "sound/direct_sound_samples/cries/ninetales.bin",
-    "levelUpMoves": [[1, "EMBER"], [1, "QUICK_ATTACK"], [1, "CONFUSE_RAY"], [1, "LIGHT_SCREEN"], [45, "FIRE_SPIN"]],
+    "levelUpMoves": [
+        [1, "EMBER"],
+        [1, "QUICK_ATTACK"],
+        [1, "ROAR"],
+        [1, "CONFUSE_RAY"],
+        [28, "FLAMETHROWER"],
+        [35, "FIRE_SPIN"],
+        [45, "FIRE_BLAST"],
+        [54, "SWIFT"]
+    ],
     "tmhm": [
         "TOXIC",
         "BODY_SLAM",

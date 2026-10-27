@@ -20,16 +20,14 @@
     "cry": "sound/direct_sound_samples/cries/koffing.bin",
     "evolutions": [{"method": "LEVEL", "param": 35, "into": "WEEZING"}],
     "levelUpMoves": [
-        [1, "POISON_GAS"],
         [1, "TACKLE"],
+        [1, "POISON_GAS"],
         [9, "SMOG"],
-        [17, "SELF_DESTRUCT"],
-        [21, "SLUDGE"],
-        [25, "SMOKESCREEN"],
-        [33, "HAZE"],
-        [41, "EXPLOSION"],
-        [45, "SELF_DESTRUCT"],
-        [49, "SELF_DESTRUCT"]
+        [17, "SLUDGE"],
+        [23, "SMOKESCREEN"],
+        [29, "SELF_DESTRUCT"],
+        [35, "HAZE"],
+        [41, "EXPLOSION"]
     ],
     "tmhm": [
         "TOXIC",

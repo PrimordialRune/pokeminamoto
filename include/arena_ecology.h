@@ -13,6 +13,31 @@ enum
     ARENA_COUNT
 };
 
+// Habitat-interaction traits (studio proposal v1, PLACEHOLDER values for the arena ecology thread).
+// A species has any number of them (u16 bitmask in ROM, 2 bytes x NUM_SPECIES = 304 B, no RAM,
+// no save change). They are NOT the habitat and NOT the type: Doduo is a Flying type without
+// AERIAL, Gyarados is a Flying type that swims. Species left out of the table have no trait.
+#define TRAIT_AERIAL      (1 << 0)
+#define TRAIT_MOUNTAIN    (1 << 1)
+#define TRAIT_BURROWER    (1 << 2)
+#define TRAIT_AQUATIC     (1 << 3)
+#define TRAIT_ROOTED      (1 << 4)
+#define TRAIT_SQUEEZER    (1 << 5)
+#define TRAIT_HEAVY       (1 << 6)
+#define TRAIT_FLOATER     (1 << 7)
+#define TRAIT_NOCTURNAL   (1 << 8)
+#define TRAIT_THERMAL     (1 << 9)
+#define TRAIT_CONDUCTIVE  (1 << 10)
+#define TRAIT_SHELLED     (1 << 11)
+#define TRAIT_SENSITIVE   (1 << 12)
+// bits 13-15 are free
+
+extern const u16 gSpeciesArenaTraits[NUM_SPECIES];
+
+// Out-of-range species (eggs, none) have no trait.
+#define SPECIES_HAS_TRAIT(species, trait) ((species) < NUM_SPECIES \
+                                         && (gSpeciesArenaTraits[species] & (trait)) != 0)
+
 #define ARENA_FOR_REST_OF_BATTLE 0xFF
 
 // Tuning knobs. Percentages are of the normal value (100 = unchanged).

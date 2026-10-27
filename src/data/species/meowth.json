@@ -21,13 +21,11 @@
     "levelUpMoves": [
         [1, "SCRATCH"],
         [1, "GROWL"],
-        [11, "BITE"],
-        [20, "PAY_DAY"],
-        [28, "TACKLE"],
-        [35, "SCREECH"],
-        [41, "FURY_SWIPES"],
-        [46, "SLASH"],
-        [50, "QUICK_ATTACK"]
+        [12, "BITE"],
+        [17, "PAY_DAY"],
+        [24, "SCREECH"],
+        [33, "FURY_SWIPES"],
+        [44, "SLASH"]
     ],
     "tmhm": [
         "TOXIC",

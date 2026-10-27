@@ -21,14 +21,11 @@
     "levelUpMoves": [
         [1, "LEECH_LIFE"],
         [6, "SUPERSONIC"],
-        [11, "TACKLE"],
-        [16, "BITE"],
-        [21, "WING_ATTACK"],
-        [26, "CONFUSE_RAY"],
-        [31, "GUST"],
-        [36, "LEER"],
-        [41, "BITE"],
-        [46, "HAZE"]
+        [10, "BITE"],
+        [13, "SCREECH"],
+        [17, "WING_ATTACK"],
+        [28, "CONFUSE_RAY"],
+        [36, "HAZE"]
     ],
     "tmhm": [
         "RAZOR_WIND",

@@ -18,17 +18,14 @@
     "bodyColor": "BLUE",
     "cry": "sound/direct_sound_samples/cries/golduck.bin",
     "levelUpMoves": [
-        [1, "WATER_GUN"],
         [1, "SCRATCH"],
         [1, "TAIL_WHIP"],
+        [1, "WATER_GUN"],
         [1, "DISABLE"],
-        [5, "TAIL_WHIP"],
-        [10, "DISABLE"],
-        [16, "CONFUSION"],
-        [23, "SCREECH"],
-        [31, "MEDITATE"],
-        [44, "FURY_SWIPES"],
-        [58, "HYDRO_PUMP"]
+        [23, "CONFUSION"],
+        [31, "FURY_SWIPES"],
+        [34, "PSYBEAM"],
+        [46, "HYDRO_PUMP"]
     ],
     "tmhm": [
         "MEGA_PUNCH",

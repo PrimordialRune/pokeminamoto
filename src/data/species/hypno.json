@@ -22,14 +22,10 @@
         [1, "HYPNOSIS"],
         [1, "DISABLE"],
         [1, "CONFUSION"],
-        [10, "DISABLE"],
-        [18, "CONFUSION"],
-        [25, "HEADBUTT"],
-        [33, "POISON_GAS"],
-        [40, "MEDITATE"],
-        [49, "PSYCHIC"],
-        [55, "MEDITATE"],
-        [60, "PSYCHIC"]
+        [24, "HEADBUTT"],
+        [29, "POISON_GAS"],
+        [33, "PSYCHIC"],
+        [40, "MEDITATE"]
     ],
     "tmhm": [
         "MEGA_PUNCH",

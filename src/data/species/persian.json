@@ -21,13 +21,10 @@
         [1, "SCRATCH"],
         [1, "GROWL"],
         [1, "BITE"],
-        [11, "BITE"],
-        [20, "PAY_DAY"],
-        [29, "TACKLE"],
-        [38, "SCREECH"],
-        [46, "FURY_SWIPES"],
-        [53, "SLASH"],
-        [59, "QUICK_ATTACK"]
+        [1, "PAY_DAY"],
+        [24, "SCREECH"],
+        [37, "FURY_SWIPES"],
+        [51, "SLASH"]
     ],
     "tmhm": [
         "TOXIC",

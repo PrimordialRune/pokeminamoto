@@ -22,13 +22,11 @@
     "levelUpMoves": [
         [1, "PECK"],
         [1, "GROWL"],
-        [9, "TACKLE"],
-        [13, "FURY_ATTACK"],
-        [21, "TRI_ATTACK"],
-        [25, "RAGE"],
-        [33, "SCREECH"],
-        [37, "DRILL_PECK"],
-        [45, "AGILITY"]
+        [12, "FURY_ATTACK"],
+        [24, "DRILL_PECK"],
+        [30, "RAGE"],
+        [36, "TRI_ATTACK"],
+        [44, "AGILITY"]
     ],
     "tmhm": [
         "WHIRLWIND",

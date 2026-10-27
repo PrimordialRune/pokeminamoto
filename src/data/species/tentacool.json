@@ -19,15 +19,15 @@
     "cry": "sound/direct_sound_samples/cries/tentacool.bin",
     "evolutions": [{"method": "LEVEL", "param": 30, "into": "TENTACRUEL"}],
     "levelUpMoves": [
-        [1, "POISON_STING"],
+        [1, "ACID"],
         [6, "SUPERSONIC"],
-        [12, "CONSTRICT"],
-        [19, "ACID"],
-        [25, "BUBBLE_BEAM"],
-        [30, "WRAP"],
-        [36, "BARRIER"],
-        [43, "SCREECH"],
-        [49, "HYDRO_PUMP"]
+        [12, "WATER_GUN"],
+        [15, "WRAP"],
+        [19, "POISON_STING"],
+        [24, "BUBBLE_BEAM"],
+        [30, "BARRIER"],
+        [37, "SCREECH"],
+        [44, "HYDRO_PUMP"]
     ],
     "tmhm": [
         "SWORDS_DANCE",

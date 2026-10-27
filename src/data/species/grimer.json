@@ -20,16 +20,14 @@
     "cry": "sound/direct_sound_samples/cries/grimer.bin",
     "evolutions": [{"method": "LEVEL", "param": 38, "into": "MUK"}],
     "levelUpMoves": [
-        [1, "POISON_GAS"],
         [1, "POUND"],
-        [4, "HARDEN"],
-        [8, "DISABLE"],
-        [13, "SLUDGE"],
-        [19, "MINIMIZE"],
-        [26, "SCREECH"],
-        [34, "ACID_ARMOR"],
-        [43, "SLUDGE"],
-        [53, "SELF_DESTRUCT"]
+        [1, "DISABLE"],
+        [8, "POISON_GAS"],
+        [12, "SLUDGE"],
+        [16, "MINIMIZE"],
+        [24, "HARDEN"],
+        [30, "SCREECH"],
+        [37, "ACID_ARMOR"]
     ],
     "tmhm": [
         "TOXIC",

@@ -13,7 +13,7 @@
 // Arena ecology: each gym's field rules, from Omar's BOSS BATTLES concept (Notion).
 // docs/design/boss-battles.md has the concept; the knobs below are swept by the Balance Lab (minasim/arena.py).
 //
-// LUCKY STRIKE (Yujirou): air vents run; while they do, Flying types are twice as fast. The mon that
+// LUCKY STRIKE (Yujirou): air vents run; while they do, AERIAL species (trait bit, not the Flying type) are twice as fast. The mon that
 // moves first in a turn has a better crit chance and Farfetch'd with the Leek always crits.
 // String Shot blocks the vents; Sand Attack raises a sandstorm (1/16 a turn to all but Rock/Ground).
 //
@@ -49,28 +49,17 @@ const struct ArenaTuning gArenaTuning =
 
 #define TUNE gArenaTuning
 
-// Mountain dwellers, until species records carry a habitat (open question)
-static const u16 sMountainDwellers[] =
-{
-    SPECIES_GEODUDE, SPECIES_GRAVELER, SPECIES_GOLEM, SPECIES_ONIX,
-    SPECIES_SANDSHREW, SPECIES_SANDSLASH, SPECIES_DIGLETT, SPECIES_DUGTRIO,
-    SPECIES_MANKEY, SPECIES_PRIMEAPE, SPECIES_MACHOP, SPECIES_MACHOKE, SPECIES_MACHAMP,
-    SPECIES_RHYHORN, SPECIES_RHYDON,
-};
+#include "data/pokemon/arena_traits.h"
 
+// Mountain dwellers and fliers come from the species trait table (MOUNTAIN and AERIAL bits).
 static bool8 IsMountainDweller(u16 species)
 {
-    u32 i;
-
-    for (i = 0; i < ARRAY_COUNT(sMountainDwellers); i++)
-        if (sMountainDwellers[i] == species)
-            return TRUE;
-    return FALSE;
+    return SPECIES_HAS_TRAIT(species, TRAIT_MOUNTAIN);
 }
 
-static bool8 IsFlying(u8 battler)
+static bool8 IsAerial(u16 species)
 {
-    return IS_BATTLER_OF_TYPE(battler, TYPE_FLYING);
+    return SPECIES_HAS_TRAIT(species, TRAIT_AERIAL);
 }
 
 static bool8 VentsRunning(void)
@@ -105,11 +94,11 @@ u32 ArenaModifySpeed(u8 battler, u32 speed)
     switch (GetBattleArena())
     {
     case ARENA_LUCKY_STRIKE:
-        if (IsFlying(battler))
+        if (IsAerial(gBattleMons[battler].species))
             speed = speed * (VentsRunning() ? TUNE.ventFlyerSpeedPct : TUNE.stillFlyerSpeedPct) / 100;
         break;
     case ARENA_GRUNGE_ROCK:
-        if (!IsFlying(battler) && !IsMountainDweller(gBattleMons[battler].species))
+        if (!IsAerial(gBattleMons[battler].species) && !IsMountainDweller(gBattleMons[battler].species))
             speed = speed * TUNE.rockSpeedPct / 100;
         break;
     }
@@ -140,7 +129,7 @@ void ArenaModifyDamage(struct BattlePokemon *attacker, struct BattlePokemon *def
     if (GetBattleArena() != ARENA_GRUNGE_ROCK)
         return;
     if (IsMountainDweller(defender->species)
-     || (TUNE.rockDefFlyers && (defender->types[0] == TYPE_FLYING || defender->types[1] == TYPE_FLYING)))
+     || (TUNE.rockDefFlyers && IsAerial(defender->species)))
     {
         *defense = *defense * TUNE.rockDefPct / 100;
         *spDefense = *spDefense * TUNE.rockSpDefPct / 100;

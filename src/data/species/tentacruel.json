@@ -18,17 +18,15 @@
     "bodyColor": "BLUE",
     "cry": "sound/direct_sound_samples/cries/tentacruel.bin",
     "levelUpMoves": [
-        [1, "POISON_STING"],
+        [1, "ACID"],
         [1, "SUPERSONIC"],
-        [1, "CONSTRICT"],
-        [6, "SUPERSONIC"],
-        [12, "CONSTRICT"],
-        [19, "ACID"],
-        [25, "BUBBLE_BEAM"],
-        [30, "WRAP"],
-        [38, "BARRIER"],
-        [47, "SCREECH"],
-        [55, "HYDRO_PUMP"]
+        [1, "WATER_GUN"],
+        [1, "WRAP"],
+        [19, "POISON_STING"],
+        [24, "BUBBLE_BEAM"],
+        [30, "BARRIER"],
+        [38, "SCREECH"],
+        [48, "HYDRO_PUMP"]
     ],
     "tmhm": [
         "SWORDS_DANCE",

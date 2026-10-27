@@ -20,16 +20,13 @@
     "cry": "sound/direct_sound_samples/cries/slowpoke.bin",
     "evolutions": [{"method": "LEVEL", "param": 37, "into": "SLOWBRO"}],
     "levelUpMoves": [
-        [1, "GROWL"],
-        [1, "HYPNOSIS"],
-        [1, "TACKLE"],
-        [6, "GROWL"],
-        [15, "WATER_GUN"],
-        [20, "CONFUSION"],
-        [29, "DISABLE"],
-        [34, "HEADBUTT"],
-        [43, "AMNESIA"],
-        [48, "PSYCHIC"]
+        [1, "CONFUSION"],
+        [10, "WATER_GUN"],
+        [15, "DISABLE"],
+        [22, "HEADBUTT"],
+        [29, "GROWL"],
+        [34, "AMNESIA"],
+        [44, "PSYCHIC"]
     ],
     "tmhm": [
         "TOXIC",

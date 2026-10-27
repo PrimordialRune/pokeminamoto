@@ -20,15 +20,14 @@
     "levelUpMoves": [
         [1, "TACKLE"],
         [1, "TAIL_WHIP"],
-        [1, "GROWL"],
-        [8, "SAND_ATTACK"],
-        [16, "EMBER"],
-        [23, "QUICK_ATTACK"],
-        [30, "BITE"],
-        [36, "FIRE_SPIN"],
-        [42, "SMOG"],
-        [47, "LEER"],
-        [52, "FLAMETHROWER"]
+        [1, "SAND_ATTACK"],
+        [1, "QUICK_ATTACK"],
+        [1, "EMBER"],
+        [23, "BITE"],
+        [31, "LEER"],
+        [37, "FIRE_SPIN"],
+        [42, "FLAMETHROWER"],
+        [48, "RAGE"]
     ],
     "tmhm": [
         "TOXIC",

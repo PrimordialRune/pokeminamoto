@@ -19,17 +19,14 @@
     "cry": "sound/direct_sound_samples/cries/voltorb.bin",
     "evolutions": [{"method": "LEVEL", "param": 30, "into": "ELECTRODE"}],
     "levelUpMoves": [
-        [1, "THUNDER_WAVE"],
         [1, "TACKLE"],
-        [8, "SCREECH"],
-        [15, "SONIC_BOOM"],
-        [21, "THUNDER_SHOCK"],
-        [27, "SELF_DESTRUCT"],
-        [32, "TACKLE"],
-        [37, "LIGHT_SCREEN"],
-        [42, "SWIFT"],
-        [46, "EXPLOSION"],
-        [49, "COUNTER"]
+        [1, "SCREECH"],
+        [8, "THUNDER_SHOCK"],
+        [14, "SONIC_BOOM"],
+        [22, "SELF_DESTRUCT"],
+        [29, "LIGHT_SCREEN"],
+        [36, "SWIFT"],
+        [43, "EXPLOSION"]
     ],
     "tmhm": [
         "TOXIC",

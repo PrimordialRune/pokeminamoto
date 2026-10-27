@@ -20,15 +20,12 @@
     "levelUpMoves": [
         [1, "QUICK_ATTACK"],
         [1, "LEER"],
-        [6, "FOCUS_ENERGY"],
-        [11, "TACKLE"],
-        [16, "SLASH"],
-        [21, "AGILITY"],
-        [26, "WING_ATTACK"],
-        [31, "SLASH"],
-        [36, "SWORDS_DANCE"],
-        [41, "DOUBLE_TEAM"],
-        [46, "FURY_SWIPES"]
+        [12, "FOCUS_ENERGY"],
+        [17, "WING_ATTACK"],
+        [24, "PIN_MISSILE"],
+        [29, "SLASH"],
+        [35, "SWORDS_DANCE"],
+        [42, "AGILITY"]
     ],
     "tmhm": [
         "SWORDS_DANCE",

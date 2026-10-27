@@ -20,16 +20,12 @@
     "levelUpMoves": [
         [1, "WATER_GUN"],
         [1, "GROWL"],
-        [1, "SING"],
-        [7, "MIST"],
-        [13, "BODY_SLAM"],
-        [19, "CONFUSE_RAY"],
-        [25, "SING"],
-        [31, "ICE_BEAM"],
-        [37, "MIST"],
-        [43, "LIGHT_SCREEN"],
-        [49, "HYDRO_PUMP"],
-        [55, "BLIZZARD"]
+        [16, "SING"],
+        [20, "MIST"],
+        [25, "BODY_SLAM"],
+        [31, "CONFUSE_RAY"],
+        [38, "ICE_BEAM"],
+        [46, "HYDRO_PUMP"]
     ],
     "tmhm": [
         "TOXIC",

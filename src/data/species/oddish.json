@@ -20,13 +20,13 @@
     "evolutions": [{"method": "LEVEL", "param": 21, "into": "GLOOM"}],
     "levelUpMoves": [
         [1, "ABSORB"],
-        [7, "GROWL"],
-        [14, "POISON_POWDER"],
-        [16, "STUN_SPORE"],
-        [18, "SLEEP_POWDER"],
-        [23, "ACID"],
-        [32, "RECOVER"],
-        [39, "PETAL_DANCE"]
+        [10, "ACID"],
+        [15, "POISON_POWDER"],
+        [17, "STUN_SPORE"],
+        [19, "SLEEP_POWDER"],
+        [24, "MEGA_DRAIN"],
+        [33, "PETAL_DANCE"],
+        [46, "SOLAR_BEAM"]
     ],
     "tmhm": [
         "SWORDS_DANCE",

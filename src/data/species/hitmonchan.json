@@ -18,18 +18,14 @@
     "bodyColor": "BROWN",
     "cry": "sound/direct_sound_samples/cries/hitmonchan.bin",
     "levelUpMoves": [
-        [1, "COUNTER"],
         [1, "COMET_PUNCH"],
-        [7, "AGILITY"],
-        [13, "TACKLE"],
-        [20, "MEGA_PUNCH"],
-        [26, "THUNDER_PUNCH"],
-        [26, "ICE_PUNCH"],
-        [26, "FIRE_PUNCH"],
-        [32, "MEGA_PUNCH"],
-        [38, "MEGA_PUNCH"],
-        [44, "AGILITY"],
-        [50, "COUNTER"]
+        [1, "AGILITY"],
+        [1, "KARATE_CHOP"],
+        [33, "FIRE_PUNCH"],
+        [38, "ICE_PUNCH"],
+        [43, "THUNDER_PUNCH"],
+        [48, "MEGA_PUNCH"],
+        [53, "COUNTER"]
     ],
     "tmhm": [
         "MEGA_PUNCH",

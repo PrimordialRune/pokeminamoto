@@ -20,16 +20,12 @@
     "levelUpMoves": [
         [1, "HEADBUTT"],
         [1, "GROWL"],
-        [1, "ICE_BEAM"],
+        [1, "WATER_GUN"],
         [1, "AURORA_BEAM"],
-        [9, "GROWL"],
-        [17, "ICE_BEAM"],
-        [21, "AURORA_BEAM"],
         [29, "REST"],
-        [34, "BLIZZARD"],
-        [42, "TAKE_DOWN"],
-        [51, "ICE_BEAM"],
-        [64, "LIGHT_SCREEN"]
+        [34, "TAKE_DOWN"],
+        [38, "ICE_BEAM"],
+        [50, "BLIZZARD"]
     ],
     "tmhm": [
         "TOXIC",

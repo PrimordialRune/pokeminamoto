@@ -4,7 +4,7 @@
     "nationalDex": 82,
     "dex": 82,
     "baseStats": {"hp": 50, "attack": 60, "defense": 95, "speed": 70, "spAttack": 120, "spDefense": 70},
-    "types": ["ELECTRIC", "STEEL"],
+    "types": ["ELECTRIC", "ELECTRIC"],
     "catchRate": 60,
     "expYield": 161,
     "evYield": {"spAttack": 2},
@@ -19,19 +19,15 @@
     "bodyColor": "GRAY",
     "cry": "sound/direct_sound_samples/cries/magneton.bin",
     "levelUpMoves": [
-        [1, "SCREECH"],
         [1, "TACKLE"],
         [1, "THUNDER_SHOCK"],
         [1, "SUPERSONIC"],
-        [6, "THUNDER_SHOCK"],
-        [11, "SUPERSONIC"],
-        [16, "SONIC_BOOM"],
+        [1, "SONIC_BOOM"],
         [21, "THUNDER_WAVE"],
-        [26, "THUNDER_SHOCK"],
-        [35, "LEER"],
-        [44, "TRI_ATTACK"],
-        [53, "SCREECH"],
-        [62, "THUNDER"]
+        [29, "SWIFT"],
+        [36, "TRI_ATTACK"],
+        [44, "SCREECH"],
+        [52, "THUNDER"]
     ],
     "tmhm": [
         "TOXIC",

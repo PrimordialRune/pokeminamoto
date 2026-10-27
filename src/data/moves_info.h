@@ -1280,6 +1280,16 @@ static const u8 sFlameClawsDescription[] = _(
     "Rakes the foe with blazing\n"
     "claws. May cause a burn.");
 
+#if STARTER_SIGNATURES_PROPOSAL
+static const u8 sGreedyPlantDescription[] = _(
+    "Roots drink the foe dry.\n"
+    "Drains half the damage.");
+
+static const u8 sSkullBashSignatureDescription[] = _(
+    "A shell-first charge that\n"
+    "hits after a turn to hide.");
+#endif
+
 static const u8 sLeekSlapDescription[] = _(
     "Slaps the foe with a leek.\n"
     "High critical-hit ratio.");
@@ -6802,4 +6812,40 @@ const struct MoveInfo gMovesInfo[MOVES_COUNT] =
         .signatureSpecies = SPECIES_FARFETCHD,
         .description = sLeekSlapDescription,
     },
+
+#if STARTER_SIGNATURES_PROPOSAL
+    // PLACEHOLDER numbers (Q97; thread "Research TCG attacks as lost moves"). Omar's names, GREEDY PLANT and
+    // SKULL BASH; the Special Factor is per move id, so the Squirtle line's Skull Bash has its own id.
+    [MOVE_GREEDY_PLANT] =
+    {
+        .name = _("GREEDY PLANT"),
+        .effect = EFFECT_ABSORB,
+        .power = 90,
+        .type = TYPE_GRASS,
+        .accuracy = 100,
+        .tpCost = 45,
+        .secondaryEffectChance = 0,
+        .target = MOVE_TARGET_SELECTED,
+        .priority = 0,
+        .flags = FLAG_PROTECT_AFFECTED | FLAG_KINGS_ROCK_AFFECTED,
+        .signatureSpecies = SPECIES_BULBASAUR,
+        .description = sGreedyPlantDescription,
+    },
+
+    [MOVE_SKULL_BASH_SIGNATURE] =
+    {
+        .name = _("SKULL BASH"),
+        .effect = EFFECT_SKULL_BASH,
+        .power = 100,
+        .type = TYPE_WATER,
+        .accuracy = 100,
+        .tpCost = 45,
+        .secondaryEffectChance = 0,
+        .target = MOVE_TARGET_SELECTED,
+        .priority = 0,
+        .flags = FLAG_MAKES_CONTACT | FLAG_PROTECT_AFFECTED | FLAG_KINGS_ROCK_AFFECTED,
+        .signatureSpecies = SPECIES_SQUIRTLE,
+        .description = sSkullBashSignatureDescription,
+    },
+#endif
 };

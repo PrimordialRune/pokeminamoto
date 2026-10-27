@@ -21,10 +21,11 @@
     "levelUpMoves": [
         [1, "WITHDRAW"],
         [1, "SUPERSONIC"],
+        [1, "WATER_GUN"],
         [1, "AURORA_BEAM"],
-        [1, "HARDEN"],
-        [33, "TOXIC"],
-        [41, "SPIKE_CANNON"]
+        [1, "CLAMP"],
+        [40, "SPIKE_CANNON"],
+        [48, "ICE_BEAM"]
     ],
     "tmhm": [
         "TOXIC",

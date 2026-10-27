@@ -23,11 +23,10 @@
         [1, "TACKLE"],
         [1, "WITHDRAW"],
         [9, "SUPERSONIC"],
-        [17, "AURORA_BEAM"],
-        [25, "HARDEN"],
-        [33, "LEER"],
-        [41, "CLAMP"],
-        [49, "ICE_BEAM"]
+        [16, "WATER_GUN"],
+        [25, "CLAMP"],
+        [33, "AURORA_BEAM"],
+        [41, "ICE_BEAM"]
     ],
     "tmhm": [
         "TOXIC",

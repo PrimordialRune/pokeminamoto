@@ -19,19 +19,13 @@
     "bodyColor": "BLACK",
     "cry": "sound/direct_sound_samples/cries/snorlax.bin",
     "levelUpMoves": [
-        [1, "TACKLE"],
-        [6, "AMNESIA"],
-        [10, "DEFENSE_CURL"],
-        [15, "SWORDS_DANCE"],
-        [19, "HEADBUTT"],
-        [24, "HYPNOSIS"],
-        [28, "REST"],
-        [28, "TACKLE"],
-        [33, "BODY_SLAM"],
-        [37, "BIND"],
-        [42, "TACKLE"],
-        [46, "TACKLE"],
-        [51, "HYPER_BEAM"]
+        [1, "HEADBUTT"],
+        [1, "AMNESIA"],
+        [1, "REST"],
+        [35, "BODY_SLAM"],
+        [41, "HARDEN"],
+        [48, "DOUBLE_EDGE"],
+        [56, "HYPER_BEAM"]
     ],
     "tmhm": [
         "MEGA_PUNCH",

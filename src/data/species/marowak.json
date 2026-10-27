@@ -20,20 +20,14 @@
     "cry": "sound/direct_sound_samples/cries/marowak.bin",
     "levelUpMoves": [
         [1, "GROWL"],
-        [1, "TAIL_WHIP"],
+        [1, "LEER"],
         [1, "BONE_CLUB"],
-        [1, "HEADBUTT"],
-        [5, "TAIL_WHIP"],
-        [9, "BONE_CLUB"],
-        [13, "HEADBUTT"],
-        [17, "LEER"],
-        [21, "FOCUS_ENERGY"],
+        [1, "FOCUS_ENERGY"],
+        [19, "HEADBUTT"],
         [25, "BONEMERANG"],
-        [32, "RAGE"],
-        [39, "SLASH"],
-        [46, "THRASH"],
-        [53, "BONE_CLUB"],
-        [61, "DOUBLE_EDGE"]
+        [32, "THRASH"],
+        [40, "RAGE"],
+        [46, "DOUBLE_EDGE"]
     ],
     "tmhm": [
         "MEGA_PUNCH",

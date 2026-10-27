@@ -19,16 +19,14 @@
     "cry": "sound/direct_sound_samples/cries/omanyte.bin",
     "evolutions": [{"method": "LEVEL", "param": 40, "into": "OMASTAR"}],
     "levelUpMoves": [
-        [1, "CONSTRICT"],
+        [1, "WATER_GUN"],
         [1, "WITHDRAW"],
-        [13, "BITE"],
-        [19, "WATER_GUN"],
-        [25, "SAND_ATTACK"],
-        [31, "LEER"],
-        [37, "HARDEN"],
-        [43, "GROWL"],
-        [49, "ROCK_THROW"],
-        [55, "HYDRO_PUMP"]
+        [13, "ROCK_THROW"],
+        [22, "HORN_ATTACK"],
+        [30, "LEER"],
+        [36, "SPIKE_CANNON"],
+        [44, "HYDRO_PUMP"],
+        [50, "ROCK_SLIDE"]
     ],
     "tmhm": [
         "TOXIC",

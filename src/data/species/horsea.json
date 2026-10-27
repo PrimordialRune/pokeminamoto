@@ -21,13 +21,12 @@
     "evolutions": [{"method": "LEVEL", "param": 32, "into": "SEADRA"}],
     "levelUpMoves": [
         [1, "BUBBLE"],
-        [8, "SMOKESCREEN"],
-        [15, "LEER"],
-        [22, "WATER_GUN"],
-        [29, "GUST"],
-        [36, "AGILITY"],
-        [43, "HYDRO_PUMP"],
-        [50, "SWORDS_DANCE"]
+        [10, "WATER_GUN"],
+        [19, "SMOKESCREEN"],
+        [24, "LEER"],
+        [30, "AGILITY"],
+        [37, "BUBBLE_BEAM"],
+        [45, "HYDRO_PUMP"]
     ],
     "tmhm": [
         "TOXIC",

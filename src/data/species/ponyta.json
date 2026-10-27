@@ -19,16 +19,14 @@
     "cry": "sound/direct_sound_samples/cries/ponyta.bin",
     "evolutions": [{"method": "LEVEL", "param": 40, "into": "RAPIDASH"}],
     "levelUpMoves": [
-        [1, "TACKLE"],
-        [5, "GROWL"],
-        [9, "TAIL_WHIP"],
-        [14, "EMBER"],
-        [19, "STOMP"],
-        [25, "FIRE_SPIN"],
-        [31, "TAKE_DOWN"],
-        [38, "AGILITY"],
-        [45, "FLY"],
-        [53, "FIRE_BLAST"]
+        [1, "EMBER"],
+        [1, "TAIL_WHIP"],
+        [8, "GROWL"],
+        [14, "STOMP"],
+        [20, "FIRE_SPIN"],
+        [28, "TAKE_DOWN"],
+        [34, "AGILITY"],
+        [38, "FLAMETHROWER"]
     ],
     "tmhm": [
         "TOXIC",

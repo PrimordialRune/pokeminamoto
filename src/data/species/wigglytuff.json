@@ -17,7 +17,17 @@
     "safariZoneFleeRate": 0,
     "bodyColor": "PINK",
     "cry": "sound/direct_sound_samples/cries/wigglytuff.bin",
-    "levelUpMoves": [[1, "SING"], [1, "DISABLE"], [1, "DEFENSE_CURL"], [1, "DOUBLE_SLAP"]],
+    "levelUpMoves": [
+        [1, "SING"],
+        [1, "POUND"],
+        [1, "DISABLE"],
+        [1, "DEFENSE_CURL"],
+        [19, "DOUBLE_SLAP"],
+        [24, "REST"],
+        [29, "BODY_SLAM"],
+        [39, "DOUBLE_EDGE"],
+        [46, "HYPER_BEAM"]
+    ],
     "tmhm": [
         "MEGA_PUNCH",
         "MEGA_KICK",

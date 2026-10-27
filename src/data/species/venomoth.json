@@ -18,19 +18,16 @@
     "bodyColor": "PURPLE",
     "cry": "sound/direct_sound_samples/cries/venomoth.bin",
     "levelUpMoves": [
-        [1, "GUST"],
         [1, "TACKLE"],
         [1, "DISABLE"],
-        [1, "LEER"],
         [1, "SUPERSONIC"],
-        [9, "SUPERSONIC"],
-        [17, "CONFUSION"],
+        [1, "CONFUSION"],
+        [1, "LEECH_LIFE"],
         [20, "POISON_POWDER"],
-        [25, "LEECH_LIFE"],
-        [28, "STUN_SPORE"],
+        [30, "STUN_SPORE"],
         [31, "GUST"],
         [36, "PSYBEAM"],
-        [42, "SLEEP_POWDER"],
+        [43, "SLEEP_POWDER"],
         [52, "PSYCHIC"]
     ],
     "tmhm": [

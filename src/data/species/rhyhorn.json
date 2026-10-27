@@ -21,14 +21,13 @@
     "levelUpMoves": [
         [1, "HORN_ATTACK"],
         [1, "TAIL_WHIP"],
-        [10, "STOMP"],
-        [15, "FURY_ATTACK"],
-        [24, "LEER"],
-        [29, "ROCK_SLIDE"],
-        [38, "HORN_DRILL"],
-        [43, "TAKE_DOWN"],
-        [52, "EARTHQUAKE"],
-        [57, "HORN_ATTACK"]
+        [8, "STOMP"],
+        [15, "ROCK_THROW"],
+        [21, "FURY_ATTACK"],
+        [27, "LEER"],
+        [33, "TAKE_DOWN"],
+        [40, "EARTHQUAKE"],
+        [48, "HORN_DRILL"]
     ],
     "tmhm": [
         "TOXIC",

@@ -21,15 +21,13 @@
         [1, "HORN_ATTACK"],
         [1, "TAIL_WHIP"],
         [1, "STOMP"],
-        [1, "FURY_ATTACK"],
-        [10, "STOMP"],
-        [15, "FURY_ATTACK"],
-        [24, "LEER"],
-        [29, "ROCK_SLIDE"],
-        [38, "HORN_DRILL"],
-        [46, "TAKE_DOWN"],
-        [58, "EARTHQUAKE"],
-        [66, "HORN_ATTACK"]
+        [1, "ROCK_THROW"],
+        [21, "FURY_ATTACK"],
+        [27, "LEER"],
+        [33, "TAKE_DOWN"],
+        [40, "EARTHQUAKE"],
+        [48, "HORN_DRILL"],
+        [56, "ROCK_SLIDE"]
     ],
     "tmhm": [
         "MEGA_PUNCH",

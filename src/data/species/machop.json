@@ -19,18 +19,13 @@
     "cry": "sound/direct_sound_samples/cries/machop.bin",
     "evolutions": [{"method": "LEVEL", "param": 28, "into": "MACHOKE"}],
     "levelUpMoves": [
+        [1, "KARATE_CHOP"],
         [1, "LOW_KICK"],
-        [1, "LEER"],
-        [7, "FOCUS_ENERGY"],
-        [13, "KARATE_CHOP"],
-        [19, "SEISMIC_TOSS"],
-        [22, "LEER"],
-        [25, "COUNTER"],
-        [31, "SEISMIC_TOSS"],
-        [37, "SUBMISSION"],
-        [40, "KARATE_CHOP"],
-        [43, "LEER"],
-        [49, "MEGA_PUNCH"]
+        [7, "LEER"],
+        [13, "FOCUS_ENERGY"],
+        [22, "SEISMIC_TOSS"],
+        [32, "SUBMISSION"],
+        [40, "COUNTER"]
     ],
     "tmhm": [
         "MEGA_PUNCH",

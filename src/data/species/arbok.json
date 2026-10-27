@@ -22,15 +22,11 @@
         [1, "LEER"],
         [1, "POISON_STING"],
         [1, "BITE"],
-        [8, "POISON_STING"],
-        [13, "BITE"],
-        [20, "GLARE"],
+        [22, "GLARE"],
         [28, "SCREECH"],
-        [38, "ACID"],
-        [46, "HARDEN"],
-        [46, "RECOVER"],
-        [46, "TACKLE"],
-        [56, "HAZE"]
+        [34, "ACID"],
+        [42, "SLUDGE"],
+        [52, "SLAM"]
     ],
     "tmhm": [
         "TOXIC",

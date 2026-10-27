@@ -19,15 +19,13 @@
     "cry": "sound/direct_sound_samples/cries/psyduck.bin",
     "evolutions": [{"method": "LEVEL", "param": 33, "into": "GOLDUCK"}],
     "levelUpMoves": [
-        [1, "WATER_GUN"],
         [1, "SCRATCH"],
         [5, "TAIL_WHIP"],
-        [10, "DISABLE"],
-        [16, "CONFUSION"],
-        [23, "SCREECH"],
-        [31, "MEDITATE"],
-        [40, "FURY_SWIPES"],
-        [50, "HYDRO_PUMP"]
+        [10, "WATER_GUN"],
+        [16, "DISABLE"],
+        [23, "CONFUSION"],
+        [31, "FURY_SWIPES"],
+        [44, "HYDRO_PUMP"]
     ],
     "tmhm": [
         "MEGA_PUNCH",

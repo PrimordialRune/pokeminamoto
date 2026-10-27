@@ -22,15 +22,12 @@
     "evolutions": [{"method": "ITEM", "param": "WATER_STONE", "into": "POLIWRATH"}],
     "levelUpMoves": [
         [1, "BUBBLE"],
-        [1, "HYPNOSIS"],
         [1, "WATER_GUN"],
-        [7, "HYPNOSIS"],
-        [13, "WATER_GUN"],
-        [19, "DOUBLE_SLAP"],
-        [27, "MIST"],
-        [35, "BODY_SLAM"],
-        [43, "SWORDS_DANCE"],
-        [51, "HYDRO_PUMP"]
+        [1, "HYPNOSIS"],
+        [1, "DOUBLE_SLAP"],
+        [27, "BODY_SLAM"],
+        [35, "AMNESIA"],
+        [45, "HYDRO_PUMP"]
     ],
     "tmhm": [
         "MEGA_PUNCH",

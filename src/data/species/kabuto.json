@@ -21,14 +21,12 @@
     "levelUpMoves": [
         [1, "SCRATCH"],
         [1, "HARDEN"],
-        [13, "ABSORB"],
-        [19, "LEER"],
-        [25, "SAND_ATTACK"],
-        [31, "SAND_ATTACK"],
-        [37, "HARDEN"],
-        [43, "SCREECH"],
-        [49, "MEGA_DRAIN"],
-        [55, "ROCK_THROW"]
+        [10, "ABSORB"],
+        [16, "ROCK_THROW"],
+        [26, "LEER"],
+        [32, "SLASH"],
+        [38, "MEGA_DRAIN"],
+        [44, "HYDRO_PUMP"]
     ],
     "tmhm": [
         "TOXIC",

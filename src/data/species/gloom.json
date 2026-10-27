@@ -20,15 +20,13 @@
     "evolutions": [{"method": "ITEM", "param": "LEAF_STONE", "into": "VILEPLUME"}],
     "levelUpMoves": [
         [1, "ABSORB"],
-        [1, "GROWL"],
-        [1, "POISON_POWDER"],
-        [7, "GROWL"],
-        [14, "POISON_POWDER"],
-        [16, "STUN_SPORE"],
-        [18, "SLEEP_POWDER"],
-        [24, "ACID"],
-        [35, "RECOVER"],
-        [44, "PETAL_DANCE"]
+        [1, "ACID"],
+        [15, "POISON_POWDER"],
+        [17, "STUN_SPORE"],
+        [19, "SLEEP_POWDER"],
+        [28, "MEGA_DRAIN"],
+        [38, "PETAL_DANCE"],
+        [52, "SOLAR_BEAM"]
     ],
     "tmhm": [
         "SWORDS_DANCE",

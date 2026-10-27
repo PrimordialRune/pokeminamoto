@@ -19,19 +19,13 @@
     "cry": "sound/direct_sound_samples/cries/machoke.bin",
     "evolutions": [{"method": "TRADE", "param": 0, "into": "MACHAMP"}],
     "levelUpMoves": [
+        [1, "KARATE_CHOP"],
         [1, "LOW_KICK"],
         [1, "LEER"],
         [1, "FOCUS_ENERGY"],
-        [7, "FOCUS_ENERGY"],
-        [13, "KARATE_CHOP"],
-        [19, "SEISMIC_TOSS"],
-        [22, "LEER"],
-        [25, "COUNTER"],
-        [33, "SEISMIC_TOSS"],
-        [41, "SUBMISSION"],
-        [46, "KARATE_CHOP"],
-        [51, "LEER"],
-        [59, "MEGA_PUNCH"]
+        [22, "SEISMIC_TOSS"],
+        [35, "SUBMISSION"],
+        [44, "MEGA_PUNCH"]
     ],
     "tmhm": [
         "MEGA_PUNCH",

@@ -20,6 +20,19 @@
 #include "constants/moves.h"
 #include "constants/pokemon.h"
 #include "constants/species.h"
+#include "arena_ecology.h"
+
+// Studio data tests (src/test/test_data.c)
+void Test_ArenaTraitBits(void);
+void Test_ArenaMountainListKept(void);
+void Test_LeaderOnixHasNoSignature(void);
+#if STARTER_SIGNATURES_PROPOSAL
+void Test_GreedyPlantAwakens(void);
+void Test_SkullBashAwakens(void);
+void Test_StarterSignatureData(void);
+#else
+void Test_DefaultRomNoNewSignature(void);
+#endif
 
 // --- helpers -------------------------------------------------------------------
 
@@ -677,7 +690,7 @@ static void Test_SpecialSurvivesEvolution(void)
     ASSERT_EQ(IsMonSpecialAwakened(&mon), TRUE);
     ASSERT_EQ(GetMonSpecialMove(&mon), MOVE_FLAME_CLAWS);
     // A species with no Special yet stays sealed whatever its bit says
-    species = SPECIES_BULBASAUR;
+    species = SPECIES_PIDGEY;
     SetMonData(&mon, MON_DATA_SPECIES, &species);
     ASSERT_EQ(IsMonSpecialAwakened(&mon), FALSE);
 }
@@ -759,6 +772,16 @@ const struct TestCase gPureTests[] =
     {"mon_gender_nature",            Test_MonGenderAndNature},
     {"special_survives_evolution",   Test_SpecialSurvivesEvolution},
     {"string_util",                  Test_StringUtil},
+    {"arena_trait_bits",             Test_ArenaTraitBits},
+    {"arena_mountain_list_kept",     Test_ArenaMountainListKept},
+    {"signature_leader_onix_none",   Test_LeaderOnixHasNoSignature},
+#if STARTER_SIGNATURES_PROPOSAL
+    {"signature_greedy_plant_deed",  Test_GreedyPlantAwakens},
+    {"signature_skull_bash_deed",    Test_SkullBashAwakens},
+    {"signature_starter_data",       Test_StarterSignatureData},
+#else
+    {"signature_default_rom_none",   Test_DefaultRomNoNewSignature},
+#endif
 };
 
 const u32 gPureTestCount = ARRAY_COUNT(gPureTests);

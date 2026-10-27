@@ -20,16 +20,12 @@
     "cry": "sound/direct_sound_samples/cries/seadra.bin",
     "levelUpMoves": [
         [1, "BUBBLE"],
+        [1, "WATER_GUN"],
         [1, "SMOKESCREEN"],
         [1, "LEER"],
-        [1, "WATER_GUN"],
-        [8, "SMOKESCREEN"],
-        [15, "LEER"],
-        [22, "WATER_GUN"],
-        [29, "GUST"],
-        [40, "AGILITY"],
-        [51, "HYDRO_PUMP"],
-        [62, "SWORDS_DANCE"]
+        [30, "AGILITY"],
+        [38, "BUBBLE_BEAM"],
+        [48, "HYDRO_PUMP"]
     ],
     "tmhm": [
         "TOXIC",

@@ -21,13 +21,12 @@
     "evolutions": [{"method": "LEVEL", "param": 25, "into": "POLIWHIRL"}],
     "levelUpMoves": [
         [1, "BUBBLE"],
-        [7, "HYPNOSIS"],
-        [13, "WATER_GUN"],
-        [19, "DOUBLE_SLAP"],
-        [25, "MIST"],
-        [31, "BODY_SLAM"],
-        [37, "SWORDS_DANCE"],
-        [43, "HYDRO_PUMP"]
+        [10, "WATER_GUN"],
+        [16, "HYPNOSIS"],
+        [21, "DOUBLE_SLAP"],
+        [27, "BODY_SLAM"],
+        [34, "AMNESIA"],
+        [44, "HYDRO_PUMP"]
     ],
     "tmhm": [
         "TOXIC",
