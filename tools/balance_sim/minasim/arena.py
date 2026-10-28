@@ -27,8 +27,8 @@ BLOCK_MOVES = {1: ["STRING_SHOT"], 2: ["SMOKESCREEN", "POISON_POWDER", "STUN_SPO
 # built library and against include/arena_ecology.h). PLACEHOLDER: owner thread "Design arena ecology for gym battles".
 FAULT_LINE_DEFAULTS = {
     "faultSpeedPct": 67, "faultDefIntactPct": 200, "faultDefCrackedPct": 150, "faultDefFracturedPct": 100,
-    "faultCrackBlows": 3, "faultFractureBlows": 7, "faultHeavyPower": 80, "faultRootBlows": 1, "faultMudTurns": 4,
-    "faultMudStopsCracks": 1, "faultMudWaterPct": 60, "faultWindStormTurns": 3, "faultFractureStormTurns": 0, "faultDryWaterPct": 80, "faultMudWaterMissStages": 1,
+    "faultCrackBlows": 3, "faultFractureBlows": 7, "faultHeavyPower": 80, "faultRootBlows": 1, "faultMudTurns": 8,
+    "faultMudStopsCracks": 1, "faultMudWaterPct": 20, "faultWindStormTurns": 3, "faultFractureStormTurns": 0, "faultDryWaterPct": 80, "faultMudWaterMissStages": 3,
 }
 TERRAIN_INTACT, TERRAIN_CRACKED, TERRAIN_FRACTURED = 0, 1, 2
 WIND_MOVES = {"GUST", "WHIRLWIND", "RAZOR_WIND", "WING_ATTACK", "SKY_ATTACK"}

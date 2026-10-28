@@ -37,7 +37,7 @@
 // The balance lab (tools/balance_sim) builds this file with the table writable to sweep the knobs.
 const struct ArenaTuning gArenaTuning =
 {
-    .ventFlyerSpeedPct = 200,
+    .ventFlyerSpeedPct = 100,        // balance-r1: 200 left Bulbasaur at 36% vs Yujirou (floor 40%)
     .stillFlyerSpeedPct = 50,        // blocked vents: the birds lose the current (Omar, answer 68)
     .firstMoverCritStages = 1,
     .firstMoverNeedsVents = FALSE,
@@ -66,13 +66,13 @@ const struct ArenaTuning gArenaTuning =
     .faultFractureBlows = 7,
     .faultHeavyPower = 80,
     .faultRootBlows = 1,
-    .faultMudTurns = 4,
+    .faultMudTurns = 8,            // balance-r1: Squirtle sat at 92% vs Takeshi (ceiling 90%)
     .faultMudStopsCracks = TRUE,
-    .faultMudWaterPct = 60,
+    .faultMudWaterPct = 20,
     .faultWindStormTurns = 3,
     .faultFractureStormTurns = 0,
     .faultDryWaterPct = 80,
-    .faultMudWaterMissStages = 1,
+    .faultMudWaterMissStages = 3,
 };
 
 #define TUNE gArenaTuning
