@@ -73,6 +73,7 @@ script TokiwaCVS_EventScript_ParcelCheck {
 script TokiwaCVS_EventScript_ParcelTrigger4 {
     call(TokiwaCVS_EventScript_ParcelCheck)
     if (var(VAR_RESULT) == FALSE) {
+        releaseall
         end
     }
     lockall
@@ -84,6 +85,7 @@ script TokiwaCVS_EventScript_ParcelTrigger4 {
 script TokiwaCVS_EventScript_ParcelTrigger5 {
     call(TokiwaCVS_EventScript_ParcelCheck)
     if (var(VAR_RESULT) == FALSE) {
+        releaseall
         end
     }
     lockall
@@ -95,6 +97,7 @@ script TokiwaCVS_EventScript_ParcelTrigger5 {
 script TokiwaCVS_EventScript_ParcelTrigger6 {
     call(TokiwaCVS_EventScript_ParcelCheck)
     if (var(VAR_RESULT) == FALSE) {
+        releaseall
         end
     }
     lockall
