@@ -776,10 +776,10 @@ Music: Male
 Double Battle: No
 
 Squirtle
-Level: 11
+Level: 17
 
 Metapod
-Level: 9
+Level: 14
 
 === TRAINER_KEN_FOREST_2 ===
 Name: KEN
@@ -790,10 +790,10 @@ Music: Male
 Double Battle: No
 
 Bulbasaur
-Level: 12
+Level: 19
 
 Metapod
-Level: 10
+Level: 15
 
 === TRAINER_KEN_FOREST_3 ===
 Name: KEN
@@ -804,10 +804,10 @@ Music: Male
 Double Battle: No
 
 Charmander
-Level: 13
+Level: 21
 
 Metapod
-Level: 11
+Level: 16
 
 === TRAINER_BUG_CATCHER_FOREST_1 ===
 Name: RICK
@@ -818,10 +818,13 @@ Music: Male
 Double Battle: No
 
 Weedle
-Level: 8
+Level: 13
 
 Caterpie
-Level: 8
+Level: 13
+
+Weedle
+Level: 13
 
 === TRAINER_BUG_CATCHER_FOREST_2 ===
 Name: DOUG
@@ -832,13 +835,13 @@ Music: Male
 Double Battle: No
 
 Weedle
-Level: 9
+Level: 15
 
 Kakuna
-Level: 9
+Level: 15
 
 Weedle
-Level: 9
+Level: 15
 
 === TRAINER_BUG_CATCHER_FOREST_3 ===
 Name: ANTHONY
@@ -849,7 +852,13 @@ Music: Male
 Double Battle: No
 
 Weedle
-Level: 11
+Level: 14
+
+Kakuna
+Level: 14
+
+Beedrill
+Level: 9
 
 /* END north */
 
@@ -895,13 +904,13 @@ Gender: Male
 Music: Male
 Double Battle: No
 
-/* PLACEHOLDER party (NIB-501, R/G Jr. Trainer: Diglett 11, Sandshrew 11; raised to 13/13, then 14/14 (balance-r1) for the 85-97% band, lever 4).
+/* PLACEHOLDER party (NIB-501, R/G Jr. Trainer: Diglett 11, Sandshrew 11; raised to 13/13, 14/14 (balance-r1), 15/15 (balance-r2) for the 85-97% band, lever 4).
    Thread "Design movesets and encounters". Fought with the Fault Line armed (channel 3). */
 Diglett
-Level: 14
+Level: 15
 
 Sandshrew
-Level: 14
+Level: 15
 
 === TRAINER_BUG_CATCHER_ROUTE3_1 ===
 Name: BUG CATCH
