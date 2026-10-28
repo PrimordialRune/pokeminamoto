@@ -893,7 +893,9 @@ D gTrainerFrontPic_BattleGirl
 D gTrainerFrontPic_Beauty
 D gTrainerFrontPic_BirdKeeper
 D gTrainerFrontPic_BlackBelt
+D gTrainerFrontPic_Blue
 D gTrainerFrontPic_Brendan
+D gTrainerFrontPic_Brock
 D gTrainerFrontPic_BugCatcher
 D gTrainerFrontPic_BugManiac
 D gTrainerFrontPic_Camper
@@ -913,6 +915,10 @@ D gTrainerFrontPic_ExpertF
 D gTrainerFrontPic_ExpertM
 D gTrainerFrontPic_FactoryHeadNoland
 D gTrainerFrontPic_Fisherman
+D gTrainerFrontPic_FrlgBirdKeeper
+D gTrainerFrontPic_FrlgBugCatcher
+D gTrainerFrontPic_FrlgCamper
+D gTrainerFrontPic_FrlgYoungster
 D gTrainerFrontPic_Gentleman
 D gTrainerFrontPic_Guitarist
 D gTrainerFrontPic_HexManiac
@@ -986,7 +992,9 @@ D gTrainerPalette_BattleGirl
 D gTrainerPalette_Beauty
 D gTrainerPalette_BirdKeeper
 D gTrainerPalette_BlackBelt
+D gTrainerPalette_Blue
 D gTrainerPalette_Brendan
+D gTrainerPalette_Brock
 D gTrainerPalette_BugCatcher
 D gTrainerPalette_BugManiac
 D gTrainerPalette_Camper
@@ -1006,6 +1014,10 @@ D gTrainerPalette_ExpertF
 D gTrainerPalette_ExpertM
 D gTrainerPalette_FactoryHeadNoland
 D gTrainerPalette_Fisherman
+D gTrainerPalette_FrlgBirdKeeper
+D gTrainerPalette_FrlgBugCatcher
+D gTrainerPalette_FrlgCamper
+D gTrainerPalette_FrlgYoungster
 D gTrainerPalette_Gentleman
 D gTrainerPalette_Guitarist
 D gTrainerPalette_HexManiac
