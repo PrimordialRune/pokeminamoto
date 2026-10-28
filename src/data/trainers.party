@@ -722,7 +722,8 @@ Level: 2
 
 /* PLACEHOLDER (Q100/OQ13): parties are the R/G ones; lab's gate pass owns the levels. Route 22 Shigeru:
    Pidgey 9 + the starter that beats the player's at 8 (pokered Rival1 Route 22). Ken: the leftover starter 8 +
-   Metapod 7 (script list FOR-002). The Bug Catchers are pokered's Viridian Forest parties. */
+   Metapod 7 (script list FOR-002). The Bug Catchers are pokered's Viridian Forest parties.
+   QA-003: levels lowered to the plan 1.2 training target (Lv 12-14 at Nibi): Bug Catchers 8-11, Ken 9-13. */
 
 === TRAINER_SHIGERU_ROUTE22_1 ===
 Name: SHIGERU
@@ -775,10 +776,10 @@ Music: Male
 Double Battle: No
 
 Squirtle
-Level: 17
+Level: 11
 
 Metapod
-Level: 15
+Level: 9
 
 === TRAINER_KEN_FOREST_2 ===
 Name: KEN
@@ -789,10 +790,10 @@ Music: Male
 Double Battle: No
 
 Bulbasaur
-Level: 19
+Level: 12
 
 Metapod
-Level: 17
+Level: 10
 
 === TRAINER_KEN_FOREST_3 ===
 Name: KEN
@@ -803,10 +804,10 @@ Music: Male
 Double Battle: No
 
 Charmander
-Level: 20
+Level: 13
 
 Metapod
-Level: 18
+Level: 11
 
 === TRAINER_BUG_CATCHER_FOREST_1 ===
 Name: RICK
@@ -817,10 +818,10 @@ Music: Male
 Double Battle: No
 
 Weedle
-Level: 17
+Level: 8
 
 Caterpie
-Level: 17
+Level: 8
 
 === TRAINER_BUG_CATCHER_FOREST_2 ===
 Name: DOUG
@@ -831,13 +832,13 @@ Music: Male
 Double Battle: No
 
 Weedle
-Level: 17
+Level: 9
 
 Kakuna
-Level: 17
+Level: 9
 
 Weedle
-Level: 17
+Level: 9
 
 === TRAINER_BUG_CATCHER_FOREST_3 ===
 Name: ANTHONY
@@ -848,7 +849,7 @@ Music: Male
 Double Battle: No
 
 Weedle
-Level: 21
+Level: 11
 
 /* END north */
 
