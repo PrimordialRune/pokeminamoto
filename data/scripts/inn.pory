@@ -121,8 +121,3 @@ script TokiwaInn_EventScript_WhiteoutLine {
     return
 }
 
-// Stub: owner nibi-spine replaces it. PLACEHOLDER line (Fumie runs the Akagi-ya desk).
-script NibiInn_EventScript_WhiteoutLine {
-    msgbox(format("FUMIE: There you are. Your room is still warm."))
-    return
-}

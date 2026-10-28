@@ -1,2 +1,35 @@
-// Placeholder imported from FireRed (tools/frlg_import). No events yet.
-mapscripts PewterCity_PokemonCenter_2F_MapScripts {}
+// Akagi-ya 2F (PewterCity_PokemonCenter_2F), nibi-spine: the Ume room stand-in. Rows NIB-123 (Ken, NITE
+// half; C9) and the NIB-213 examines (Ume window, corridor).
+
+mapscripts PewterCity_PokemonCenter_2F_MapScripts {
+    MAP_SCRIPT_ON_TRANSITION {
+        // C9: Ken trains by day (Museum 1F, nibi-town) and sleeps here at NITE until he leaves, at the
+        // first rest after B2 (FLAG_Q_KEN_LEFT_NIBI, set in the Akagi-ya 1F keeper script).
+        showduringtime(FLAG_HIDE_NIBI_INN_KEN, TIME_OF_DAY_NITE)
+        if (flag(FLAG_Q_KEN_LEFT_NIBI)) {
+            setflag(FLAG_HIDE_NIBI_INN_KEN)
+        }
+    }
+}
+
+script NibiInn2F_EventScript_Ken {
+    lock
+    faceplayer
+    if (flag(FLAG_BADGE02_GET)) {
+        msgbox(NibiInn2F_Text_KenB2)
+    } else {
+        msgbox(NibiInn2F_Text_KenNite)
+    }
+    release
+    end
+}
+
+script NibiInn2F_EventScript_UmeWindow {
+    msgbox(NibiInn2F_Text_UmeWindow, MSGBOX_SIGN)
+    end
+}
+
+script NibiInn2F_EventScript_Corridor {
+    msgbox(NibiInn2F_Text_Corridor, MSGBOX_SIGN)
+    end
+}

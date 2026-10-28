@@ -6,6 +6,6 @@
 #ifndef GUARD_CONSTANTS_SLICE_VARS_NIBI_SPINE_H
 #define GUARD_CONSTANTS_SLICE_VARS_NIBI_SPINE_H
 
-#define VAR_Q_HIDA                               0x40DC // was VAR_UNUSED_0x40DC
+#define VAR_Q_HIDA                               0x40DC // NIB-301: 0 not met, 2 accepted, 3 refused, 4 delivered; was VAR_UNUSED_0x40DC
 
 #endif // GUARD_CONSTANTS_SLICE_VARS_NIBI_SPINE_H

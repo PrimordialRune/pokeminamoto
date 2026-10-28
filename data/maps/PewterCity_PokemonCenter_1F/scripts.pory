@@ -1,2 +1,317 @@
-// Placeholder imported from FireRed (tools/frlg_import). No events yet.
-mapscripts PewterCity_PokemonCenter_1F_MapScripts {}
+// Akagi-ya inn 1F (PewterCity_PokemonCenter_1F), nibi-spine. Rows NIB-103 (Fumie, rest, whiteout line),
+// 104 + 304 (Mori, NITE), 107 (the elder), 111 + 131 + 301 (Hida), 120 + 406 (Jigglypuff and its guest),
+// 121 (phone man), 213, 214, 224 (receipt), 225, 303 (the letter). Contracts: C3, C9 (Ken leaves, flag set
+// here), C10 (Hida), C11 (C-7), C13 (B2 reads). Ken's NITE half lives on 2F (the Ume room).
+// Only the inn heals: the keeper wraps Common_EventScript_InnRest.
+
+const NIBI_CHARISMA_T2 = 6 // Nibi tiers 3/6/10 (PLACEHOLDER, owner thread "Make TP need rest, with town toolkit")
+const HIDA_FEE = 4000 // PLACEHOLDER: "generous fee" (NIB-301); no Charisma on delivery
+
+// VAR_Q_HIDA: 0 not met, 2 accepted (long quest, open past the slice), 3 refused (NIB-131), 4 delivered (gone).
+const HIDA_UNMET = 0
+const HIDA_ACCEPTED = 2
+const HIDA_REFUSED = 3
+const HIDA_DELIVERED = 4
+
+mapscripts PewterCity_PokemonCenter_1F_MapScripts {
+    MAP_SCRIPT_ON_TRANSITION {
+        // NIB-104: Mori keeps the entrance all NITE (the old NIB-403 is merged here).
+        showduringtime(FLAG_HIDE_NIBI_INN_MORI, TIME_OF_DAY_NITE)
+        // NIB-111: Hida sits in the common room after the first rest here, until he is paid.
+        if (flag(FLAG_NIBI_INN_RESTED) && var(VAR_Q_HIDA) != HIDA_DELIVERED) {
+            clearflag(FLAG_HIDE_NIBI_INN_HIDA)
+        } else {
+            setflag(FLAG_HIDE_NIBI_INN_HIDA)
+        }
+    }
+    MAP_SCRIPT_ON_FRAME_TABLE [
+        VAR_TEMP_1, 0: NibiInn_EventScript_Entered
+    ]
+}
+
+// NIB-406: at NITE the song plays once on entering (the guest is asleep).
+script NibiInn_EventScript_Entered {
+    lockall
+    setvar(VAR_TEMP_1, 1)
+    checktimeofday
+    if (var(VAR_RESULT) == TIME_OF_DAY_NITE) {
+        call(NibiInn_EventScript_JigglypuffSong)
+    }
+    releaseall
+    end
+}
+
+script NibiInn_EventScript_JigglypuffSong {
+    playmoncry(SPECIES_JIGGLYPUFF, CRY_MODE_NORMAL)
+    waitmoncry
+    playbgm(MUS_RG_JIGGLYPUFF, FALSE)
+    delay(200)
+    fadedefaultbgm
+    return
+}
+
+// ---------------------------------------------------------------------------
+// Fumie (NIB-103, NIB-303). One desk script: the letter, then a line for the state, then the rest.
+// States: first entry (once), default (rotation), T2 or the letter, B2.
+// ---------------------------------------------------------------------------
+script NibiInn_EventScript_Fumie {
+    lock
+    faceplayer
+    // NIB-303 (C3): the letter from Grandma Inoue.
+    if (var(VAR_Q_LETTER) == 1) {
+        checkitem(ITEM_LETTER)
+        if (var(VAR_RESULT) == TRUE) {
+            goto(NibiInn_EventScript_FumieLetter)
+        }
+    }
+    call(NibiInn_EventScript_FumieLine)
+    goto(NibiInn_EventScript_FumieRest)
+}
+
+script NibiInn_EventScript_FumieLetter {
+    msgbox(NibiInn_Text_LetterRead)
+    removeitem(ITEM_LETTER)
+    setvar(VAR_Q_LETTER, 2)
+    addcharisma(1)
+    msgbox(NibiInn_Text_LetterThanks)
+    msgbox(NibiInn_Text_LetterRoom)
+    goto(NibiInn_EventScript_FumieRest)
+}
+
+script NibiInn_EventScript_FumieRest {
+    call(Common_EventScript_InnRest)
+    if (var(VAR_RESULT) == TRUE) {
+        setrespawn(HEAL_LOCATION_NIBI_INN)
+        // NIB-111: Hida turns up in the common room after the first rest.
+        if (!flag(FLAG_NIBI_INN_RESTED)) {
+            setflag(FLAG_NIBI_INN_RESTED)
+            if (var(VAR_Q_HIDA) != HIDA_DELIVERED) {
+                clearflag(FLAG_HIDE_NIBI_INN_HIDA)
+                addobject(LOCALID_NIBI_INN_HIDA)
+            }
+        }
+        // C9: Ken leaves Nibi at the first rest after B2.
+        if (flag(FLAG_BADGE02_GET)) {
+            setflag(FLAG_Q_KEN_LEFT_NIBI)
+        }
+    }
+    release
+    end
+}
+
+script NibiInn_EventScript_FumieLine {
+    if (!flag(FLAG_P_FUMIE_FIRST)) {
+        setflag(FLAG_P_FUMIE_FIRST)
+        msgbox(NibiInn_Text_FumieFirst)
+        return
+    }
+    // NIB-301: the one-shot signpost for "never deliver".
+    if (!flag(FLAG_P_FUMIE_HIDA) && var(VAR_Q_HIDA) == HIDA_ACCEPTED) {
+        setflag(FLAG_P_FUMIE_HIDA)
+        msgbox(NibiInn_Text_FumieHida)
+        return
+    }
+    if (flag(FLAG_BADGE02_GET)) {
+        msgbox(NibiInn_Text_FumieB2)
+        if (var(VAR_Q_LETTER) == 2 || var(VAR_CHARISMA) >= NIBI_CHARISMA_T2) {
+            msgbox(NibiInn_Text_FumieT2)
+        }
+        return
+    }
+    if (var(VAR_Q_LETTER) == 2 || var(VAR_CHARISMA) >= NIBI_CHARISMA_T2) {
+        msgbox(NibiInn_Text_FumieT2)
+        return
+    }
+    random(3)
+    switch (var(VAR_RESULT)) {
+        case 0:
+            msgbox(NibiInn_Text_FumieRot1)
+        case 1:
+            msgbox(NibiInn_Text_FumieRot2)
+        default:
+            msgbox(NibiInn_Text_FumieRot3)
+    }
+    return
+}
+
+// C14 / SYS-002: the arrival line after a whiteout. If the fight with Takeshi sent the player here,
+// Fumie relays his line once (NIB-502); otherwise one plain line.
+script NibiInn_EventScript_WhiteoutLine {
+    if (flag(FLAG_Q_LOST_TAKESHI) && !flag(FLAG_P_TAKESHI_RELAYED) && !flag(FLAG_BADGE02_GET)) {
+        setflag(FLAG_P_TAKESHI_RELAYED)
+        msgbox(NibiInn_Text_WhiteoutTakeshi)
+    } else {
+        msgbox(NibiInn_Text_WhiteoutLine)
+    }
+    return
+}
+
+// ---------------------------------------------------------------------------
+// Mori (NIB-104, NIB-304 Mori's half). Sets FLAG_Q_C7_KNOWN after FLAG_SEEN_NIB_C7 or B2 (C11).
+// ---------------------------------------------------------------------------
+script NibiInn_EventScript_Mori {
+    lock
+    faceplayer
+    if (flag(FLAG_SEEN_NIB_C7) || flag(FLAG_BADGE02_GET)) {
+        if (!flag(FLAG_Q_C7_KNOWN)) {
+            setflag(FLAG_Q_C7_KNOWN)
+            msgbox(NibiInn_Text_MoriC7)
+        } else {
+            msgbox(NibiInn_Text_MoriNotMyJob)
+        }
+    } else {
+        msgbox(NibiInn_Text_MoriRoutine)
+    }
+    release
+    end
+}
+
+// NIB-107: the Casa A elder, now a lodger. T2 beats B2 beats the default.
+script NibiInn_EventScript_Elder {
+    lock
+    faceplayer
+    if (var(VAR_CHARISMA) >= NIBI_CHARISMA_T2) {
+        msgbox(NibiInn_Text_ElderT2)
+    } elif (flag(FLAG_BADGE02_GET)) {
+        msgbox(NibiInn_Text_ElderB2)
+    } else {
+        msgbox(NibiInn_Text_ElderDefault)
+    }
+    release
+    end
+}
+
+// ---------------------------------------------------------------------------
+// Hida (NIB-111, NIB-301, NIB-131, NIB-224). C10: FLAG_Q_HIDA_ACCEPTED / _DELIVERED.
+// ---------------------------------------------------------------------------
+script NibiInn_EventScript_Hida {
+    lock
+    faceplayer
+    switch (var(VAR_Q_HIDA)) {
+        case HIDA_UNMET:
+            goto(NibiInn_EventScript_HidaPitch)
+        case HIDA_ACCEPTED:
+            goto(NibiInn_EventScript_HidaAsk)
+        default:
+            // NIB-131: after a refusal. He never asks again.
+            msgbox(NibiInn_Text_HidaRefused)
+    }
+    release
+    end
+}
+
+script NibiInn_EventScript_HidaPitch {
+    msgbox(NibiInn_Text_HidaIntro)
+    msgbox(NibiInn_Text_HidaAsk, MSGBOX_YESNO)
+    if (var(VAR_RESULT) == YES) {
+        setflag(FLAG_Q_HIDA_ACCEPTED)
+        setvar(VAR_Q_HIDA, HIDA_ACCEPTED)
+        msgbox(NibiInn_Text_HidaAccept)
+    } else {
+        setflag(FLAG_Q_HIDA_REFUSED)
+        setvar(VAR_Q_HIDA, HIDA_REFUSED)
+        msgbox(NibiInn_Text_HidaRefuse)
+    }
+    release
+    end
+}
+
+// Accepted, not delivered: the repeat line is the reminder; with a Graveler of Lv 20+ it becomes the hand-over.
+script NibiInn_EventScript_HidaAsk {
+    checkpartymonforhandover(SPECIES_GRAVELER, 20, HANDOVER_ANY_LOCATION, FALSE)
+    switch (var(VAR_RESULT)) {
+        case HANDOVER_NONE:
+            msgbox(NibiInn_Text_HidaWaiting)
+            release
+            end
+        case HANDOVER_LAST_MON:
+            msgbox(NibiInn_Text_HidaLastMon)
+            release
+            end
+    }
+    checkitemspace(ITEM_HIDA_RECEIPT, 1)
+    if (var(VAR_RESULT) == FALSE) {
+        msgbox(NibiInn_Text_HidaBagFull)
+        release
+        end
+    }
+    msgbox(NibiInn_Text_HidaOffer, MSGBOX_YESNO)
+    if (var(VAR_RESULT) == NO) {
+        msgbox(NibiInn_Text_HidaTakeYourTime)
+        release
+        end
+    }
+    special(RemovePartyMonAtSlot)
+    if (var(VAR_RESULT) == FALSE) {
+        msgbox(NibiInn_Text_HidaLastMon)
+        release
+        end
+    }
+    // No Charisma: nobody sees it (NIB-301).
+    msgbox(NibiInn_Text_HidaPaid)
+    addmoney(HIDA_FEE)
+    giveitem(ITEM_HIDA_RECEIPT)
+    setflag(FLAG_Q_HIDA_DELIVERED)
+    setvar(VAR_Q_HIDA, HIDA_DELIVERED)
+    msgbox(NibiInn_Text_HidaLeaves)
+    closemessage
+    fadescreen(FADE_TO_BLACK)
+    setflag(FLAG_HIDE_NIBI_INN_HIDA)
+    removeobject(LOCALID_NIBI_INN_HIDA)
+    fadescreen(FADE_FROM_BLACK)
+    release
+    end
+}
+
+// ---------------------------------------------------------------------------
+// Jigglypuff, its guest, the phone man (NIB-120, 121, 406) and the examines (NIB-213, 214, 225)
+// ---------------------------------------------------------------------------
+script NibiInn_EventScript_Jigglypuff {
+    lockall
+    playmoncry(SPECIES_JIGGLYPUFF, CRY_MODE_NORMAL)
+    msgbox(NibiInn_Text_Jigglypuff)
+    call(NibiInn_EventScript_JigglypuffSong)
+    releaseall
+    end
+}
+
+script NibiInn_EventScript_Guest {
+    lock
+    faceplayer
+    checktimeofday
+    if (var(VAR_RESULT) == TIME_OF_DAY_NITE) {
+        msgbox(NibiInn_Text_GuestAsleep)
+    } else {
+        msgbox(NibiInn_Text_Guest)
+    }
+    release
+    end
+}
+
+script NibiInn_EventScript_PhoneMan {
+    lock
+    faceplayer
+    msgbox(NibiInn_Text_PhoneMan)
+    release
+    end
+}
+
+script NibiInn_EventScript_Payphone {
+    msgbox(NibiInn_Text_Payphone, MSGBOX_SIGN)
+    end
+}
+
+script NibiInn_EventScript_Sign {
+    msgbox(NibiInn_Text_Sign, MSGBOX_SIGN)
+    end
+}
+
+script NibiInn_EventScript_Newspaper {
+    msgbox(NibiInn_Text_Newspaper, MSGBOX_SIGN)
+    end
+}
+
+script NibiInn_EventScript_Board {
+    msgbox(NibiInn_Text_Board, MSGBOX_SIGN)
+    end
+}

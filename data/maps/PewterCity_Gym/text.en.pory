@@ -1,2 +1,111 @@
-// PewterCity_Gym dialogue (English). Logic: scripts.pory. Translations: text.<lang>.pory
+// PewterCity_Gym (the Nibi PMC) dialogue (English). Logic: scripts.pory. Translations: text.<lang>.pory
 // with the same block names; see docs/engineering/map-text.md.
+// Owner: nibi-spine. Canon first, joins tagged [new]. Satoshi never speaks.
+
+// Teaching channel 1 [Nibi v3 §6 name, Q103; rule text is the slice-plan 4.1 default]. PLACEHOLDER Q86-91.
+text NibiPMC_Text_ArenaSign {
+    format("NIBI ROCK CHAMPIONSHIP\nNIBI PMC")
+}
+
+text NibiPMC_Text_ArenaSignRule {
+    format("The arena floor sits on a fault. Every blow cracks it further. Water turns it to mud.")
+}
+
+// NIB-124, the desk (v3 §6 leaves reception open). [Nibi v3 §6, §14] + [new: default line]
+text NibiPMC_Text_ClerkDefault {
+    format("NIBI PMC. Challengers go straight through to the arena floor.\pTakeshi is at the back wall, by the stones.")
+}
+
+// T1 (Charisma 3).
+text NibiPMC_Text_ClerkT1 {
+    format("The season's still open. No winner yet.")
+}
+
+// NIB-102. [R/G free service coach] + [new: channel 2, rival trace]. Pre-B2: three boxes.
+text NibiPMC_Text_GuideAdvice {
+    format("Yo! Champ in the making! Takeshi's rock is weak to WATER and GRASS. Free service.\pMud doesn't crack.\pAnother kid from Masara came through before you. Loud. He won.")
+}
+
+text NibiPMC_Text_GuideB2 {
+    format("Told you.")
+}
+
+// NIB-501 [R/G, verify]. The after line is the Talk hint (channel 3).
+text NibiPMC_Text_CamperIntro {
+    format("Stop right there! You're still light years from facing TAKESHI!")
+}
+
+text NibiPMC_Text_CamperDefeat {
+    format("Darn! Light years isn't time! It measures distance!")
+}
+
+text NibiPMC_Text_CamperAfter {
+    format("Wet the floor and it stops cracking. I found that out the hard way.")
+}
+
+// NIB-003: two ideas. [Nibi v3 §9] Idea 1: a direct read of the player, evaluative, not scornful.
+text NibiPMC_Text_TakeshiRead {
+    format("You looked at the floor before you looked at me. Good.\pYou're better than you think. Not as good as you'd like.")
+}
+
+// Idea 2: Onix, canon wording (Era di mio padre...).
+text NibiPMC_Text_TakeshiOnix {
+    format("The ONIX was my father's. I'm telling you this not to impress you, but because if you underestimate it, it beats you, not me.")
+}
+
+// NIB-502 battle intro, the R/G line.
+text NibiPMC_Text_TakeshiIntro {
+    format("I believe in rock-hard defense and determination!")
+}
+
+text NibiPMC_Text_TakeshiDefeat {
+    format("I took you for granted. So I lost.")
+}
+
+text NibiPMC_Text_TakeshiAdmits {
+    format("The BOULDER BADGE. It's yours.")
+}
+
+text NibiPMC_Text_ReceivedBadge {
+    format("{PLAYER} received the BOULDER BADGE!")
+}
+
+// PLACEHOLDER OQ 7 (thread "Design arena ecology for gym battles"): TM34 Bide, the R/G Brock TM.
+text NibiPMC_Text_TakeshiTM {
+    format("That's a TM. BIDE. Hold still, take the hit, give it back.\pIt suits people who can wait.")
+}
+
+text NibiPMC_Text_TakeshiTMLater {
+    format("Your bag is full. Make room and ask me again.")
+}
+
+// NIB-112. [Nibi v3 §9, §15]
+text NibiPMC_Text_TakeshiGo {
+    format("Fine. Go on.")
+}
+
+text NibiPMC_Text_TakeshiTunnels {
+    format("Something is going on in the tunnels. Not my problem.\pBut I know.")
+}
+
+text NibiPMC_Text_TakeshiCaves {
+    format("The caves past the boulder have changed smell these last weeks. I don't know what it means.\pMaybe nothing.")
+}
+
+// NIB-212. [Nibi v3 §6] + [new clause: the mill's women workers]
+text NibiPMC_Text_Column {
+    format("Names carved into the paint. Women's names, mostly. The oldest looks dated 1974.\pThis wasn't a PMC then.")
+}
+
+text NibiPMC_Text_Floor {
+    format("Worn evenly. Someone walked here a long time.")
+}
+
+text NibiPMC_Text_Window {
+    format("Through the high window: the museum's roof edge, and Otsukimi's silhouette.")
+}
+
+// The statue plinths stand in for the trophy cases (PLACEHOLDER: no trophy tiles).
+text NibiPMC_Text_Trophies {
+    format("The last name is from '88. The current season has no winner yet.")
+}

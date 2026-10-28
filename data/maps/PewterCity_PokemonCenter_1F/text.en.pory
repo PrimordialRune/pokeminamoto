@@ -1,2 +1,179 @@
-// PewterCity_PokemonCenter_1F dialogue (English). Logic: scripts.pory. Translations: text.<lang>.pory
-// with the same block names; see docs/engineering/map-text.md.
+// Akagi-ya 1F (PewterCity_PokemonCenter_1F) dialogue (English). Logic: scripts.pory.
+// Translations: text.<lang>.pory with the same block names; see docs/engineering/map-text.md.
+// Owner: nibi-spine. Canon first, joins tagged [new]. Satoshi never speaks.
+
+// NIB-103, Ishida Fumie. [Nibi v3 §7, §14] + [new: first-entry line]
+text NibiInn_Text_FumieFirst {
+    format("Welcome to the Akagi-ya. We honor the Card here.\pIf you ever fall out there, this is where you wake up.")
+}
+
+// PLACEHOLDER OQ1 (thread "Define Minamoto narrative direction"): the script list says the old Akagi-ya
+// "burned in the raid"; the plan forbids raid wording, so the cause is left out.
+text NibiInn_Text_FumieRot1 {
+    format("The old Akagi-ya burned down, a long time ago. We kept the name.")
+}
+
+// The karakkaze, as a fact. [Nibi v3 §14]
+text NibiInn_Text_FumieRot2 {
+    format("In winter, leave nothing outside your bags. The wind takes everything.")
+}
+
+// Takeshi: a respect heavier than it sounds; never mentions the father. [new]
+text NibiInn_Text_FumieRot3 {
+    format("I've known Takeshi since he was this high. I wouldn't stand in front of him lightly.")
+}
+
+// T2 (Charisma 6) or the letter delivered: the verb only, no who. [Nibi v3 §14]
+text NibiInn_Text_FumieT2 {
+    format("Several buildings in the center were “helped” to rebuild. That's the word people use.")
+}
+
+// B2: names the Otsukimi road and repeats the karakkaze warning.
+text NibiInn_Text_FumieB2 {
+    format("The Otsukimi road runs east, past Route 3.\pMind the wind out there. It takes everything.")
+}
+
+// NIB-301's signpost for "never deliver" (once, after he is accepted).
+text NibiInn_Text_FumieHida {
+    format("The naturalist says he'll stay until his work up the mountain is finished.")
+}
+
+// NIB-303. [Tokiwa v5 §13] + [ev2 §2.7] + [new effect]
+text NibiInn_Text_LetterRead {
+    format("Fumie reads the letter, folds it, and puts it away under the counter.")
+}
+
+text NibiInn_Text_LetterThanks {
+    format("Thank you for carrying it.")
+}
+
+text NibiInn_Text_LetterRoom {
+    format("She says it loud enough for the whole room to hear who brought it.")
+}
+
+// C14 whiteout arrival. The plain line was core's stub text.
+text NibiInn_Text_WhiteoutLine {
+    format("There you are. Your room is still warm.")
+}
+
+// NIB-502 loss: Takeshi's line, relayed once (the whiteout wakes you here).
+text NibiInn_Text_WhiteoutTakeshi {
+    format("Takeshi sent word. “Fine. Come back when you've slept.”")
+}
+
+// NIB-104 + NIB-304. [Nibi v3 §7, §14]
+text NibiInn_Text_MoriRoutine {
+    format("Ground surveys. Routine. Nothing interesting.")
+}
+
+text NibiInn_Text_MoriC7 {
+    format("Sector C-7, up the mountain. The ground moves there, and it matches no recorded seismic activity.\pSomething is moving in there that isn't natural.")
+}
+
+// "Ask only, if Silph comes up." (Non è il mio lavoro.)
+text NibiInn_Text_MoriNotMyJob {
+    format("Who's responsible? Not my job.")
+}
+
+// NIB-107. [Nibi v3 §12, §14] + [new: mill line]
+text NibiInn_Text_ElderDefault {
+    format("The mill was the one roof on this street that didn't burn.\pIn winter the wind comes in through every crack. The old building was better sealed.")
+}
+
+text NibiInn_Text_ElderB2 {
+    format("The PMC. It used to be something precise. Now it's something generic.")
+}
+
+text NibiInn_Text_ElderT2 {
+    format("When SILPH took the space, they offered an honest price. Nobody complained about the price.\pAbout the rest, everyone has their opinions.")
+}
+
+// NIB-111 + NIB-301. [Nibi v3 §17] + [new: refuse, receipt]
+text NibiInn_Text_HidaIntro {
+    format("Good evening. HIDA Makoto, an independent naturalist from Yamabuki.\pI'm looking for a GRAVELER. Level 20 or above. The fee is generous.")
+}
+
+text NibiInn_Text_HidaAsk {
+    format("Will you bring me one, when you have it?")
+}
+
+text NibiInn_Text_HidaAccept {
+    format("Whenever you have one. I'll be here.")
+}
+
+text NibiInn_Text_HidaRefuse {
+    format("Of course. Others will.")
+}
+
+// NIB-131: "Good evening." He never asks again.
+text NibiInn_Text_HidaRefused {
+    format("Good evening.")
+}
+
+text NibiInn_Text_HidaWaiting {
+    format("No GRAVELER yet? Level 20 or above. Whenever you have one.")
+}
+
+text NibiInn_Text_HidaLastMon {
+    format("That GRAVELER is all you have with you. Keep it. I can wait.")
+}
+
+text NibiInn_Text_HidaBagFull {
+    format("Your bag is full. Make room, and I'll give you the receipt.")
+}
+
+text NibiInn_Text_HidaOffer {
+    format("That one. Yes. Would you hand it over?")
+}
+
+text NibiInn_Text_HidaTakeYourTime {
+    format("Take your time.")
+}
+
+text NibiInn_Text_HidaPaid {
+    format("Thank you. This is for your trouble.\p{PLAYER} handed over the GRAVELER.")
+}
+
+// NIB-224 (full row text: the bag text is condensed). [Nibi v3 §17] + [new]
+text NibiInn_Text_HidaLeaves {
+    format("“Received: one GRAVELER. M. Hida. A Yamabuki P.O. box number.”\pNo logo. He's already collecting his things.")
+}
+
+// NIB-120 + NIB-406. [R/G Pewter Center, moved to the inn]
+text NibiInn_Text_Jigglypuff {
+    format("JIGGLYPUFF: Puu pupuu!")
+}
+
+text NibiInn_Text_Guest {
+    format("When it sings, Pokémon get drowsy... me too...")
+}
+
+text NibiInn_Text_GuestAsleep {
+    format("...zzz...")
+}
+
+// NIB-121. [R/G, verify location] PLACEHOLDER: "TEAM ROCKET" is the R/G name; Minamoto's equivalent is
+// undecided (thread "Define Minamoto narrative direction"; omar-questions).
+text NibiInn_Text_PhoneMan {
+    format("What!? TEAM ROCKET is at OTSUKIMI? Huh? I'm on the phone! Scram!")
+}
+
+// NIB-225. [R/G phone man] + [new, optional texture]
+text NibiInn_Text_Payphone {
+    format("A green card phone.")
+}
+
+// NIB-213. [Nibi v3 §7]
+text NibiInn_Text_Sign {
+    format("AKAGI-YA\nPainted metal, rust at the corners.")
+}
+
+text NibiInn_Text_Newspaper {
+    format("The front page: SILPH's circuit expansion.")
+}
+
+// NIB-214, Fumie's errand board. In scope: the copy of the museum's fossil notice (the second place for
+// NIB-302, owner nibi-town). Other errands: Omar to fill.
+text NibiInn_Text_Board {
+    format("FUMIE'S ERRANDS\n“Fossils found nearby: hand them to the curator.”\pThe other notes have faded.") // PLACEHOLDER OQ14: Omar to write the other errands
+}

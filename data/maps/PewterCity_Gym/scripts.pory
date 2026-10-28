@@ -1,2 +1,185 @@
-// Placeholder imported from FireRed (tools/frlg_import). No events yet.
+// Nibi PMC and Takeshi's Fault Line arena (PewterCity_Gym), nibi-spine.
+// Rows NIB-003, 102, 112, 124, 212, 501, 502 and SYS-004 for B2. Contracts: C13 (B2), FLAG_Q_LOST_TAKESHI.
+// Teaching channels (slice-plan 4.1): 1 = the sign by the door, 2 = the gym guide, 3 = the camper
+// fights with the arena armed; channel 4 (first-fire messages) is takeshi's.
+// The map is one open room. The arena counts as "live" from the second row inside the door.
+
+// include/arena_ecology.h enum value of ARENA_FAULT_LINE (scripts cannot see C enums).
+const ARENA_FAULT_LINE_ID = 3
+
 mapscripts PewterCity_Gym_MapScripts {}
+
+// ---------------------------------------------------------------------------
+// The arena is armed on the way in (row 12 band) and disarmed on the way out (row 13 band).
+// Core clears VAR_BATTLE_ARENA at the end of every battle, and Takeshi's script arms it itself.
+// ---------------------------------------------------------------------------
+
+script NibiPMC_EventScript_ArenaOn {
+    lockall
+    setvar(VAR_BATTLE_ARENA, ARENA_FAULT_LINE_ID)
+    releaseall
+    end
+}
+
+script NibiPMC_EventScript_ArenaOff {
+    lockall
+    setvar(VAR_BATTLE_ARENA, 0)
+    releaseall
+    end
+}
+
+// Teaching channel 1. The statue plinth by the door is the sign.
+script NibiPMC_EventScript_ArenaSign {
+    lockall
+    msgbox(NibiPMC_Text_ArenaSign)
+    msgbox(NibiPMC_Text_ArenaSignRule)
+    releaseall
+    end
+}
+
+// ---------------------------------------------------------------------------
+// NIB-124: the registration desk. T1 is Charisma 3 (Nibi tiers 3/6/10; PLACEHOLDER, owner thread
+// "Make TP need rest, with town toolkit": core has no Nibi tier table, so the number lives here).
+// ---------------------------------------------------------------------------
+const NIBI_CHARISMA_T1 = 3
+
+script NibiPMC_EventScript_Clerk {
+    lock
+    faceplayer
+    msgbox(NibiPMC_Text_ClerkDefault)
+    if (var(VAR_CHARISMA) >= NIBI_CHARISMA_T1) {
+        msgbox(NibiPMC_Text_ClerkT1)
+    }
+    release
+    end
+}
+
+// ---------------------------------------------------------------------------
+// NIB-102: the gym guide. Channel 2 ("Mud doesn't crack.").
+// ---------------------------------------------------------------------------
+script NibiPMC_EventScript_Guide {
+    lock
+    faceplayer
+    if (flag(FLAG_BADGE02_GET)) {
+        msgbox(NibiPMC_Text_GuideB2)
+    } else {
+        msgbox(NibiPMC_Text_GuideAdvice)
+    }
+    release
+    end
+}
+
+// ---------------------------------------------------------------------------
+// NIB-501: the camper (sight). Channel 3: the fight runs with the arena armed (the row 12 band).
+// This script must start with the trainerbattle command (sight triggers read it directly).
+// The Talk hint is the after-battle line: Talk lines are not per-trainer data in the engine yet.
+// ---------------------------------------------------------------------------
+script NibiPMC_EventScript_Camper {
+    trainerbattle_single(TRAINER_CAMPER_NIBI_PMC, NibiPMC_Text_CamperIntro, NibiPMC_Text_CamperDefeat, NibiPMC_EventScript_CamperWon)
+    msgbox(NibiPMC_Text_CamperAfter, MSGBOX_AUTOCLOSE)
+    end
+}
+
+script NibiPMC_EventScript_CamperWon {
+    msgbox(NibiPMC_Text_CamperAfter)
+    releaseall
+    end
+}
+
+// ---------------------------------------------------------------------------
+// Takeshi (NIB-003, NIB-502, NIB-112). He does not start the fight: you talk to him.
+// FLAG_Q_LOST_TAKESHI is set before the fight and cleared by the win, because a loss never
+// returns to the script (whiteout to the Akagi-ya; Fumie relays his line, NibiInn_EventScript_WhiteoutLine).
+// ---------------------------------------------------------------------------
+script NibiPMC_EventScript_Takeshi {
+    lock
+    faceplayer
+    if (flag(FLAG_BADGE02_GET)) {
+        goto(NibiPMC_EventScript_TakeshiAfter)
+    }
+    // NIB-003: two ideas, once. A retry goes straight to the intro.
+    if (!flag(FLAG_Q_LOST_TAKESHI)) {
+        msgbox(NibiPMC_Text_TakeshiRead)
+        msgbox(NibiPMC_Text_TakeshiOnix)
+    }
+    setvar(VAR_BATTLE_ARENA, ARENA_FAULT_LINE_ID)
+    setflag(FLAG_Q_LOST_TAKESHI)
+    clearflag(FLAG_P_TAKESHI_RELAYED)
+    trainerbattle_single(TRAINER_TAKESHI, NibiPMC_Text_TakeshiIntro, NibiPMC_Text_TakeshiDefeat, NibiPMC_EventScript_TakeshiDefeated)
+    // Only reached if the trainer was already beaten (flags edited): behave as after the badge.
+    setvar(VAR_BATTLE_ARENA, 0)
+    msgbox(NibiPMC_Text_TakeshiGo)
+    release
+    end
+}
+
+// SYS-004: the one place for every B2 consequence on this side (other maps read FLAG_BADGE02_GET).
+script NibiPMC_EventScript_TakeshiDefeated {
+    setvar(VAR_BATTLE_ARENA, 0)
+    clearflag(FLAG_Q_LOST_TAKESHI)
+    msgbox(NibiPMC_Text_TakeshiAdmits)
+    setflag(FLAG_BADGE02_GET)
+    call(Common_EventScript_PlayGymBadgeFanfare)
+    msgbox(NibiPMC_Text_ReceivedBadge)
+    addcharisma(2)
+    msgbox(NibiPMC_Text_TakeshiTM)
+    call(NibiPMC_EventScript_GiveTM34)
+    release
+    end
+}
+
+// SYS-004: TM34 (PLACEHOLDER, OQ 7: the R/G Brock TM). A full bag cannot lose it: the debt is a flag,
+// paid at the next talk.
+script NibiPMC_EventScript_GiveTM34 {
+    giveitem(ITEM_TM34)
+    if (var(VAR_RESULT) == TRUE) {
+        clearflag(FLAG_Q_TM34_OWED)
+    } else {
+        setflag(FLAG_Q_TM34_OWED)
+        msgbox(NibiPMC_Text_TakeshiTMLater)
+    }
+    return
+}
+
+// NIB-112: after the badge. Visible, fixing stones, no battle. Three talks, three lines.
+script NibiPMC_EventScript_TakeshiAfter {
+    if (flag(FLAG_Q_TM34_OWED)) {
+        call(NibiPMC_EventScript_GiveTM34)
+        release
+        end
+    }
+    if (!flag(FLAG_P_TAKESHI_GO)) {
+        setflag(FLAG_P_TAKESHI_GO)
+        msgbox(NibiPMC_Text_TakeshiGo)
+    } elif (!flag(FLAG_P_TAKESHI_TUNNELS)) {
+        setflag(FLAG_P_TAKESHI_TUNNELS)
+        msgbox(NibiPMC_Text_TakeshiTunnels)
+    } else {
+        msgbox(NibiPMC_Text_TakeshiCaves)
+    }
+    release
+    end
+}
+
+// ---------------------------------------------------------------------------
+// NIB-212: column, floor, window, trophies (examines)
+// ---------------------------------------------------------------------------
+script NibiPMC_EventScript_Column {
+    msgbox(NibiPMC_Text_Column, MSGBOX_SIGN)
+    end
+}
+
+script NibiPMC_EventScript_Floor {
+    msgbox(NibiPMC_Text_Floor, MSGBOX_SIGN)
+    end
+}
+
+script NibiPMC_EventScript_Window {
+    msgbox(NibiPMC_Text_Window, MSGBOX_SIGN)
+    end
+}
+
+script NibiPMC_EventScript_Trophies {
+    msgbox(NibiPMC_Text_Trophies, MSGBOX_SIGN)
+    end
+}

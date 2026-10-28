@@ -7,19 +7,19 @@
 #define GUARD_CONSTANTS_SLICE_FLAGS_NIBI_SPINE_H
 
 // Story flags 0x4A9-0x4B8 (16)
-#define FLAG_SLICE_NIBI_SPINE_00                 0x4A9
-#define FLAG_SLICE_NIBI_SPINE_01                 0x4AA
-#define FLAG_SLICE_NIBI_SPINE_02                 0x4AB
-#define FLAG_SLICE_NIBI_SPINE_03                 0x4AC
-#define FLAG_SLICE_NIBI_SPINE_04                 0x4AD
-#define FLAG_SLICE_NIBI_SPINE_05                 0x4AE
-#define FLAG_SLICE_NIBI_SPINE_06                 0x4AF
-#define FLAG_SLICE_NIBI_SPINE_07                 0x4B0
-#define FLAG_SLICE_NIBI_SPINE_08                 0x4B1
-#define FLAG_SLICE_NIBI_SPINE_09                 0x4B2
-#define FLAG_SLICE_NIBI_SPINE_10                 0x4B3
-#define FLAG_SLICE_NIBI_SPINE_11                 0x4B4
-#define FLAG_SLICE_NIBI_SPINE_12                 0x4B5
+#define FLAG_HIDE_NIBI_INN_MORI                  0x4A9 // Akagi-ya: Mori at the entrance, derived (NITE only)
+#define FLAG_HIDE_NIBI_INN_HIDA                  0x4AA // Akagi-ya: Hida in the common room, derived (after the first rest here, until delivered)
+#define FLAG_HIDE_NIBI_INN_KEN                   0x4AB // Akagi-ya 2F: Ken in the Ume room, derived (NITE, until FLAG_Q_KEN_LEFT_NIBI)
+#define FLAG_HIDE_R03_GEODUDE                    0x4AC // Route 3: the displaced Geodude, derived (after B2, until it is gone)
+#define FLAG_R03_GEODUDE_GONE                    0x4AD // R03-301: the Geodude was battled or caught; it stays gone, the observations stay
+#define FLAG_P_FUMIE_FIRST                       0x4AE // NIB-103: Fumie's first-entry welcome has played
+#define FLAG_P_FUMIE_HIDA                        0x4AF // NIB-301: Fumie's one-shot signpost about Hida has played
+#define FLAG_NIBI_INN_RESTED                     0x4B0 // Akagi-ya: the player has rested here at least once (NIB-111 appears)
+#define FLAG_Q_HIDA_REFUSED                      0x4B1 // NIB-301/131: the player refused Hida (he never asks again)
+#define FLAG_Q_TM34_OWED                         0x4B2 // SYS-004: TM34 not handed over yet (full bag); Takeshi pays at the next talk
+#define FLAG_P_TAKESHI_GO                        0x4B3 // NIB-112: Takeshi's "Fine. Go on." has played
+#define FLAG_P_TAKESHI_TUNNELS                   0x4B4 // NIB-112: Takeshi's tunnels line has played
+#define FLAG_P_TAKESHI_RELAYED                   0x4B5 // NIB-502: Fumie relayed Takeshi's loss line after the whiteout (cleared at each fight)
 #define FLAG_SLICE_NIBI_SPINE_13                 0x4B6
 #define FLAG_SLICE_NIBI_SPINE_14                 0x4B7
 #define FLAG_SLICE_NIBI_SPINE_15                 0x4B8

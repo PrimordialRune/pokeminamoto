@@ -21,41 +21,58 @@
       "y": 3,
       "elevation": 3,
       "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
-      "movement_range_x": 1,
-      "movement_range_y": 1,
+      "movement_range_x": 0,
+      "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
-      "script": "0",
+      "script": "NibiPMC_EventScript_Takeshi",
       "flag": "0",
       "local_id": "LOCALID_NIBI_PMC_TAKESHI"
     },
     {
       "type": "object",
-      "graphics_id": "OBJ_EVENT_GFX_FRLG_CAMPER",
-      "x": 3,
-      "y": 8,
       "elevation": 3,
-      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
-      "movement_range_x": 1,
-      "movement_range_y": 1,
-      "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "0",
-      "script": "0",
-      "flag": "0"
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "movement_range_x": 0,
+      "movement_range_y": 0,
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "trainer_sight_or_berry_tree_id": "3",
+      "script": "NibiPMC_EventScript_Camper",
+      "flag": "0",
+      "local_id": "LOCALID_NIBI_PMC_CAMPER",
+      "graphics_id": "OBJ_EVENT_GFX_FRLG_CAMPER",
+      "x": 6,
+      "y": 8
     },
     {
       "type": "object",
-      "graphics_id": "OBJ_EVENT_GFX_FRLG_GYM_GUY",
-      "x": 7,
-      "y": 12,
       "elevation": 3,
       "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
-      "movement_range_x": 1,
-      "movement_range_y": 1,
+      "movement_range_x": 0,
+      "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
-      "script": "0",
-      "flag": "0"
+      "script": "NibiPMC_EventScript_Guide",
+      "flag": "0",
+      "local_id": "LOCALID_NIBI_PMC_GUIDE",
+      "graphics_id": "OBJ_EVENT_GFX_FRLG_GYM_GUY",
+      "x": 7,
+      "y": 12
+    },
+    {
+      "type": "object",
+      "elevation": 3,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "movement_range_x": 0,
+      "movement_range_y": 0,
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "trainer_sight_or_berry_tree_id": "0",
+      "script": "NibiPMC_EventScript_Clerk",
+      "flag": "0",
+      "local_id": "LOCALID_NIBI_PMC_CLERK",
+      "graphics_id": "OBJ_EVENT_GFX_FRLG_WOMAN_1",
+      "x": 10,
+      "y": 13
     }
   ],
   "warp_events": [
@@ -81,23 +98,228 @@
       "dest_warp_id": "2"
     }
   ],
-  "coord_events": [],
-  "bg_events": [
+  "coord_events": [
     {
-      "type": "sign",
-      "x": 4,
+      "type": "trigger",
+      "x": 1,
       "y": 12,
       "elevation": 0,
-      "player_facing_dir": "BG_EVENT_PLAYER_FACING_ANY",
-      "script": "0"
+      "var": "VAR_TEMP_0",
+      "var_value": "0",
+      "script": "NibiPMC_EventScript_ArenaOn"
     },
+    {
+      "type": "trigger",
+      "x": 2,
+      "y": 12,
+      "elevation": 0,
+      "var": "VAR_TEMP_0",
+      "var_value": "0",
+      "script": "NibiPMC_EventScript_ArenaOn"
+    },
+    {
+      "type": "trigger",
+      "x": 3,
+      "y": 12,
+      "elevation": 0,
+      "var": "VAR_TEMP_0",
+      "var_value": "0",
+      "script": "NibiPMC_EventScript_ArenaOn"
+    },
+    {
+      "type": "trigger",
+      "x": 5,
+      "y": 12,
+      "elevation": 0,
+      "var": "VAR_TEMP_0",
+      "var_value": "0",
+      "script": "NibiPMC_EventScript_ArenaOn"
+    },
+    {
+      "type": "trigger",
+      "x": 6,
+      "y": 12,
+      "elevation": 0,
+      "var": "VAR_TEMP_0",
+      "var_value": "0",
+      "script": "NibiPMC_EventScript_ArenaOn"
+    },
+    {
+      "type": "trigger",
+      "x": 7,
+      "y": 12,
+      "elevation": 0,
+      "var": "VAR_TEMP_0",
+      "var_value": "0",
+      "script": "NibiPMC_EventScript_ArenaOn"
+    },
+    {
+      "type": "trigger",
+      "x": 9,
+      "y": 12,
+      "elevation": 0,
+      "var": "VAR_TEMP_0",
+      "var_value": "0",
+      "script": "NibiPMC_EventScript_ArenaOn"
+    },
+    {
+      "type": "trigger",
+      "x": 10,
+      "y": 12,
+      "elevation": 0,
+      "var": "VAR_TEMP_0",
+      "var_value": "0",
+      "script": "NibiPMC_EventScript_ArenaOn"
+    },
+    {
+      "type": "trigger",
+      "x": 11,
+      "y": 12,
+      "elevation": 0,
+      "var": "VAR_TEMP_0",
+      "var_value": "0",
+      "script": "NibiPMC_EventScript_ArenaOn"
+    },
+    {
+      "type": "trigger",
+      "x": 1,
+      "y": 13,
+      "elevation": 0,
+      "var": "VAR_TEMP_0",
+      "var_value": "0",
+      "script": "NibiPMC_EventScript_ArenaOff"
+    },
+    {
+      "type": "trigger",
+      "x": 2,
+      "y": 13,
+      "elevation": 0,
+      "var": "VAR_TEMP_0",
+      "var_value": "0",
+      "script": "NibiPMC_EventScript_ArenaOff"
+    },
+    {
+      "type": "trigger",
+      "x": 3,
+      "y": 13,
+      "elevation": 0,
+      "var": "VAR_TEMP_0",
+      "var_value": "0",
+      "script": "NibiPMC_EventScript_ArenaOff"
+    },
+    {
+      "type": "trigger",
+      "x": 4,
+      "y": 13,
+      "elevation": 0,
+      "var": "VAR_TEMP_0",
+      "var_value": "0",
+      "script": "NibiPMC_EventScript_ArenaOff"
+    },
+    {
+      "type": "trigger",
+      "x": 5,
+      "y": 13,
+      "elevation": 0,
+      "var": "VAR_TEMP_0",
+      "var_value": "0",
+      "script": "NibiPMC_EventScript_ArenaOff"
+    },
+    {
+      "type": "trigger",
+      "x": 6,
+      "y": 13,
+      "elevation": 0,
+      "var": "VAR_TEMP_0",
+      "var_value": "0",
+      "script": "NibiPMC_EventScript_ArenaOff"
+    },
+    {
+      "type": "trigger",
+      "x": 7,
+      "y": 13,
+      "elevation": 0,
+      "var": "VAR_TEMP_0",
+      "var_value": "0",
+      "script": "NibiPMC_EventScript_ArenaOff"
+    },
+    {
+      "type": "trigger",
+      "x": 8,
+      "y": 13,
+      "elevation": 0,
+      "var": "VAR_TEMP_0",
+      "var_value": "0",
+      "script": "NibiPMC_EventScript_ArenaOff"
+    },
+    {
+      "type": "trigger",
+      "x": 9,
+      "y": 13,
+      "elevation": 0,
+      "var": "VAR_TEMP_0",
+      "var_value": "0",
+      "script": "NibiPMC_EventScript_ArenaOff"
+    },
+    {
+      "type": "trigger",
+      "x": 10,
+      "y": 13,
+      "elevation": 0,
+      "var": "VAR_TEMP_0",
+      "var_value": "0",
+      "script": "NibiPMC_EventScript_ArenaOff"
+    },
+    {
+      "type": "trigger",
+      "x": 11,
+      "y": 13,
+      "elevation": 0,
+      "var": "VAR_TEMP_0",
+      "var_value": "0",
+      "script": "NibiPMC_EventScript_ArenaOff"
+    }
+  ],
+  "bg_events": [
     {
       "type": "sign",
       "x": 8,
       "y": 12,
       "elevation": 0,
       "player_facing_dir": "BG_EVENT_PLAYER_FACING_ANY",
-      "script": "0"
+      "script": "NibiPMC_EventScript_ArenaSign"
+    },
+    {
+      "type": "sign",
+      "x": 4,
+      "y": 12,
+      "elevation": 0,
+      "player_facing_dir": "BG_EVENT_PLAYER_FACING_ANY",
+      "script": "NibiPMC_EventScript_Trophies"
+    },
+    {
+      "type": "sign",
+      "x": 0,
+      "y": 13,
+      "elevation": 0,
+      "player_facing_dir": "BG_EVENT_PLAYER_FACING_ANY",
+      "script": "NibiPMC_EventScript_Column"
+    },
+    {
+      "type": "sign",
+      "x": 9,
+      "y": 13,
+      "elevation": 0,
+      "player_facing_dir": "BG_EVENT_PLAYER_FACING_ANY",
+      "script": "NibiPMC_EventScript_Floor"
+    },
+    {
+      "type": "sign",
+      "x": 4,
+      "y": 2,
+      "elevation": 0,
+      "player_facing_dir": "BG_EVENT_PLAYER_FACING_ANY",
+      "script": "NibiPMC_EventScript_Window"
     }
   ]
 }

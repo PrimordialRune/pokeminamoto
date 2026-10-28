@@ -1,2 +1,59 @@
-// Placeholder imported from FireRed (tools/frlg_import). No events yet.
-mapscripts Route3_MapScripts {}
+// Route 3 (nibi-spine): the Nibi side of the walled edge. Rows R03-001 (the edge sign), R03-301 (the
+// displaced Geodude, C12), R03-501 (the first Route 3 trainer), plus the hiker at the rockfall wall.
+// World's collision wall is x=31, rows 3-5; everything east of it is unreachable. No wild encounters here.
+
+mapscripts Route3_MapScripts {
+    MAP_SCRIPT_ON_TRANSITION {
+        // R03-301: the Geodude exists after B2, until it has been battled or caught.
+        if (flag(FLAG_BADGE02_GET) && !flag(FLAG_R03_GEODUDE_GONE)) {
+            clearflag(FLAG_HIDE_R03_GEODUDE)
+        } else {
+            setflag(FLAG_HIDE_R03_GEODUDE)
+        }
+    }
+}
+
+// R03-001, the edge. [R/G] Scope ends here.
+script Route3_EventScript_EdgeSign {
+    msgbox(Route3_Text_EdgeSign, MSGBOX_SIGN)
+    end
+}
+
+// The hiker in front of the rockfall wall. PLACEHOLDER line (thread "Define Minamoto narrative direction", Q112).
+script Route3_EventScript_WallHiker {
+    msgbox(Route3_Text_WallHiker, MSGBOX_NPC)
+    end
+}
+
+// R03-501: sight trigger (faces west, sees x=18-20, eleven tiles west of the wall). Must start with the
+// trainerbattle command.
+script Route3_EventScript_BugCatcher1 {
+    trainerbattle_single(TRAINER_BUG_CATCHER_ROUTE3_1, Route3_Text_BugCatcher1Intro, Route3_Text_BugCatcher1Defeat)
+    msgbox(Route3_Text_BugCatcher1After, MSGBOX_AUTOCLOSE)
+    end
+}
+
+// R03-301 (C12): two observations by examine, by phase. Never linked to Hida. Battling it is allowed
+// (then it is gone and the observations stay).
+script Route3_EventScript_Geodude {
+    lock
+    faceplayer
+    checktimeofday
+    if (var(VAR_RESULT) == TIME_OF_DAY_NITE) {
+        setflag(FLAG_Q_GEODUDE_NITE)
+        msgbox(Route3_Text_GeodudeNite)
+    } else {
+        setflag(FLAG_Q_GEODUDE_DAY)
+        msgbox(Route3_Text_GeodudeDay)
+    }
+    msgbox(Route3_Text_GeodudeDisturb, MSGBOX_YESNO)
+    if (var(VAR_RESULT) == YES) {
+        setwildbattle(SPECIES_GEODUDE, 11)
+        dowildbattle
+        setflag(FLAG_R03_GEODUDE_GONE)
+        setflag(FLAG_HIDE_R03_GEODUDE)
+        removeobject(LOCALID_ROUTE3_GEODUDE)
+    }
+    release
+    end
+}
