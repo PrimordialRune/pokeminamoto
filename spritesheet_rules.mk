@@ -534,3 +534,20 @@ $(BATINTGFXDIR)/healthbox_singles_opponent.4bpp: %.4bpp: %.png
 
 $(BATINTGFXDIR)/healthbox_singles_player.4bpp: %.4bpp: %.png
 	$(GFX) $< $@ -mwidth 8 -mheight 8
+
+# Minamoto overworld mons (PLACEHOLDER art; every new object sprite needs its -mwidth/-mheight rule)
+$(OBJEVENTGFXDIR)/pokemon/rattata.4bpp: %.4bpp: %.png
+	$(GFX) $< $@ -mwidth 2 -mheight 2
+
+$(OBJEVENTGFXDIR)/pokemon/sandshrew.4bpp: %.4bpp: %.png
+	$(GFX) $< $@ -mwidth 2 -mheight 2
+
+$(OBJEVENTGFXDIR)/pokemon/geodude.4bpp: %.4bpp: %.png
+	$(GFX) $< $@ -mwidth 2 -mheight 2
+
+$(OBJEVENTGFXDIR)/pokemon/pidgey.4bpp: %.4bpp: %.png
+	$(GFX) $< $@ -mwidth 2 -mheight 2
+
+$(OBJEVENTGFXDIR)/pokemon/farfetchd.4bpp: %.4bpp: %.png
+	$(GFX) $< $@ -mwidth 2 -mheight 2
+

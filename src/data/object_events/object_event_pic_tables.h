@@ -3211,3 +3211,65 @@ static const struct SpriteFrameImage sPicTable_FrlgMom[] = {
     overworld_frame(gObjectEventPic_FrlgMom, 2, 4, 2),
 };
 // FRLG import end
+
+// Minamoto overworld mons (PLACEHOLDER art): same frame order as the FRLG pokemon sheets
+static const struct SpriteFrameImage sPicTable_MonRattata[] = {
+    overworld_frame(gObjectEventPic_MonRattata, 2, 2, 0),
+    overworld_frame(gObjectEventPic_MonRattata, 2, 2, 1),
+    overworld_frame(gObjectEventPic_MonRattata, 2, 2, 2),
+    overworld_frame(gObjectEventPic_MonRattata, 2, 2, 0),
+    overworld_frame(gObjectEventPic_MonRattata, 2, 2, 0),
+    overworld_frame(gObjectEventPic_MonRattata, 2, 2, 1),
+    overworld_frame(gObjectEventPic_MonRattata, 2, 2, 1),
+    overworld_frame(gObjectEventPic_MonRattata, 2, 2, 2),
+    overworld_frame(gObjectEventPic_MonRattata, 2, 2, 2),
+};
+
+static const struct SpriteFrameImage sPicTable_MonSandshrew[] = {
+    overworld_frame(gObjectEventPic_MonSandshrew, 2, 2, 0),
+    overworld_frame(gObjectEventPic_MonSandshrew, 2, 2, 1),
+    overworld_frame(gObjectEventPic_MonSandshrew, 2, 2, 2),
+    overworld_frame(gObjectEventPic_MonSandshrew, 2, 2, 0),
+    overworld_frame(gObjectEventPic_MonSandshrew, 2, 2, 0),
+    overworld_frame(gObjectEventPic_MonSandshrew, 2, 2, 1),
+    overworld_frame(gObjectEventPic_MonSandshrew, 2, 2, 1),
+    overworld_frame(gObjectEventPic_MonSandshrew, 2, 2, 2),
+    overworld_frame(gObjectEventPic_MonSandshrew, 2, 2, 2),
+};
+
+static const struct SpriteFrameImage sPicTable_MonGeodude[] = {
+    overworld_frame(gObjectEventPic_MonGeodude, 2, 2, 0),
+    overworld_frame(gObjectEventPic_MonGeodude, 2, 2, 1),
+    overworld_frame(gObjectEventPic_MonGeodude, 2, 2, 2),
+    overworld_frame(gObjectEventPic_MonGeodude, 2, 2, 0),
+    overworld_frame(gObjectEventPic_MonGeodude, 2, 2, 0),
+    overworld_frame(gObjectEventPic_MonGeodude, 2, 2, 1),
+    overworld_frame(gObjectEventPic_MonGeodude, 2, 2, 1),
+    overworld_frame(gObjectEventPic_MonGeodude, 2, 2, 2),
+    overworld_frame(gObjectEventPic_MonGeodude, 2, 2, 2),
+};
+
+static const struct SpriteFrameImage sPicTable_MonPidgey[] = {
+    overworld_frame(gObjectEventPic_MonPidgey, 2, 2, 0),
+    overworld_frame(gObjectEventPic_MonPidgey, 2, 2, 1),
+    overworld_frame(gObjectEventPic_MonPidgey, 2, 2, 2),
+    overworld_frame(gObjectEventPic_MonPidgey, 2, 2, 0),
+    overworld_frame(gObjectEventPic_MonPidgey, 2, 2, 0),
+    overworld_frame(gObjectEventPic_MonPidgey, 2, 2, 1),
+    overworld_frame(gObjectEventPic_MonPidgey, 2, 2, 1),
+    overworld_frame(gObjectEventPic_MonPidgey, 2, 2, 2),
+    overworld_frame(gObjectEventPic_MonPidgey, 2, 2, 2),
+};
+
+static const struct SpriteFrameImage sPicTable_MonFarfetchd[] = {
+    overworld_frame(gObjectEventPic_MonFarfetchd, 2, 2, 0),
+    overworld_frame(gObjectEventPic_MonFarfetchd, 2, 2, 1),
+    overworld_frame(gObjectEventPic_MonFarfetchd, 2, 2, 2),
+    overworld_frame(gObjectEventPic_MonFarfetchd, 2, 2, 0),
+    overworld_frame(gObjectEventPic_MonFarfetchd, 2, 2, 0),
+    overworld_frame(gObjectEventPic_MonFarfetchd, 2, 2, 1),
+    overworld_frame(gObjectEventPic_MonFarfetchd, 2, 2, 1),
+    overworld_frame(gObjectEventPic_MonFarfetchd, 2, 2, 2),
+    overworld_frame(gObjectEventPic_MonFarfetchd, 2, 2, 2),
+};
+

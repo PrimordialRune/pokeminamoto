@@ -323,6 +323,12 @@ extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_FrlgYoungst
 extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_FrlgZapdos;
 // FRLG import end decls
 
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_MonRattata;
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_MonSandshrew;
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_MonGeodude;
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_MonPidgey;
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_MonFarfetchd;
+
 const struct ObjectEventGraphicsInfo *const gObjectEventGraphicsInfoPointers[NUM_OBJ_EVENT_GFX] = {
     [OBJ_EVENT_GFX_BRENDAN_NORMAL] =           &gObjectEventGraphicsInfo_BrendanNormal,
     [OBJ_EVENT_GFX_BRENDAN_MACH_BIKE] =        &gObjectEventGraphicsInfo_BrendanMachBike,
@@ -641,6 +647,11 @@ const struct ObjectEventGraphicsInfo *const gObjectEventGraphicsInfoPointers[NUM
     [OBJ_EVENT_GFX_FRLG_DEOXYS_N] = &gObjectEventGraphicsInfo_FrlgDeoxysN,
     [OBJ_EVENT_GFX_FRLG_SS_ANNE] = &gObjectEventGraphicsInfo_FrlgSSAnne,
 // FRLG import end pointers
+    [OBJ_EVENT_GFX_MON_RATTATA] = &gObjectEventGraphicsInfo_MonRattata,
+    [OBJ_EVENT_GFX_MON_SANDSHREW] = &gObjectEventGraphicsInfo_MonSandshrew,
+    [OBJ_EVENT_GFX_MON_GEODUDE] = &gObjectEventGraphicsInfo_MonGeodude,
+    [OBJ_EVENT_GFX_MON_PIDGEY] = &gObjectEventGraphicsInfo_MonPidgey,
+    [OBJ_EVENT_GFX_MON_FARFETCHD] = &gObjectEventGraphicsInfo_MonFarfetchd,
 };
 
 

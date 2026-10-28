@@ -6136,3 +6136,100 @@ const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_FrlgSSAnne = {
     .affineAnims = gDummySpriteAffineAnimTable,
 };
 // FRLG import end
+
+// Minamoto overworld mons (PLACEHOLDER art, existing FRLG npc palettes: no new palette slots)
+const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_MonRattata = {
+    .tileTag = TAG_NONE,
+    .paletteTag = OBJ_EVENT_PAL_TAG_FRLG_NPC_BLUE,
+    .reflectionPaletteTag = OBJ_EVENT_PAL_TAG_NONE,
+    .size = 128,
+    .width = 16,
+    .height = 16,
+    .paletteSlot = PALSLOT_NPC_1,
+    .shadowSize = SHADOW_SIZE_M,
+    .inanimate = FALSE,
+    .disableReflectionPaletteLoad = FALSE,
+    .tracks = TRACKS_FOOT,
+    .oam = &gObjectEventBaseOam_Frlg16x16,
+    .subspriteTables = gObjectEventSpriteOamTables_Frlg16x16,
+    .anims = sAnimTable_FrlgStandard,
+    .images = sPicTable_MonRattata,
+    .affineAnims = gDummySpriteAffineAnimTable,
+};
+
+const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_MonSandshrew = {
+    .tileTag = TAG_NONE,
+    .paletteTag = OBJ_EVENT_PAL_TAG_FRLG_NPC_BLUE,
+    .reflectionPaletteTag = OBJ_EVENT_PAL_TAG_NONE,
+    .size = 128,
+    .width = 16,
+    .height = 16,
+    .paletteSlot = PALSLOT_NPC_1,
+    .shadowSize = SHADOW_SIZE_M,
+    .inanimate = FALSE,
+    .disableReflectionPaletteLoad = FALSE,
+    .tracks = TRACKS_FOOT,
+    .oam = &gObjectEventBaseOam_Frlg16x16,
+    .subspriteTables = gObjectEventSpriteOamTables_Frlg16x16,
+    .anims = sAnimTable_FrlgStandard,
+    .images = sPicTable_MonSandshrew,
+    .affineAnims = gDummySpriteAffineAnimTable,
+};
+
+const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_MonGeodude = {
+    .tileTag = TAG_NONE,
+    .paletteTag = OBJ_EVENT_PAL_TAG_FRLG_NPC_WHITE,
+    .reflectionPaletteTag = OBJ_EVENT_PAL_TAG_NONE,
+    .size = 128,
+    .width = 16,
+    .height = 16,
+    .paletteSlot = PALSLOT_NPC_4,
+    .shadowSize = SHADOW_SIZE_M,
+    .inanimate = FALSE,
+    .disableReflectionPaletteLoad = FALSE,
+    .tracks = TRACKS_FOOT,
+    .oam = &gObjectEventBaseOam_Frlg16x16,
+    .subspriteTables = gObjectEventSpriteOamTables_Frlg16x16,
+    .anims = sAnimTable_FrlgStandard,
+    .images = sPicTable_MonGeodude,
+    .affineAnims = gDummySpriteAffineAnimTable,
+};
+
+const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_MonPidgey = {
+    .tileTag = TAG_NONE,
+    .paletteTag = OBJ_EVENT_PAL_TAG_FRLG_NPC_BLUE,
+    .reflectionPaletteTag = OBJ_EVENT_PAL_TAG_NONE,
+    .size = 128,
+    .width = 16,
+    .height = 16,
+    .paletteSlot = PALSLOT_NPC_1,
+    .shadowSize = SHADOW_SIZE_M,
+    .inanimate = FALSE,
+    .disableReflectionPaletteLoad = FALSE,
+    .tracks = TRACKS_FOOT,
+    .oam = &gObjectEventBaseOam_Frlg16x16,
+    .subspriteTables = gObjectEventSpriteOamTables_Frlg16x16,
+    .anims = sAnimTable_FrlgStandard,
+    .images = sPicTable_MonPidgey,
+    .affineAnims = gDummySpriteAffineAnimTable,
+};
+
+const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_MonFarfetchd = {
+    .tileTag = TAG_NONE,
+    .paletteTag = OBJ_EVENT_PAL_TAG_FRLG_NPC_GREEN,
+    .reflectionPaletteTag = OBJ_EVENT_PAL_TAG_NONE,
+    .size = 128,
+    .width = 16,
+    .height = 16,
+    .paletteSlot = PALSLOT_NPC_3,
+    .shadowSize = SHADOW_SIZE_M,
+    .inanimate = FALSE,
+    .disableReflectionPaletteLoad = FALSE,
+    .tracks = TRACKS_FOOT,
+    .oam = &gObjectEventBaseOam_Frlg16x16,
+    .subspriteTables = gObjectEventSpriteOamTables_Frlg16x16,
+    .anims = sAnimTable_FrlgStandard,
+    .images = sPicTable_MonFarfetchd,
+    .affineAnims = gDummySpriteAffineAnimTable,
+};
+
