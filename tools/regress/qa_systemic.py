@@ -212,12 +212,17 @@ def sec_npcs(b, a):
             try:
                 if b.map_name() != name:
                     b.warp(name, ax, ay, "test setup: back on the map after an NPC moved the player", settle=True)
-                b.talk(o["x"], o["y"], mash_limit=0)           # A pressed, nothing mashed yet
+                try:
+                    b.talk(o["x"], o["y"], mash_limit=0)       # A pressed, nothing mashed yet
+                except KeyError:                               # a wandering NPC moved while the bot approached: once more
+                    b.warp(name, ax, ay, "test setup: retry an NPC that moved", settle=True)
+                    b.talk(o["x"], o["y"], mash_limit=0)
                 b.emu.run(30)
                 started = not b.ready()
                 b.emu.hold("DOWN", 20)                          # try to walk away mid-box: nothing may happen
                 b.emu.press("B", hold=4, after=10)
-                free = b.settle(limit=400)
+                # B closes boxes and answers NO; A would walk into a shop's BUY list and buy (the Nibi Market clerk)
+                free = b.mash(key="B", n=80) or b.settle(limit=400)
                 res.append(dict(npc=tag, text_started=started, free=free))
                 if not free:
                     b.say(f"  NPC SOFTLOCK {tag}")

@@ -22,8 +22,8 @@ def main():
     wo = json.load(open(os.path.join(sysdir, "systemic_whiteout.json")))
     cov["SYS-002"] = "forced loss, three respawns: " + "; ".join(
         f"{c['case']} -> {c['landed']}" for c in wo["result"] if c.get("landed"))
-    out = ["# QA coverage, round 1", "",
-           "ROM: integrated 5500a9860, `make release REGRESS=1 DINFO=1`. Evidence is from `playthrough.py` (real button input; "
+    out = ["# QA coverage, round 2", "",
+           "ROM: integrated 0ade0fa57 (round-1 fixes merged), `make release REGRESS=1 DINFO=1`. Evidence is from `playthrough.py` (real button input; "
            "injections listed in bugs.md and the report), except SYS-002 (systemic whiteout check).", "",
            "## Plan 3.1 rows", "", "| Row | Hit | Evidence |", "|---|---|---|"]
     miss = []

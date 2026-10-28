@@ -454,6 +454,12 @@ class Bot:
             e.press("A", hold=4, after=30)
         for _ in range(4):
             e.press("B", hold=4, after=8)
+        # HW-003: the new-game wall clock screen in the bedroom: A confirms the time, UP moves to YES, A confirms.
+        for _ in range(40):
+            if e.field_ready():
+                break
+            e.press("A", hold=4, after=30)
+            e.press("UP", hold=4, after=10)
         R.wait_field(e)
         e.run(30)
         self.cat = "other"
@@ -780,8 +786,14 @@ class Bot:
 
     def face(self, d):
         """Turn to face `d` without moving (tap)."""
-        self.emu.hold(d, 3)
-        self.emu.run(8)
+        want = {"DOWN": 1, "UP": 2, "LEFT": 3, "RIGHT": 4}[d]
+        for _ in range(4):                      # a tap during the end of a step is swallowed: check and repeat
+            self.emu.run(6)
+            self.emu.hold(d, 4)
+            self.emu.run(10)
+            me = next((o for o in self.objects(with_player=True) if o["player"]), None)
+            if me is None or me["facing"] == want:
+                break
 
     def goto(self, x, y, avoid_grass=True, adjacent=False, max_replans=14):
         """Walk to map cell (x, y) with real direction presses; replans when blocked or interrupted.
@@ -1157,6 +1169,12 @@ class Bot:
         e = self.emu
         self.menu_cursor_to(2)
         e.press("A", hold=4, after=60)
+        ids = [a for a, q in self.bag_items(0)]
+        pot = C("ITEM_POTION")
+        for _ in range(len(ids) + 1):                             # the bag remembers its cursor: go to the top first
+            e.press("UP", hold=3, after=6)
+        for _ in range(ids.index(pot) if pot in ids else 0):     # the Potion may not be first (Antidote, balls...)
+            e.press("DOWN", hold=3, after=8)
         e.press("A", hold=4, after=30)       # select the item
         e.press("A", hold=4, after=40)       # USE
         e.press("A", hold=4, after=30)       # party slot 0

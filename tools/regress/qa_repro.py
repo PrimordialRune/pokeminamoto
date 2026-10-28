@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Make the repro savestates for bugs.md from a playthrough.py run.
+"""(round 1 repro states; the bugs are fixed, so this is historical) Make the repro savestates for bugs.md from a playthrough.py run.
 
     qa_repro.py [--states DIR] [--out DIR]
 

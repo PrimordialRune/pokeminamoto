@@ -22,6 +22,7 @@ import time
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from qa_lib import *  # noqa: E402,F401
 
+NIBI_MART_DOOR = (28, 18)
 STARTERS = {"bulbasaur": 0, "charmander": 1, "squirtle": 2}
 BALL = {"bulbasaur": (8, 4), "squirtle": (9, 4), "charmander": (10, 4)}
 
@@ -146,7 +147,13 @@ def seg_route1_parcel(b, ctx):
     b.shot("s2_parcel")
     # QA-001 (open): stepping back onto the trigger row after the scene locks the player for good.
     # The only way out of the counter nook crosses that row, so warp out instead.
-    b.workaround("QA-001", "ViridianCity_Mart", 4, 6, "the parcel trigger row (4..6,4) ends in a bare `end` and locks the field")
+    # QA-001 re-verify (round 2): leave the nook by the trigger row with real input; no workaround warp.
+    b.walk_dirs(["DOWN"])
+    b.settle()
+    b.check("QA-001 fixed: DOWN onto trigger row (4,4) is not a softlock", b.ready(), True)
+    b.walk_dirs(["DOWN", "RIGHT", "RIGHT"])
+    b.settle()
+    b.check("QA-001 fixed: the player left the nook and can walk", b.pos()[0] > 4, True)
 
 
 def walk_to_masara(b):
@@ -378,7 +385,8 @@ def seg_route2_forest(b, ctx):
     b.take_exit("ViridianCity")
     b.settle()
     # Route 22 (west of Tokiwa): the rival, R22-501 (no-whiteout fight)
-    b.set_party_level(0, 16, "grind on Routes 1/22 before the forest (Bug Catchers are Lv 17-21 in trainers.party)")
+    inn_rest(b, "Tokiwa")      # a player rests after the Arena, before the rival (TP does not refill elsewhere)
+    b.set_party_level(0, int(os.environ.get("QA_LV_R22", "15")), "grind on Routes 1/22 before the forest (QA-003 fix: forest trainers are Lv 8-13)")
     b.cross("LEFT")
     b.check("on Route 22", b.map_name(), "Route22")
     b.goto(30, 5)
@@ -407,7 +415,7 @@ def seg_route2_forest(b, ctx):
     # Route 2: the sign (R02-001), then the forest's south gate
     b.talk(7, 73)
     b.cover("R02-001", "Route 2 sign")
-    b.set_party_level(0, int(os.environ.get("QA_LV_FOREST", "22")), "grind on Route 2 before the forest (plan: 20-22; Bug Catchers 17-21, Ken 15-17)")
+    b.set_party_level(0, int(os.environ.get("QA_LV_FOREST", "16")), "grind on Route 2 before the forest (forest passes at Lv 12-14 too (F12/F14 runs); 16 = Wartortle for the Nibi arena)")
     b.goto(5, 51)
     b.settle()
     b.check("in the forest south gate", b.map_name(), "Route2_ViridianForest_SouthEntrance")
@@ -440,15 +448,58 @@ def inn_rest(b, town):
     b.settle()
 
 
+def buy_potions(b, n=8):
+    """Real shop input at the Nibi Market (Potion is 300 yen): the clerk is across the counter. Leaves the
+    shop and returns to the street. The arena is attrition: a player who has spent the Welcome Kit buys more."""
+    b.goto(*NIBI_MART_DOOR)
+    b.settle()
+    b.check("in the Nibi Market", b.map_name(), "PewterCity_Mart")
+    money0, pots0 = b.money(), b.bag_count("ITEM_POTION")
+    e = b.emu
+    b.talk(*obj_xy("PewterCity_Mart", "EventScript_Clerk"), mash_limit=0)
+    e.run(150)
+    for _ in range(3):                       # text, menu, BUY
+        e.press("A", hold=4, after=100)
+    for attempt in range(4):                  # pick POTION, verified by the clerk's own words
+        e.cmd(f"write {b.sym['gStringVar4']:#x} ff")
+        e.press("DOWN", hold=4, after=30)
+        e.press("A", hold=4, after=150)
+        t = b.last_text()
+        if "POTION" in t:
+            break
+        e.press("B", hold=4, after=60)        # wrong item: back to the list, try again
+        e.press("UP", hold=4, after=30)
+    b.check("shop: the clerk offers POTION", "POTION" in b.last_text(), True)
+    e.run(100)
+    for _ in range(n - 1):
+        e.press("UP", hold=4, after=8)
+    e.press("A", hold=4, after=100)          # quantity
+    e.press("A", hold=4, after=100)          # "And you wanted n?" (finishes the text; YES is the default)
+    e.press("A", hold=4, after=150)          # YES: "Here you go!"
+    for _ in range(8):                       # out of the list and the menu: B only, never A (A would buy)
+        if b.ready():
+            break
+        e.press("B", hold=4, after=60)
+    b.settle()
+    b.check("shop: bought Potions with real menus", b.bag_count("ITEM_POTION") - pots0, n)
+    b.check("shop: paid 300 yen each", money0 - b.money(), 300 * n)
+    b.cover("NIB-117", "Market: bought Potions")
+    b.take_exit("PewterCity")
+    b.settle()
+
+
 def forest_walk(b):
     """South gate to Ken: the Bug Catchers (real battles), the Antidote and Potion balls a player picks up
     on the way, then the clearing scene (FOR-003 tag, FOR-002 Ken)."""
     tf = C("TRAINER_FLAGS_START")
+    b.talk(49, 60)          # QA-003 fix: the Antidote ball is now at the south entrance, before the first fight
+    b.check("FOR item: the Antidote ball (south entrance)", b.bag_count("ITEM_ANTIDOTE") >= 1, True)
+    b.settle()
     for (x, y, nm, tr) in [(42, 55, "BC1", "TRAINER_BUG_CATCHER_FOREST_1")]:
         fight_trainer(b, x, y, nm, flag=tf + C(tr))
         b.settle()
     b.talk(21, 34)
-    b.check("FOR item: the Antidote ball", b.bag_count("ITEM_ANTIDOTE") >= 1, True)
+    b.check("FOR item: the Poke Ball ball", b.bag_count("ITEM_POKE_BALL") >= 1, True)
     b.settle()
     for (x, y, nm, tr) in [(43, 24, "BC2", "TRAINER_BUG_CATCHER_FOREST_2")]:
         fight_trainer(b, x, y, nm, flag=tf + C(tr))
@@ -505,6 +556,9 @@ def seg_nibi_b2(b, ctx):
     b.check("NIB-002: VAR_NIBI_STATE 1 after the escort", b.var("VAR_NIBI_STATE"), 1)
     b.cover("NIB-002", "east-exit boy escorts the player to the arena")
     b.shot("s6_escort_end")
+    buy_potions(b, int(os.environ.get("QA_POTIONS", "8")))
+    if b.mon(0)["level"] < int(os.environ.get("QA_LV_ARENA", "18")):
+        b.set_party_level(0, int(os.environ.get("QA_LV_ARENA", "18")), "grind in Nibi before the arena (Camper Lv 14 x2 with the Fault Line armed)")
     b.goto(15, 16)
     b.settle()
     b.check("in the Nibi arena", b.map_name(), "PewterCity_Gym")
@@ -513,6 +567,12 @@ def seg_nibi_b2(b, ctx):
     fight_trainer(b, *obj_xy("PewterCity_Gym", "EventScript_Camper"), "camper", flag=tf + C("TRAINER_CAMPER_NIBI_PMC"))
     b.settle()
     b.cover("NIB-501", "camper, real battle with the arena armed")
+    # a player rests at the Nibi inn between the gate trainer and the Leader (TP only refills at an inn)
+    b.take_exit("PewterCity")
+    b.settle()
+    inn_rest(b, "Nibi")
+    b.goto(15, 16)
+    b.settle()
     b.save_state(os.path.join(b.out, "states", "pre_takeshi.ss"))
     b.talk(*obj_xy("PewterCity_Gym", "EventScript_Takeshi"))
     b.settle()
@@ -538,6 +598,7 @@ def seg_route3_wall(b, ctx):
     n_inj = len(b.injections)
     b.check("Charisma +4 after two badges", b.var("VAR_CHARISMA") >= 4, True)
     b.take_exit("PewterCity") if b.map_name() != "PewterCity" else None
+    inn_rest(b, "Nibi")        # after the Arena a player sleeps at the inn (real input)
     b.goto(40, 21)
     b.cross("RIGHT")
     b.settle()
