@@ -35,6 +35,7 @@ movement PewterCity_Museum_1F_Movement_StepBack {
 
 script PewterCity_Museum_1F_EventScript_TicketTrigger {
     if (flag(FLAG_NIBI_MUSEUM_TICKET)) {
+        releaseall  // a trigger script freezes the player; unlock before ending (QA-002)
         end
     }
     lockall
