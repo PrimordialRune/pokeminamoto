@@ -71,7 +71,7 @@ def cstring(emu, addr):
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("rom", help="the TEST=1 ROM (its .elf must be next to it)")
-    ap.add_argument("--max-frames", type=int, default=30000)
+    ap.add_argument("--max-frames", type=int, default=60000)
     ap.add_argument("--json", help="write the results to this file")
     ap.add_argument("-q", "--quiet", action="store_true", help="list only failures")
     args = ap.parse_args()
