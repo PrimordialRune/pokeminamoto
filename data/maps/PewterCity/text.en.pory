@@ -1,8 +1,8 @@
 // PewterCity (Nibi City streets) dialogue (English). Logic: scripts.pory. Translations: text.<lang>.pory
 // with the same block names; see docs/engineering/map-text.md.
 // Owner: nibi-town. Tags: [R/G] canon line first, [Nibi v3] Omar's city doc, [new] the studio's join (PLACEHOLDER
-// for the thread named in the comment). OQ1: the war is fictional and later than the real one; no year, 1945,
-// Hiroshima or raid wording reaches the player. Nibi's own dates appear only as local history.
+
+
 
 // NIB-001 town sign. [Nibi v3 s2 slogan: Japanese "a town among steep mountains"]
 // PLACEHOLDER (script list s8 intro): check a Japanese Green dump for the R/G slogan ("A Stone Gray City") before this ships; Omar's line stays unless the dump says otherwise.
