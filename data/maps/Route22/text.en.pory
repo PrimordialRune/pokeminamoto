@@ -1,2 +1,86 @@
 // Route22 dialogue (English). Logic: scripts.pory. Translations: text.<lang>.pory
 // with the same block names; see docs/engineering/map-text.md.
+// Tags: [R/G] pokered line (names swapped for Minamoto's), [new] invented. Satoshi never speaks.
+
+// R22-001 [R/G]
+text Route22_Text_LeagueSign {
+    format("POKéMON LEAGUE\nFront Gate")
+}
+
+// R22-202 [new]
+text Route22_Text_ClawMarks {
+    format("Small claw marks at the base of the stones.")
+}
+
+// R22-301, the Sandshrew (C2). [new] stage lines; the curl is the script list's line.
+text Route22_Text_SandshrewWatches {
+    format("A SANDSHREW is pressed against the wall. It watches you, ready to roll.")
+}
+
+text Route22_Text_SandshrewCurls {
+    format("It curls into a ball.")
+}
+
+// R22-302, the tagged Rattata, second sighting (C1). Same lines as Route 1. [new]
+text Route22_Text_TagRattataWatches {
+    format("This RATTATA doesn't run. It doesn't feed.\pIt just watches you.")
+}
+
+text Route22_Text_TagCaught {
+    format("A worn metal tag was clipped to its ear.\pIt came loose when the Ball closed.")
+}
+
+text Route22_Text_TagKnockedOut {
+    format("The RATTATA is gone. Something small glints in the grass.")
+}
+
+text Route22_Text_TagInGrass {
+    format("A metal tag lies in the grass where the RATTATA stood.")
+}
+
+text Route22_Text_TagGone {
+    format("The RATTATA slips away through the grass.")
+}
+
+text Route22_Text_TagReads {
+    format("Metal tag. “OKD-” and worn digits.\pOn the back, a second stamp, newer, too small to read.")
+}
+
+// R22-501, Shigeru. [R/G] lines from pokered's Route 22 rival; the callback box is [new] (script list).
+text Route22_Text_RivalMeet {
+    format("SHIGERU: Hey! {PLAYER}!\pYou're going to the POKéMON LEAGUE?\pForget it! You probably don't have any BADGES!\pThe guard won't let you through!")
+}
+
+text Route22_Text_RivalCallbackWon {
+    format("SHIGERU: That was luck in the lab.")
+}
+
+text Route22_Text_RivalCallbackLost {
+    format("SHIGERU: Same as in the lab.")
+}
+
+text Route22_Text_RivalIntro {
+    format("By the way, did your POKéMON get any stronger?")
+}
+
+text Route22_Text_RivalDefeated {
+    format("Awww! You just lucked out!")
+}
+
+text Route22_Text_RivalVictory {
+    format("SHIGERU: What? Why do I have 2 POKéMON?\pYou should catch some more too!")
+}
+
+text Route22_Text_RivalAfter {
+    format("I heard the POKéMON LEAGUE has many tough trainers!\pI have to figure out how to get past them!\pYou should quit dawdling and get a move on!")
+}
+
+// PLACEHOLDER Q96: the line over core's free heal after a lost fight. [new]
+text Route22_Text_RivalLostLine {
+    format("SHIGERU: Tch. Your POKéMON look fine to me.\pCome on. Again, if you want.")
+}
+
+// PLACEHOLDER Q100: the retry. [new]
+text Route22_Text_RivalAgain {
+    format("SHIGERU: Again? Fine. Come on!")
+}

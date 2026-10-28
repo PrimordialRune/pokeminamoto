@@ -1,2 +1,136 @@
-// ViridianForest dialogue (English). Logic: scripts.pory. Translations: text.<lang>.pory
+// ViridianForest (Tokiwa Forest) dialogue (English). Logic: scripts.pory. Translations: text.<lang>.pory
 // with the same block names; see docs/engineering/map-text.md.
+// Tags: [R/G] pokered Viridian Forest line with Minamoto names, [new] invented. Satoshi never speaks.
+
+// FOR-001 [R/G adapted]
+text Forest_Text_BoardSouth {
+    format("TOKIWA FOREST\nNIBI CITY is on the far side.")
+}
+
+text Forest_Text_BoardNorth {
+    format("LEAVING TOKIWA FOREST\nNIBI CITY AHEAD")
+}
+
+// FOR-201..205 [R/G], re-voiced as an old hand-painted kids' board where the wording allows.
+text Forest_Text_BoardGrass {
+    format("TRAINER TIPS\pIf you want to avoid battles, stay away from grassy areas!")
+}
+
+text Forest_Text_BoardPoison {
+    format("For poison, use an ANTIDOTE! Get it at the NIBI MARKET!")
+}
+
+text Forest_Text_BoardIndex {
+    format("TRAINER TIPS\pContact PROF. OKIDO via a PC to get your INDEX evaluated!")
+}
+
+text Forest_Text_BoardStealing {
+    format("TRAINER TIPS\pNo stealing POKéMON from other trainers! Catch only wild POKéMON!")
+}
+
+text Forest_Text_BoardWeaken {
+    format("TRAINER TIPS\pWeaken POKéMON before attempting capture! When healthy, they may escape!")
+}
+
+// FOR-101, 102 [R/G]
+text Forest_Text_Youngster1 {
+    format("I came here with some friends! They're out for POKéMON fights!")
+}
+
+text Forest_Text_Youngster2 {
+    format("I ran out of POKé BALLS to catch POKéMON with! You should carry extras!")
+}
+
+// FOR-501 Bug Catcher 1 [R/G]; FOR-104 second talk [new, parked: Evolution Quest hook]
+text Forest_Text_BC1Intro {
+    format("Hey! You have POKéMON! Come on! Let's battle 'em!")
+}
+
+text Forest_Text_BC1Defeat {
+    format("No! CATERPIE can't cut it!")
+}
+
+text Forest_Text_BC1After {
+    format("Ssh! You'll scare the bugs away!")
+}
+
+text Forest_Text_BC1Second {
+    format("My CATERPIE went quiet for days.\pThen it woke up different.")
+}
+
+// FOR-502 Bug Catcher 2 [R/G]; FOR-103 second talk [new, from the R/G rarity of PIKACHU]
+text Forest_Text_BC2Intro {
+    format("Yo! You can't jam out if you're a POKéMON trainer!")
+}
+
+text Forest_Text_BC2Defeat {
+    format("Huh? I ran out of POKéMON!")
+}
+
+text Forest_Text_BC2After {
+    format("Darn! I'm going to catch some stronger ones!")
+}
+
+text Forest_Text_BC2Second {
+    format("There's a yellow one in here. I've only seen it twice.")
+}
+
+// FOR-503 Bug Catcher 3 [R/G]
+text Forest_Text_BC3Intro {
+    format("Hey, wait up! What's the hurry?")
+}
+
+text Forest_Text_BC3Defeat {
+    format("I give! You're good at this!")
+}
+
+text Forest_Text_BC3After {
+    format("Sometimes, you can find stuff on the ground!\pI'm looking for the stuff I dropped!")
+}
+
+// FOR-003, Ken has the tag (C1). [new]
+text Forest_Text_KenTag {
+    format("A boy with a notebook looks up. He holds something out without a word.\pKEN: It was by the fence. The POKéMON wasn't.")
+}
+
+text Forest_Text_KenTagLater {
+    format("KEN: Make room. I'll hold on to it.")
+}
+
+text Forest_Text_TagReads {
+    format("Metal tag. “OKD-” and worn digits.\pOn the back, a second stamp, newer, too small to read.")
+}
+
+// FOR-002, Ken. [new] (bible 1.23, OQ13). Voice: quiet, watches things, asks for permission.
+text Forest_Text_KenSketches {
+    format("KEN is crouched over a notebook. A METAPOD sits very still beside him.\pHe turns the page toward you: a dozen quick sketches of the same shell, each one a little different.\pKEN: It hardens when something comes close. Never the same way twice.")
+}
+
+// Only with FLAG_Q_R22_SKIPPED. [new]
+text Forest_Text_KenShigeru {
+    format("KEN: SHIGERU waited on Route 22 for an hour. He said you were scared.")
+}
+
+text Forest_Text_KenIntro {
+    format("KEN: Is it okay if I try?")
+}
+
+// Ken loses.
+text Forest_Text_KenDefeated {
+    format("KEN: Did you see what it did just then?\p...I'll walk it again tomorrow.")
+}
+
+// Ken wins (possible, never scripted).
+text Forest_Text_KenVictory {
+    format("KEN: Again later? I want to see if it was luck.")
+}
+
+// PLACEHOLDER Q96: the line over core's free heal after a lost fight. [new]
+text Forest_Text_KenSit {
+    format("KEN: Here. Sit a minute.")
+}
+
+// Ken's own talk while the tag is still owed (bag was full); gone otherwise. [new]
+text Forest_Text_KenSketchesAgain {
+    format("KEN: ...Hm?")
+}

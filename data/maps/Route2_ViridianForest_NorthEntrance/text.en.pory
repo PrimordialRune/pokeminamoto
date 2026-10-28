@@ -1,2 +1,11 @@
 // Route2_ViridianForest_NorthEntrance dialogue (English). Logic: scripts.pory. Translations: text.<lang>.pory
 // with the same block names; see docs/engineering/map-text.md.
+
+// R02-103 [R/G] pokered Viridian Forest north gate.
+text Route2NorthGate_Text_Youngster {
+    format("Many POKéMON live only in forests and caves.\pYou need to look everywhere to get different kinds!")
+}
+
+text Route2NorthGate_Text_OldMan {
+    format("Have you noticed the bushes on the roadside?\pThey can be cut down by a special POKéMON move.")
+}

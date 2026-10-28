@@ -720,6 +720,10 @@ Level: 2
 
 /* BEGIN north */
 
+/* PLACEHOLDER (Q100/OQ13): parties are the R/G ones; lab's gate pass owns the levels. Route 22 Shigeru:
+   Pidgey 9 + the starter that beats the player's at 8 (pokered Rival1 Route 22). Ken: the leftover starter 8 +
+   Metapod 7 (script list FOR-002). The Bug Catchers are pokered's Viridian Forest parties. */
+
 === TRAINER_SHIGERU_ROUTE22_1 ===
 Name: SHIGERU
 Class: Rival
@@ -728,8 +732,11 @@ Gender: Male
 Music: Male
 Double Battle: No
 
-Rattata
-Level: 2
+Pidgey
+Level: 9
+
+Charmander
+Level: 8
 
 === TRAINER_SHIGERU_ROUTE22_2 ===
 Name: SHIGERU
@@ -739,8 +746,11 @@ Gender: Male
 Music: Male
 Double Battle: No
 
-Rattata
-Level: 2
+Pidgey
+Level: 9
+
+Squirtle
+Level: 8
 
 === TRAINER_SHIGERU_ROUTE22_3 ===
 Name: SHIGERU
@@ -750,8 +760,11 @@ Gender: Male
 Music: Male
 Double Battle: No
 
-Rattata
-Level: 2
+Pidgey
+Level: 9
+
+Bulbasaur
+Level: 8
 
 === TRAINER_KEN_FOREST_1 ===
 Name: KEN
@@ -761,8 +774,11 @@ Gender: Male
 Music: Male
 Double Battle: No
 
-Rattata
-Level: 2
+Squirtle
+Level: 17
+
+Metapod
+Level: 15
 
 === TRAINER_KEN_FOREST_2 ===
 Name: KEN
@@ -772,8 +788,11 @@ Gender: Male
 Music: Male
 Double Battle: No
 
-Rattata
-Level: 2
+Bulbasaur
+Level: 19
+
+Metapod
+Level: 17
 
 === TRAINER_KEN_FOREST_3 ===
 Name: KEN
@@ -783,41 +802,53 @@ Gender: Male
 Music: Male
 Double Battle: No
 
-Rattata
-Level: 2
+Charmander
+Level: 20
+
+Metapod
+Level: 18
 
 === TRAINER_BUG_CATCHER_FOREST_1 ===
-Name: BUG CATCH
+Name: RICK
 Class: Bug Catcher
 Pic: Bug Catcher
 Gender: Male
 Music: Male
 Double Battle: No
 
-Rattata
-Level: 2
+Weedle
+Level: 17
+
+Caterpie
+Level: 17
 
 === TRAINER_BUG_CATCHER_FOREST_2 ===
-Name: BUG CATCH
+Name: DOUG
 Class: Bug Catcher
 Pic: Bug Catcher
 Gender: Male
 Music: Male
 Double Battle: No
 
-Rattata
-Level: 2
+Weedle
+Level: 17
+
+Kakuna
+Level: 17
+
+Weedle
+Level: 17
 
 === TRAINER_BUG_CATCHER_FOREST_3 ===
-Name: BUG CATCH
+Name: ANTHONY
 Class: Bug Catcher
 Pic: Bug Catcher
 Gender: Male
 Music: Male
 Double Battle: No
 
-Rattata
-Level: 2
+Weedle
+Level: 21
 
 /* END north */
 
