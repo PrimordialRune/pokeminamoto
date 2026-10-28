@@ -10,8 +10,10 @@
 
 #ifdef TEST_BUILD
 
+#include "arena_ecology.h"
 #include "battle.h"
 #include "battle_util.h"
+#include "event_data.h"
 #include "main.h"
 #include "pokemon.h"
 #include "random.h"
@@ -19,6 +21,7 @@
 #include "constants/battle.h"
 #include "constants/moves.h"
 #include "constants/species.h"
+#include "constants/vars.h"
 
 #define MAX_LOG_TURNS 12
 
@@ -57,6 +60,10 @@ static EWRAM_DATA u32 sRngAtFirstTick[3] = {0};   // gRngValue when the battle s
 static EWRAM_DATA u8 sRepeatRun = 0;
 static EWRAM_DATA u32 sRngAtStart = 0;
 EWRAM_DATA bool8 gTestFreezeRngStir = FALSE;
+extern u8 gTestArenaMsgPrinted[ARENA_MSG_COUNT]; // src/arena_ecology.c: how often each first-fire message script ran
+static EWRAM_DATA u8 sArenaTerrain = 0;          // last arena state seen in the battle (the struct is gone when the checks run)
+static EWRAM_DATA u8 sArenaShown = 0;
+static EWRAM_DATA u8 sArenaId = 0;
 
 static void MakeMon(struct Pokemon *mon, u16 species, u8 level, const u16 *moves)
 {
@@ -191,6 +198,8 @@ static void Setup_StruggleTanky(void)
     Setup_Struggle();
     SetMonData(&gEnemyParty[0], MON_DATA_MAX_HP, &hp);
     SetMonData(&gEnemyParty[0], MON_DATA_HP, &hp);
+    SetMonData(&gPlayerParty[0], MON_DATA_MAX_HP, &hp);   // the player outlasts it too: the battle is lost to nobody
+    SetMonData(&gPlayerParty[0], MON_DATA_HP, &hp);
 }
 
 static void Tweak_EmberTp(void)
@@ -341,6 +350,108 @@ static void Check_SpecialSealed(void)
     CHECK_EQ(gBattleOutcome, B_OUTCOME_WON);
 }
 
+// --- scenarios 10 and 11: arena first-fire messages (src/arena_ecology.c) ---------------
+// Each rule says its line once per battle, however often it fires. PLACEHOLDER numbers: only the once-per-battle
+// behaviour and the order of events are asserted, not the balance.
+
+#define MSG_BIT(m) (1 << (m))
+
+static void SetArenaScenario(u8 arena)
+{
+    u32 i;
+
+    VarSet(VAR_BATTLE_ARENA, arena);
+    for (i = 0; i < ARENA_MSG_COUNT; i++)
+        gTestArenaMsgPrinted[i] = 0;
+    sArenaId = sArenaTerrain = sArenaShown = 0;
+}
+
+static void TankyMons(void)
+{
+    u32 hp = 3000;   // outlasts 20 turns; the scenario knocks it to 1 HP at turn 20
+
+    SetMonData(&gEnemyParty[0], MON_DATA_MAX_HP, &hp);
+    SetMonData(&gEnemyParty[0], MON_DATA_HP, &hp);
+    SetMonData(&gPlayerParty[0], MON_DATA_MAX_HP, &hp);   // the player outlasts it too: the battle is lost to nobody
+    SetMonData(&gPlayerParty[0], MON_DATA_HP, &hp);
+}
+
+// Fault Line, 20 turns: Water Gun (mud), Gust (dries it), Gust (dust storm), then Tackles until the floor splits.
+static const u16 sBlastoiseFaultMoves[MAX_MON_MOVES] = {MOVE_WATER_GUN, MOVE_GUST, MOVE_TACKLE, MOVE_NONE};
+
+static void Setup_FaultLine20(void)
+{
+    SetupParties(SPECIES_BLASTOISE, 60, sBlastoiseFaultMoves, SPECIES_ONIX, 50, sTackleOnly);
+    TankyMons();
+    SetArenaScenario(ARENA_FAULT_LINE);
+}
+
+static u8 Pick_FaultLine20(u32 turn, u32 frame)
+{
+    gBattleStruct->tp[B_SIDE_PLAYER][0] = TP_MAX;
+    gBattleStruct->tp[B_SIDE_OPPONENT][0] = TP_MAX;
+    if (turn == 0)
+        return 0;       // Water Gun: the floor turns to mud
+    if (turn <= 2)
+        return 1;       // Gust: dries the mud, then raises dust
+    return 2;           // Tackle
+}
+
+static void Check_FaultLine20(void)
+{
+    u32 i;
+
+    CHECK_EQ(gBattleOutcome, B_OUTCOME_WON);
+    CHECK_TRUE(sLastTurn >= 20);                       // 20 turns of the Fault Line, no crash
+    CHECK_EQ(sArenaId, ARENA_FAULT_LINE);
+    CHECK_EQ(sArenaTerrain, ARENA_TERRAIN_FRACTURED);  // the blows landed and the floor never heals
+    CHECK_EQ(gTestArenaMsgPrinted[ARENA_MSG_GROUND_CRACKS], 1);
+    CHECK_EQ(gTestArenaMsgPrinted[ARENA_MSG_FLOOR_MUD], 1);
+    CHECK_EQ(gTestArenaMsgPrinted[ARENA_MSG_FLOOR_FRACTURED], 1);
+    CHECK_EQ(gTestArenaMsgPrinted[ARENA_MSG_DUST_STORM], 1);
+    CHECK_EQ(gTestArenaMsgPrinted[ARENA_MSG_VENTS_ROAR], 0);     // Lucky Strike lines stay out of the Fault Line
+    CHECK_EQ(gTestArenaMsgPrinted[ARENA_MSG_VENTS_CLOGGED], 0);
+    CHECK_EQ(sArenaShown, MSG_BIT(ARENA_MSG_GROUND_CRACKS) | MSG_BIT(ARENA_MSG_FLOOR_MUD)
+                        | MSG_BIT(ARENA_MSG_FLOOR_FRACTURED) | MSG_BIT(ARENA_MSG_DUST_STORM));
+    for (i = 0; i < ARENA_MSG_COUNT; i++)
+        CHECK_TRUE(gTestArenaMsgPrinted[i] <= 1);
+    VarSet(VAR_BATTLE_ARENA, ARENA_NONE);
+}
+
+// Lucky Strike: the vents roar for the first bird move, String Shot clogs them; each says its line once.
+static const u16 sPidgeotMoves[MAX_MON_MOVES] = {MOVE_TACKLE, MOVE_STRING_SHOT, MOVE_NONE, MOVE_NONE};
+
+static void Setup_LuckyStrikeVents(void)
+{
+    SetupParties(SPECIES_PIDGEOT, 50, sPidgeotMoves, SPECIES_ONIX, 40, sTackleOnly);
+    TankyMons();
+    SetArenaScenario(ARENA_LUCKY_STRIKE);
+}
+
+static u8 Pick_LuckyStrikeVents(u32 turn, u32 frame)
+{
+    gBattleStruct->tp[B_SIDE_PLAYER][0] = TP_MAX;
+    gBattleStruct->tp[B_SIDE_OPPONENT][0] = TP_MAX;
+    return turn == 1 ? 1 : 0;   // String Shot on the second turn
+}
+
+static void Check_LuckyStrikeVents(void)
+{
+    u32 i;
+
+    CHECK_EQ(gBattleOutcome, B_OUTCOME_WON);
+    CHECK_TRUE(sLastTurn >= 5);
+    CHECK_EQ(sArenaId, ARENA_LUCKY_STRIKE);
+    CHECK_EQ(gTestArenaMsgPrinted[ARENA_MSG_VENTS_ROAR], 1);
+    CHECK_EQ(gTestArenaMsgPrinted[ARENA_MSG_VENTS_CLOGGED], 1);
+    CHECK_EQ(gTestArenaMsgPrinted[ARENA_MSG_GROUND_CRACKS], 0);   // no Fault Line line in the vents
+    CHECK_EQ(gTestArenaMsgPrinted[ARENA_MSG_FLOOR_MUD], 0);
+    CHECK_EQ(sArenaTerrain, ARENA_TERRAIN_INTACT);
+    for (i = 0; i < ARENA_MSG_COUNT; i++)
+        CHECK_TRUE(gTestArenaMsgPrinted[i] <= 1);
+    VarSet(VAR_BATTLE_ARENA, ARENA_NONE);
+}
+
 // --- table -------------------------------------------------------------------
 
 // The repeat runs come after the other scenarios on purpose: they must not depend on what ran before.
@@ -354,6 +465,8 @@ static const struct Scenario sScenarios[] =
     {"battle_special_other_type",   Setup_SpecialNoDeed, NULL,    Pick_Slot0,                   Check_SpecialNoDeed, 1},
     {"battle_special_used",         Setup_SpecialUse, NULL,       Pick_SpecialThenSlot0,        Check_SpecialUse, 2},
     {"battle_special_sealed",       Setup_SpecialSealed, NULL,    Pick_SpecialThenSlot0ByFrame, Check_SpecialSealed, 2},
+    {"battle_arena_fault_line_20_turns", Setup_FaultLine20, NULL, Pick_FaultLine20,             Check_FaultLine20, 20},
+    {"battle_arena_lucky_strike_vents",  Setup_LuckyStrikeVents, NULL, Pick_LuckyStrikeVents,   Check_LuckyStrikeVents, 5},
     {"battle_seeded_run_a",         Setup_Repeat,   NULL,         Pick_Slot0,                   Check_Repeat},
     {"battle_seeded_run_b_same_hp", Setup_Repeat,   NULL,         Pick_Slot0,                   Check_Repeat},
     {"battle_seeded_run_c_same_hp", Setup_Repeat,   NULL,         Pick_Slot0,                   Check_Repeat},
@@ -425,6 +538,9 @@ void TestBattle_Tick(void)
         if (gCurrentMove == MOVE_STRUGGLE)
             sStruggleSeen = TRUE;
         sLastTurn = turn;
+        sArenaId = gBattleStruct->arenaId;
+        sArenaTerrain = gBattleStruct->arenaTerrain;
+        sArenaShown = gBattleStruct->arenaMsgShown;
         if (sFrame == 399)
         {
             sSnap.valid = TRUE;

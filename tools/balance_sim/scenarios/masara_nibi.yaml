@@ -152,7 +152,7 @@ steps:
     name: Takeshi
     class: gym
     trainer_class: Leader
-    arena: GRUNGE_ROCK                         # takeshi switches this to FAULT_LINE with his arena model
+    arena: FAULT_LINE                          # Takeshi, Ground: studio ws/takeshi/fault-line.md
     team: ["GEODUDE:12", "ONIX:14"]
 
   - segment: Route 3

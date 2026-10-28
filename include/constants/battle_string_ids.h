@@ -379,7 +379,15 @@
 #define STRINGID_SPECIALAWAKENED            382
 #define STRINGID_SPECIALAWAKENED2           383
 
-#define BATTLESTRINGS_COUNT                 384
+// Arena first-fire messages (src/arena_ecology.c, gArenaMessageStringIds[ARENA_MSG_*], BattleScript_ArenaMessage)
+#define STRINGID_ARENAVENTSROAR             384
+#define STRINGID_ARENAVENTSCLOGGED          385
+#define STRINGID_ARENAGROUNDCRACKS          386
+#define STRINGID_ARENAFLOORMUD              387
+#define STRINGID_ARENAFLOORFRACTURED        388
+#define STRINGID_ARENADUSTSTORM             389
+
+#define BATTLESTRINGS_COUNT                 390
 
 // This is the string id that gBattleStringsTable starts with.
 // String ids before this (e.g. STRINGID_INTROMSG) are not in the table,
