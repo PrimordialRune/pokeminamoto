@@ -1,3 +1,54 @@
-// Aizawa house (nibi-town). New slice interior (studio scaffold, world M1), reusing LAYOUT_HOUSE5.
-// Its door in the town and the exit warp target are wired at world M2.
+// Aizawa house (Tier B; the door exists). Owner: nibi-town. Rows: NIB-105 (Kenji; T3 is NIB-306, line only), NIB-218 (the book
+// and the photo). One crate witness per pass (K2): the crate Ask is offered only while !FLAG_NIBI_CRATE_ASKED, and never in
+// the same talk as the second dig (NIB-306 never shares a line with the crate).
+
+const NIBI_T3 = 10
+
 mapscripts PewterCity_AizawaHouse_MapScripts {}
+
+// States: T3 (the second dig), default (story short, longer on request, Ask crate).
+script PewterCity_AizawaHouse_EventScript_Aizawa {
+    lock
+    faceplayer
+    if (var(VAR_CHARISMA) >= NIBI_T3) {
+        setflag(FLAG_Q_AIZAWA_DIG)
+        msgbox(PewterCity_AizawaHouse_Text_DigT3a)
+        msgbox(PewterCity_AizawaHouse_Text_DigT3b)
+        release
+        end
+    }
+    msgbox(PewterCity_AizawaHouse_Text_Short1)
+    msgbox(PewterCity_AizawaHouse_Text_Short2)
+    msgbox(PewterCity_AizawaHouse_Text_More, MSGBOX_YESNO)
+    if (var(VAR_RESULT) == YES) {
+        msgbox(PewterCity_AizawaHouse_Text_Long1)
+        msgbox(PewterCity_AizawaHouse_Text_Long2)
+        msgbox(PewterCity_AizawaHouse_Text_Museum)
+    }
+    if (!flag(FLAG_NIBI_CRATE_ASKED)) {
+        msgbox(PewterCity_AizawaHouse_Text_AskCrate, MSGBOX_YESNO)
+        if (var(VAR_RESULT) == YES) {
+            setflag(FLAG_NIBI_CRATE_ASKED)
+            msgbox(PewterCity_AizawaHouse_Text_Crate1)
+            msgbox(PewterCity_AizawaHouse_Text_Crate2)
+        }
+    }
+    release
+    end
+}
+
+script PewterCity_AizawaHouse_EventScript_Book {
+    lockall
+    msgbox(PewterCity_AizawaHouse_Text_Book1)
+    msgbox(PewterCity_AizawaHouse_Text_Book2)
+    releaseall
+    end
+}
+
+script PewterCity_AizawaHouse_EventScript_Photo {
+    lockall
+    msgbox(PewterCity_AizawaHouse_Text_Photo1)
+    msgbox(PewterCity_AizawaHouse_Text_Photo2)
+    releaseall
+    end
+}

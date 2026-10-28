@@ -1,2 +1,246 @@
-// Placeholder imported from FireRed (tools/frlg_import). No events yet.
-mapscripts PewterCity_Museum_1F_MapScripts {}
+// Nibi Museum 1F. Owner: nibi-town. Rows: NIB-101 (Fujita), 123 (Ken, DAY), 125 (visitors), 126 (the 50-rouble ticket), 203-209,
+// 302 (Fujita's first line), 304 (Fujita's half), 206/209 clues. The back door (and the whole right-hand hall behind the counter) stays sealed.
+// Charisma tiers for Nibi: T1/T2/T3 = 3/6/10 (PLACEHOLDER, see PewterCity/scripts.pory).
+
+const NIBI_T1 = 3
+const NIBI_T2 = 6
+const NIBI_TICKET_PRICE = 50
+
+mapscripts PewterCity_Museum_1F_MapScripts {
+    MAP_SCRIPT_ON_TRANSITION {
+        // NIB-401: Fujita is outside 08-10 (the same lines, NIB-101), inside the rest of the day.
+        getgamehour
+        if (var(VAR_RESULT) >= 8 && var(VAR_RESULT) < 10) {
+            setflag(FLAG_HIDE_NIBI_FUJITA_IN)
+        } else {
+            clearflag(FLAG_HIDE_NIBI_FUJITA_IN)
+        }
+        // NIB-123 (C9): Ken draws the Aerodactyl DAY (10-18) until FLAG_Q_KEN_LEFT_NIBI (nibi-spine sets it at the first inn rest with B2).
+        getgamehour
+        if (var(VAR_RESULT) >= 10 && var(VAR_RESULT) < 18 && !flag(FLAG_Q_KEN_LEFT_NIBI)) {
+            clearflag(FLAG_HIDE_NIBI_KEN_MUSEUM)
+        } else {
+            setflag(FLAG_HIDE_NIBI_KEN_MUSEUM)
+        }
+    }
+}
+
+// ---------------------------------------------------------------------------------------------------------------
+// NIB-126: the ticket. The hall is behind a 3-cell choke at (12..14,7); each of them is a trigger. FLAG_NIBI_MUSEUM_TICKET
+// is cleared by every entry to the streets, so the fee is per entry and 1F <-> 2F is free. Refusals walk the player one
+// step back to row 8, so no answer can trap him (and the door is two steps away).
+movement PewterCity_Museum_1F_Movement_StepBack {
+    walk_down
+}
+
+script PewterCity_Museum_1F_EventScript_TicketTrigger {
+    if (flag(FLAG_NIBI_MUSEUM_TICKET)) {
+        end
+    }
+    lockall
+    showmoneybox(0, 0)
+    msgbox(PewterCity_Museum_1F_Text_TicketAsk, MSGBOX_YESNO)
+    if (var(VAR_RESULT) == YES) {
+        checkmoney(NIBI_TICKET_PRICE)
+        if (var(VAR_RESULT) == FALSE) {
+            msgbox(PewterCity_Museum_1F_Text_TicketNoMoney)
+            goto(PewterCity_Museum_1F_EventScript_TicketRefused)
+        }
+        playse(SE_SHOP)
+        removemoney(NIBI_TICKET_PRICE)
+        updatemoneybox
+        setflag(FLAG_NIBI_MUSEUM_TICKET)
+        msgbox(PewterCity_Museum_1F_Text_TicketPaid)
+        hidemoneybox
+        releaseall
+        end
+    }
+    msgbox(PewterCity_Museum_1F_Text_TicketNo)
+    goto(PewterCity_Museum_1F_EventScript_TicketRefused)
+}
+
+script PewterCity_Museum_1F_EventScript_TicketRefused {
+    hidemoneybox
+    applymovement(OBJ_EVENT_ID_PLAYER, PewterCity_Museum_1F_Movement_StepBack)
+    waitmovement(OBJ_EVENT_ID_PLAYER)
+    releaseall
+    end
+}
+
+script PewterCity_Museum_1F_EventScript_TicketClerk {
+    msgbox(PewterCity_Museum_1F_Text_ClerkInside, MSGBOX_NPC)
+    end
+}
+
+// ---------------------------------------------------------------------------------------------------------------
+// NIB-101 Fujita (also her outdoor copy, NIB-401). States: the notice answer (VAR_Q_FOSSILS == 1, once), then the
+// default: Aizawa's story short; "more" gives the long version plus the T1/T2 lines; "ask" gives the crate (K2) and the
+// specimen. Satoshi never speaks: the choices are yes/no acts. Her two letters to Silph stay biography, never spoken.
+script PewterCity_Museum_1F_EventScript_Fujita {
+    lock
+    faceplayer
+    if (var(VAR_Q_FOSSILS) == 1) {
+        setvar(VAR_Q_FOSSILS, 2)
+        msgbox(PewterCity_Museum_1F_Text_FujitaFossils1)
+        msgbox(PewterCity_Museum_1F_Text_FujitaFossils2)
+        release
+        end
+    }
+    msgbox(PewterCity_Museum_1F_Text_FujitaShort1)
+    msgbox(PewterCity_Museum_1F_Text_FujitaShort2)
+    msgbox(PewterCity_Museum_1F_Text_FujitaMore, MSGBOX_YESNO)
+    if (var(VAR_RESULT) == YES) {
+        msgbox(PewterCity_Museum_1F_Text_FujitaLong1)
+        msgbox(PewterCity_Museum_1F_Text_FujitaLong2)
+        msgbox(PewterCity_Museum_1F_Text_FujitaLong3)
+        // T1: the hills. T2 and FLAG_Q_C7_KNOWN (C11): the report on the notice is hers (NIB-304, Fujita's half).
+        if (var(VAR_CHARISMA) >= NIBI_T1) {
+            msgbox(PewterCity_Museum_1F_Text_FujitaT1)
+        }
+        if (var(VAR_CHARISMA) >= NIBI_T2 && flag(FLAG_Q_C7_KNOWN)) {
+            msgbox(PewterCity_Museum_1F_Text_FujitaReport1)
+            msgbox(PewterCity_Museum_1F_Text_FujitaReport2)
+        }
+    }
+    msgbox(PewterCity_Museum_1F_Text_FujitaAsk, MSGBOX_YESNO)
+    if (var(VAR_RESULT) == YES) {
+        goto(PewterCity_Museum_1F_EventScript_FujitaAsk)
+    }
+    release
+    end
+}
+
+script PewterCity_Museum_1F_EventScript_FujitaAsk {
+    msgbox(PewterCity_Museum_1F_Text_FujitaAskCrate, MSGBOX_YESNO)
+    if (var(VAR_RESULT) == YES) {
+        setflag(FLAG_NIBI_CRATE_ASKED)
+        msgbox(PewterCity_Museum_1F_Text_FujitaCrate1)
+        msgbox(PewterCity_Museum_1F_Text_FujitaCrate2)
+        release
+        end
+    }
+    msgbox(PewterCity_Museum_1F_Text_FujitaAskSpecimen, MSGBOX_YESNO)
+    if (var(VAR_RESULT) == YES) {
+        if (flag(FLAG_Q_HIDA_DELIVERED)) {
+            // C10: after Hida's delivery the answer is shorter, with no stage direction.
+            msgbox(PewterCity_Museum_1F_Text_FujitaSpecimenShort)
+        } else {
+            msgbox(PewterCity_Museum_1F_Text_FujitaSpecimen1)
+            msgbox(PewterCity_Museum_1F_Text_FujitaSpecimen2)
+        }
+    }
+    release
+    end
+}
+
+// NIB-123 Ken, DAY. 2 states: before B2 (the teeth), after B2.
+script PewterCity_Museum_1F_EventScript_Ken {
+    lock
+    faceplayer
+    if (flag(FLAG_BADGE02_GET)) {
+        msgbox(PewterCity_Museum_1F_Text_KenB2)
+    } else {
+        msgbox(PewterCity_Museum_1F_Text_KenTeeth)
+    }
+    release
+    end
+}
+
+// NIB-125 visitors.
+script PewterCity_Museum_1F_EventScript_Visitor {
+    msgbox(PewterCity_Museum_1F_Text_Visitor, MSGBOX_NPC)
+    end
+}
+
+script PewterCity_Museum_1F_EventScript_OldMan {
+    msgbox(PewterCity_Museum_1F_Text_OldMan, MSGBOX_NPC)
+    end
+}
+
+// ---------------------------------------------------------------------------------------------------------------
+// NIB-203..209: panels and cases.
+script PewterCity_Museum_1F_EventScript_IntroPanel {
+    lockall
+    msgbox(PewterCity_Museum_1F_Text_IntroPanel1)
+    msgbox(PewterCity_Museum_1F_Text_IntroPanel2)
+    msgbox(PewterCity_Museum_1F_Text_IntroPanel3)
+    releaseall
+    end
+}
+
+script PewterCity_Museum_1F_EventScript_EstablishmentPanel {
+    lockall
+    msgbox(PewterCity_Museum_1F_Text_EstablishmentPanel1)
+    msgbox(PewterCity_Museum_1F_Text_EstablishmentPanel2)
+    releaseall
+    end
+}
+
+script PewterCity_Museum_1F_EventScript_AizawaCase {
+    msgbox(PewterCity_Museum_1F_Text_AizawaCase, MSGBOX_SIGN)
+    end
+}
+
+script PewterCity_Museum_1F_EventScript_AizawaBicycle {
+    lockall
+    msgbox(PewterCity_Museum_1F_Text_AizawaBicycleTag)
+    msgbox(PewterCity_Museum_1F_Text_AizawaBicycle)
+    releaseall
+    end
+}
+
+script PewterCity_Museum_1F_EventScript_Aerodactyl {
+    lockall
+    msgbox(PewterCity_Museum_1F_Text_AerodactylLabel)
+    msgbox(PewterCity_Museum_1F_Text_Aerodactyl)
+    releaseall
+    end
+}
+
+script PewterCity_Museum_1F_EventScript_Kabutops {
+    lockall
+    msgbox(PewterCity_Museum_1F_Text_KabutopsLabel)
+    msgbox(PewterCity_Museum_1F_Text_Kabutops)
+    releaseall
+    end
+}
+
+// K2, the shipment (one clue with the crate, NIB-202): the label only, never more.
+script PewterCity_Museum_1F_EventScript_EmptyCase {
+    lockall
+    msgbox(PewterCity_Museum_1F_Text_EmptyCaseLabel)
+    msgbox(PewterCity_Museum_1F_Text_EmptyCase)
+    releaseall
+    end
+}
+
+script PewterCity_Museum_1F_EventScript_EvolutionPanel {
+    lockall
+    msgbox(PewterCity_Museum_1F_Text_EvolutionPanel1)
+    msgbox(PewterCity_Museum_1F_Text_EvolutionPanel2)
+    releaseall
+    end
+}
+
+script PewterCity_Museum_1F_EventScript_Minerals {
+    msgbox(PewterCity_Museum_1F_Text_Minerals, MSGBOX_SIGN)
+    end
+}
+
+script PewterCity_Museum_1F_EventScript_TunnelMap {
+    lockall
+    msgbox(PewterCity_Museum_1F_Text_TunnelMap1)
+    msgbox(PewterCity_Museum_1F_Text_TunnelMap2)
+    releaseall
+    end
+}
+
+// NIB-209: the C-7 notice sets S_NIB_C7 (FLAG_SEEN_NIB_C7; C11). Mori (nibi-spine) reads it.
+script PewterCity_Museum_1F_EventScript_C7Notice {
+    lockall
+    msgbox(PewterCity_Museum_1F_Text_C7Notice1)
+    msgbox(PewterCity_Museum_1F_Text_C7Notice2)
+    setflag(FLAG_SEEN_NIB_C7)
+    releaseall
+    end
+}

@@ -1,2 +1,56 @@
-// Placeholder imported from FireRed (tools/frlg_import). No events yet.
+// Nibi Market (PewterCity_Mart): the first Market in the game. Owner: nibi-town. Rows: NIB-117, 118, 119, 122 (line only:
+// the Pokemon listings read as signs; no Pokemon are sold: needs-system). Stock: Poke Ball, Potion, Antidote at the
+// standard prices. No heals here: nothing on this map restores HP or TP (inns only).
+
 mapscripts PewterCity_Mart_MapScripts {}
+
+mart PewterCity_Mart_Stock {
+    ITEM_POKE_BALL
+    ITEM_POTION
+    ITEM_ANTIDOTE
+}
+
+script PewterCity_Mart_EventScript_Clerk {
+    lock
+    faceplayer
+    msgbox(PewterCity_Mart_Text_Welcome)
+    pokemart(PewterCity_Mart_Stock)
+    msgbox(PewterCity_Mart_Text_Thanks)
+    release
+    end
+}
+
+script PewterCity_Mart_EventScript_FishBuyer {
+    msgbox(PewterCity_Mart_Text_FishBuyer, MSGBOX_NPC)
+    end
+}
+
+script PewterCity_Mart_EventScript_Diligent {
+    msgbox(PewterCity_Mart_Text_Diligent, MSGBOX_NPC)
+    end
+}
+
+script PewterCity_Mart_EventScript_Outsider {
+    msgbox(PewterCity_Mart_Text_Outsider, MSGBOX_NPC)
+    end
+}
+
+script PewterCity_Mart_EventScript_Nidoran {
+    lock
+    faceplayer
+    playmoncry(SPECIES_NIDORAN_M, CRY_MODE_NORMAL)
+    msgbox(PewterCity_Mart_Text_Nidoran)
+    waitmoncry
+    release
+    end
+}
+
+script PewterCity_Mart_EventScript_ListingA {
+    msgbox(PewterCity_Mart_Text_ListingA, MSGBOX_SIGN)
+    end
+}
+
+script PewterCity_Mart_EventScript_ListingB {
+    msgbox(PewterCity_Mart_Text_ListingB, MSGBOX_SIGN)
+    end
+}

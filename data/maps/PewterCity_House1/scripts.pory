@@ -1,2 +1,26 @@
-// Placeholder imported from FireRed (tools/frlg_import). No events yet.
+// Casa B (PewterCity_House1): a young family. Owner: nibi-town. Rows: NIB-108 (mother; T3 is NIB-307, line only), NIB-109
+// (father). NIB-110 (the boy) is the boy at the east exit (PewterCity): one boy cannot be in two places.
+
+const NIBI_T3 = 10
+
 mapscripts PewterCity_House1_MapScripts {}
+
+script PewterCity_House1_EventScript_Father {
+    msgbox(PewterCity_House1_Text_Father, MSGBOX_NPC)
+    end
+}
+
+// NIB-108: researchers pass through. T3 (Charisma 10): NIB-307, the night rumour; one line, no follow-up, no link to the crate.
+script PewterCity_House1_EventScript_Mother {
+    lock
+    faceplayer
+    if (var(VAR_CHARISMA) >= NIBI_T3) {
+        setflag(FLAG_Q_MUSEUM_NIGHT_RUMOUR)
+        msgbox(PewterCity_House1_Text_MotherT3)
+    } else {
+        msgbox(PewterCity_House1_Text_Mother1)
+        msgbox(PewterCity_House1_Text_Mother2)
+    }
+    release
+    end
+}

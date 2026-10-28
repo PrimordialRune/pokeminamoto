@@ -1,2 +1,66 @@
-// PewterCity_CVS dialogue (English). Logic: scripts.pory. Translations: text.<lang>.pory
+// PewterCity_CVS (Nibi CVS) dialogue (English). Logic: scripts.pory. Translations: text.<lang>.pory
 // with the same block names; see docs/engineering/map-text.md.
+// Owner: nibi-town. [Nibi v3 s8, s14, s16] Omar's CVS, [new] the studio's join (PLACEHOLDER OQ14: Omar to write the clerk).
+
+// NIB-402 Takeshi: says nothing. These lines only show if the player talks to them outside the scene.
+text PewterCity_CVS_Text_TakeshiSilent {
+    format("...\pTakeshi pays and says nothing.")
+}
+
+// Younger siblings. [new] PLACEHOLDER: one idea each, never about the mines.
+text PewterCity_CVS_Text_SiblingBoy {
+    format("Nii-chan says we can have one each.")
+}
+
+text PewterCity_CVS_Text_SiblingGirl {
+    format("He always picks the same bento.")
+}
+
+// NIB-404 the municipal night worker: his jacket is more worn with each badge. [Nibi v3 s8]
+text PewterCity_CVS_Text_Worker0 {
+    format("Night shift. Cold bento. It's fine.\pHis jacket looks almost new.")
+}
+
+text PewterCity_CVS_Text_WorkerB1 {
+    format("Night shift. Cold bento. It's fine.\pHis jacket has been through a winter.")
+}
+
+text PewterCity_CVS_Text_WorkerB2 {
+    format("Night shift. Cold bento. It's fine.\pHis jacket is frayed at the cuffs.")
+}
+
+// The clerk (NIB-216, line only). [new] PLACEHOLDER OQ14. [needs-system: re-readable magazines]
+text PewterCity_CVS_Text_Clerk {
+    format("The magazines aren't in yet.\pThe delivery's late.")
+}
+
+// NIB-215 empty shelf. [Nibi v3 s8, s16] "In attesa di rifornimento da Saffron" (Saffron is Yamabuki in the game).
+text PewterCity_CVS_Text_EmptyShelf1 {
+    format("The placeholder's still there, but the product isn't.")
+}
+
+text PewterCity_CVS_Text_EmptyShelf2 {
+    format("“Awaiting restock from Yamabuki.”\pThe Silph logo is printed in the corner.")
+}
+
+// NIB-215 TV (night only). From B2, a vague mention of unauthorised extraction near Otsukimi. [Nibi v3 s8]
+text PewterCity_CVS_Text_TVOff {
+    format("The TV is off.")
+}
+
+text PewterCity_CVS_Text_TVNews {
+    format("The evening news: the karakkaze again tonight. Dry, cold, no snow.")
+}
+
+text PewterCity_CVS_Text_TVNewsB2 {
+    format("The news mentions “unauthorized extraction” near Otsukimi.\pNo details.")
+}
+
+// NIB-216 magazines: line only. [Nibi v3 s8]
+text PewterCity_CVS_Text_Magazines1 {
+    format("TRAINER MAGAZINE (Nibi Edition) ₽300\nFOSSILS & KANTO ₽350")
+}
+
+text PewterCity_CVS_Text_Magazines2 {
+    format("THE ORIGINS ₽400\pA sticker on the rack: “Pay at the counter.”")
+}

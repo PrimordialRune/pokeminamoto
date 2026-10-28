@@ -1,2 +1,174 @@
-// PewterCity dialogue (English). Logic: scripts.pory. Translations: text.<lang>.pory
+// PewterCity (Nibi City streets) dialogue (English). Logic: scripts.pory. Translations: text.<lang>.pory
 // with the same block names; see docs/engineering/map-text.md.
+// Owner: nibi-town. Tags: [R/G] canon line first, [Nibi v3] Omar's city doc, [new] the studio's join (PLACEHOLDER
+// for the thread named in the comment). OQ1: the war is fictional and later than the real one; no year, 1945,
+// Hiroshima or raid wording reaches the player. Nibi's own dates appear only as local history.
+
+// NIB-001 town sign. [Nibi v3 s2 slogan: Japanese "a town among steep mountains"]
+// PLACEHOLDER (script list s8 intro): check a Japanese Green dump for the R/G slogan ("A Stone Gray City") before this ships; Omar's line stays unless the dump says otherwise.
+text PewterCity_Text_TownSign {
+    format("NIBI CITY\nA Town Among Steep Mountains")
+}
+
+// NIB-002 the east-exit boy. [R/G youngster] + [Nibi v3 s12]
+text PewterCity_Text_EscortHey {
+    format("You're a trainer, right? Takeshi's looking for new challengers!")
+}
+
+text PewterCity_Text_EscortFollow {
+    format("Follow me!")
+}
+
+text PewterCity_Text_EscortHere {
+    format("Here it is!\pIf you've got the right stuff, take on Takeshi!")
+}
+
+text PewterCity_Text_TakeshiFirst {
+    format("Takeshi first!")
+}
+
+// NIB-110 (the Casa B boy is the same boy: one boy cannot be in two places, so his line lives here) + NIB-004.
+text PewterCity_Text_BoyStrongest {
+    format("Takeshi's the strongest in all of Kanto.\pI'm sure.")
+}
+
+text PewterCity_Text_BoyOtsukimi {
+    format("When I'm big I'm going to Otsukimi.\pMom says no.")
+}
+
+// NIB-114 the lass. [R/G]
+text PewterCity_Text_Lass {
+    format("There aren't many serious trainers here.\pThey're all like Bug Catchers, but Takeshi is totally into it!")
+}
+
+// NIB-115 the Clefairy rumour. [R/G, Mt. Moon is Otsukimi]
+text PewterCity_Text_ClefairyMan {
+    format("It's rumored that Clefairy came from the moon.\pThey appeared after the Moon Stone fell on Otsukimi.")
+}
+
+// NIB-116 the Repel gardener. [R/G]
+text PewterCity_Text_Gardener {
+    format("Psst! Do you know what I'm doing?\pThat's right! Hard work!\pI'm spraying Repel to keep Pokémon out of my garden!")
+}
+
+// NIB-127 the museum guide. [R/G]
+text PewterCity_Text_GuideAsk {
+    format("Did you check out the museum?")
+}
+
+text PewterCity_Text_GuideYes {
+    format("Weren't those fossils amazing?")
+}
+
+text PewterCity_Text_GuideNo {
+    format("Really? You absolutely have to go!")
+}
+
+// [new join: R/G has no escort; the script list's NIB-127 says he walks you to the door]
+text PewterCity_Text_GuideHere {
+    format("There's the door.\pIt's ₽50 to go in.")
+}
+
+// NIB-220 the karakkaze. [Nibi v3 s4] + [new line] PLACEHOLDER OQ14: Omar to write.
+text PewterCity_Text_JacketMan {
+    format("The karakkaze. Straight down off the mountain.\pHold your jacket shut and keep walking.")
+}
+
+// NIB-201 museum signs. [Nibi v3 s5] + [R/G sign] + [new: rebuilding clause]
+text PewterCity_Text_MuseumFacade {
+    format("Raw concrete from the rebuilding years.\pThe name is carved in stone.")
+}
+
+text PewterCity_Text_MuseumSign {
+    format("NIBI MUSEUM OF SCIENCE\nAdmission: ₽50")
+}
+
+text PewterCity_Text_MuseumSignNotice {
+    format("A laminated note, in pen:\p“Fossils found nearby: hand them to the curator.”\p“Recovered objects may be of scientific interest.”")
+}
+
+// NIB-202 the Silph crate (K2). Never moves before Yamabuki. [Nibi v3 s5]
+text PewterCity_Text_SilphCrate {
+    format("The crate has the Silph Co. logo in the bottom right.\pNo delivery instructions. No pickup date.")
+}
+
+// NIB-211 PMC facade (E: the Silph panel over the silk-mill characters). [Nibi v3 s6]
+text PewterCity_Text_PMCFacade {
+    format("Under the panel there are older bricks.\pTraces of characters you can't fully read.")
+}
+
+// NIB-223 gym sign. [R/G] with the arena sign's name (slice plan 4.3: the sign keeps Nibi v3's name).
+text PewterCity_Text_GymSign {
+    format("NIBI ROCK CHAMPIONSHIP\pLeader: Takeshi, the rock-solid trainer!")
+}
+
+// NIB-222 trainer tips. [R/G]
+text PewterCity_Text_TrainerTips {
+    format("TRAINER TIPS\pAny Pokémon that takes part in a battle, however briefly, earns EXP!")
+}
+
+// The community garden sign. [new] PLACEHOLDER: flavour join for the gardener (NIB-116).
+text PewterCity_Text_GardenSign {
+    format("NIBI COMMUNITY GARDEN\nPlease keep Pokémon out.")
+}
+
+// NIB-219 Hirose river. [Nibi v3 s1, s4] + [new lines]. PLACEHOLDER: art draws the river strip, the monument and the ruin
+// in the west nook (requests.md); the events sit at their coordinates until then.
+text PewterCity_Text_HiroseMonument {
+    format("A poem carved in stone.\pThe river keeps going past it.")
+}
+
+text PewterCity_Text_MillRuin {
+    format("Red brick, half the roof gone.\pNobody's finished restoring it.")
+}
+
+// NIB-215 + NIB-221 the CVS outer board (read from the street).
+text PewterCity_Text_BoardDefault {
+    format("MUNICIPAL NOTICES\pA lost Meowth. A room to let. Snow chains to lend.")
+}
+
+// NIB-221 [R/G] fossil-thief notice, from B2.
+text PewterCity_Text_BoardThieves {
+    format("NOTICE!\pThieves have been stealing Pokémon fossils at Otsukimi!\pPlease call the Nibi police with any information!")
+}
+
+// NIB-106 + NIB-305 the poet. [Nibi v3 s11] + [new lines] PLACEHOLDER OQ14: Omar to write every poet line.
+text PewterCity_Text_PoetDefault {
+    format("I can't find the right words for stone.\pHave you seen anything... particular, around here?\pI couldn't tell you what.")
+}
+
+text PewterCity_Text_PoetStone1 {
+    format("That grey stone in your pocket.\pMay I?")
+}
+
+text PewterCity_Text_PoetStone2 {
+    format("Heavy for its size. Warm where your hand held it.\pHe writes something. Then another thing, crossed out.")
+}
+
+text PewterCity_Text_PoetStone3 {
+    format("Thank you. It's more than a stone to me.")
+}
+
+text PewterCity_Text_PoetOnix1 {
+    format("You faced Takeshi's Onix.\pTell me what it was like. Not the numbers.\pThe weight of it.")
+}
+
+text PewterCity_Text_PoetOnixLines {
+    format("He has written two lines. He turns the notebook toward you.\pFirst: “A wall that learned to breathe.”\pSecond: “A hill that chose to kneel.”")
+}
+
+text PewterCity_Text_PoetPoint {
+    format("Point to the first line?")
+}
+
+text PewterCity_Text_PoetPickedA {
+    format("The first.\pYes. It held still, and so did you.")
+}
+
+text PewterCity_Text_PoetPickedB {
+    format("The second.\pYes. Even a hill can decide.")
+}
+
+text PewterCity_Text_PoetDone {
+    format("I have two lines now.\pThe rest is for after the mountain.")
+}

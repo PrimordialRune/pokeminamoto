@@ -1,2 +1,22 @@
-// PewterCity_House1 dialogue (English). Logic: scripts.pory. Translations: text.<lang>.pory
+// PewterCity_House1 (Casa B) dialogue (English). Logic: scripts.pory. Translations: text.<lang>.pory
 // with the same block names; see docs/engineering/map-text.md.
+// Owner: nibi-town. [R/G] canon first, [Nibi v3 s12] Casa B, [new] the studio's join.
+
+// NIB-109 the father: takes no position; his one line is the R/G house's.
+text PewterCity_House1_Text_Father {
+    format("Pokémon learn new moves as they grow.\pBut some moves must be taught by people.")
+}
+
+// NIB-108 the mother. [Nibi v3 s12]
+text PewterCity_House1_Text_Mother1 {
+    format("Researchers pass through more than usual lately.")
+}
+
+text PewterCity_House1_Text_Mother2 {
+    format("Not all of them seem to do what they say.")
+}
+
+// NIB-307 (T3, Charisma 10). [Nibi v3 s12, s14]. One line, no follow-up in Part I.
+text PewterCity_House1_Text_MotherT3 {
+    format("I saw some people go into the museum at night.\pI hadn't told anyone until now.")
+}

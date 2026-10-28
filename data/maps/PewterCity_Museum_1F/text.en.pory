@@ -1,2 +1,218 @@
-// PewterCity_Museum_1F dialogue (English). Logic: scripts.pory. Translations: text.<lang>.pory
+// PewterCity_Museum_1F (Nibi Museum, ground floor) dialogue (English). Logic: scripts.pory. Translations: text.<lang>.pory
 // with the same block names; see docs/engineering/map-text.md.
+// Owner: nibi-town. [R/G] canon first, [Nibi v3] Omar's city doc, [new] the studio's join (PLACEHOLDER; thread noted).
+// OQ1 (war timeline): no year, 1945, Hiroshima or raid wording. The Aizawa dates (1946, 1951) are local history only.
+
+// NIB-126 the ticket clerk. [R/G] "It's 50 for a child's ticket" + [Nibi v3 s5 price] + [script list: "Come back when you can."]
+text PewterCity_Museum_1F_Text_TicketAsk {
+    format("It's ₽50 for a ticket.\pWould you like to come in?")
+}
+
+text PewterCity_Museum_1F_Text_TicketPaid {
+    format("Right, ₽50. Thank you!\pEnjoy the exhibits.")
+}
+
+text PewterCity_Museum_1F_Text_TicketNo {
+    format("Come again!")
+}
+
+text PewterCity_Museum_1F_Text_TicketNoMoney {
+    format("Come back when you can.")
+}
+
+text PewterCity_Museum_1F_Text_ClerkInside {
+    format("Please enjoy the exhibits.")
+}
+
+// NIB-101 Fujita Noriko. [Nibi v3 s5] Precise, not expansive. Her two letters to Silph stay biography.
+text PewterCity_Museum_1F_Text_FujitaShort1 {
+    format("I'm Fujita, the curator.\pEverything here is here because someone insisted on looking.")
+}
+
+text PewterCity_Museum_1F_Text_FujitaShort2 {
+    format("A man named Aizawa found a flint on his delivery route.\pHe found the first fragment, in 1946.")
+}
+
+text PewterCity_Museum_1F_Text_FujitaMore {
+    format("Would you like the longer version?")
+}
+
+text PewterCity_Museum_1F_Text_FujitaLong1 {
+    format("The professors in the capital would not hear it.\pAizawa went back every morning, and knocked on every door.")
+}
+
+text PewterCity_Museum_1F_Text_FujitaLong2 {
+    format("In 1951 he printed his notes himself.\pStill, it took a young researcher to listen.")
+}
+
+text PewterCity_Museum_1F_Text_FujitaLong3 {
+    format("The dig showed that people lived here long before the books said.\pThe museum was built around that.")
+}
+
+// T1 (Charisma 3). [Nibi v3 s5: "access to the tunnels has become complicated in recent months"]
+text PewterCity_Museum_1F_Text_FujitaT1 {
+    format("Many of our pieces come from the Otsukimi hills.\pGetting into the tunnels has become complicated these last months.")
+}
+
+// T2 (Charisma 6) with FLAG_Q_C7_KNOWN (C11, NIB-304 Fujita's half). Plan 4.2 OQ1: she says "two months ago".
+text PewterCity_Museum_1F_Text_FujitaReport1 {
+    format("The report on the notice by the minerals is mine.\pI filed it two months ago.")
+}
+
+text PewterCity_Museum_1F_Text_FujitaReport2 {
+    format("The ground in sector C-7 moves when nothing should move it.")
+}
+
+text PewterCity_Museum_1F_Text_FujitaAsk {
+    format("Is there something you'd like to ask me?")
+}
+
+text PewterCity_Museum_1F_Text_FujitaAskCrate {
+    format("The crate by the side wall?")
+}
+
+text PewterCity_Museum_1F_Text_FujitaAskSpecimen {
+    format("The empty case, then?")
+}
+
+// Ask only, crate (K2). Controlled neutrality. [Nibi v3 s5: arrived four months ago; "research material"]
+text PewterCity_Museum_1F_Text_FujitaCrate1 {
+    format("It arrived four months ago.\pThe note with it says “research material”.")
+}
+
+text PewterCity_Museum_1F_Text_FujitaCrate2 {
+    format("That is all I know.")
+}
+
+// Ask only, specimen. [Nibi v3 s5] "ci hanno detto che arriverà entro l'anno. Non specificano cosa sia."
+text PewterCity_Museum_1F_Text_FujitaSpecimen1 {
+    format("They told us it will arrive within the year.")
+}
+
+text PewterCity_Museum_1F_Text_FujitaSpecimen2 {
+    format("They don't say what it is.")
+}
+
+// After Hida's delivery (C10): shorter, no stage direction.
+text PewterCity_Museum_1F_Text_FujitaSpecimenShort {
+    format("Within the year. That is all.")
+}
+
+// NIB-302 first line (VAR_Q_FOSSILS 1 -> 2). [new] PLACEHOLDER: Fujita's wording; owner thread "Define Minamoto narrative direction".
+text PewterCity_Museum_1F_Text_FujitaFossils1 {
+    format("You read the notice at the door.\pFossils found nearby belong in a case, not a drawer.")
+}
+
+text PewterCity_Museum_1F_Text_FujitaFossils2 {
+    format("Bring me whatever you find. In whatever condition.")
+}
+
+// NIB-123 Ken in Nibi (DAY). [new; bible 1.23] he asks questions.
+text PewterCity_Museum_1F_Text_KenTeeth {
+    format("Did you see its teeth?\pWhy would something need that many?")
+}
+
+text PewterCity_Museum_1F_Text_KenB2 {
+    format("You beat him?\p...I'll try again tomorrow.")
+}
+
+// NIB-125 museum visitors. [R/G]
+text PewterCity_Museum_1F_Text_Visitor {
+    format("We are proud of two fossils of very rare, prehistoric Pokémon!")
+}
+
+text PewterCity_Museum_1F_Text_OldMan {
+    format("That is one magnificent fossil!")
+}
+
+// NIB-203 intro panel. [Nibi v3 s5] + [new period fix]: the script list's "until after the war" would tie Nibi's dates to
+// the war (OQ1), so the panel names the Nibi-2 dig instead. PLACEHOLDER OQ1, owner thread "Define Minamoto narrative direction".
+text PewterCity_Museum_1F_Text_IntroPanel1 {
+    format("Until the Nibi-2 dig, fossil Pokémon were thought never to have existed.")
+}
+
+text PewterCity_Museum_1F_Text_IntroPanel2 {
+    format("The creatures of local legend were filed under myth, not under species.")
+}
+
+text PewterCity_Museum_1F_Text_IntroPanel3 {
+    format("The red soil at Nibi-2 held proof of something very old.\pThat changed what we knew.")
+}
+
+// NIB-205.
+text PewterCity_Museum_1F_Text_EstablishmentPanel1 {
+    format("The professors in the capital said there was nothing to find.\pThe dominant theory had no room for this.")
+}
+
+text PewterCity_Museum_1F_Text_EstablishmentPanel2 {
+    format("Aizawa went back anyway.")
+}
+
+// NIB-204 Aizawa case and bicycle. [Nibi v3 s5]
+text PewterCity_Museum_1F_Text_AizawaCase {
+    format("A flint fragment (copy) with Aizawa's handwritten tag.\pBeside it, a field notebook (copy), open to rough sketches.")
+}
+
+text PewterCity_Museum_1F_Text_AizawaBicycleTag {
+    format("“Bicycle of Aizawa Genzaburô, used on his daily rounds.\pAlong the road he took every morning he found the first fragment, in 1946.”")
+}
+
+text PewterCity_Museum_1F_Text_AizawaBicycle {
+    format("An ordinary work bicycle.\pSomeone kept it as if it were a document.")
+}
+
+// NIB-206 main fossils. [R/G labels] then [Nibi v3 s5]. K2: the empty case is the museum's half of the shipment clue.
+text PewterCity_Museum_1F_Text_AerodactylLabel {
+    format("AERODACTYL Fossil\nA primitive and rare Pokémon.")
+}
+
+text PewterCity_Museum_1F_Text_Aerodactyl {
+    format("This animal lived and died before humans existed.\pLooking at it is looking at a different kind of silence.")
+}
+
+text PewterCity_Museum_1F_Text_KabutopsLabel {
+    format("KABUTOPS Fossil\nA primitive and rare Pokémon.")
+}
+
+text PewterCity_Museum_1F_Text_Kabutops {
+    format("The forelimbs end in blades. A predator's specialization.\pThe label leaves out the obvious question: what did it hunt?")
+}
+
+text PewterCity_Museum_1F_Text_EmptyCaseLabel {
+    format("SPECIMEN IN PREPARATION\narriving from Silph HQ, Yamabuki City")
+}
+
+text PewterCity_Museum_1F_Text_EmptyCase {
+    format("The tag is recent.\pThere's no arrival date.")
+}
+
+// NIB-207 evolution panel. Abstract: no image, shape or silhouette (bible 1.35). [Nibi v3 s5]
+text PewterCity_Museum_1F_Text_EvolutionPanel1 {
+    format("The oldest evolutionary lines, drawn as arrows.\pThe panel asks what came before the species we know.")
+}
+
+text PewterCity_Museum_1F_Text_EvolutionPanel2 {
+    format("It gives no answer.")
+}
+
+// NIB-208 mines and geology. [Nibi v3 s5]
+text PewterCity_Museum_1F_Text_Minerals {
+    format("Mineral samples from the Otsukimi hills, each with its name and place of origin.")
+}
+
+text PewterCity_Museum_1F_Text_TunnelMap1 {
+    format("A map of the Otsukimi tunnels, with the explored sections marked.")
+}
+
+text PewterCity_Museum_1F_Text_TunnelMap2 {
+    format("Most of it is drawn in outline only.")
+}
+
+// NIB-209 the C-7 notice (S_NIB_C7). [Nibi v3 s5]. PLACEHOLDER OQ1: the year is left out of "(see Fujita Report, October)".
+text PewterCity_Museum_1F_Text_C7Notice1 {
+    format("NOTICE: Anomalous geological activity in sector C-7.\p(See Fujita Report, October.)\pAccess suspended pending assessment.")
+}
+
+text PewterCity_Museum_1F_Text_C7Notice2 {
+    format("The cited report isn't on display.")
+}
