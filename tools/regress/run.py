@@ -356,6 +356,13 @@ def main():
             raise Fail("never reached the overworld")
     for _ in range(4):
         emu.press("B", hold=4, after=8)
+    # HW-003: a new game opens the wall clock screen in the bedroom: A confirms the time, UP moves the
+    # prompt to YES, A confirms again.
+    for _ in range(40):
+        if emu.field_ready():
+            break
+        emu.press("A", hold=4, after=30)
+        emu.press("UP", hold=4, after=10)
     wait_field(emu)
     report["checks"]["introPresses"] = presses
 
