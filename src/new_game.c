@@ -146,7 +146,9 @@ void NewGameInitData(void)
     InitEventData();
     // Masara's old NewGameSetup (Littleroot flags and a Littleroot respawn) only runs while this
     // is 0. A new game no longer passes through it; masara deletes the script.
-    VarSet(VAR_LITTLEROOT_INTRO_STATE, 7);
+    // 4 = the wall clock is not set yet: the bedroom opens the clock screen on its first frame (HW-003)
+    // and moves this to 7.
+    VarSet(VAR_LITTLEROOT_INTRO_STATE, 4);
     ClearSecretBases();
     ClearBerryTrees();
     SetMoney(&gSaveBlock1Ptr->money, 3000);

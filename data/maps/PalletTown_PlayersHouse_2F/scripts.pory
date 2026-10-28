@@ -3,6 +3,11 @@
 // tutorial). Fiora's hide flag is set here while the game is new and cleared at the starter pick (lab).
 
 mapscripts PalletTown_PlayersHouse_2F_MapScripts {
+    // HW-003: the RTC is reset at new game and nothing else sets the clock, so the first frame in the
+    // bedroom opens the wall clock screen (VAR_LITTLEROOT_INTRO_STATE 4 = clock not set; new_game.c).
+    MAP_SCRIPT_ON_FRAME_TABLE [
+        VAR_LITTLEROOT_INTRO_STATE, 4: PalletTown_PlayersHouse_2F_EventScript_SetClock
+    ]
     MAP_SCRIPT_ON_TRANSITION {
         // MAS-108: Fiora is in the square from the starter pick (FLAG_SYS_POKEMON_GET) until her talk or the
         // first Tokiwa entry. Hidden until then: set at new game, cleared in the lab.
@@ -20,4 +25,13 @@ script PalletTown_PlayersHouse_2F_EventScript_MAS204_Console {
 // [R/G] the bedroom PC: storage, with the Potion in the item storage (player_pc.c).
 script PalletTown_PlayersHouse_2F_EventScript_MAS205_PC {
     goto(EventScript_PC)
+}
+
+script PalletTown_PlayersHouse_2F_EventScript_SetClock {
+    lockall
+    call(PlayersHouse_2F_EventScript_SetWallClock)
+    delay(30)
+    setflag(FLAG_SET_WALL_CLOCK)
+    setvar(VAR_LITTLEROOT_INTRO_STATE, 7)
+    releaseall
 }
