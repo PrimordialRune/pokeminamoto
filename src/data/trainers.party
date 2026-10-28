@@ -559,6 +559,8 @@ IVs: 0 HP / 0 Atk / 0 Def / 0 SpA / 0 SpD / 0 Spe
 
 /* BEGIN masara */
 
+/* MAS-004 PLACEHOLDER (owner: rival/battle thread): Lv 5, one starter, the counter pick to the player's.
+   LAB_1 = player Bulbasaur, LAB_2 = player Charmander, LAB_3 = player Squirtle (by VAR_STARTER_MON). */
 === TRAINER_SHIGERU_LAB_1 ===
 Name: SHIGERU
 Class: Rival
@@ -566,9 +568,11 @@ Pic: Red
 Gender: Male
 Music: Male
 Double Battle: No
+AI: Check Bad Move / Try To Faint / Check Viability
 
-Rattata
-Level: 2
+Charmander
+Level: 5
+IVs: 0 HP / 0 Atk / 0 Def / 0 SpA / 0 SpD / 0 Spe
 
 === TRAINER_SHIGERU_LAB_2 ===
 Name: SHIGERU
@@ -577,9 +581,11 @@ Pic: Red
 Gender: Male
 Music: Male
 Double Battle: No
+AI: Check Bad Move / Try To Faint / Check Viability
 
-Rattata
-Level: 2
+Squirtle
+Level: 5
+IVs: 0 HP / 0 Atk / 0 Def / 0 SpA / 0 SpD / 0 Spe
 
 === TRAINER_SHIGERU_LAB_3 ===
 Name: SHIGERU
@@ -588,9 +594,11 @@ Pic: Red
 Gender: Male
 Music: Male
 Double Battle: No
+AI: Check Bad Move / Try To Faint / Check Viability
 
-Rattata
-Level: 2
+Bulbasaur
+Level: 5
+IVs: 0 HP / 0 Atk / 0 Def / 0 SpA / 0 SpD / 0 Spe
 
 /* END masara */
 

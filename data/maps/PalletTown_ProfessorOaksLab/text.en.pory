@@ -1,2 +1,326 @@
 // PalletTown_ProfessorOaksLab dialogue (English). Logic: scripts.pory. Translations: text.<lang>.pory
 // with the same block names; see docs/engineering/map-text.md.
+
+// Tags: [R/G] real Red/Green line (pret/pokered, text/OaksLab.asm); [PR #21] kept from the opening events PR;
+// [new] a join written by the studio; PLACEHOLDER = an invention for the owning thread.
+// Satoshi (the player) never speaks. Rival is SHIGERU; Oak is OKIDO.
+
+// ---- MAS-003 Three balls ------------------------------------------------------------------------------
+text PalletTown_ProfessorOaksLab_Text_MAS003_ShigeruWaiting {
+    format("SHIGERU: Gramps! I'm fed up with waiting!")
+}
+
+text PalletTown_ProfessorOaksLab_Text_MAS003_OkidoRemembers {
+    format("OKIDO: SHIGERU?\pLet me think...\pOh, that's right, I told you to come! Just wait!")
+}
+
+text PalletTown_ProfessorOaksLab_Text_MAS003_ThreeHere {
+    format("Here, {PLAYER}! There are three POKéMON here!\pHaha! They are inside the POKé BALLS.")
+}
+
+text PalletTown_ProfessorOaksLab_Text_MAS003_OnlyThreeLeft {
+    format("When I was young, I was a serious POKéMON trainer.\pIn my old age, I have only these three left, but you can have one!")
+}
+
+text PalletTown_ProfessorOaksLab_Text_MAS003_ShigeruWhatAboutMe {
+    format("SHIGERU: Hey! Gramps! What about me?")
+}
+
+text PalletTown_ProfessorOaksLab_Text_MAS003_OkidoBePatient {
+    format("OKIDO: Be patient! SHIGERU, you can have one too!")
+}
+
+text PalletTown_ProfessorOaksLab_Text_MAS003_ShigeruGoAhead {
+    format("SHIGERU: Heh, I don't need to be greedy like you!\pGo ahead and choose, {PLAYER}!")
+}
+
+text PalletTown_ProfessorOaksLab_Text_MAS003_DontGoAway {
+    format("OKIDO: Hey! Don't go away yet!")
+}
+
+// ---- MAS-012 The three ball examines ------------------------------------------------------------------
+text PalletTown_ProfessorOaksLab_Text_WantBulbasaur {
+    format("So! You want the plant POKéMON, BULBASAUR?")
+}
+
+text PalletTown_ProfessorOaksLab_Text_WantCharmander {
+    format("So! You want the fire POKéMON, CHARMANDER?")
+}
+
+text PalletTown_ProfessorOaksLab_Text_WantSquirtle {
+    format("So! You want the water POKéMON, SQUIRTLE?")
+}
+
+// MAS-220
+text PalletTown_ProfessorOaksLab_Text_MAS220_LastBall {
+    format("That's PROF. OKIDO's last POKéMON!")
+}
+
+text PalletTown_ProfessorOaksLab_Text_MonEnergetic {
+    format("This POKéMON is really energetic!")
+}
+
+text PalletTown_ProfessorOaksLab_Text_ReceivedBulbasaur {
+    format("{PLAYER} received a BULBASAUR!")
+}
+
+text PalletTown_ProfessorOaksLab_Text_ReceivedCharmander {
+    format("{PLAYER} received a CHARMANDER!")
+}
+
+text PalletTown_ProfessorOaksLab_Text_ReceivedSquirtle {
+    format("{PLAYER} received a SQUIRTLE!")
+}
+
+// [R/G: <RIVAL>: I'll take this one, then!]
+text PalletTown_ProfessorOaksLab_Text_ShigeruIllTakeThis {
+    format("SHIGERU: I'll take this one, then!")
+}
+
+text PalletTown_ProfessorOaksLab_Text_ShigeruReceivedCharmander {
+    format("SHIGERU received a CHARMANDER!")
+}
+
+text PalletTown_ProfessorOaksLab_Text_ShigeruReceivedSquirtle {
+    format("SHIGERU received a SQUIRTLE!")
+}
+
+text PalletTown_ProfessorOaksLab_Text_ShigeruReceivedBulbasaur {
+    format("SHIGERU received a BULBASAUR!")
+}
+
+// ---- MAS-004 The lab battle ---------------------------------------------------------------------------
+text PalletTown_ProfessorOaksLab_Text_MAS004_Intro {
+    format("SHIGERU: Wait, {PLAYER}! Let's check out our POKéMON!\pCome on, I'll take you on!")
+}
+
+text PalletTown_ProfessorOaksLab_Text_MAS004_WonByPlayer {
+    format("WHAT?\nUnbelievable!\pI picked the wrong POKéMON!")
+}
+
+text PalletTown_ProfessorOaksLab_Text_MAS004_WonByShigeru {
+    format("Yeah! Am I great or what?")
+}
+
+// A loss continues the story (no whiteout, as in R/G).
+text PalletTown_ProfessorOaksLab_Text_MAS004_SitAMinute {
+    format("OKIDO: Sit a minute, {PLAYER}. A loss now teaches more than a win later.")
+}
+
+text PalletTown_ProfessorOaksLab_Text_MAS004_SmellYouLater {
+    format("SHIGERU: Okay! I'll make my POKéMON fight to toughen it up!\p{PLAYER}! Gramps! Smell you later!")
+}
+
+// [new: Ken's act, no line. Written as one narration box.]
+text PalletTown_ProfessorOaksLab_Text_MAS004_KenLastBall {
+    format("KEN looks at the last ball a long time before he picks it up.")
+}
+
+// MAS-005
+text PalletTown_ProfessorOaksLab_Text_MAS005_WayNorth {
+    format("TOKIWA is just north of here.\pThere's nothing on ROUTE 1 you can't handle now.")
+}
+
+// ---- MAS-006 The custom ball / MAS-007 The Index --------------------------------------------------------
+text PalletTown_ProfessorOaksLab_Text_MAS006_HowIsMyOldMon {
+    format("OKIDO: Oh, {PLAYER}!\pHow is my old POKéMON?\pWell, it seems to like you a lot. You must be talented as a POKéMON trainer!\pWhat? You have something for me?")
+}
+
+text PalletTown_ProfessorOaksLab_Text_MAS006_CustomBall {
+    format("Ah! This is the custom POKé BALL I ordered! Thank you!")
+}
+
+text PalletTown_ProfessorOaksLab_Text_MAS006_ShigeruWhatDidYouCall {
+    format("SHIGERU: Gramps! What did you call me for?")
+}
+
+text PalletTown_ProfessorOaksLab_Text_MAS007_Request {
+    format("OKIDO: Ah, SHIGERU! And KEN. Good, you are all here.\pTo make a complete guide on all the POKéMON in the world... That was my dream!\pBut I'm too old! I can't do it!\pSo, I want you to fulfill my dream for me!")
+}
+
+text PalletTown_ProfessorOaksLab_Text_MAS007_OnTheDesk {
+    format("Get moving, you three!\pThis is a great undertaking in POKéMON history!")
+}
+
+text PalletTown_ProfessorOaksLab_Text_MAS007_TakeThese {
+    format("There are INDEXes on the desk. Take one each!")
+}
+
+text PalletTown_ProfessorOaksLab_Text_MAS007_GotIndex {
+    format("{PLAYER} got the POKéMON INDEX!")
+}
+
+// [new: Ken's line, PLACEHOLDER OQ14: Omar to write]
+text PalletTown_ProfessorOaksLab_Text_MAS007_KenDraw {
+    format("KEN: ...Can I draw them instead?")
+}
+
+text PalletTown_ProfessorOaksLab_Text_MAS007_OkidoLaughs {
+    format("OKIDO: Ha ha ha! Draw them, then. But take the INDEX anyway.")
+}
+
+text PalletTown_ProfessorOaksLab_Text_MAS007_Dream {
+    format("OKIDO: Forty years I've been filling the POKéMON INDEX. Habitats, weights, how they evolve. It is my dream. Now it is yours.")
+}
+
+text PalletTown_ProfessorOaksLab_Text_MAS007_GetMoving {
+    format("OKIDO: Off you go, all of you!")
+}
+
+// [R/G: I'll borrow a TOWN MAP from my sis! I'll tell her not to lend you one, <PLAYER>! Hahaha!]
+text PalletTown_ProfessorOaksLab_Text_MAS007_ShigeruLeaveItToMe {
+    format("SHIGERU: Okay, Gramps! Leave it all to me!\p{PLAYER}, I hate to say it, but I don't need you!\pI know! I'll borrow a TOWN MAP from my sis! I'll tell her not to lend you one, {PLAYER}! Hahaha!")
+}
+
+// [new; OQ 5] PMC form
+text PalletTown_ProfessorOaksLab_Text_MAS007_Form {
+    format("OKIDO: One more thing. The PMC in TOKIWA will want this form.\pYour mother signs for you.")
+}
+
+// ---- MAS-009 The tagged POKéMON (opening A, step 1) -----------------------------------------------------
+text PalletTown_ProfessorOaksLab_Text_MAS009_InMyDay {
+    format("OKIDO: In my day we tagged them and walked away.")
+}
+
+text PalletTown_ProfessorOaksLab_Text_MAS009_WatchTag {
+    format("If you see a tag on ROUTE 1, watch what it does.")
+}
+
+// ---- MAS-008 Five balls ---------------------------------------------------------------------------------
+text PalletTown_ProfessorOaksLab_Text_MAS008_Catch {
+    format("OKIDO: You can't get detailed data on POKéMON by just seeing them.\pYou must catch them! Use these to capture wild POKéMON.")
+}
+
+// ---- Okido talk -----------------------------------------------------------------------------------------
+text PalletTown_ProfessorOaksLab_Text_Okido_WhichMon {
+    format("OKIDO: Now, {PLAYER}, which POKéMON do you want?")
+}
+
+// MAS-116 [R/G]
+text PalletTown_ProfessorOaksLab_Text_MAS116_Fight {
+    format("OKIDO: If a wild POKéMON appears, your POKéMON can fight against it!")
+}
+
+// MAS-117 [ev1 5.3] once. PLACEHOLDER (Special system): owner = special-system thread
+text PalletTown_ProfessorOaksLab_Text_MAS117_Sealed {
+    format("OKIDO: Every POKéMON has something sealed in it.\pIn my day I never managed to write it down.")
+}
+
+// MAS-105 [R/G] and per badge [new]
+text PalletTown_ProfessorOaksLab_Text_MAS105_RaiseYoung {
+    format("OKIDO: {PLAYER}, raise your young POKéMON by making it fight!")
+}
+
+text PalletTown_ProfessorOaksLab_Text_MAS105_B1 {
+    format("OKIDO: One badge already? In my day that took a whole summer.")
+}
+
+text PalletTown_ProfessorOaksLab_Text_MAS105_B2 {
+    format("OKIDO: Two badges. In my day two badges got you a handshake from the whole town.")
+}
+
+// MAS-104 [R/G: How is your POKEDEX coming? ...]
+text PalletTown_ProfessorOaksLab_Text_MAS104_HowIsIt {
+    format("OKIDO: How is your POKéMON INDEX coming? Let me see.")
+}
+
+text PalletTown_ProfessorOaksLab_Text_MAS104_ComeSee {
+    format("OKIDO: Come see me when you have more!")
+}
+
+// [PR #21, minus "Up early": absorbed ODDISH complaint is FIORA's]
+text PalletTown_ProfessorOaksLab_Text_OkidoSealed {
+    format("OKIDO: Forty years filling the INDEX, and every POKéMON still has something in it I can't measure. Something sealed.\pI never managed to document it. Perhaps you will.")
+}
+
+text PalletTown_ProfessorOaksLab_Text_OkidoSealedAgain {
+    format("OKIDO: Something sealed... One day I'll find a way to put it in the INDEX.")
+}
+
+text PalletTown_ProfessorOaksLab_Text_OkidoChangesSubject {
+    format("The photo in KIMURA's window? ...Hm.\pHave you seen the sky today? Lovely weather. Off you go.")
+}
+
+// ---- MAS-305 ----------------------------------------------------------------------------------------------
+text PalletTown_ProfessorOaksLab_Text_MAS305_Caught {
+    format("OKIDO: You kept it with you? Good.")
+}
+
+text PalletTown_ProfessorOaksLab_Text_MAS305_Ko {
+    format("OKIDO: You took it off it yourself. Hm.")
+}
+
+text PalletTown_ProfessorOaksLab_Text_MAS305_Ken {
+    format("OKIDO: KEN brought it? Hm.")
+}
+
+text PalletTown_ProfessorOaksLab_Text_MAS305_Keep {
+    format("Keep it. I'll look into my notes.")
+}
+
+text PalletTown_ProfessorOaksLab_Text_MAS305_StillNothing {
+    format("OKIDO: Still nothing in my notes. Old handwriting.")
+}
+
+// ---- Shigeru / Ken / aides ---------------------------------------------------------------------------------
+text PalletTown_ProfessorOaksLab_Text_Shigeru_Stronger {
+    format("SHIGERU: My POKéMON looks a lot stronger.")
+}
+
+// [new; PLACEHOLDER OQ14: Omar to write]
+text PalletTown_ProfessorOaksLab_Text_Ken_Question {
+    format("KEN: ...Which one are you going to pick?")
+}
+
+text PalletTown_ProfessorOaksLab_Text_MAS106_Aide {
+    format("I study POKéMON as PROF. OKIDO's AIDE.")
+}
+
+// [new] TP line. PLACEHOLDER: owner = battle-UI/TP thread (TP refills at inns only)
+text PalletTown_ProfessorOaksLab_Text_MAS106_Tp {
+    format("Moves cost TP, and TP doesn't come back by itself.\pOnly a proper rest brings it back. The inns will do.")
+}
+
+text PalletTown_ProfessorOaksLab_Text_MAS107_Aide {
+    format("PROF. OKIDO is the authority on POKéMON!\pMany trainers hold him in high regard!")
+}
+
+// ---- Examines -----------------------------------------------------------------------------------------------
+text PalletTown_ProfessorOaksLab_Text_IndexOnDesk {
+    format("A POKéMON INDEX, still in its box.")
+}
+
+text PalletTown_ProfessorOaksLab_Text_MAS210_Start {
+    format("Press START to open the MENU!")
+}
+
+text PalletTown_ProfessorOaksLab_Text_MAS210_Save {
+    format("The SAVE option is on the MENU screen.")
+}
+
+// MAS-211 [R/G mail, minus the Indigo Plateau name]. PLACEHOLDER: League name owner = world thread
+text PalletTown_ProfessorOaksLab_Text_MAS211_Mail {
+    format("There's an e-mail message here!\pCalling all trainers! The elite trainers of the LEAGUE are ready to take on all comers!\pP.S. PROF. OKIDO, please visit us!")
+}
+
+text PalletTown_ProfessorOaksLab_Text_MAS212_Books {
+    format("Crammed full of POKéMON books!")
+}
+
+// MAS-213 [Notion + new]
+text PalletTown_ProfessorOaksLab_Text_MAS213_Pen {
+    format("A pen for POKéMON under study. One is asleep against the wire.")
+}
+
+// MAS-219 [bible 1.34 + new]
+text PalletTown_ProfessorOaksLab_Text_MAS219_Page {
+    format("A field notebook, open.\p'ROUTE 1. Tagged: three. OKD-series.'\pA sketch of a fence.")
+}
+
+text PalletTown_ProfessorOaksLab_Text_MAS219_Closed {
+    format("A field notebook. It's closed.")
+}
+
+text PalletTown_ProfessorOaksLab_Text_MAS221_Medals {
+    format("A trainer's medal box. The ribbon is faded.")
+}

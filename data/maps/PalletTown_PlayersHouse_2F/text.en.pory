@@ -1,2 +1,9 @@
 // PalletTown_PlayersHouse_2F dialogue (English). Logic: scripts.pory. Translations: text.<lang>.pory
 // with the same block names; see docs/engineering/map-text.md.
+
+// MAS-204 [R/G: <PLAYER> is playing the SNES! ...Okay! It's time to go!] The JP is probably
+// Super Famicom.
+// VERIFY against a JP Green dump. PLACEHOLDER: "Famicom" is an era choice (OQ1); a Super Famicom also fits.
+text PalletTown_PlayersHouse_2F_Text_MAS204_Console {
+    format("{PLAYER} is playing the Famicom!\p...Okay! It's time to go!")
+}

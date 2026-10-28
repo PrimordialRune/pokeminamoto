@@ -1,2 +1,48 @@
 // MasaraTown_OkadaShop dialogue (English). Logic: scripts.pory. Translations: text.<lang>.pory
 // with the same block names; see docs/engineering/map-text.md.
+
+// Tags: [PR #21] kept from the opening events PR, reworded for a real NPC; [new] studio join.
+// PLACEHOLDER: pre-starter lines (owner: world thread; Fiora is in town for one night per MAS-001).
+
+text MasaraTown_OkadaShop_Text_MotherPreStarter {
+    format("Fiora is home for one night. She's out saying hello to half the neighbourhood.")
+}
+
+text MasaraTown_OkadaShop_Text_FatherPreStarter {
+    format("Somebody has to mind the shop.")
+}
+
+text MasaraTown_OkadaShop_Text_MotherFioraHere {
+    format("Fiora's leaving again this morning. She's in the square saying goodbye to half the town.\pTo half the town, and not to her father.")
+}
+
+text MasaraTown_OkadaShop_Text_FatherFioraHere {
+    format("Somebody has to mind the shop!")
+}
+
+// MAS-110 gone, met
+text MasaraTown_OkadaShop_Text_MotherFioraGone {
+    format("She's gone already. She took a whole bag of rice crackers and didn't pay for one.")
+}
+
+// MAS-110 gone, missed
+text MasaraTown_OkadaShop_Text_MotherFioraMissed {
+    format("She left right after you did. She didn't wait for anyone.")
+}
+
+text MasaraTown_OkadaShop_Text_FatherFioraGone {
+    format("...She'll be back when she's hungry.")
+}
+
+text MasaraTown_OkadaShop_Text_MotherBadge {
+    format("A badge! If you see Fiora on the road, tell her to eat something that isn't from a vending machine.")
+}
+
+text MasaraTown_OkadaShop_Text_FatherBadge {
+    format("She'll be fine. She's too proud to starve.")
+}
+
+// MAS-209 [ev1 5.1]
+text MasaraTown_OkadaShop_Text_MAS209_Counter {
+    format("Magazine clippings under the counter. The same girl in every one.")
+}

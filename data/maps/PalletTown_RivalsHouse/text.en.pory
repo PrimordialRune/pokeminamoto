@@ -1,2 +1,82 @@
 // PalletTown_RivalsHouse dialogue (English). Logic: scripts.pory. Translations: text.<lang>.pory
 // with the same block names; see docs/engineering/map-text.md.
+//
+// Tags: [R/G] real Red/Green line (pret/pokered, text/BluesHouse.asm); [PR #21] kept; [new] studio join.
+
+// MAS-109 [R/G]
+text PalletTown_RivalsHouse_Text_NanamiRivalAtLab {
+    format("Hi {PLAYER}! SHIGERU is out at Grandpa's lab.")
+}
+
+// MAS-010 [R/G]
+text PalletTown_RivalsHouse_Text_MAS010_OfferMap {
+    format("Grandpa asked you to run an errand? Here, this will help you!")
+}
+
+// [new] optional tag box
+text PalletTown_RivalsHouse_Text_MAS010_TagBox {
+    format("...He told me not to say anything about the tag. So I won't.")
+}
+
+text PalletTown_RivalsHouse_Text_NanamiBagFull {
+    format("You have too much stuff with you.")
+}
+
+text PalletTown_RivalsHouse_Text_NanamiUseMap {
+    format("Use the TOWN MAP to find out where you are.")
+}
+
+// [R/G Daisy]
+text PalletTown_RivalsHouse_Text_NanamiRest {
+    format("POKéMON are living things! If they get tired, give them a rest!")
+}
+
+// [PR #21: herbs for the Okada shop, shortened]
+text PalletTown_RivalsHouse_Text_MAS301_Ask {
+    format("I'm drying herbs for the OKADA shop. Could you find me a fresh one on ROUTE 1?\pIt grows in a damp ditch by the grass. No hurry.")
+}
+
+text PalletTown_RivalsHouse_Text_MAS301_Reminder {
+    format("The herb grows in a damp ditch by the grass on ROUTE 1. No hurry.")
+}
+
+text PalletTown_RivalsHouse_Text_MAS301_Thanks {
+    format("The herb! Thank you, {PLAYER}.\pGrandpa calls it folk medicine. He still drinks my tea.\pHere, take this POTION. It's from my own shelf.")
+}
+
+// [PR #21]
+text PalletTown_RivalsHouse_Text_NanamiKimura {
+    format("...Mr. KIMURA's bowl? He bought calming herbs from me, for a POKéMON.\pIt's been gone for years. He still keeps the bowl out.")
+}
+
+// [R/G]
+text PalletTown_RivalsHouse_Text_TownMapBig {
+    format("It's a big map! This is useful!")
+}
+
+// MAS-112 [Notion + new]
+text PalletTown_RivalsHouse_Text_MAS112_Pidgey {
+    format("KEN: Did you see how a PIDGEY lands? It doesn't, really. It falls on purpose.")
+}
+
+// MAS-302 [Notion + v0.4]. PLACEHOLDER OQ14: Omar to write
+text PalletTown_RivalsHouse_Text_MAS302_GiveMap {
+    format("KEN: I drew a map of the places I like to sit. Take it, if you want. Three are marked. Two are in town.")
+}
+
+text PalletTown_RivalsHouse_Text_MAS302_Reminder {
+    format("KEN: The map's marked in three places. Two are in town. Stand in front of one and press A.")
+}
+
+// MAS-214 / 215 / 216 [Notion + new]
+text PalletTown_RivalsHouse_Text_MAS214_Herbs {
+    format("Dried herbs in labelled jars. Some labels are in two handwritings.")
+}
+
+text PalletTown_RivalsHouse_Text_MAS215_Games {
+    format("A FAMICOM and a shelf of games. More than anyone needs.")
+}
+
+text PalletTown_RivalsHouse_Text_MAS216_Drawings {
+    format("POCKET MONSTER drawings on every wall. Most are of what they're doing, not what they look like.")
+}

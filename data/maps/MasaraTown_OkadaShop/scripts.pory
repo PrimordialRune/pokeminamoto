@@ -1,3 +1,49 @@
-// Okada shop (masara). New slice interior (studio scaffold, world M1), reusing LAYOUT_MART.
-// Its door in the town and the exit warp target are wired at world M2.
+// Okada shop (masara). Slice interior reusing LAYOUT_MART. Rows: MAS-110 (the mother, moved in from the square),
+// MAS-111 (the father, a real NPC now), MAS-209 (counter). Dialogue: text.en.pory.
+// The shop sells nothing until the food system ships (PLACEHOLDER, owner: food-system thread).
+//
+// Fiora states, shared by both parents:
+//   pre-starter           she is in town for one night (hidden: FLAG_HIDE_MASARA_FIORA is set until the pick)
+//   in the square         FLAG_HIDE_MASARA_FIORA clear
+//   gone                  she talked to the player (FLAG_Q_FIORA_MET) or left on her own (missed)
+//   first badge           the news line
 mapscripts MasaraTown_OkadaShop_MapScripts {}
+
+script MasaraTown_OkadaShop_EventScript_MAS110_Mother {
+    lock
+    faceplayer
+    if (!flag(FLAG_SYS_POKEMON_GET)) {
+        msgbox(MasaraTown_OkadaShop_Text_MotherPreStarter)
+    } elif (!flag(FLAG_HIDE_MASARA_FIORA)) {
+        msgbox(MasaraTown_OkadaShop_Text_MotherFioraHere)
+    } elif (flag(FLAG_BADGE01_GET)) {
+        msgbox(MasaraTown_OkadaShop_Text_MotherBadge)
+    } elif (flag(FLAG_Q_FIORA_MET)) {
+        msgbox(MasaraTown_OkadaShop_Text_MotherFioraGone)
+    } else {
+        msgbox(MasaraTown_OkadaShop_Text_MotherFioraMissed)
+    }
+    release
+    end
+}
+
+script MasaraTown_OkadaShop_EventScript_MAS111_Father {
+    lock
+    faceplayer
+    if (!flag(FLAG_SYS_POKEMON_GET)) {
+        msgbox(MasaraTown_OkadaShop_Text_FatherPreStarter)
+    } elif (!flag(FLAG_HIDE_MASARA_FIORA)) {
+        msgbox(MasaraTown_OkadaShop_Text_FatherFioraHere)
+    } elif (flag(FLAG_BADGE01_GET)) {
+        msgbox(MasaraTown_OkadaShop_Text_FatherBadge)
+    } else {
+        msgbox(MasaraTown_OkadaShop_Text_FatherFioraGone)
+    }
+    release
+    end
+}
+
+script MasaraTown_OkadaShop_EventScript_MAS209_Counter {
+    msgbox(MasaraTown_OkadaShop_Text_MAS209_Counter, MSGBOX_SIGN)
+    end
+}
