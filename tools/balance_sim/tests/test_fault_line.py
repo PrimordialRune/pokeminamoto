@@ -63,7 +63,7 @@ class Model(unittest.TestCase):
     def test_mud_stops_cracks_and_wind_dries_it(self):
         fl = A.FaultLine()
         fl.after_move("WATER_GUN", 40, "WATER", True)
-        self.assertEqual((fl.mud, fl.blows), (4, 1))
+        self.assertEqual((fl.mud, fl.blows), (8, 1))
         for _ in range(5):
             fl.after_move("TACKLE", 40, "NORMAL", True)
         self.assertEqual(fl.blows, 1)                      # mud doesn't crack
@@ -77,7 +77,7 @@ class Model(unittest.TestCase):
         fl = A.FaultLine()
         self.assertEqual(fl.defense_pct(True), 200)         # q72
         self.assertEqual(fl.defense_pct(False), 100)
-        self.assertEqual(fl.speed_pct(False), 67)
+        self.assertEqual(fl.speed_pct(False), 80)
         self.assertEqual(fl.speed_pct(True), 100)
 
 

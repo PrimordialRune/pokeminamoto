@@ -82,7 +82,7 @@ struct ArenaTuning
     u16 rockSandSpDefPct;       // Sp. Def of mountain dwellers while a sandstorm blows
     u16 seedDrainPct;           // Lucky Strike: Leech Seed drain, % of the normal 1/8 (lab test of a Bulbasaur lever)
     // Fault Line (all PLACEHOLDER, arena ecology thread). Append only: the lab and the editor read this struct by position.
-    u16 faultSpeedPct;          // field constant: Speed of everything that is not a terrain dweller (MOUNTAIN or BURROWER); 67 = -1 stage
+    u16 faultSpeedPct;          // field constant: Speed of everything that is not a terrain dweller (MOUNTAIN or BURROWER); 67 = -1 stage, shipped 80 (balance-r2)
     u16 faultDefIntactPct;      // Defense of MOUNTAIN mons while the floor is INTACT (Omar, q72: x2)
     u16 faultDefCrackedPct;     // ...while CRACKED
     u16 faultDefFracturedPct;   // ...while FRACTURED
