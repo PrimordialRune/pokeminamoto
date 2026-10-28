@@ -1,2 +1,266 @@
-// Placeholder imported from FireRed (tools/frlg_import). No events yet.
-mapscripts ViridianCity_Mart_MapScripts {}
+// Tokiwa CVS (ViridianCity_Mart). Rows TOK-002, 106, 107, 121, 217, 403, 404, 405, 104 (Hiroshi, C8
+// 12-14 slot), 213/216/228 (line only), 308's magazine half. No shop menu: the CVS sells no battle
+// items (TOK-228). Shifts: Tanabe MORN/DAY, Kato NITE.
+
+const TIME_MORN = 0
+const TIME_DAY = 1
+const TIME_NITE = 2
+
+mapscripts ViridianCity_Mart_MapScripts {
+    MAP_SCRIPT_ON_TRANSITION {
+        showduringtime(FLAG_HIDE_CVS_TANABE, TIME_MORN)
+        checktimeofday
+        if (var(VAR_RESULT) == TIME_DAY) {
+            clearflag(FLAG_HIDE_CVS_TANABE)
+        }
+        showduringtime(FLAG_HIDE_CVS_KATO, TIME_NITE)
+        // Hours use GetGameHour (exact under REGRESS SET_HOUR; showduringhours reads the phase hour). TOK-402: Hiroshi 12-14. TOK-403: the kids 14-17. TOK-404: the silent man 18-20. TOK-405: Kimura 22.
+        getgamehour
+        if (var(VAR_RESULT) >= 12 && var(VAR_RESULT) < 14) {
+            clearflag(FLAG_HIDE_CVS_HIROSHI)
+        } else {
+            setflag(FLAG_HIDE_CVS_HIROSHI)
+        }
+        getgamehour
+        if (var(VAR_RESULT) >= 14 && var(VAR_RESULT) < 18) {
+            clearflag(FLAG_HIDE_CVS_KIDS)
+        } else {
+            setflag(FLAG_HIDE_CVS_KIDS)
+        }
+        getgamehour
+        if (var(VAR_RESULT) >= 18 && var(VAR_RESULT) < 21) {
+            clearflag(FLAG_HIDE_CVS_SILENT_MAN)
+        } else {
+            setflag(FLAG_HIDE_CVS_SILENT_MAN)
+        }
+        getgamehour
+        if (var(VAR_RESULT) >= 22 && var(VAR_RESULT) < 23) {
+            clearflag(FLAG_HIDE_CVS_KIMURA)
+        } else {
+            setflag(FLAG_HIDE_CVS_KIMURA)
+        }
+    }
+}
+
+// TOK-002: the Parcel. First CVS entry after the starter and before the Index; the clerk on shift
+// speaks to the player at the counter. Three trigger cells share the tail.
+movement TokiwaCVS_Movement_ToCounterFrom4 {
+    walk_up
+    face_left
+}
+
+movement TokiwaCVS_Movement_ToCounterFrom5 {
+    walk_left
+    walk_up
+    face_left
+}
+
+movement TokiwaCVS_Movement_ToCounterFrom6 {
+    walk_left
+    walk_left
+    walk_up
+    face_left
+}
+
+script TokiwaCVS_EventScript_ParcelCheck {
+    setvar(VAR_RESULT, FALSE)
+    if (flag(FLAG_SYS_POKEMON_GET) && !flag(FLAG_SYS_POKEDEX_GET) && !flag(FLAG_Q_PARCEL_GIVEN)) {
+        setvar(VAR_RESULT, TRUE)
+    }
+    return
+}
+
+script TokiwaCVS_EventScript_ParcelTrigger4 {
+    call(TokiwaCVS_EventScript_ParcelCheck)
+    if (var(VAR_RESULT) == FALSE) {
+        end
+    }
+    lockall
+    applymovement(OBJ_EVENT_ID_PLAYER, TokiwaCVS_Movement_ToCounterFrom4)
+    waitmovement(0)
+    goto(TokiwaCVS_EventScript_ParcelHandOver)
+}
+
+script TokiwaCVS_EventScript_ParcelTrigger5 {
+    call(TokiwaCVS_EventScript_ParcelCheck)
+    if (var(VAR_RESULT) == FALSE) {
+        end
+    }
+    lockall
+    applymovement(OBJ_EVENT_ID_PLAYER, TokiwaCVS_Movement_ToCounterFrom5)
+    waitmovement(0)
+    goto(TokiwaCVS_EventScript_ParcelHandOver)
+}
+
+script TokiwaCVS_EventScript_ParcelTrigger6 {
+    call(TokiwaCVS_EventScript_ParcelCheck)
+    if (var(VAR_RESULT) == FALSE) {
+        end
+    }
+    lockall
+    applymovement(OBJ_EVENT_ID_PLAYER, TokiwaCVS_Movement_ToCounterFrom6)
+    waitmovement(0)
+    goto(TokiwaCVS_EventScript_ParcelHandOver)
+}
+
+script TokiwaCVS_EventScript_ParcelHandOver {
+    msgbox(TokiwaCVS_Text_ParcelHey)
+    msgbox(TokiwaCVS_Text_ParcelOrder)
+    giveitem(ITEM_OAKS_PARCEL)
+    if (var(VAR_RESULT) == FALSE) {
+        msgbox(TokiwaCVS_Text_ParcelBagFull)
+        releaseall
+        end
+    }
+    setflag(FLAG_Q_PARCEL_GIVEN)
+    msgbox(TokiwaCVS_Text_ParcelSlip)
+    releaseall
+    end
+}
+
+// Talking to the clerk on shift. Tanabe (TOK-107): one monosyllable per visit. The Parcel is also
+// handed over here if the trigger was skipped (it cannot be, but the counter is the fallback).
+script TokiwaCVS_EventScript_Tanabe {
+    lock
+    faceplayer
+    call(TokiwaCVS_EventScript_ParcelCheck)
+    if (var(VAR_RESULT) == TRUE) {
+        goto(TokiwaCVS_EventScript_ParcelHandOver)
+    }
+    random(3)
+    switch (var(VAR_RESULT)) {
+        case 0:
+            msgbox(TokiwaCVS_Text_Tanabe1)
+        case 1:
+            msgbox(TokiwaCVS_Text_Tanabe2)
+        default:
+            msgbox(TokiwaCVS_Text_Tanabe3)
+    }
+    release
+    end
+}
+
+// TOK-106, Kato (NITE shift): T2 (CH high) / after a loss, before B1 / after B1 / default.
+script TokiwaCVS_EventScript_Kato {
+    lock
+    faceplayer
+    call(TokiwaCVS_EventScript_ParcelCheck)
+    if (var(VAR_RESULT) == TRUE) {
+        goto(TokiwaCVS_EventScript_ParcelHandOver)
+    }
+    checkcharisma(CHARISMA_TIERS_TOKIWA)
+    if (var(VAR_RESULT) >= CHARISMA_TIER_MID) {
+        msgbox(TokiwaCVS_Text_KatoT2)
+    } elif (flag(FLAG_BADGE01_GET)) {
+        msgbox(TokiwaCVS_Text_KatoWon)
+    } elif (flag(FLAG_Q_LOST_YUJI)) {
+        msgbox(TokiwaCVS_Text_KatoLost)
+    } else {
+        msgbox(TokiwaCVS_Text_KatoRestocking)
+        if (flag(FLAG_SEEN_KIMURA_BOWL)) {
+            msgbox(TokiwaCVS_Text_KatoKimura)
+        }
+    }
+    release
+    end
+}
+
+script TokiwaCVS_EventScript_Customer {
+    msgbox(TokiwaCVS_Text_Customer, MSGBOX_NPC)
+    end
+}
+
+script TokiwaCVS_EventScript_Kids {
+    msgbox(TokiwaCVS_Text_Kids, MSGBOX_NPC)
+    end
+}
+
+// TOK-404: the silent man never speaks. No handler text: the object is not interactive.
+script TokiwaCVS_EventScript_SilentMan {
+    lock
+    release
+    end
+}
+
+script TokiwaCVS_EventScript_Kimura {
+    lock
+    faceplayer
+    if (flag(FLAG_SEEN_KIMURA_BOWL)) {
+        msgbox(TokiwaCVS_Text_KimuraBowl)
+    } else {
+        msgbox(TokiwaCVS_Text_Kimura)
+    }
+    release
+    end
+}
+
+// TOK-104 (C8): Hiroshi in the CVS 12-14 slot. Pidgey released (once) / after B1 / default.
+script TokiwaCVS_EventScript_Hiroshi {
+    lock
+    faceplayer
+    if (flag(FLAG_Q_PIDGEY_RELEASED) && !flag(FLAG_P_HIROSHI_PIDGEY)) {
+        setflag(FLAG_P_HIROSHI_PIDGEY)
+        msgbox(TokiwaCVS_Text_HiroshiPidgey)
+    } elif (flag(FLAG_BADGE01_GET)) {
+        msgbox(TokiwaCVS_Text_HiroshiB1)
+    } else {
+        msgbox(TokiwaCVS_Text_HiroshiWater)
+    }
+    release
+    end
+}
+
+// TOK-213 + TOK-308 (magazine half), line only: each issue is read in place, nothing is bought.
+script TokiwaCVS_EventScript_MagazineRack {
+    lockall
+    msgbox(TokiwaCVS_Text_MagazineRack)
+    dynmultichoice(14, 2, FALSE, 4, 0, DYN_MULTICHOICE_CB_NONE, TokiwaCVS_Text_ChoiceTrainer, TokiwaCVS_Text_ChoiceScience, TokiwaCVS_Text_ChoiceBusiness, TokiwaCVS_Text_ChoiceLeave)
+    switch (var(VAR_RESULT)) {
+        case 0:
+            msgbox(TokiwaCVS_Text_MagazineTrainer)
+        case 1:
+            msgbox(TokiwaCVS_Text_MagazineScience)
+        case 2:
+            msgbox(TokiwaCVS_Text_MagazineBusiness)
+    }
+    releaseall
+    end
+}
+
+script TokiwaCVS_EventScript_Cigarettes {
+    msgbox(TokiwaCVS_Text_Cigarettes, MSGBOX_SIGN)
+    end
+}
+
+script TokiwaCVS_EventScript_Fridge {
+    msgbox(TokiwaCVS_Text_Fridge, MSGBOX_SIGN)
+    end
+}
+
+script TokiwaCVS_EventScript_ColdShelf {
+    msgbox(TokiwaCVS_Text_ColdShelf, MSGBOX_SIGN)
+    end
+}
+
+script TokiwaCVS_EventScript_HotCounter {
+    msgbox(TokiwaCVS_Text_HotCounter, MSGBOX_SIGN)
+    end
+}
+
+script TokiwaCVS_EventScript_TV {
+    checktimeofday
+    switch (var(VAR_RESULT)) {
+        case TIME_MORN:
+            msgbox(TokiwaCVS_Text_TVMorn, MSGBOX_SIGN)
+        case TIME_DAY:
+            msgbox(TokiwaCVS_Text_TVDay, MSGBOX_SIGN)
+        default:
+            msgbox(TokiwaCVS_Text_TVNite, MSGBOX_SIGN)
+    }
+    end
+}
+
+script TokiwaCVS_EventScript_BallShelf {
+    msgbox(TokiwaCVS_Text_BallShelf, MSGBOX_SIGN)
+    end
+}

@@ -22,54 +22,68 @@
       "y": 2,
       "elevation": 3,
       "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
-      "movement_range_x": 1,
-      "movement_range_y": 1,
+      "movement_range_x": 0,
+      "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
-      "script": "0",
+      "script": "TokiwaInn_EventScript_Fumiko",
       "flag": "0"
     },
     {
       "type": "object",
       "graphics_id": "OBJ_EVENT_GFX_FRLG_GENTLEMAN",
-      "x": 12,
-      "y": 5,
+      "x": 9,
+      "y": 7,
       "elevation": 3,
-      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
-      "movement_range_x": 1,
-      "movement_range_y": 1,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "movement_range_x": 0,
+      "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
-      "script": "0",
-      "flag": "0"
+      "script": "TokiwaInn_EventScript_Hiroshi",
+      "flag": "FLAG_HIDE_INN_HIROSHI_ENTRANCE"
     },
     {
       "type": "object",
       "graphics_id": "OBJ_EVENT_GFX_FRLG_BOY",
-      "x": 4,
+      "x": 10,
       "y": 7,
       "elevation": 3,
-      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
-      "movement_range_x": 1,
-      "movement_range_y": 1,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "movement_range_x": 0,
+      "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
-      "script": "0",
-      "flag": "0"
+      "script": "TokiwaInn_EventScript_Ken",
+      "flag": "FLAG_HIDE_INN_KEN"
     },
     {
       "type": "object",
-      "graphics_id": "OBJ_EVENT_GFX_FRLG_YOUNGSTER",
-      "x": 2,
-      "y": 3,
+      "graphics_id": "OBJ_EVENT_GFX_FRLG_GENTLEMAN",
+      "x": 11,
+      "y": 5,
       "elevation": 3,
-      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
-      "movement_range_x": 1,
-      "movement_range_y": 1,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "movement_range_x": 0,
+      "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
-      "script": "0",
-      "flag": "0"
+      "script": "TokiwaInn_EventScript_Hiroshi",
+      "flag": "FLAG_HIDE_INN_HIROSHI_COMMON"
+    },
+    {
+      "type": "object",
+      "graphics_id": "OBJ_EVENT_GFX_FRLG_MAN",
+      "x": 12,
+      "y": 3,
+      "elevation": 3,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "movement_range_x": 0,
+      "movement_range_y": 0,
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "trainer_sight_or_berry_tree_id": "0",
+      "script": "TokiwaInn_EventScript_Omura",
+      "flag": "FLAG_HIDE_OMURA_COMMON"
     }
   ],
   "warp_events": [
@@ -103,5 +117,38 @@
     }
   ],
   "coord_events": [],
-  "bg_events": []
+  "bg_events": [
+    {
+      "type": "sign",
+      "x": 8,
+      "y": 3,
+      "elevation": 0,
+      "player_facing_dir": "BG_EVENT_PLAYER_FACING_ANY",
+      "script": "TokiwaInn_EventScript_Register"
+    },
+    {
+      "type": "sign",
+      "x": 1,
+      "y": 1,
+      "elevation": 0,
+      "player_facing_dir": "BG_EVENT_PLAYER_FACING_ANY",
+      "script": "TokiwaInn_EventScript_Board"
+    },
+    {
+      "type": "sign",
+      "x": 3,
+      "y": 1,
+      "elevation": 0,
+      "player_facing_dir": "BG_EVENT_PLAYER_FACING_ANY",
+      "script": "TokiwaInn_EventScript_Tokonoma"
+    },
+    {
+      "type": "sign",
+      "x": 13,
+      "y": 1,
+      "elevation": 0,
+      "player_facing_dir": "BG_EVENT_PLAYER_FACING_ANY",
+      "script": "TokiwaInn_EventScript_TV"
+    }
+  ]
 }

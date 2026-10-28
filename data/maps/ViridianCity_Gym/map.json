@@ -15,145 +15,92 @@
   "connections": null,
   "object_events": [
     {
+      "local_id": "LOCALID_TOKIWA_PMC_AOI",
       "type": "object",
-      "graphics_id": "OBJ_EVENT_GFX_FRLG_BLACK_BELT",
-      "x": 10,
-      "y": 2,
+      "graphics_id": "OBJ_EVENT_GFX_FRLG_CABLE_CLUB_RECEPTIONIST",
+      "x": 8,
+      "y": 21,
       "elevation": 3,
       "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
-      "movement_range_x": 1,
-      "movement_range_y": 1,
+      "movement_range_x": 0,
+      "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
-      "script": "0",
-      "flag": "0"
-    },
-    {
-      "type": "object",
-      "graphics_id": "OBJ_EVENT_GFX_FRLG_COOLTRAINER_M",
-      "x": 12,
-      "y": 10,
-      "elevation": 3,
-      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
-      "movement_range_x": 1,
-      "movement_range_y": 1,
-      "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "0",
-      "script": "0",
-      "flag": "0"
-    },
-    {
-      "type": "object",
-      "graphics_id": "OBJ_EVENT_GFX_FRLG_BLACK_BELT",
-      "x": 11,
-      "y": 14,
-      "elevation": 3,
-      "movement_type": "MOVEMENT_TYPE_FACE_UP",
-      "movement_range_x": 1,
-      "movement_range_y": 1,
-      "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "0",
-      "script": "0",
+      "script": "TokiwaPMC_EventScript_Aoi",
       "flag": "0"
     },
     {
       "type": "object",
       "graphics_id": "OBJ_EVENT_GFX_FRLG_MAN",
-      "x": 10,
-      "y": 10,
-      "elevation": 3,
-      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
-      "movement_range_x": 1,
-      "movement_range_y": 1,
-      "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "0",
-      "script": "0",
-      "flag": "0"
-    },
-    {
-      "type": "object",
-      "graphics_id": "OBJ_EVENT_GFX_FRLG_MAN",
-      "x": 2,
+      "x": 3,
       "y": 21,
       "elevation": 3,
       "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
-      "movement_range_x": 1,
-      "movement_range_y": 1,
+      "movement_range_x": 0,
+      "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
-      "script": "0",
+      "script": "TokiwaPMC_EventScript_LobbyPC",
       "flag": "0"
     },
     {
       "type": "object",
-      "graphics_id": "OBJ_EVENT_GFX_FRLG_BLACK_BELT",
-      "x": 3,
-      "y": 11,
-      "elevation": 3,
-      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
-      "movement_range_x": 1,
-      "movement_range_y": 1,
-      "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "0",
-      "script": "0",
-      "flag": "0"
-    },
-    {
-      "type": "object",
-      "graphics_id": "OBJ_EVENT_GFX_FRLG_COOLTRAINER_M",
-      "x": 6,
-      "y": 8,
+      "graphics_id": "OBJ_EVENT_GFX_FRLG_GYM_GUY",
+      "x": 13,
+      "y": 21,
       "elevation": 3,
       "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
-      "movement_range_x": 1,
-      "movement_range_y": 1,
+      "movement_range_x": 0,
+      "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
-      "script": "0",
+      "script": "TokiwaPMC_EventScript_LobbyInn",
       "flag": "0"
     },
     {
-      "local_id": "LOCALID_VIRIDIAN_GIOVANNI",
+      "local_id": "LOCALID_TOKIWA_PMC_CIRCUIT_1",
+      "type": "object",
+      "graphics_id": "OBJ_EVENT_GFX_FRLG_COOLTRAINER_M",
+      "x": 18,
+      "y": 10,
+      "elevation": 3,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "movement_range_x": 0,
+      "movement_range_y": 0,
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "trainer_sight_or_berry_tree_id": "1",
+      "script": "TokiwaPMC_EventScript_Circuit1",
+      "flag": "0"
+    },
+    {
+      "local_id": "LOCALID_TOKIWA_PMC_CIRCUIT_2",
+      "type": "object",
+      "graphics_id": "OBJ_EVENT_GFX_FRLG_YOUNGSTER",
+      "x": 11,
+      "y": 12,
+      "elevation": 3,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "movement_range_x": 0,
+      "movement_range_y": 0,
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "trainer_sight_or_berry_tree_id": "2",
+      "script": "TokiwaPMC_EventScript_Circuit2",
+      "flag": "0"
+    },
+    {
+      "local_id": "LOCALID_TOKIWA_PMC_YUJIROU",
       "type": "object",
       "graphics_id": "OBJ_EVENT_GFX_FRLG_GIOVANNI",
       "x": 2,
       "y": 2,
       "elevation": 3,
       "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
-      "movement_range_x": 1,
-      "movement_range_y": 1,
+      "movement_range_x": 0,
+      "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
-      "script": "0",
-      "flag": "0"
-    },
-    {
-      "type": "object",
-      "graphics_id": "OBJ_EVENT_GFX_FRLG_COOLTRAINER_M",
-      "x": 13,
-      "y": 7,
-      "elevation": 3,
-      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
-      "movement_range_x": 1,
-      "movement_range_y": 1,
-      "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "0",
-      "script": "0",
-      "flag": "0"
-    },
-    {
-      "type": "object",
-      "graphics_id": "OBJ_EVENT_GFX_FRLG_GYM_GUY",
-      "x": 12,
-      "y": 21,
-      "elevation": 3,
-      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
-      "movement_range_x": 1,
-      "movement_range_y": 1,
-      "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "0",
-      "script": "0",
-      "flag": "0"
+      "script": "TokiwaPMC_EventScript_Yujirou",
+      "flag": "FLAG_HIDE_YUJI_ARENA"
     },
     {
       "type": "object",
@@ -167,8 +114,8 @@
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
-      "script": "Slice_EventScript_TokiwaPMCClosed",
-      "flag": "0"
+      "script": "TokiwaPMC_EventScript_ArenaClosed",
+      "flag": "FLAG_HIDE_TOKIWA_PMC_BARRIER"
     },
     {
       "type": "object",
@@ -182,8 +129,8 @@
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
-      "script": "Slice_EventScript_TokiwaPMCClosed",
-      "flag": "0"
+      "script": "TokiwaPMC_EventScript_ArenaClosed",
+      "flag": "FLAG_HIDE_TOKIWA_PMC_BARRIER"
     }
   ],
   "warp_events": [
@@ -209,7 +156,26 @@
       "dest_warp_id": "2"
     }
   ],
-  "coord_events": [],
+  "coord_events": [
+    {
+      "type": "trigger",
+      "x": 17,
+      "y": 20,
+      "elevation": 0,
+      "var": "VAR_TEMP_0",
+      "var_value": "0",
+      "script": "TokiwaPMC_EventScript_ArenaOn"
+    },
+    {
+      "type": "trigger",
+      "x": 17,
+      "y": 21,
+      "elevation": 0,
+      "var": "VAR_TEMP_0",
+      "var_value": "0",
+      "script": "TokiwaPMC_EventScript_ArenaOff"
+    }
+  ],
   "bg_events": [
     {
       "type": "sign",
@@ -217,7 +183,7 @@
       "y": 20,
       "elevation": 0,
       "player_facing_dir": "BG_EVENT_PLAYER_FACING_ANY",
-      "script": "0"
+      "script": "TokiwaPMC_EventScript_ArenaSign"
     },
     {
       "type": "sign",
@@ -225,7 +191,55 @@
       "y": 20,
       "elevation": 0,
       "player_facing_dir": "BG_EVENT_PLAYER_FACING_ANY",
-      "script": "0"
+      "script": "TokiwaPMC_EventScript_ArenaSign"
+    },
+    {
+      "type": "sign",
+      "x": 5,
+      "y": 20,
+      "elevation": 0,
+      "player_facing_dir": "BG_EVENT_PLAYER_FACING_ANY",
+      "script": "TokiwaPMC_EventScript_PC"
+    },
+    {
+      "type": "sign",
+      "x": 9,
+      "y": 20,
+      "elevation": 0,
+      "player_facing_dir": "BG_EVENT_PLAYER_FACING_ANY",
+      "script": "TokiwaPMC_EventScript_Brochure"
+    },
+    {
+      "type": "sign",
+      "x": 11,
+      "y": 20,
+      "elevation": 0,
+      "player_facing_dir": "BG_EVENT_PLAYER_FACING_ANY",
+      "script": "TokiwaPMC_EventScript_Sponsorship"
+    },
+    {
+      "type": "sign",
+      "x": 6,
+      "y": 19,
+      "elevation": 0,
+      "player_facing_dir": "BG_EVENT_PLAYER_FACING_ANY",
+      "script": "TokiwaPMC_EventScript_SideWindow"
+    },
+    {
+      "type": "sign",
+      "x": 9,
+      "y": 19,
+      "elevation": 0,
+      "player_facing_dir": "BG_EVENT_PLAYER_FACING_ANY",
+      "script": "TokiwaPMC_EventScript_CarvedSeat"
+    },
+    {
+      "type": "sign",
+      "x": 12,
+      "y": 19,
+      "elevation": 0,
+      "player_facing_dir": "BG_EVENT_PLAYER_FACING_ANY",
+      "script": "TokiwaPMC_EventScript_TalkTip"
     }
   ]
 }

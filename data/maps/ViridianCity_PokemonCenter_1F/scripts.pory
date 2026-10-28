@@ -1,2 +1,279 @@
-// Placeholder imported from FireRed (tools/frlg_import). No events yet.
-mapscripts ViridianCity_PokemonCenter_1F_MapScripts {}
+// Tokaido-ya inn 1F (ViridianCity_PokemonCenter_1F), tokiwa-spine. Rows TOK-008, 102, 103, 104 (Hiroshi, C8
+// slots 07-09 entrance and 18-21 common room), 105, 108 (Omura, C2; his corridor copy on 2F calls the
+// same script), 206, 208, 209, 211, 225, 301 (hand-over / keep), 302 (rest line), 308 (register half),
+// 309 (Take offer), 410 (Fumiko's B2 line). The whiteout line is the stub in data/scripts/inn.pory
+// (TokiwaInn_EventScript_WhiteoutLine): its text already matches the brief, and the file is core's.
+
+const TIME_MORN = 0
+const TIME_DAY = 1
+const TIME_NITE = 2
+const OMURA_RESOLVED_VARS = 4 // V_SANDSHREW 4 given, 5 kept, 6 fainted, 7 missed
+
+mapscripts ViridianCity_PokemonCenter_1F_MapScripts {
+    MAP_SCRIPT_ON_TRANSITION {
+        // C8: Hiroshi's inn slots.
+        getgamehour
+        if (var(VAR_RESULT) >= 7 && var(VAR_RESULT) < 9) {
+            clearflag(FLAG_HIDE_INN_HIROSHI_ENTRANCE)
+        } else {
+            setflag(FLAG_HIDE_INN_HIROSHI_ENTRANCE)
+        }
+        getgamehour
+        if (var(VAR_RESULT) >= 18 && var(VAR_RESULT) < 21) {
+            clearflag(FLAG_HIDE_INN_HIROSHI_COMMON)
+        } else {
+            setflag(FLAG_HIDE_INN_HIROSHI_COMMON)
+        }
+        // TOK-105: Ken carries futons with Hiroshi, after the Index and the first rest here, until B1.
+        getgamehour
+        if (var(VAR_RESULT) >= 7 && var(VAR_RESULT) < 9) {
+            clearflag(FLAG_HIDE_INN_KEN)
+        } else {
+            setflag(FLAG_HIDE_INN_KEN)
+        }
+        if (!flag(FLAG_SYS_POKEDEX_GET) || var(VAR_REST_COUNT) == 0 || flag(FLAG_BADGE01_GET)) {
+            setflag(FLAG_HIDE_INN_KEN)
+        }
+        // TOK-108: Omura in the common room at NITE until he checks out.
+        showduringtime(FLAG_HIDE_OMURA_COMMON, TIME_NITE)
+        if (flag(FLAG_OMURA_CHECKED_OUT)) {
+            setflag(FLAG_HIDE_OMURA_COMMON)
+        }
+    }
+}
+
+// ---------------------------------------------------------------------------------------------
+// Fumiko (TOK-102, TOK-008). One desk script: a line for the state, then the rest.
+// ---------------------------------------------------------------------------------------------
+script TokiwaInn_EventScript_Fumiko {
+    lock
+    faceplayer
+    // Once-only prefixes.
+    if (flag(FLAG_BADGE02_GET) && !flag(FLAG_P_FUMIKO_B2)) {
+        setflag(FLAG_P_FUMIKO_B2)
+        msgbox(TokiwaInn_Text_FumikoB2)
+    }
+    if (flag(FLAG_SEEN_OMURA_NOTICE) && !flag(FLAG_P_FUMIKO_SANDSHREW)) {
+        setflag(FLAG_P_FUMIKO_SANDSHREW)
+        msgbox(TokiwaInn_Text_FumikoSignpost)
+    }
+    // The Take room is offered once its conditions are met (TOK-309).
+    if (!flag(FLAG_P_FUMIKO_TAKE) && flag(FLAG_OMURA_CHECKED_OUT)) {
+        if (var(VAR_CHARISMA) >= INN_TAKE_CHARISMA || (flag(FLAG_BADGE01_GET) && flag(FLAG_BADGE02_GET))) {
+            setflag(FLAG_P_FUMIKO_TAKE)
+            msgbox(TokiwaInn_Text_FumikoTake)
+        }
+    }
+    // The state line.
+    checkcharisma(CHARISMA_TIERS_TOKIWA)
+    if (!flag(FLAG_Q_CARD)) {
+        msgbox(TokiwaInn_Text_FumikoNoCard)
+    } elif (var(VAR_RESULT) >= CHARISMA_TIER_HIGH) {
+        msgbox(TokiwaInn_Text_FumikoT3)
+    } elif (flag(FLAG_Q_YUJI_MET) && !flag(FLAG_Q_YUJI_SLEPT)) {
+        msgbox(TokiwaInn_Text_FumikoBridge)
+    } else {
+        call(TokiwaInn_EventScript_FumikoRotation)
+    }
+    call(Common_EventScript_InnRest)
+    if (var(VAR_RESULT) == TRUE) {
+        setrespawn(HEAL_LOCATION_TOKIWA_INN)
+        if (flag(FLAG_Q_YUJI_MET)) {
+            setflag(FLAG_Q_YUJI_SLEPT)
+        }
+        if (var(VAR_Q_PIDGEY) == 1) {
+            setvar(VAR_Q_PIDGEY, 2)
+            msgbox(TokiwaInn_Text_FumikoPidgey)
+        }
+        // TOK-108: Omura checks out after his resolution line and one rest.
+        if (flag(FLAG_Q_OMURA_RESOLVED)) {
+            setflag(FLAG_OMURA_CHECKED_OUT)
+            setflag(FLAG_HIDE_OMURA_COMMON)
+            setflag(FLAG_HIDE_OMURA_CORRIDOR)
+            setflag(FLAG_HIDE_INN_CAGE)
+        }
+    }
+    release
+    end
+}
+
+// Card-holder rotation, with the DAY answer about Omura's notice.
+script TokiwaInn_EventScript_FumikoRotation {
+    checktimeofday
+    if (flag(FLAG_SEEN_OMURA_NOTICE) && !flag(FLAG_OMURA_CHECKED_OUT) && var(VAR_RESULT) == TIME_DAY) {
+        msgbox(TokiwaInn_Text_FumikoOmuraDay)
+        return
+    }
+    random(3)
+    switch (var(VAR_RESULT)) {
+        case 0:
+            msgbox(TokiwaInn_Text_FumikoRot1)
+        case 1:
+            msgbox(TokiwaInn_Text_FumikoRot2)
+        default:
+            msgbox(TokiwaInn_Text_FumikoRot3)
+    }
+    return
+}
+
+// ---------------------------------------------------------------------------------------------
+// Omura (TOK-108 + TOK-301). V_SANDSHREW: 0 none, 1 notice read, 2 Omura met, 3 caught, 4 given,
+// 5 kept, 6 fainted, 7 missed. Reached from 1F (common room, NITE) and 2F (corridor, MORN).
+// ---------------------------------------------------------------------------------------------
+script TokiwaInn_EventScript_Omura {
+    lock
+    faceplayer
+    switch (var(VAR_Q_SANDSHREW)) {
+        case 0:
+            msgbox(TokiwaInn_Text_OmuraBefore)
+        case 1:
+            msgbox(TokiwaInn_Text_OmuraQuest1)
+            msgbox(TokiwaInn_Text_OmuraQuest2)
+            setvar(VAR_Q_SANDSHREW, 2)
+        case 2:
+            msgbox(TokiwaInn_Text_OmuraQuestAgain)
+        case 3:
+            goto(TokiwaInn_EventScript_OmuraOffer)
+        case 4:
+            call(TokiwaInn_EventScript_OmuraResolved)
+            msgbox(TokiwaInn_Text_OmuraPaid)
+        case 5:
+            call(TokiwaInn_EventScript_OmuraResolved)
+            msgbox(TokiwaInn_Text_OmuraKept)
+        case 6:
+            call(TokiwaInn_EventScript_OmuraResolved)
+            msgbox(TokiwaInn_Text_OmuraFainted)
+        case 7:
+            call(TokiwaInn_EventScript_OmuraResolved)
+            msgbox(TokiwaInn_Text_OmuraMissed)
+    }
+    // T2, any time after the quest is settled: the trade is regional, not only Tokiwa's.
+    if (var(VAR_Q_SANDSHREW) >= OMURA_RESOLVED_VARS) {
+        checkcharisma(CHARISMA_TIERS_TOKIWA)
+        if (var(VAR_RESULT) >= CHARISMA_TIER_MID) {
+            msgbox(TokiwaInn_Text_OmuraT2)
+        }
+    }
+    release
+    end
+}
+
+// His resolution line has played: one rest later he checks out (TOK-108, TOK-309).
+script TokiwaInn_EventScript_OmuraResolved {
+    setflag(FLAG_Q_OMURA_RESOLVED)
+    return
+}
+
+// TOK-301: the party is checked for the Route 22 Sandshrew (met location Route 22), whole and not alone.
+script TokiwaInn_EventScript_OmuraOffer {
+    checkpartymonforhandover(SPECIES_SANDSHREW, 1, 122, TRUE) // 122 = MAPSEC_ROUTE_22 (an enum, invisible to the assembler)
+    switch (var(VAR_RESULT)) {
+        case HANDOVER_NONE:
+            msgbox(TokiwaInn_Text_OmuraWrong)
+            release
+            end
+        case HANDOVER_NOT_FULL_HP:
+            msgbox(TokiwaInn_Text_OmuraRest)
+            release
+            end
+        case HANDOVER_LAST_MON:
+            msgbox(TokiwaInn_Text_OmuraLast)
+            release
+            end
+    }
+    msgbox(TokiwaInn_Text_OmuraAsk)
+    dynmultichoice(20, 4, TRUE, 2, 0, DYN_MULTICHOICE_CB_NONE, TokiwaInn_Text_ChoiceHandOver, TokiwaInn_Text_ChoiceKeep)
+    if (var(VAR_RESULT) == 0) {
+        special(RemovePartyMonAtSlot)
+        if (var(VAR_RESULT) == TRUE) {
+            msgbox(TokiwaInn_Text_OmuraGiven)
+            addmoney(3500)
+            addcharisma(5)
+            setflag(FLAG_Q_SANDSHREW_GIVEN)
+            setvar(VAR_Q_SANDSHREW, 4)
+            setflag(FLAG_Q_OMURA_RESOLVED)
+            clearflag(FLAG_HIDE_INN_CAGE)
+        }
+    } else {
+        msgbox(TokiwaInn_Text_OmuraKept)
+        setflag(FLAG_Q_SANDSHREW_KEPT)
+        setvar(VAR_Q_SANDSHREW, 5)
+        setflag(FLAG_Q_OMURA_RESOLVED)
+    }
+    release
+    end
+}
+
+// ---------------------------------------------------------------------------------------------
+// Hiroshi (TOK-104): entrance 07-09 and common room 18-21. Pidgey released (once) / B1 / default.
+// ---------------------------------------------------------------------------------------------
+script TokiwaInn_EventScript_Hiroshi {
+    lock
+    faceplayer
+    if (flag(FLAG_Q_PIDGEY_RELEASED) && !flag(FLAG_P_HIROSHI_PIDGEY)) {
+        setflag(FLAG_P_HIROSHI_PIDGEY)
+        msgbox(TokiwaInn_Text_HiroshiPidgey)
+    } elif (flag(FLAG_BADGE01_GET)) {
+        msgbox(TokiwaInn_Text_HiroshiB1)
+    } else {
+        msgbox(TokiwaInn_Text_HiroshiWater)
+    }
+    release
+    end
+}
+
+script TokiwaInn_EventScript_Ken {
+    msgbox(TokiwaInn_Text_Ken, MSGBOX_NPC)
+    end
+}
+
+// ---------------------------------------------------------------------------------------------
+// Objects (lines only).
+// ---------------------------------------------------------------------------------------------
+script TokiwaInn_EventScript_Register {
+    lockall
+    msgbox(TokiwaInn_Text_Register)
+    msgbox(TokiwaInn_Text_RegisterFumiko)
+    if (flag(FLAG_Q_FIORA_MET)) {
+        msgbox(TokiwaInn_Text_RegisterFiora)
+    }
+    releaseall
+    end
+}
+
+script TokiwaInn_EventScript_Tokonoma {
+    msgbox(TokiwaInn_Text_Tokonoma, MSGBOX_SIGN)
+    end
+}
+
+script TokiwaInn_EventScript_Board {
+    lockall
+    msgbox(TokiwaInn_Text_BoardCalendar)
+    msgbox(TokiwaInn_Text_BoardRules)
+    msgbox(TokiwaInn_Text_BoardCard)
+    releaseall
+    end
+}
+
+script TokiwaInn_EventScript_TV {
+    lockall
+    checktimeofday
+    switch (var(VAR_RESULT)) {
+        case TIME_MORN:
+            msgbox(TokiwaInn_Text_TVMorn)
+        case TIME_DAY:
+            msgbox(TokiwaInn_Text_TVDay)
+        default:
+            random(3)
+            switch (var(VAR_RESULT)) {
+                case 0:
+                    msgbox(TokiwaInn_Text_TVNite1)
+                case 1:
+                    msgbox(TokiwaInn_Text_TVNite2)
+                default:
+                    msgbox(TokiwaInn_Text_TVNite3)
+            }
+    }
+    releaseall
+    end
+}

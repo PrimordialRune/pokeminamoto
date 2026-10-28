@@ -1,3 +1,99 @@
 // Yujirou's flat by the canal (tokiwa-spine). New slice interior (studio scaffold, world M1), reusing LAYOUT_FRLG_HOUSE1.
-// Its door in the town and the exit warp target are wired at world M2.
-mapscripts ViridianCity_YujirouFlat_MapScripts {}
+// Rows TOK-007, 119 (with 304's photo half), 214, 215, 410. Contract C6.
+// Yujirou sits here until the night he spends in the arena's care: from FLAG_Q_YUJI_SLEPT until
+// FLAG_BADGE01_GET he is in the PMC arena; after the badge he is back here; after B2 the room is empty.
+
+mapscripts ViridianCity_YujirouFlat_MapScripts {
+    MAP_SCRIPT_ON_TRANSITION {
+        if (flag(FLAG_BADGE02_GET) || (flag(FLAG_Q_YUJI_SLEPT) && !flag(FLAG_BADGE01_GET))) {
+            setflag(FLAG_HIDE_YUJI_FLAT)
+        } else {
+            clearflag(FLAG_HIDE_YUJI_FLAT)
+        }
+    }
+}
+
+// TOK-007: the first entry. He ignores Satoshi, one jab, then the answer.
+script ViridianCity_YujirouFlat_EventScript_Meeting {
+    lockall
+    if (!flag(FLAG_Q_YUJI_MET) && !flag(FLAG_HIDE_YUJI_FLAT)) {
+        msgbox(TokiwaFlat_Text_007_Sits)
+        msgbox(TokiwaFlat_Text_007_Jab)
+        msgbox(TokiwaFlat_Text_007_Tomorrow)
+        setflag(FLAG_Q_YUJI_MET)
+    }
+    releaseall
+    end
+}
+
+script ViridianCity_YujirouFlat_EventScript_Yujirou {
+    lock
+    faceplayer
+    if (flag(FLAG_BADGE01_GET)) {
+        // TOK-119 + TOK-304 (the photos): after the badge he is rewriting a page of the notebook.
+        if (flag(FLAG_Q_TM04_OWED)) {
+            call(TokiwaPMC_EventScript_GiveTM04)
+            release
+            end
+        }
+        if (flag(FLAG_Q_YUJI_PHOTOS)) {
+            msgbox(TokiwaFlat_Text_AfterPhotos)
+            release
+            end
+        }
+        msgbox(TokiwaFlat_Text_YouAgain)
+        msgbox(TokiwaFlat_Text_WaitOrLeave)
+        dynmultichoice(20, 6, FALSE, 2, 0, DYN_MULTICHOICE_CB_NONE, TokiwaFlat_Text_Wait, TokiwaFlat_Text_Leave)
+        if (var(VAR_RESULT) == 0) {
+            msgbox(TokiwaFlat_Text_Photos1)
+            msgbox(TokiwaFlat_Text_Photos2)
+            msgbox(TokiwaFlat_Text_Photos3)
+            setflag(FLAG_Q_YUJI_PHOTOS)
+        }
+        release
+        end
+    }
+    msgbox(TokiwaFlat_Text_YujirouWaiting)
+    release
+    end
+}
+
+// TOK-214: four photos (Shiba, Kanna, Wataru, Sakaki). After B2 the centre one is gone (TOK-410).
+script ViridianCity_YujirouFlat_EventScript_PhotoShiba {
+    msgbox(TokiwaFlat_Text_PhotoShiba, MSGBOX_SIGN)
+    end
+}
+
+script ViridianCity_YujirouFlat_EventScript_PhotoKanna {
+    msgbox(TokiwaFlat_Text_PhotoKanna, MSGBOX_SIGN)
+    end
+}
+
+script ViridianCity_YujirouFlat_EventScript_PhotoWataru {
+    msgbox(TokiwaFlat_Text_PhotoWataru, MSGBOX_SIGN)
+    end
+}
+
+script ViridianCity_YujirouFlat_EventScript_PhotoSakaki {
+    if (flag(FLAG_BADGE02_GET)) {
+        msgbox(TokiwaFlat_Text_PhotoGone, MSGBOX_SIGN)
+    } else {
+        msgbox(TokiwaFlat_Text_PhotoSakaki, MSGBOX_SIGN)
+    }
+    end
+}
+
+// TOK-215
+script ViridianCity_YujirouFlat_EventScript_Notebook {
+    if (flag(FLAG_BADGE02_GET)) {
+        msgbox(TokiwaFlat_Text_EmptyRoom, MSGBOX_SIGN)
+    } else {
+        msgbox(TokiwaFlat_Text_Notebook, MSGBOX_SIGN)
+    }
+    end
+}
+
+script ViridianCity_YujirouFlat_EventScript_Window {
+    msgbox(TokiwaFlat_Text_Window, MSGBOX_SIGN)
+    end
+}

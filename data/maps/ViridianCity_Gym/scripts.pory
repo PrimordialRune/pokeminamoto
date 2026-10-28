@@ -1,2 +1,312 @@
-// Placeholder imported from FireRed (tools/frlg_import). No events yet.
-mapscripts ViridianCity_Gym_MapScripts {}
+// Tokiwa PMC and Yujirou's Wing arena (ViridianCity_Gym), tokiwa-spine.
+// Rows TOK-003, 004, 005, 006, 009, 101, 122, 124, 202, 204, 205, 223, 226, 229, 230, 304 (arena half),
+// 501, 503, 504. Contracts: C6 (Yujirou), C13 (B1). The arena rules are taught through channel 1 (the
+// arena door sign), channel 3 (the circuit trainers fight with the arena live) and, once takeshi's
+// first-fire messages land, channel 4. Channel 2 is tokiwa-town's arena watcher.
+
+// include/arena_ecology.h enum value of ARENA_LUCKY_STRIKE (scripts cannot see C enums).
+const ARENA_LUCKY_STRIKE_ID = 1
+
+mapscripts ViridianCity_Gym_MapScripts {
+    MAP_SCRIPT_ON_TRANSITION {
+        // Whoever walks in from the street starts in the lobby: no arena yet.
+        setvar(VAR_BATTLE_ARENA, 0)
+        // TOK-009: the closed-arena barrier and its sign go once the player has slept after meeting
+        // Yujirou (FLAG_Q_YUJI_SLEPT). Nothing else opens the arena.
+        if (flag(FLAG_Q_YUJI_SLEPT)) {
+            setflag(FLAG_HIDE_TOKIWA_PMC_BARRIER)
+        } else {
+            clearflag(FLAG_HIDE_TOKIWA_PMC_BARRIER)
+        }
+        // C6: Yujirou waits in the arena from the rest until the badge; the flat has him otherwise
+        // (see ViridianCity_YujirouFlat).
+        if (flag(FLAG_Q_YUJI_SLEPT) && !flag(FLAG_BADGE01_GET)) {
+            clearflag(FLAG_HIDE_YUJI_ARENA)
+        } else {
+            setflag(FLAG_HIDE_YUJI_ARENA)
+        }
+    }
+}
+
+// ---------------------------------------------------------------------------
+// The arena gate (17,20): the arena is "live" for every fight that starts beyond it.
+// Entering sets VAR_BATTLE_ARENA; the lobby side clears it. Core clears it at the end of each battle,
+// so the circuit trainers set it again after theirs (they are still in the arena).
+// ---------------------------------------------------------------------------
+
+script TokiwaPMC_EventScript_ArenaOn {
+    lockall
+    setvar(VAR_BATTLE_ARENA, ARENA_LUCKY_STRIKE_ID)
+    releaseall
+    end
+}
+
+script TokiwaPMC_EventScript_ArenaOff {
+    lockall
+    setvar(VAR_BATTLE_ARENA, 0)
+    releaseall
+    end
+}
+
+// TOK-004: the barrier box and the sign. Reading it is what makes Aoi's TOK-006 pointer play.
+script TokiwaPMC_EventScript_ArenaClosed {
+    lockall
+    setflag(FLAG_SEEN_ARENA_CLOSED)
+    msgbox(ViridianCity_Gym_Text_Closed)
+    releaseall
+    end
+}
+
+// TOK-223 + teaching channel 1.
+script TokiwaPMC_EventScript_ArenaSign {
+    lockall
+    msgbox(TokiwaPMC_Text_ArenaSign)
+    msgbox(TokiwaPMC_Text_ArenaSignRule)
+    releaseall
+    end
+}
+
+// ---------------------------------------------------------------------------
+// Reception: Fujimoto Aoi (TOK-003, 005, 006, 101)
+// ---------------------------------------------------------------------------
+
+// THE SEAL GATE (OQ 5 / Q98). VAR_RESULT = TRUE when Aoi may register the player. To cut the gate,
+// replace the body with the single line  setvar(VAR_RESULT, TRUE)  and return.
+script TokiwaPMC_EventScript_CheckSeal {
+    setvar(VAR_RESULT, FALSE)
+    if (flag(FLAG_Q_FORM_SEALED)) {
+        setvar(VAR_RESULT, TRUE)
+    }
+    return
+}
+
+script TokiwaPMC_EventScript_Aoi {
+    lock
+    faceplayer
+    if (flag(FLAG_Q_CARD)) {
+        goto(TokiwaPMC_EventScript_AoiRegistered)
+    }
+    call(TokiwaPMC_EventScript_CheckSeal)
+    if (var(VAR_RESULT) == TRUE) {
+        goto(TokiwaPMC_EventScript_AoiRegister)
+    }
+    // TOK-003: no seal yet.
+    checkitem(ITEM_PMC_FORM)
+    if (var(VAR_RESULT) == TRUE) {
+        msgbox(TokiwaPMC_Text_AoiNeedsSeal)
+        release
+        end
+    }
+    msgbox(TokiwaPMC_Text_AoiNoSeal)
+    giveitem(ITEM_PMC_FORM)
+    if (var(VAR_RESULT) == TRUE) {
+        msgbox(TokiwaPMC_Text_AoiGiveForm)
+    }
+    release
+    end
+}
+
+// TOK-005: the Trainer Card and the Welcome Kit (3 Poké Balls + 4 Potions, PLACEHOLDER Q101: the lab gate's lever, see status.md).
+script TokiwaPMC_EventScript_AoiRegister {
+    checkitemspace(ITEM_POKE_BALL, 3)
+    if (var(VAR_RESULT) == FALSE) {
+        msgbox(TokiwaPMC_Text_AoiBagFull)
+        release
+        end
+    }
+    checkitemspace(ITEM_POTION, 4)
+    if (var(VAR_RESULT) == FALSE) {
+        msgbox(TokiwaPMC_Text_AoiBagFull)
+        release
+        end
+    }
+    msgbox(TokiwaPMC_Text_AoiRegister1)
+    removeitem(ITEM_PMC_FORM)
+    setflag(FLAG_Q_CARD)
+    msgbox(TokiwaPMC_Text_AoiRegister2)
+    giveitem(ITEM_POKE_BALL, 3)
+    giveitem(ITEM_POTION, 4)
+    msgbox(TokiwaPMC_Text_AoiRegister3)
+    release
+    end
+}
+
+script TokiwaPMC_EventScript_AoiRegistered {
+    // TOK-006: she points at the canal after the player has seen the closed door.
+    if (flag(FLAG_SEEN_ARENA_CLOSED) && !flag(FLAG_Q_YUJI_MET)) {
+        msgbox(TokiwaPMC_Text_AoiWhereYujirou)
+        release
+        end
+    }
+    // TOK-101: the circuit talk, by Charisma tier (T1 gossip, T3 the site).
+    checkcharisma(CHARISMA_TIERS_TOKIWA)
+    switch (var(VAR_RESULT)) {
+        case CHARISMA_TIER_HIGH:
+            msgbox(TokiwaPMC_Text_AoiSite)
+        case CHARISMA_TIER_MID:
+            msgbox(TokiwaPMC_Text_AoiGossip)
+        case CHARISMA_TIER_LOW:
+            msgbox(TokiwaPMC_Text_AoiGossip)
+        default:
+            msgbox(TokiwaPMC_Text_AoiCircuit)
+    }
+    release
+    end
+}
+
+// TOK-122: the two lobby NPCs.
+script TokiwaPMC_EventScript_LobbyPC {
+    msgbox(TokiwaPMC_Text_LobbyPC, MSGBOX_NPC)
+    end
+}
+
+script TokiwaPMC_EventScript_LobbyInn {
+    msgbox(TokiwaPMC_Text_LobbyInn, MSGBOX_NPC)
+    end
+}
+
+// ---------------------------------------------------------------------------
+// Objects and examines
+// ---------------------------------------------------------------------------
+
+// TOK-229: the PMC PC. Storage always; OKIDO'S PC (the Index rating) once the Index is in hand.
+script TokiwaPMC_EventScript_PC {
+    lockall
+    if (!flag(FLAG_SYS_POKEDEX_GET)) {
+        goto(EventScript_PC)
+    }
+    message(TokiwaPMC_Text_PCWhich)
+    waitmessage
+    dynmultichoice(20, 4, FALSE, 3, 0, DYN_MULTICHOICE_CB_NONE, TokiwaPMC_Text_PCStorage, TokiwaPMC_Text_PCOkido, TokiwaPMC_Text_PCLogOff)
+    switch (var(VAR_RESULT)) {
+        case 0:
+            goto(EventScript_PC)
+        case 1:
+            goto(Common_EventScript_OkidoPC)
+    }
+    releaseall
+    end
+}
+
+script TokiwaPMC_EventScript_Brochure {
+    msgbox(TokiwaPMC_Text_Brochure, MSGBOX_SIGN)
+    end
+}
+
+// TOK-230: only after registration.
+script TokiwaPMC_EventScript_Sponsorship {
+    if (flag(FLAG_Q_CARD)) {
+        msgbox(TokiwaPMC_Text_Sponsorship, MSGBOX_SIGN)
+    }
+    end
+}
+
+script TokiwaPMC_EventScript_SideWindow {
+    msgbox(TokiwaPMC_Text_SideWindow, MSGBOX_SIGN)
+    end
+}
+
+script TokiwaPMC_EventScript_CarvedSeat {
+    msgbox(TokiwaPMC_Text_CarvedSeat, MSGBOX_SIGN)
+    end
+}
+
+script TokiwaPMC_EventScript_TalkTip {
+    msgbox(TokiwaPMC_Text_TalkTip, MSGBOX_SIGN)
+    end
+}
+
+// ---------------------------------------------------------------------------
+// Circuit trainers (TOK-503, TOK-504). The first stands in the lane to the right of the gate, so
+// the player sees an arena battle before the leader; the second waits in a side lane. Their
+// parties are PLACEHOLDERS (trainers.party). Core clears VAR_BATTLE_ARENA when a battle ends,
+// so each sets it again once its fight is won (the player is still in the arena).
+// These scripts must start with the trainerbattle command (sight triggers read it directly).
+// ---------------------------------------------------------------------------
+
+script TokiwaPMC_EventScript_Circuit1 {
+    trainerbattle_single(TRAINER_CIRCUIT_TOKIWA_1, TokiwaPMC_Text_Circuit1Intro, TokiwaPMC_Text_Circuit1Defeat, TokiwaPMC_EventScript_Circuit1Won)
+    msgbox(TokiwaPMC_Text_Circuit1After, MSGBOX_AUTOCLOSE)
+    end
+}
+
+script TokiwaPMC_EventScript_Circuit1Won {
+    setvar(VAR_BATTLE_ARENA, ARENA_LUCKY_STRIKE_ID)
+    msgbox(TokiwaPMC_Text_Circuit1After)
+    releaseall
+    end
+}
+
+script TokiwaPMC_EventScript_Circuit2 {
+    trainerbattle_single(TRAINER_CIRCUIT_TOKIWA_2, TokiwaPMC_Text_Circuit2Intro, TokiwaPMC_Text_Circuit2Defeat, TokiwaPMC_EventScript_Circuit2Won)
+    msgbox(TokiwaPMC_Text_Circuit2After, MSGBOX_AUTOCLOSE)
+    end
+}
+
+script TokiwaPMC_EventScript_Circuit2Won {
+    setvar(VAR_BATTLE_ARENA, ARENA_LUCKY_STRIKE_ID)
+    msgbox(TokiwaPMC_Text_Circuit2After)
+    releaseall
+    end
+}
+
+// ---------------------------------------------------------------------------
+// Yujirou (TOK-501, TOK-124, TOK-304)
+// Omar's canon party in trainers.party, unchangeable. FLAG_Q_LOST_YUJI is set before the fight and
+// cleared by the win, because a loss never returns to the script (whiteout to the inn).
+// ---------------------------------------------------------------------------
+
+script TokiwaPMC_EventScript_Yujirou {
+    lock
+    faceplayer
+    if (flag(FLAG_BADGE01_GET)) {
+        if (flag(FLAG_Q_TM04_OWED)) {
+            call(TokiwaPMC_EventScript_GiveTM04)
+        } else {
+            msgbox(TokiwaPMC_Text_YujirouAfter)
+        }
+        release
+        end
+    }
+    setvar(VAR_BATTLE_ARENA, ARENA_LUCKY_STRIKE_ID)
+    if (flag(FLAG_Q_LOST_YUJI)) {
+        // TOK-124: "Again. Fine." is the intro on a rematch.
+        trainerbattle_single(TRAINER_YUJIROU, TokiwaPMC_Text_YujirouAgain, TokiwaPMC_Text_YujirouDefeat, TokiwaPMC_EventScript_YujirouDefeated)
+    } else {
+        setflag(FLAG_Q_LOST_YUJI)
+        trainerbattle_single(TRAINER_YUJIROU, TokiwaPMC_Text_YujirouIntro, TokiwaPMC_Text_YujirouDefeat, TokiwaPMC_EventScript_YujirouDefeated)
+    }
+    // Only reached if the trainer was already beaten (flags edited): behave as after the badge.
+    setvar(VAR_BATTLE_ARENA, 0)
+    msgbox(TokiwaPMC_Text_YujirouAfter)
+    release
+    end
+}
+
+// SYS-004: the one place for every B1 consequence on this side (other maps read FLAG_BADGE01_GET).
+script TokiwaPMC_EventScript_YujirouDefeated {
+    setvar(VAR_BATTLE_ARENA, 0)
+    clearflag(FLAG_Q_LOST_YUJI)
+    msgbox(TokiwaPMC_Text_YujirouAdmits)
+    setflag(FLAG_BADGE01_GET)
+    call(Common_EventScript_PlayGymBadgeFanfare)
+    msgbox(TokiwaPMC_Text_ReceivedBadge)
+    addvar(VAR_CHARISMA, 2)
+    msgbox(TokiwaPMC_Text_YujirouTM)
+    call(TokiwaPMC_EventScript_GiveTM04)
+    release
+    end
+}
+
+// SYS-004: TM04 (PLACEHOLDER, OQ 7). A full bag cannot lose it: the debt is a flag, paid at the next talk
+// (here or in the flat, TOK-119).
+script TokiwaPMC_EventScript_GiveTM04 {
+    giveitem(ITEM_TM04)
+    if (var(VAR_RESULT) == TRUE) {
+        clearflag(FLAG_Q_TM04_OWED)
+    } else {
+        setflag(FLAG_Q_TM04_OWED)
+        msgbox(TokiwaPMC_Text_YujirouTMLater)
+    }
+    return
+}

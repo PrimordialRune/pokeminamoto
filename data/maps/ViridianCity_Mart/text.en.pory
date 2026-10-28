@@ -1,2 +1,135 @@
-// ViridianCity_Mart dialogue (English). Logic: scripts.pory. Translations: text.<lang>.pory
+// Tokiwa CVS (ViridianCity_Mart) dialogue (English). Logic: scripts.pory. Translations: text.<lang>.pory
 // with the same block names; see docs/engineering/map-text.md.
+// Owner: tokiwa-spine. The CVS sells no battle items and, this build, no shop menu at all (TOK-228).
+
+// TOK-002, Okido's parcel. [R/G Viridian Mart clerk] "Hey! You came from PALLET TOWN? You know PROF. OAK,
+// right? His order came in. Will you take it to him?" + [new placement, debate 4].
+text TokiwaCVS_Text_ParcelHey {
+    format("Hey! You came from Masara?")
+}
+
+text TokiwaCVS_Text_ParcelOrder {
+    format("You know Professor Okido, right? His parcel came in.\pWill you take it to him?")
+}
+
+text TokiwaCVS_Text_ParcelSlip {
+    format("A plain delivery slip. No sender.")
+}
+
+text TokiwaCVS_Text_ParcelBagFull {
+    format("Your bag is full. Make some room and come back to me.")
+}
+
+// TOK-107, Tanabe (MORN and DAY): one monosyllable per visit.
+text TokiwaCVS_Text_Tanabe1 { format("Mm.") }
+text TokiwaCVS_Text_Tanabe2 { format("Next.") }
+text TokiwaCVS_Text_Tanabe3 { format("Hot today.") }
+
+// TOK-106 + TOK-228, Kato (NITE). The CVS is restocking; nothing is for sale.
+text TokiwaCVS_Text_KatoRestocking {
+    format("We're restocking. Come back tomorrow.") // TOK-228, line only
+}
+
+text TokiwaCVS_Text_KatoKimura {
+    format("The old man by the magazines. The pachinko man.\pHe never plays.")
+}
+
+text TokiwaCVS_Text_KatoLost {
+    format("He bought snacks last night.\pHe only does that when he wins.")
+}
+
+text TokiwaCVS_Text_KatoWon {
+    format("He didn't come in last night.")
+}
+
+text TokiwaCVS_Text_KatoT2 {
+    format("Yujirou's the only regular who looks like he's going somewhere.\pI'd like that. Anywhere with mountains.") // [new] PLACEHOLDER OQ14: Omar to write
+}
+
+// TOK-121, the customer. [R/G Mart] + Tokiwa v5 §4 (the CVS sells no battle items).
+text TokiwaCVS_Text_Customer {
+    format("No! Potions are all sold out.")
+}
+
+// TOK-403, kids counting coins (hours 14-17).
+text TokiwaCVS_Text_Kids {
+    format("...Not enough for two.")
+}
+
+// TOK-405, Kimura at the CVS (hour 22).
+text TokiwaCVS_Text_Kimura {
+    format("What are you staring at.")
+}
+
+text TokiwaCVS_Text_KimuraBowl {
+    format("...Don't go poking around other people's doors.")
+}
+
+// TOK-213 (+ TOK-308's magazine half), line only: no purchase, each issue is read in place.
+text TokiwaCVS_Text_MagazineRack {
+    format("The magazine rack.")
+}
+
+text TokiwaCVS_Text_MagazineTrainer {
+    format("Weekly Trainer. Leader rankings: Takeshi of Nibi, unbeaten for six months.\pIn the ranking column, “Okada F.” keeps moving up.")
+}
+
+text TokiwaCVS_Text_MagazineScience {
+    format("Pocket Science. A classification of species, citing “an independent researcher of Masara.”")
+}
+
+text TokiwaCVS_Text_MagazineBusiness {
+    format("Kanto Business Weekly. The circuit expands across the region, upbeat and clinical.\p“Silph Co., founded in the first year of the reconstruction...”") // K4's official version, one clause
+}
+
+// TOK-216, the shelves.
+text TokiwaCVS_Text_Cigarettes {
+    format("Cigarettes. Local brand. Not sold to minors.")
+}
+
+text TokiwaCVS_Text_Fridge {
+    format("A fridge of drinks. Beer on the bottom shelf: to be looked at, not bought.")
+}
+
+text TokiwaCVS_Text_ColdShelf {
+    format("Onigiri on the cold shelf: salmon, umeboshi, tuna.")
+}
+
+text TokiwaCVS_Text_HotCounter {
+    format("The hot counter. Oden, simmering.")
+}
+
+text TokiwaCVS_Text_TVMorn {
+    format("The wall TV: a weather map. Clear over the canal.") // PLACEHOLDER: TV content by hour (TOK-216)
+}
+
+text TokiwaCVS_Text_TVDay {
+    format("The wall TV: a quiz show with the sound off.")
+}
+
+text TokiwaCVS_Text_TVNite {
+    format("The wall TV: the late news, volume low.")
+}
+
+// TOK-217, the empty Poké Ball shelf (Silph surface, never commented).
+text TokiwaCVS_Text_BallShelf {
+    format("POKÉ BALL: coming soon. Available at the PMC or the Nibi Market.\pThe space is ready. The label has a small Silph Co. logo in the bottom right.")
+}
+
+// TOK-104 + TOK-402, Hiroshi in his 12-14 slot (onigiri and hot tea). One line per visit.
+text TokiwaCVS_Text_HiroshiWater {
+    format("The Genbei water comes from Fuji. It has a taste.")
+}
+
+text TokiwaCVS_Text_HiroshiB1 {
+    format("He was angry at something that had nothing to do with you.")
+}
+
+text TokiwaCVS_Text_HiroshiPidgey {
+    format("The bird. Good.")
+}
+
+text TokiwaCVS_Text_ChoiceTrainer { format("WEEKLY TRAINER") }
+text TokiwaCVS_Text_ChoiceScience { format("POCKET SCIENCE") }
+text TokiwaCVS_Text_ChoiceBusiness { format("KANTO BUSINESS") }
+text TokiwaCVS_Text_ChoiceLeave { format("LEAVE") }

@@ -1,2 +1,73 @@
-// Route1 dialogue (English). Logic: scripts.pory. Translations: text.<lang>.pory
+// Route 1 dialogue (English). Logic: scripts.pory. Translations: text.<lang>.pory
 // with the same block names; see docs/engineering/map-text.md.
+// Owner: tokiwa-spine. R/G line first, Minamoto join after it (joins tagged [new]).
+
+// R01-001. [R/G "ROUTE 1 PALLET TOWN - VIRIDIAN CITY"]
+text Route1_Text_RouteSign {
+    format("ROUTE 1\nMASARA TOWN - TOKIWA CITY")
+}
+
+// R01-101, the roadside vendor. [R/G Mart clerk sample] first, then [new] (Notion: the Toyama
+// okigusuri peddler, "My father walked this road with a box on his back").
+// PLACEHOLDER Q101: no shop and no repeating Potion this build; owner thread "Make TP need rest, with town toolkit".
+text Route1_Text_VendorSample {
+    format("Hi! I sell medicine along this road.\pI know, I'll give you a sample! Here you go!")
+}
+
+text Route1_Text_VendorBagFull {
+    format("Oh, your bag is full.\pCome back when there's room. The sample will keep.")
+}
+
+text Route1_Text_VendorFather {
+    format("My father walked this road with a box on his back.\pI have a bicycle.") // [new]
+}
+
+// R01-102, the ledge boy. [R/G]
+text Route1_Text_LedgeBoy {
+    format("See those ledges? It's a bit scary, but you can jump from them.\pYou can get back to Masara quicker that way.")
+}
+
+// R01-201, Nanami's herb (C5). PLACEHOLDER: the plant is Omar's pick, so the text names none.
+text Route1_Text_HerbPicked {
+    format("Between the stones of the ditch grows a small herb with pale leaves.\p{PLAYER} picked a few.")
+}
+
+// R01-202, treasure spot 3 (MAS-302). [Notion] + [v0.4 line]; the headline is from the script list.
+text Route1_Text_TreasureFound {
+    format("Under a flat stone at the corner of the ledge lies a tin box.")
+}
+
+text Route1_Text_TreasureIssue {
+    format("Inside, an old issue of Weekly Trainer.\p“New leader in Nibi: sixteen.”")
+}
+
+// R01-301, the tagged Rattata (C1). PLACEHOLDER: species Rattata and Lv 4 (OQ 3), gfx is a stand-in.
+text Route1_Text_TagRattataWatches {
+    format("This Rattata doesn't run. It doesn't feed.\pIt just watches you.") // [new]
+}
+
+text Route1_Text_TagCaught {
+    format("A worn metal tag was clipped to its ear.\pIt came loose when the Ball closed.")
+}
+
+text Route1_Text_TagKnockedOut {
+    format("The Rattata is gone. Something small glints in the grass.")
+}
+
+text Route1_Text_TagInGrass {
+    format("A metal tag lies in the grass where the Rattata stood.")
+}
+
+text Route1_Text_TagFled {
+    format("The Rattata slips away through the grass.")
+}
+
+// R01-302, OLD EAR TAG. Full row text, shown on pickup (the bag description is condensed).
+text Route1_Text_TagReads {
+    format("Metal tag. “OKD-” and worn digits.\pOn the back, a second stamp, newer, too small to read.")
+}
+
+// R01-401, Kimura's night walk. Silent on the route.
+text Route1_Text_KimuraSilent {
+    format("...")
+}

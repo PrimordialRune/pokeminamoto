@@ -1,2 +1,86 @@
 // ViridianCity_YujirouFlat dialogue (English). Logic: scripts.pory. Translations: text.<lang>.pory
 // with the same block names; see docs/engineering/map-text.md.
+// Owner: tokiwa-spine. Omar's own texts (Tokiwa v5 §11) are kept as written; joins tagged [new].
+
+// TOK-007, first entry: Satoshi never speaks, so Yujirou's lines carry the scene.
+text TokiwaFlat_Text_007_Sits {
+    format("A boy sits on the tatami, a Farfetch'd standing close by.\pHe doesn't look up.")
+}
+
+text TokiwaFlat_Text_007_Jab {
+    format("So this is the one who walked the easy road from Masara.") // jab, Tokiwa v5 §11, wording [new]
+}
+
+text TokiwaFlat_Text_007_Tomorrow {
+    format("Tomorrow morning.")
+}
+
+// Before the arena opens, a second visit.
+text TokiwaFlat_Text_YujirouWaiting {
+    format("...Tomorrow morning.")
+}
+
+// TOK-119 / TOK-304 (flat half), after B1. [Tokiwa v5 §11] + [new line]
+text TokiwaFlat_Text_YouAgain {
+    format("You again.")
+}
+
+text TokiwaFlat_Text_WaitOrLeave {
+    format("He looks at the wall of photos and says nothing more.")
+}
+
+text TokiwaFlat_Text_Wait { "WAIT" }
+text TokiwaFlat_Text_Leave { "LEAVE" }
+
+text TokiwaFlat_Text_Photos1 {
+    format("...I don't know who they are.")
+}
+
+text TokiwaFlat_Text_Photos2 {
+    format("I found them. They looked like people who knew what they were doing.\pThe one in the middle most of all.")
+}
+
+text TokiwaFlat_Text_Photos3 {
+    format("I don't know who that is.")
+}
+
+text TokiwaFlat_Text_AfterPhotos {
+    format("...Go on. I'm busy.")
+}
+
+// TOK-214, the four photos. Omar's texts, kept as written. Art constraint: the portico in the centre
+// photo must not resemble the Silph HQ entrance, here or in any later reuse. No Silph clue, K6 untouched.
+text TokiwaFlat_Text_PhotoShiba {
+    format("An old man in a dark cloak. He looks like someone who never lost a fight to distraction.")
+}
+
+text TokiwaFlat_Text_PhotoKanna {
+    format("A woman. Her expression is hard to read: not indifferent, but not open.\pShe looks used to being looked at.")
+}
+
+text TokiwaFlat_Text_PhotoWataru {
+    format("A young man. He isn't looking at the lens.\pHe doesn't seem to care much about being in this photo.")
+}
+
+text TokiwaFlat_Text_PhotoSakaki {
+    format("A blurred photo of someone. It's hard to tell where: a big building, a portico.\pDark jacket. They walk as if they had no doubt where they were going.")
+}
+
+// TOK-410, after B2: the centre photo is gone.
+text TokiwaFlat_Text_PhotoGone {
+    format("Strips of tape and a pale square on the wall.\pThe photo that hung here is gone.") // [new, OQ 11]
+}
+
+// TOK-215, the notebook and the window.
+text TokiwaFlat_Text_Notebook {
+    format("A notebook of tactical diagrams. A lot of work here.\pMore than a sixteen-year-old should have.")
+}
+
+text TokiwaFlat_Text_Window {
+    format("The canal. The water flows.")
+}
+
+// TOK-410, empty after B2.
+text TokiwaFlat_Text_EmptyRoom {
+    format("The room is empty. Nobody has slept on the tatami for days.") // [new, OQ 11]
+}

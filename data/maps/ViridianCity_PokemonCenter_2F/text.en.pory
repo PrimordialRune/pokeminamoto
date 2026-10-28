@@ -1,2 +1,93 @@
-// ViridianCity_PokemonCenter_2F dialogue (English). Logic: scripts.pory. Translations: text.<lang>.pory
-// with the same block names; see docs/engineering/map-text.md.
+// Tokaido-ya inn 2F (ViridianCity_PokemonCenter_2F) dialogue (English). Logic: scripts.pory.
+// Owner: tokiwa-spine. The corridor, the cage, and the students lodging at the east end.
+
+// TOK-210, the corridor doors. Take: closed with a tag while Omura is in; Matsu: closed, no tag; Ume: the canal window.
+text TokiwaInn_Text_DoorUme {
+    format("The UME room. Through the window: the canal flows quietly.")
+}
+
+text TokiwaInn_Text_DoorUmeNite {
+    format("You can hear frogs.")
+}
+
+text TokiwaInn_Text_DoorTakeTag {
+    format("Closed. A tag: Occupied.")
+}
+
+text TokiwaInn_Text_DoorTake {
+    format("The TAKE room. Closed. Nothing hangs on the handle.")
+}
+
+text TokiwaInn_Text_DoorMatsu {
+    format("Closed. No tag. It doesn't look occupied, just closed.")
+}
+
+// TOK-227, Omura's cage (after the hand-over or the missed hand-over, until the next rest).
+text TokiwaInn_Text_Cage {
+    format("A transport cage under a cloth. Something scratches once, then stops.")
+}
+
+// TOK-309, the item left in the Take room.
+text TokiwaInn_Text_TakeItemNote {
+    format("Left for the next guest.")
+}
+
+// TOK-114 + TOK-306, the students. Jun (enthusiast, field notebook), Reiko (ethology, monosyllables),
+// Hayashi (a book whose title he never shows). Lodging area: the 2F east lounge. PLACEHOLDER: the brief
+// puts them in the Matsu room; the Matsu door (TOK-210) stays shut, so the lounge stands in for it.
+text TokiwaInn_Text_JunV1 {
+    format("Are you going to Nibi? There's a Geodude outside the city that acts strangely.")
+}
+
+text TokiwaInn_Text_JunV1b {
+    format("We're not trainers. We only write down what they do.")
+}
+
+text TokiwaInn_Text_JunV1c {
+    format("Could you tell us what it's like out there?")
+}
+
+text TokiwaInn_Text_JunReport {
+    format("Day and night, both. I'll log it. Thank you.")
+}
+
+text TokiwaInn_Text_JunV3a {
+    format("Our professor says the research interests a partner institution of the University.")
+}
+
+text TokiwaInn_Text_JunV3b {
+    format("Hayashi, not lifting his book: “Silph.”")
+}
+
+text TokiwaInn_Text_JunV3c {
+    format("“You don't know that,” Jun says.\p“No,” says Hayashi.")
+}
+
+text TokiwaInn_Text_JunDefault {
+    format("My notebook is full. I need another one.")
+}
+
+text TokiwaInn_Text_ReikoV2 {
+    format("Sandshrew don't live here. If one was found, someone moved it.")
+}
+
+text TokiwaInn_Text_ReikoV2Party {
+    format("Show me. ...Not from here. Someone carried it.")
+}
+
+text TokiwaInn_Text_ReikoT2 {
+    format("Professor Okido compiled something like this, before.\pShe didn't know he had assistants.") // [new] PLACEHOLDER OQ14: Omar to write
+}
+
+text TokiwaInn_Text_ReikoDefault {
+    format("...")
+}
+
+text TokiwaInn_Text_Hayashi {
+    format("...")
+}
+
+// TOK-306, the table (the report lines are merged here too).
+text TokiwaInn_Text_StudentsTable {
+    format("A low table. Notebooks, a pencil case, a book with its cover turned face down.")
+}
