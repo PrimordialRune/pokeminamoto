@@ -289,3 +289,23 @@ const u8 gTrainerBackPic_Steven[] = INCBIN_U8("graphics/trainers/back_pics/steve
 
 const u32 gTrainerBackPicPalette_Red[] = INCBIN_U32("graphics/trainers/back_pics/red.gbapal.lz");
 const u32 gTrainerBackPicPalette_Leaf[] = INCBIN_U32("graphics/trainers/back_pics/leaf.gbapal.lz");
+
+// Minamoto slice trainers: PLACEHOLDER pics from pokefirered
+const u32 gTrainerFrontPic_Blue[] = INCBIN_U32("graphics/trainers/front_pics/blue.4bpp.lz");
+const u32 gTrainerPalette_Blue[] = INCBIN_U32("graphics/trainers/front_pics/blue.gbapal.lz");
+
+const u32 gTrainerFrontPic_Brock[] = INCBIN_U32("graphics/trainers/front_pics/brock.4bpp.lz");
+const u32 gTrainerPalette_Brock[] = INCBIN_U32("graphics/trainers/front_pics/brock.gbapal.lz");
+
+const u32 gTrainerFrontPic_FrlgBugCatcher[] = INCBIN_U32("graphics/trainers/front_pics/frlg_bug_catcher.4bpp.lz");
+const u32 gTrainerPalette_FrlgBugCatcher[] = INCBIN_U32("graphics/trainers/front_pics/frlg_bug_catcher.gbapal.lz");
+
+const u32 gTrainerFrontPic_FrlgCamper[] = INCBIN_U32("graphics/trainers/front_pics/frlg_camper.4bpp.lz");
+const u32 gTrainerPalette_FrlgCamper[] = INCBIN_U32("graphics/trainers/front_pics/frlg_camper.gbapal.lz");
+
+const u32 gTrainerFrontPic_FrlgBirdKeeper[] = INCBIN_U32("graphics/trainers/front_pics/frlg_bird_keeper.4bpp.lz");
+const u32 gTrainerPalette_FrlgBirdKeeper[] = INCBIN_U32("graphics/trainers/front_pics/frlg_bird_keeper.gbapal.lz");
+
+const u32 gTrainerFrontPic_FrlgYoungster[] = INCBIN_U32("graphics/trainers/front_pics/frlg_youngster.4bpp.lz");
+const u32 gTrainerPalette_FrlgYoungster[] = INCBIN_U32("graphics/trainers/front_pics/frlg_youngster.gbapal.lz");
+

@@ -1,3 +1,17 @@
+// Minamoto slice pics (art workstream): declared here, include/graphics.h is not art's file
+extern const u32 gTrainerFrontPic_Blue[];
+extern const u32 gTrainerPalette_Blue[];
+extern const u32 gTrainerFrontPic_Brock[];
+extern const u32 gTrainerPalette_Brock[];
+extern const u32 gTrainerFrontPic_FrlgBugCatcher[];
+extern const u32 gTrainerPalette_FrlgBugCatcher[];
+extern const u32 gTrainerFrontPic_FrlgCamper[];
+extern const u32 gTrainerPalette_FrlgCamper[];
+extern const u32 gTrainerFrontPic_FrlgBirdKeeper[];
+extern const u32 gTrainerPalette_FrlgBirdKeeper[];
+extern const u32 gTrainerFrontPic_FrlgYoungster[];
+extern const u32 gTrainerPalette_FrlgYoungster[];
+
 const struct MonCoords gTrainerFrontPicCoords[] =
 {
     [TRAINER_PIC_HIKER] = {.size = 8, .y_offset = 1},
@@ -93,6 +107,12 @@ const struct MonCoords gTrainerFrontPicCoords[] =
     [TRAINER_PIC_LEAF] = {.size = 8, .y_offset = 1},
     [TRAINER_PIC_RS_BRENDAN] = {.size = 8, .y_offset = 1},
     [TRAINER_PIC_RS_MAY] = {.size = 8, .y_offset = 1},
+    [TRAINER_PIC_BLUE] = {.size = 8, .y_offset = 1},
+    [TRAINER_PIC_BROCK] = {.size = 8, .y_offset = 1},
+    [TRAINER_PIC_FRLG_BUG_CATCHER] = {.size = 8, .y_offset = 1},
+    [TRAINER_PIC_FRLG_CAMPER] = {.size = 8, .y_offset = 1},
+    [TRAINER_PIC_FRLG_BIRD_KEEPER] = {.size = 8, .y_offset = 1},
+    [TRAINER_PIC_FRLG_YOUNGSTER] = {.size = 8, .y_offset = 1},
 };
 
 #define TRAINER_SPRITE(trainerPic, sprite, size) [TRAINER_PIC_##trainerPic] = {sprite, size, TRAINER_PIC_##trainerPic}
@@ -192,6 +212,12 @@ const struct CompressedSpriteSheet gTrainerFrontPicTable[] =
     TRAINER_SPRITE(LEAF, gTrainerFrontPic_Leaf, TRAINER_PIC_SIZE),
     TRAINER_SPRITE(RS_BRENDAN, gTrainerFrontPic_RubySapphireBrendan, TRAINER_PIC_SIZE),
     TRAINER_SPRITE(RS_MAY, gTrainerFrontPic_RubySapphireMay, TRAINER_PIC_SIZE),
+    TRAINER_SPRITE(BLUE, gTrainerFrontPic_Blue, TRAINER_PIC_SIZE),
+    TRAINER_SPRITE(BROCK, gTrainerFrontPic_Brock, TRAINER_PIC_SIZE),
+    TRAINER_SPRITE(FRLG_BUG_CATCHER, gTrainerFrontPic_FrlgBugCatcher, TRAINER_PIC_SIZE),
+    TRAINER_SPRITE(FRLG_CAMPER, gTrainerFrontPic_FrlgCamper, TRAINER_PIC_SIZE),
+    TRAINER_SPRITE(FRLG_BIRD_KEEPER, gTrainerFrontPic_FrlgBirdKeeper, TRAINER_PIC_SIZE),
+    TRAINER_SPRITE(FRLG_YOUNGSTER, gTrainerFrontPic_FrlgYoungster, TRAINER_PIC_SIZE),
 };
 
 #define TRAINER_PAL(trainerPic, pal) [TRAINER_PIC_##trainerPic] = {pal, TRAINER_PIC_##trainerPic}
@@ -291,4 +317,10 @@ const struct CompressedSpritePalette gTrainerFrontPicPaletteTable[] =
     TRAINER_PAL(LEAF, gTrainerPalette_Leaf),
     TRAINER_PAL(RS_BRENDAN, gTrainerPalette_RubySapphireBrendan),
     TRAINER_PAL(RS_MAY, gTrainerPalette_RubySapphireMay),
+    TRAINER_PAL(BLUE, gTrainerPalette_Blue),
+    TRAINER_PAL(BROCK, gTrainerPalette_Brock),
+    TRAINER_PAL(FRLG_BUG_CATCHER, gTrainerPalette_FrlgBugCatcher),
+    TRAINER_PAL(FRLG_CAMPER, gTrainerPalette_FrlgCamper),
+    TRAINER_PAL(FRLG_BIRD_KEEPER, gTrainerPalette_FrlgBirdKeeper),
+    TRAINER_PAL(FRLG_YOUNGSTER, gTrainerPalette_FrlgYoungster),
 };

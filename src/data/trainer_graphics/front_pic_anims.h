@@ -370,6 +370,30 @@ static const union AnimCmd *const sAnims_RubySapphireMay[] ={
     sAnim_GeneralFrame0,
 };
 
+static const union AnimCmd *const sAnims_Blue[] ={
+    sAnim_GeneralFrame0,
+};
+
+static const union AnimCmd *const sAnims_Brock[] ={
+    sAnim_GeneralFrame0,
+};
+
+static const union AnimCmd *const sAnims_FrlgBugCatcher[] ={
+    sAnim_GeneralFrame0,
+};
+
+static const union AnimCmd *const sAnims_FrlgCamper[] ={
+    sAnim_GeneralFrame0,
+};
+
+static const union AnimCmd *const sAnims_FrlgBirdKeeper[] ={
+    sAnim_GeneralFrame0,
+};
+
+static const union AnimCmd *const sAnims_FrlgYoungster[] ={
+    sAnim_GeneralFrame0,
+};
+
 const union AnimCmd *const *const gTrainerFrontAnimsPtrTable[] =
 {
     [TRAINER_PIC_HIKER] = sAnims_Hiker,
@@ -465,4 +489,10 @@ const union AnimCmd *const *const gTrainerFrontAnimsPtrTable[] =
     [TRAINER_PIC_LEAF] = sAnims_Leaf,
     [TRAINER_PIC_RS_BRENDAN] = sAnims_RubySapphireBrendan,
     [TRAINER_PIC_RS_MAY] = sAnims_RubySapphireMay,
+    [TRAINER_PIC_BLUE] = sAnims_Blue,
+    [TRAINER_PIC_BROCK] = sAnims_Brock,
+    [TRAINER_PIC_FRLG_BUG_CATCHER] = sAnims_FrlgBugCatcher,
+    [TRAINER_PIC_FRLG_CAMPER] = sAnims_FrlgCamper,
+    [TRAINER_PIC_FRLG_BIRD_KEEPER] = sAnims_FrlgBirdKeeper,
+    [TRAINER_PIC_FRLG_YOUNGSTER] = sAnims_FrlgYoungster,
 };
