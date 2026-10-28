@@ -4141,6 +4141,7 @@ static void Cmd_moveend(void)
     u16 *choicedMoveAtk = NULL;
     u8 endMode, endState;
     u16 originallyUsedMove;
+    const u8 *arenaMsgScript;
 
     if (gChosenMove == MOVE_UNAVAILABLE)
         originallyUsedMove = MOVE_NONE;
@@ -4173,6 +4174,12 @@ static void Cmd_moveend(void)
                 gBattleMons[gBattlerTarget].statStages[STAT_ATK]++;
                 BattleScriptPushCursor();
                 gBattlescriptCurrInstr = BattleScript_RageIsBuilding;
+                effect = TRUE;
+            }
+            if (!effect && (arenaMsgScript = ArenaTakeMessageScript()) != NULL) // arena first-fire message
+            {
+                BattleScriptPushCursor();
+                gBattlescriptCurrInstr = arenaMsgScript;
                 effect = TRUE;
             }
             gBattleScripting.moveendState++;

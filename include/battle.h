@@ -352,7 +352,12 @@ struct BattleStruct
     u8 arenaId;              // ARENA_*, read from VAR_BATTLE_ARENA when the battle starts (include/arena_ecology.h)
     u8 arenaVentsBlocked;    // Lucky Strike: turns the vents stay blocked (0 = running)
     u8 arenaWet[NUM_BATTLE_SIDES]; // Grunge Rock: turns each side stays wet
-    u8 unused_7[0x22];
+    u8 arenaTerrain;         // Fault Line: ARENA_TERRAIN_* (intact, cracked, fractured; never heals)
+    u8 arenaMud;             // Fault Line: turns the floor stays muddy (0 = dry)
+    u8 arenaBlows;           // Fault Line: blows that have landed on a floor that was not muddy
+    u8 arenaMsgShown;        // ARENA_MSG_* bits: first-fire messages already shown this battle
+    u8 arenaMsgQueue;        // ARENA_MSG_* bits waiting for the next move end
+    u8 unused_7[0x22 - 5];   // 29 of the original 34 bytes left; the arena state above uses 5 (take at most 30)
     u8 AI_monToSwitchIntoId[MAX_BATTLERS_COUNT];
     s8 arenaMindPoints[2];
     s8 arenaSkillPoints[2];
@@ -362,6 +367,12 @@ struct BattleStruct
     u8 alreadyStatusedMoveAttempt; // As bits for battlers; For example when using Thunder Wave on an already paralyzed Pokémon.
     u8 tp[NUM_BATTLE_SIDES][PARTY_SIZE]; // Technical Points per party slot, kept across switches
 };
+
+// BattleStruct is heap-allocated (no EWRAM) but the arena state is carved out of its unused bytes: it must never grow.
+// (The Balance Lab host build is 64-bit, where the pointers make it larger, so only the GBA build checks.)
+#ifdef __arm__
+STATIC_ASSERT(sizeof(struct BattleStruct) == 464, BattleStructSizeUnchanged)
+#endif
 
 // The palaceFlags member of struct BattleStruct contains 1 flag per move to indicate which moves the AI should consider,
 // and 1 flag per battler to indicate whether the battler is awake and at <= 50% HP (which affects move choice).

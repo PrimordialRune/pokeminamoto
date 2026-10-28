@@ -1,5 +1,6 @@
 #include "global.h"
 #include "battle.h"
+#include "arena_ecology.h"
 #include "battle_anim.h"
 #include "battle_controllers.h"
 #include "battle_message.h"
@@ -345,6 +346,13 @@ static const u8 sText_SandstormSubsided[] = _("The sandstorm subsided.");
 static const u8 sText_SunlightGotBright[] = _("The sunlight got bright!");
 static const u8 sText_SunlightStrong[] = _("The sunlight is strong.");
 static const u8 sText_SunlightFaded[] = _("The sunlight faded.");
+// Arena ecology first-fire messages (PLACEHOLDER wording, thread "Design arena ecology for gym battles")
+static const u8 sText_ArenaVentsRoar[] = _("The vents roar!\nThe birds ride the updraft!");
+static const u8 sText_ArenaVentsClogged[] = _("The vents are clogged!");
+static const u8 sText_ArenaGroundCracks[] = _("The ground cracks!");
+static const u8 sText_ArenaFloorMud[] = _("The floor turns to mud!");
+static const u8 sText_ArenaFloorFractured[] = _("The floor splits apart!");
+static const u8 sText_ArenaDustStorm[] = _("Dust whirls up from the floor!");
 static const u8 sText_TrainerStateEnds[] = _("{B_TRAINER1_CLASS} {B_TRAINER1_NAME}\ncalmed down.");
 static const u8 sText_StartedHail[] = _("It started to hail!");
 static const u8 sText_HailContinues[] = _("Hail continues to fall.");
@@ -880,6 +888,23 @@ const u8 *const gBattleStringsTable[BATTLESTRINGS_COUNT - BATTLESTRINGS_TABLE_ST
     [STRINGID_TRAINER1WINTEXT - BATTLESTRINGS_TABLE_START] = sText_Trainer1WinText,
     [STRINGID_TRAINER2WINTEXT - BATTLESTRINGS_TABLE_START] = sText_Trainer2WinText,
     [STRINGID_TRAINERSTATEENDS - BATTLESTRINGS_TABLE_START] = sText_TrainerStateEnds,
+    [STRINGID_ARENAVENTSROAR - BATTLESTRINGS_TABLE_START] = sText_ArenaVentsRoar,
+    [STRINGID_ARENAVENTSCLOGGED - BATTLESTRINGS_TABLE_START] = sText_ArenaVentsClogged,
+    [STRINGID_ARENAGROUNDCRACKS - BATTLESTRINGS_TABLE_START] = sText_ArenaGroundCracks,
+    [STRINGID_ARENAFLOORMUD - BATTLESTRINGS_TABLE_START] = sText_ArenaFloorMud,
+    [STRINGID_ARENAFLOORFRACTURED - BATTLESTRINGS_TABLE_START] = sText_ArenaFloorFractured,
+    [STRINGID_ARENADUSTSTORM - BATTLESTRINGS_TABLE_START] = sText_ArenaDustStorm,
+};
+
+// BattleScript_ArenaMessage prints one of these, picked by ARENA_MSG_* in gBattleCommunication[MULTISTRING_CHOOSER]
+const u16 gArenaMessageStringIds[] =
+{
+    [ARENA_MSG_VENTS_ROAR] = STRINGID_ARENAVENTSROAR,
+    [ARENA_MSG_VENTS_CLOGGED] = STRINGID_ARENAVENTSCLOGGED,
+    [ARENA_MSG_GROUND_CRACKS] = STRINGID_ARENAGROUNDCRACKS,
+    [ARENA_MSG_FLOOR_MUD] = STRINGID_ARENAFLOORMUD,
+    [ARENA_MSG_FLOOR_FRACTURED] = STRINGID_ARENAFLOORFRACTURED,
+    [ARENA_MSG_DUST_STORM] = STRINGID_ARENADUSTSTORM,
 };
 
 const u16 gMissStringIds[] =

@@ -8,8 +8,8 @@ enum
 {
     ARENA_NONE,
     ARENA_LUCKY_STRIKE, // Yujirou, Tokiwa: air vents, first-mover crits
-    ARENA_GRUNGE_ROCK,  // Takeshi, Nibi: rocky ground, humid air
-    ARENA_FAULT_LINE,   // Takeshi, Nibi (slice): no effect yet, every arena hook treats it as ARENA_NONE until the takeshi workstream implements it
+    ARENA_GRUNGE_ROCK,  // RETIRED (Notion concept; Takeshi is Ground, so ARENA_FAULT_LINE replaced it). Nothing sets it; the code stays for the lab's old numbers
+    ARENA_FAULT_LINE,   // Takeshi, Nibi: Ground, cracking floor, mud, dust (arena ecology v2.1 'Fault Line'; docs: studio ws/takeshi/fault-line.md)
     ARENA_COUNT
 };
 
@@ -40,6 +40,21 @@ extern const u16 gSpeciesArenaTraits[NUM_SPECIES];
 
 #define ARENA_FOR_REST_OF_BATTLE 0xFF
 
+// Fault Line terrain (BattleStruct::arenaTerrain). It only ever gets worse.
+#define ARENA_TERRAIN_INTACT    0
+#define ARENA_TERRAIN_CRACKED   1
+#define ARENA_TERRAIN_FRACTURED 2
+
+// First-fire battle messages: bit numbers of BattleStruct::arenaMsgShown/arenaMsgQueue and indexes of
+// gArenaMessageStringIds (src/battle_message.c). Each rule says its line once per battle.
+#define ARENA_MSG_VENTS_ROAR        0 // Lucky Strike: the vents run and a bird is on the field
+#define ARENA_MSG_VENTS_CLOGGED     1 // Lucky Strike: a blocker stopped the vents
+#define ARENA_MSG_GROUND_CRACKS     2 // Fault Line: terrain CRACKED
+#define ARENA_MSG_FLOOR_MUD         3 // Fault Line: a Water hit made the floor MUDDY
+#define ARENA_MSG_FLOOR_FRACTURED   4 // Fault Line: terrain FRACTURED
+#define ARENA_MSG_DUST_STORM        5 // Fault Line: the arena raised a sandstorm
+#define ARENA_MSG_COUNT             6
+
 // Tuning knobs. Percentages are of the normal value (100 = unchanged).
 struct ArenaTuning
 {
@@ -66,6 +81,22 @@ struct ArenaTuning
     u16 rockSandAttackStormTurns; // Sand Attack raises a sandstorm in the rocky arena too (0 = off)
     u16 rockSandSpDefPct;       // Sp. Def of mountain dwellers while a sandstorm blows
     u16 seedDrainPct;           // Lucky Strike: Leech Seed drain, % of the normal 1/8 (lab test of a Bulbasaur lever)
+    // Fault Line (all PLACEHOLDER, arena ecology thread). Append only: the lab and the editor read this struct by position.
+    u16 faultSpeedPct;          // field constant: Speed of everything that is not a terrain dweller (MOUNTAIN or BURROWER); 67 = -1 stage
+    u16 faultDefIntactPct;      // Defense of MOUNTAIN mons while the floor is INTACT (Omar, q72: x2)
+    u16 faultDefCrackedPct;     // ...while CRACKED
+    u16 faultDefFracturedPct;   // ...while FRACTURED
+    u16 faultCrackBlows;        // blows that turn INTACT into CRACKED
+    u16 faultFractureBlows;     // blows that turn it into FRACTURED
+    u16 faultHeavyPower;        // a hit of at least this power counts as two blows (0 = off)
+    u16 faultRootBlows;         // extra blows from a Grass hit: roots crack the floor (0 = off)
+    u16 faultMudTurns;          // turns a Water hit leaves the floor MUDDY (0 = Water never muddies; ARENA_FOR_REST_OF_BATTLE = for good)
+    u16 faultMudStopsCracks;    // blows do not count while the floor is MUDDY ('Mud doesn't crack')
+    u16 faultMudWaterPct;       // power of Water moves while MUDDY (the Squirtle answer: the splash)
+    u16 faultWindStormTurns;    // a wind move on a DRY floor raises a sandstorm for this many turns (0 = off); on MUDDY it dries the floor
+    u16 faultFractureStormTurns; // the floor FRACTURING raises a sandstorm for this many turns (0 = off)
+    u16 faultDryWaterPct;       // power of Water moves on a DRY floor: the thirsty ground drinks the first splash (100 = off)
+    u16 faultMudWaterMissStages; // accuracy stages Water moves lose on a MUDDY floor: the splash goes wide (0 = off)
 };
 u32 ArenaLeechSeedDrain(u32 damage);
 
@@ -85,5 +116,6 @@ void ArenaModifyDamage(struct BattlePokemon *attacker, struct BattlePokemon *def
 s8 ArenaEvasionStages(u8 target);
 void ArenaAfterMove(u16 move, u8 attacker, u8 target);
 void ArenaEndTurn(void);
+const u8 *ArenaTakeMessageScript(void); // NULL, or the script that says the next queued first-fire message (src/battle_script_commands.c, moveend)
 
 #endif // GUARD_ARENA_ECOLOGY_H

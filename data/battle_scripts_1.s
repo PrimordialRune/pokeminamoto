@@ -4579,3 +4579,9 @@ BattleScript_PrintPlayerForfeitedLinkBattle::
 	endlinkbattle
 	waitmessage B_WAIT_TIME_LONG
 	end2
+
+@ Arena first-fire message: ArenaTakeMessageScript (src/arena_ecology.c) sets MULTISTRING_CHOOSER to ARENA_MSG_*
+BattleScript_ArenaMessage::
+	printfromtable gArenaMessageStringIds
+	waitmessage B_WAIT_TIME_LONG
+	return
