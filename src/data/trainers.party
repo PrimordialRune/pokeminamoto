@@ -848,7 +848,7 @@ Music: Male
 Double Battle: No
 
 Weedle
-Level: 21
+Level: 22
 
 /* END north */
 
@@ -894,13 +894,13 @@ Gender: Male
 Music: Male
 Double Battle: No
 
-/* PLACEHOLDER party (NIB-501, R/G Jr. Trainer: Diglett 11, Sandshrew 11; raised to 13/13 for the 85-97% band, lever 4).
+/* PLACEHOLDER party (NIB-501, R/G Jr. Trainer: Diglett 11, Sandshrew 11; raised to 13/13, then 14/14 (balance-r1) for the 85-97% band, lever 4).
    Thread "Design movesets and encounters". Fought with the Fault Line armed (channel 3). */
 Diglett
-Level: 13
+Level: 14
 
 Sandshrew
-Level: 13
+Level: 14
 
 === TRAINER_BUG_CATCHER_ROUTE3_1 ===
 Name: BUG CATCH
@@ -913,13 +913,13 @@ Double Battle: No
 /* PLACEHOLDER party (R03-501; lab scenario masara_nibi.yaml: Kakuna 11, Caterpie 11; raised to Weedle/Kakuna/Caterpie 18 for the 85-97% band, lever 4).
    Thread "Design movesets and encounters". */
 Weedle
-Level: 18
+Level: 20
 
 Kakuna
-Level: 18
+Level: 20
 
 Caterpie
-Level: 18
+Level: 20
 
 === TRAINER_SLICE_NIBI_SPINE_SPARE_1 ===
 Name: SPARE
