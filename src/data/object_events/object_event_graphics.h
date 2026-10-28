@@ -488,3 +488,10 @@ const u16 gObjectEventPal_FrlgRSQuintyPlumpReflection[] = INCBIN_U16("graphics/o
 const u16 sFiller1_Frlg[0x90] = {};
 const u16 sFiller2_Frlg[0x10] = {};
 // FRLG import end
+
+// Minamoto overworld mons (PLACEHOLDER art)
+const u16 gObjectEventPic_MonRattata[] = INCBIN_U16("graphics/object_events/pics/pokemon/rattata.4bpp");
+const u16 gObjectEventPic_MonSandshrew[] = INCBIN_U16("graphics/object_events/pics/pokemon/sandshrew.4bpp");
+const u16 gObjectEventPic_MonGeodude[] = INCBIN_U16("graphics/object_events/pics/pokemon/geodude.4bpp");
+const u16 gObjectEventPic_MonPidgey[] = INCBIN_U16("graphics/object_events/pics/pokemon/pidgey.4bpp");
+const u16 gObjectEventPic_MonFarfetchd[] = INCBIN_U16("graphics/object_events/pics/pokemon/farfetchd.4bpp");

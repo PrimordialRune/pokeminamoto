@@ -328,8 +328,17 @@
 #define OBJ_EVENT_GFX_FRLG_SS_ANNE                        (OBJ_EVENT_GFX_FRLG_BASE + 151)
 #define NUM_OBJ_EVENT_GFX_FRLG 152
 
+// Minamoto overworld mon sprites (studio art workstream). PLACEHOLDER art, owner: art thread 'GBC to GBA art style study'.
+#define OBJ_EVENT_GFX_MON_BASE      (OBJ_EVENT_GFX_FRLG_BASE + NUM_OBJ_EVENT_GFX_FRLG)
+#define OBJ_EVENT_GFX_MON_RATTATA   (OBJ_EVENT_GFX_MON_BASE + 0)
+#define OBJ_EVENT_GFX_MON_SANDSHREW (OBJ_EVENT_GFX_MON_BASE + 1)
+#define OBJ_EVENT_GFX_MON_GEODUDE   (OBJ_EVENT_GFX_MON_BASE + 2)
+#define OBJ_EVENT_GFX_MON_PIDGEY    (OBJ_EVENT_GFX_MON_BASE + 3)
+#define OBJ_EVENT_GFX_MON_FARFETCHD (OBJ_EVENT_GFX_MON_BASE + 4)
+#define NUM_OBJ_EVENT_GFX_MON 5
+
 // FRLG import end
-#define NUM_OBJ_EVENT_GFX (OBJ_EVENT_GFX_FRLG_BASE + NUM_OBJ_EVENT_GFX_FRLG)
+#define NUM_OBJ_EVENT_GFX (OBJ_EVENT_GFX_MON_BASE + NUM_OBJ_EVENT_GFX_MON)
 
 
 // These are dynamic object gfx ids.

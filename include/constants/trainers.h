@@ -108,6 +108,14 @@
 #define TRAINER_PIC_LEAF                  90
 #define TRAINER_PIC_RS_BRENDAN            91
 #define TRAINER_PIC_RS_MAY                92
+// Minamoto slice trainers (studio art workstream): PLACEHOLDER pics imported from pokefirered,
+// owner: art thread 'GBC to GBA art style study'
+#define TRAINER_PIC_BLUE                        93
+#define TRAINER_PIC_BROCK                       94
+#define TRAINER_PIC_FRLG_BUG_CATCHER            95
+#define TRAINER_PIC_FRLG_CAMPER                 96
+#define TRAINER_PIC_FRLG_BIRD_KEEPER            97
+#define TRAINER_PIC_FRLG_YOUNGSTER              98
 
 // The player back pics are assumed to alternate according to the gender values (MALE/FEMALE)
 #define TRAINER_BACK_PIC_BRENDAN                0
