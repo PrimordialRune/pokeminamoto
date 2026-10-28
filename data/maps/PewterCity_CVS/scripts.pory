@@ -1,3 +1,174 @@
-// Nibi CVS (nibi-town). New slice interior (studio scaffold, world M1), reusing LAYOUT_MART.
-// Its door in the town and the exit warp target are wired at world M2.
-mapscripts PewterCity_CVS_MapScripts {}
+// Nibi CVS (PewterCity_CVS, new interior reusing LAYOUT_MART). Owner: nibi-town. Rows: NIB-215 (empty shelf, TV), 216 (the
+// magazines: line only), 221 (the outer board lives in PewterCity), 402 (Takeshi 17-19), 404 (the night worker 22-04).
+// No shop, no heals. Hours use GetGameHour (exact under REGRESS SET_HOUR).
+
+mapscripts PewterCity_CVS_MapScripts {
+    MAP_SCRIPT_ON_TRANSITION {
+        // NIB-402: Takeshi and his younger siblings buy dinner, 17-19 (flavour window).
+        getgamehour
+        if (var(VAR_RESULT) >= 17 && var(VAR_RESULT) < 19) {
+            clearflag(FLAG_HIDE_NIBI_CVS_TAKESHI)
+            clearflag(FLAG_HIDE_NIBI_CVS_SIBLING_1)
+            clearflag(FLAG_HIDE_NIBI_CVS_SIBLING_2)
+        } else {
+            setflag(FLAG_HIDE_NIBI_CVS_TAKESHI)
+            setflag(FLAG_HIDE_NIBI_CVS_SIBLING_1)
+            setflag(FLAG_HIDE_NIBI_CVS_SIBLING_2)
+        }
+        // NIB-404: the municipal night worker, 22-04.
+        getgamehour
+        if (var(VAR_RESULT) >= 22 || var(VAR_RESULT) < 4) {
+            clearflag(FLAG_HIDE_NIBI_CVS_WORKER)
+        } else {
+            setflag(FLAG_HIDE_NIBI_CVS_WORKER)
+        }
+    }
+    MAP_SCRIPT_ON_FRAME_TABLE [
+        VAR_TEMP_0, 0: PewterCity_CVS_EventScript_TakeshiScene
+    ]
+}
+
+// ---------------------------------------------------------------------------------------------------------------
+// NIB-402 / NIB-308: Takeshi buys dinner, pays, leaves, says nothing. After B2 he stops for a second at the player's side,
+// looks, and leaves without a word. After a loss to him (and before B2) he doesn't stop. The player is first stepped to
+// (3,6) so that the three of them walk down columns 4 and 5 past him.
+movement PewterCity_CVS_Movement_StageFromDoor {
+    walk_up
+    walk_left
+}
+
+movement PewterCity_CVS_Movement_StageFromInside {
+    walk_left
+}
+
+movement PewterCity_CVS_Movement_TakeshiLeaves {
+    delay_16
+    walk_down * 3
+}
+
+movement PewterCity_CVS_Movement_TakeshiLooks {
+    face_left
+    delay_16
+    delay_16
+}
+
+movement PewterCity_CVS_Movement_TakeshiOut {
+    walk_down
+}
+
+movement PewterCity_CVS_Movement_SiblingBoyLeaves {
+    delay_16
+    delay_8
+    walk_down * 4
+}
+
+movement PewterCity_CVS_Movement_SiblingGirlLeaves {
+    delay_16
+    delay_16
+    walk_down * 5
+}
+
+script PewterCity_CVS_EventScript_TakeshiScene {
+    setvar(VAR_TEMP_0, 1)
+    if (flag(FLAG_HIDE_NIBI_CVS_TAKESHI)) {
+        end
+    }
+    lockall
+    getplayerxy(VAR_0x8004, VAR_0x8005)
+    if (var(VAR_0x8005) == 7) {
+        applymovement(OBJ_EVENT_ID_PLAYER, PewterCity_CVS_Movement_StageFromDoor)
+    } else {
+        applymovement(OBJ_EVENT_ID_PLAYER, PewterCity_CVS_Movement_StageFromInside)
+    }
+    waitmovement(OBJ_EVENT_ID_PLAYER)
+    applymovement(LOCALID_NIBI_CVS_SIBLING_1, PewterCity_CVS_Movement_SiblingBoyLeaves)
+    applymovement(LOCALID_NIBI_CVS_SIBLING_2, PewterCity_CVS_Movement_SiblingGirlLeaves)
+    applymovement(LOCALID_NIBI_CVS_TAKESHI, PewterCity_CVS_Movement_TakeshiLeaves)
+    waitmovement(LOCALID_NIBI_CVS_TAKESHI)
+    if (flag(FLAG_BADGE02_GET)) {
+        applymovement(LOCALID_NIBI_CVS_TAKESHI, PewterCity_CVS_Movement_TakeshiLooks)
+        waitmovement(LOCALID_NIBI_CVS_TAKESHI)
+    }
+    applymovement(LOCALID_NIBI_CVS_TAKESHI, PewterCity_CVS_Movement_TakeshiOut)
+    waitmovement(LOCALID_NIBI_CVS_TAKESHI)
+    removeobject(LOCALID_NIBI_CVS_TAKESHI)
+    waitmovement(LOCALID_NIBI_CVS_SIBLING_1)
+    removeobject(LOCALID_NIBI_CVS_SIBLING_1)
+    waitmovement(LOCALID_NIBI_CVS_SIBLING_2)
+    removeobject(LOCALID_NIBI_CVS_SIBLING_2)
+    setflag(FLAG_HIDE_NIBI_CVS_TAKESHI)
+    setflag(FLAG_HIDE_NIBI_CVS_SIBLING_1)
+    setflag(FLAG_HIDE_NIBI_CVS_SIBLING_2)
+    releaseall
+    end
+}
+
+// Talking to them during the scene is impossible (the player is locked), so these only matter if the scene was skipped.
+script PewterCity_CVS_EventScript_Takeshi {
+    msgbox(PewterCity_CVS_Text_TakeshiSilent, MSGBOX_NPC)
+    end
+}
+
+script PewterCity_CVS_EventScript_SiblingBoy {
+    msgbox(PewterCity_CVS_Text_SiblingBoy, MSGBOX_NPC)
+    end
+}
+
+script PewterCity_CVS_EventScript_SiblingGirl {
+    msgbox(PewterCity_CVS_Text_SiblingGirl, MSGBOX_NPC)
+    end
+}
+
+// NIB-404: the jacket is worn by the badge count, not by visits: 0, 1, 2.
+script PewterCity_CVS_EventScript_NightWorker {
+    lock
+    faceplayer
+    if (flag(FLAG_BADGE02_GET)) {
+        msgbox(PewterCity_CVS_Text_WorkerB2)
+    } elif (flag(FLAG_BADGE01_GET)) {
+        msgbox(PewterCity_CVS_Text_WorkerB1)
+    } else {
+        msgbox(PewterCity_CVS_Text_Worker0)
+    }
+    release
+    end
+}
+
+// The counter clerk: no sale of magazines today (NIB-216, line only).
+script PewterCity_CVS_EventScript_Clerk {
+    msgbox(PewterCity_CVS_Text_Clerk, MSGBOX_NPC)
+    end
+}
+
+// NIB-215: the empty shelf (Silph surface). The TV is on only at night (18-04).
+script PewterCity_CVS_EventScript_EmptyShelf {
+    lockall
+    msgbox(PewterCity_CVS_Text_EmptyShelf1)
+    msgbox(PewterCity_CVS_Text_EmptyShelf2)
+    releaseall
+    end
+}
+
+script PewterCity_CVS_EventScript_TV {
+    lockall
+    getgamehour
+    if (var(VAR_RESULT) >= 18 || var(VAR_RESULT) < 4) {
+        if (flag(FLAG_BADGE02_GET)) {
+            msgbox(PewterCity_CVS_Text_TVNewsB2)
+        } else {
+            msgbox(PewterCity_CVS_Text_TVNews)
+        }
+    } else {
+        msgbox(PewterCity_CVS_Text_TVOff)
+    }
+    releaseall
+    end
+}
+
+script PewterCity_CVS_EventScript_Magazines {
+    lockall
+    msgbox(PewterCity_CVS_Text_Magazines1)
+    msgbox(PewterCity_CVS_Text_Magazines2)
+    releaseall
+    end
+}

@@ -1,2 +1,41 @@
-// PewterCity_Mart dialogue (English). Logic: scripts.pory. Translations: text.<lang>.pory
+// PewterCity_Mart (Nibi Market) dialogue (English). Logic: scripts.pory. Translations: text.<lang>.pory
 // with the same block names; see docs/engineering/map-text.md.
+// Owner: nibi-town. [R/G] canon first, [Nibi v3 s4] the first Market, [new] the studio's join.
+
+// NIB-122 the clerk: line only. [Nibi v3 s4] + [new]. PLACEHOLDER: "Market" wording; thread "Define Minamoto narrative direction".
+text PewterCity_Mart_Text_Welcome {
+    format("Welcome to the Nibi Market!\pCan I help you?")
+}
+
+text PewterCity_Mart_Text_Thanks {
+    format("Please come again!")
+}
+
+// NIB-117. [R/G]
+text PewterCity_Mart_Text_FishBuyer {
+    format("A shady old man got me to buy this really weird fish Pokémon!\pIt's totally weak and it cost ₽500!")
+}
+
+// NIB-118. [R/G]
+text PewterCity_Mart_Text_Diligent {
+    format("Good things can happen if you raise Pokémon diligently, even the weak ones.")
+}
+
+// NIB-119. [R/G Pewter house, moved here]
+text PewterCity_Mart_Text_Outsider {
+    format("Our Pokémon's an outsider, so it's hard to handle.\pAn outsider is one you get in a trade.\pIt grows fast, but it may ignore an unskilled trainer in battle!")
+}
+
+text PewterCity_Mart_Text_Nidoran {
+    format("NIDORAN: Bowwow!")
+}
+
+// NIB-122 the listings: species, price, use; uncommented. Sandshrew's price is the quiet comparison to Omura's ₽3,500.
+// PLACEHOLDER: the prices, owner thread "Make TP need rest, with town toolkit" (economy). [needs-system: Pokémon for sale]
+text PewterCity_Mart_Text_ListingA {
+    format("LISTINGS, SOLD AS IS\pGeodude ₽1,800: hauling, yard work\nMachop ₽2,400: lifting, building")
+}
+
+text PewterCity_Mart_Text_ListingB {
+    format("Sandshrew ₽2,000: digging, drains\nDiglett ₽1,500: tunnels, wells")
+}

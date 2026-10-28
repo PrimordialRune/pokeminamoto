@@ -1,2 +1,39 @@
 // PewterCity_Museum_2F dialogue (English). Logic: scripts.pory. Translations: text.<lang>.pory
 // with the same block names; see docs/engineering/map-text.md.
+// Owner: nibi-town. [R/G] canon first, [Nibi v3] Omar's city doc, [new] the studio's join.
+
+// NIB-125 the 2F visitor. [R/G]. PLACEHOLDER OQ1 (timeline): kept as the script list says, "whatever OQ 1 decides"; nothing ties it to the war.
+text PewterCity_Museum_2F_Text_OldMan {
+    format("July 20, 1969! The first lunar landing!\pI bought a color TV to watch it!")
+}
+
+// NIB-129 child and father. [R/G]
+text PewterCity_Museum_2F_Text_Child {
+    format("I want a Pikachu! It's so cute!\pI asked my Daddy to catch me one!")
+}
+
+text PewterCity_Museum_2F_Text_Father {
+    format("Yeah, a Pikachu soon, I promise!")
+}
+
+// NIB-210 space floor. [R/G] shuttle model + [Nibi v3 s5]. No real shuttle name.
+text PewterCity_Museum_2F_Text_Shuttle {
+    format("A scale model of a space shuttle.\pThe card calls it the way to the moon.")
+}
+
+text PewterCity_Museum_2F_Text_MoonStone1 {
+    format("The stone is cold even through the glass.")
+}
+
+text PewterCity_Museum_2F_Text_MoonStone2 {
+    format("The panel says it fell from Otsukimi at some unknown time.\pNobody knows exactly when.")
+}
+
+// NIB-210 astronomy panel + NIB-310 hook. Espeon and Umbreon are removed (Gen 2): the panel names Clefairy only.
+text PewterCity_Museum_2F_Text_Astronomy1 {
+    format("The panel charts the lunar cycles.\pIt notes that Clefairy gather where Moon Stones have fallen.")
+}
+
+text PewterCity_Museum_2F_Text_Astronomy2 {
+    format("The nearest known fall site is Otsukimi.")
+}

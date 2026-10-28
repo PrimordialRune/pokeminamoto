@@ -1,2 +1,55 @@
-// Placeholder imported from FireRed (tools/frlg_import). No events yet.
+// Takeshi's house (PewterCity_House2). Owner: nibi-town. Rows: NIB-113 (the younger brother; the grey stone), NIB-217 (four
+// examines), NIB-308 (a theme, no steps: the cheap frame, the unread contracts, the minerals, the bulk meals). Never linked to Rocket.
+
 mapscripts PewterCity_House2_MapScripts {}
+
+// NIB-113. States: default; after B2 the first talk hands over a grey stone (a flag, not an item: PLACEHOLDER, a real key
+// item needs a frozen-file change; see requests.md). The stone feeds the poet (NIB-305 step 1).
+script PewterCity_House2_EventScript_Brother {
+    lock
+    faceplayer
+    if (flag(FLAG_BADGE02_GET) && !flag(FLAG_Q_GREY_STONE)) {
+        msgbox(PewterCity_House2_Text_BrotherGift1)
+        setflag(FLAG_Q_GREY_STONE)
+        playfanfare(MUS_OBTAIN_ITEM)
+        msgbox(PewterCity_House2_Text_BrotherGift2)
+        waitfanfare
+        release
+        end
+    }
+    msgbox(PewterCity_House2_Text_Brother)
+    release
+    end
+}
+
+script PewterCity_House2_EventScript_Kitchen {
+    lockall
+    msgbox(PewterCity_House2_Text_Kitchen1)
+    msgbox(PewterCity_House2_Text_Kitchen2)
+    releaseall
+    end
+}
+
+script PewterCity_House2_EventScript_Photo {
+    lockall
+    msgbox(PewterCity_House2_Text_Photo1)
+    msgbox(PewterCity_House2_Text_Photo2)
+    releaseall
+    end
+}
+
+script PewterCity_House2_EventScript_Desk {
+    lockall
+    msgbox(PewterCity_House2_Text_Desk1)
+    msgbox(PewterCity_House2_Text_Desk2)
+    releaseall
+    end
+}
+
+script PewterCity_House2_EventScript_Sill {
+    lockall
+    msgbox(PewterCity_House2_Text_Sill1)
+    msgbox(PewterCity_House2_Text_Sill2)
+    releaseall
+    end
+}

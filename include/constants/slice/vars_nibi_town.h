@@ -6,8 +6,8 @@
 #ifndef GUARD_CONSTANTS_SLICE_VARS_NIBI_TOWN_H
 #define GUARD_CONSTANTS_SLICE_VARS_NIBI_TOWN_H
 
-#define VAR_NIBI_STATE                           0x405A // was VAR_RUSTBORO_CITY_STATE
-#define VAR_Q_FOSSILS                            0x40E5 // was VAR_UNUSED_0x40E5
-#define VAR_Q_POET                               0x40FB // was VAR_UNUSED_0x40FB
+#define VAR_NIBI_STATE                           0x405A // east exit: 0 not escorted yet, 1 escorted to the gym (the boy blocks), 2 open (B2); was VAR_RUSTBORO_CITY_STATE
+#define VAR_Q_FOSSILS                            0x40E5 // NIB-302: 0 none, 1 the fossil notice was read (sign or inn board), 2 Fujita answered it; was VAR_UNUSED_0x40E5
+#define VAR_Q_POET                               0x40FB // NIB-305: 0 none, 1 stone shown, 2 Onix told, 3 both; step 3 (Otsukimi, later) will use 4+; was VAR_UNUSED_0x40FB
 
 #endif // GUARD_CONSTANTS_SLICE_VARS_NIBI_TOWN_H

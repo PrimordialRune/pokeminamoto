@@ -1,2 +1,41 @@
-// Placeholder imported from FireRed (tools/frlg_import). No events yet.
+// Nibi Museum 2F (the space floor). Owner: nibi-town. Rows: NIB-125 (the 2F visitor), 129 (child and father), 210 (shuttle,
+// Moon Stone, astronomy panel; Espeon/Umbreon removed, Gen 2), 310 (the Moon Stone hook).
+
 mapscripts PewterCity_Museum_2F_MapScripts {}
+
+script PewterCity_Museum_2F_EventScript_OldMan {
+    msgbox(PewterCity_Museum_2F_Text_OldMan, MSGBOX_NPC)
+    end
+}
+
+script PewterCity_Museum_2F_EventScript_Child {
+    msgbox(PewterCity_Museum_2F_Text_Child, MSGBOX_NPC)
+    end
+}
+
+script PewterCity_Museum_2F_EventScript_Father {
+    msgbox(PewterCity_Museum_2F_Text_Father, MSGBOX_NPC)
+    end
+}
+
+script PewterCity_Museum_2F_EventScript_Shuttle {
+    msgbox(PewterCity_Museum_2F_Text_Shuttle, MSGBOX_SIGN)
+    end
+}
+
+script PewterCity_Museum_2F_EventScript_MoonStone {
+    lockall
+    msgbox(PewterCity_Museum_2F_Text_MoonStone1)
+    msgbox(PewterCity_Museum_2F_Text_MoonStone2)
+    releaseall
+    end
+}
+
+// NIB-310: the hook to the Otsukimi Moon Stone and Clefairy beat (out of scope).
+script PewterCity_Museum_2F_EventScript_AstronomyPanel {
+    lockall
+    msgbox(PewterCity_Museum_2F_Text_Astronomy1)
+    msgbox(PewterCity_Museum_2F_Text_Astronomy2)
+    releaseall
+    end
+}

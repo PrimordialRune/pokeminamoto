@@ -1,2 +1,398 @@
-// Placeholder imported from FireRed (tools/frlg_import). No events yet.
-mapscripts PewterCity_MapScripts {}
+// Nibi City streets (PewterCity). Owner: nibi-town. Rows: NIB-001, 002, 004, 005, 106, 110, 114, 115, 116, 127, 201, 202,
+// 211, 219, 220, 222, 223, 305 (steps 1-2), 401. The back door of the Museum (25,4) stays sealed: its cut tree object
+// (30,5) blocks the only way to it and has no script.
+// Charisma tiers for Nibi are T1/T2/T3 = 3/6/10 (script list 0.2; PLACEHOLDER, owner thread "Make TP need rest, with town toolkit").
+
+const NIBI_T1 = 3
+const NIBI_T2 = 6
+const NIBI_T3 = 10
+
+mapscripts PewterCity_MapScripts {
+    MAP_SCRIPT_ON_TRANSITION {
+        // NIB-005: first entry to Nibi. If Omura's Sandshrew is still open (0 none, 1 notice read, 2 Omura met) it is
+        // missed (C2: var 7); var 3 (caught on Route 22, not handed over yet) stays open. Written once, here.
+        if (!flag(FLAG_VISITED_NIBI)) {
+            setflag(FLAG_VISITED_NIBI)
+            if (var(VAR_Q_SANDSHREW) < 3) {
+                setvar(VAR_Q_SANDSHREW, 7)
+            }
+        }
+        // NIB-126: the Museum ticket is per entry; walking out of the Museum ends it.
+        clearflag(FLAG_NIBI_MUSEUM_TICKET)
+        // NIB-004 / C13: B2 opens the east exit.
+        if (flag(FLAG_BADGE02_GET)) {
+            setvar(VAR_NIBI_STATE, 2)
+        }
+        // NIB-401: Fujita opens the Museum, hours 08-10 (GetGameHour is exact under REGRESS SET_HOUR).
+        getgamehour
+        if (var(VAR_RESULT) >= 8 && var(VAR_RESULT) < 10) {
+            clearflag(FLAG_HIDE_NIBI_FUJITA_OUT)
+        } else {
+            setflag(FLAG_HIDE_NIBI_FUJITA_OUT)
+        }
+    }
+}
+
+
+// ---------------------------------------------------------------------------------------------------------------
+// NIB-002 / NIB-004: the east exit. Four trigger cells at x=41 (rows 20-23) in front of the boy (LOCALID_NIBI_EXIT_BOY
+// at (42,20)). VAR_NIBI_STATE 0: the boy walks the player to the gym door, once (fixed paths, below). 1: he blocks and the
+// player steps back. 2 (B2): no triggers fire; the boy only talks. The paths were computed on the tile flood fill and are
+// generated in studio/ws/nibi-town/gen_paths.py: boy (42,20) to (16,18) in 56 steps, the player two cells behind him.
+
+movement PewterCity_Movement_StageFrom20 {
+    walk_down
+}
+
+movement PewterCity_Movement_StageFrom22 {
+    walk_up
+}
+
+movement PewterCity_Movement_StageFrom23 {
+    walk_up * 2
+}
+
+movement PewterCity_Movement_FaceLeft {
+    face_left
+}
+
+movement PewterCity_Movement_FaceDown {
+    face_down
+}
+
+movement PewterCity_Movement_PlayerBack {
+    walk_left
+}
+
+movement PewterCity_Movement_EscortBoyLead {
+    walk_fast_left * 2
+}
+
+movement PewterCity_Movement_EscortBoy {
+    walk_fast_left * 2
+    walk_fast_up * 8
+    walk_fast_left * 30
+    walk_fast_down * 6
+    walk_fast_right * 8
+}
+
+movement PewterCity_Movement_EscortPlayer {
+    walk_fast_up
+    walk_fast_left * 3
+    walk_fast_up * 8
+    walk_fast_left * 30
+    walk_fast_down * 6
+    walk_fast_right * 6
+}
+
+movement PewterCity_Movement_EscortBoyReturn {
+    walk_fast_down
+    walk_fast_left * 8
+    walk_fast_up * 7
+    walk_fast_right * 14
+    walk_fast_down * 8
+    walk_fast_right * 20
+    face_left
+}
+
+movement PewterCity_Movement_GuideLead {
+    walk_fast_up
+}
+
+movement PewterCity_Movement_Guide {
+    walk_fast_up * 8
+    walk_fast_left * 19
+    walk_fast_up
+    walk_fast_left * 2
+}
+
+movement PewterCity_Movement_GuidePlayer {
+    walk_fast_left
+    walk_fast_up * 9
+    walk_fast_left * 19
+    walk_fast_up
+}
+
+movement PewterCity_Movement_GuideReturn {
+    walk_fast_down * 5
+    walk_fast_right * 6
+    walk_fast_down * 3
+    walk_fast_right * 15
+    walk_fast_down * 2
+}
+
+script PewterCity_EventScript_EscortFrom20 {
+    lockall
+    applymovement(OBJ_EVENT_ID_PLAYER, PewterCity_Movement_StageFrom20)
+    waitmovement(OBJ_EVENT_ID_PLAYER)
+    goto(PewterCity_EventScript_EscortGo)
+}
+
+script PewterCity_EventScript_EscortFrom21 {
+    lockall
+    goto(PewterCity_EventScript_EscortGo)
+}
+
+script PewterCity_EventScript_EscortFrom22 {
+    lockall
+    applymovement(OBJ_EVENT_ID_PLAYER, PewterCity_Movement_StageFrom22)
+    waitmovement(OBJ_EVENT_ID_PLAYER)
+    goto(PewterCity_EventScript_EscortGo)
+}
+
+script PewterCity_EventScript_EscortFrom23 {
+    lockall
+    applymovement(OBJ_EVENT_ID_PLAYER, PewterCity_Movement_StageFrom23)
+    waitmovement(OBJ_EVENT_ID_PLAYER)
+    goto(PewterCity_EventScript_EscortGo)
+}
+
+// The player stands at (41,21). Once: the state is set before the walk, so no reset can replay it.
+script PewterCity_EventScript_EscortGo {
+    setvar(VAR_NIBI_STATE, 1)
+    applymovement(LOCALID_NIBI_EXIT_BOY, PewterCity_Movement_FaceLeft)
+    waitmovement(LOCALID_NIBI_EXIT_BOY)
+    msgbox(PewterCity_Text_EscortHey)
+    msgbox(PewterCity_Text_EscortFollow)
+    applymovement(LOCALID_NIBI_EXIT_BOY, PewterCity_Movement_EscortBoyLead)
+    waitmovement(LOCALID_NIBI_EXIT_BOY)
+    applymovement(LOCALID_NIBI_EXIT_BOY, PewterCity_Movement_EscortBoy)
+    applymovement(OBJ_EVENT_ID_PLAYER, PewterCity_Movement_EscortPlayer)
+    waitmovement(LOCALID_NIBI_EXIT_BOY)
+    waitmovement(OBJ_EVENT_ID_PLAYER)
+    applymovement(LOCALID_NIBI_EXIT_BOY, PewterCity_Movement_FaceLeft)
+    waitmovement(LOCALID_NIBI_EXIT_BOY)
+    msgbox(PewterCity_Text_EscortHere)
+    // He runs home by the other row (he is back at his post by the time the player is; a map change resets him anyway).
+    applymovement(LOCALID_NIBI_EXIT_BOY, PewterCity_Movement_EscortBoyReturn)
+    releaseall
+    end
+}
+
+script PewterCity_EventScript_ExitBlock {
+    lockall
+    // If he is still running home (or was blocked on the way), put him back first.
+    waitmovement(LOCALID_NIBI_EXIT_BOY)
+    setobjectxyperm(LOCALID_NIBI_EXIT_BOY, 42, 20)
+    applymovement(LOCALID_NIBI_EXIT_BOY, PewterCity_Movement_FaceLeft)
+    waitmovement(LOCALID_NIBI_EXIT_BOY)
+    msgbox(PewterCity_Text_TakeshiFirst)
+    applymovement(OBJ_EVENT_ID_PLAYER, PewterCity_Movement_PlayerBack)
+    waitmovement(OBJ_EVENT_ID_PLAYER)
+    releaseall
+    end
+}
+
+// Talking to the boy: before the escort he starts it (the trigger cells are the normal way in); with the state at 1 he
+// says the block line; with B2 (state 2) NIB-004 plays, and NIB-110's line before it.
+script PewterCity_EventScript_ExitBoy {
+    lock
+    faceplayer
+    if (var(VAR_NIBI_STATE) == 2) {
+        msgbox(PewterCity_Text_BoyStrongest)
+        msgbox(PewterCity_Text_BoyOtsukimi)
+    } else {
+        msgbox(PewterCity_Text_TakeshiFirst)
+        msgbox(PewterCity_Text_BoyStrongest)
+    }
+    release
+    end
+}
+
+// ---------------------------------------------------------------------------------------------------------------
+// NIB-127: the museum guide asks; "No" walks the player to the museum door (same method; the player is first moved to
+// (38,17) from whichever side he talked from).
+movement PewterCity_Movement_GuideStageFromNorth {
+    walk_right
+    walk_down
+}
+
+movement PewterCity_Movement_GuideStageFromSouth {
+    walk_right
+    walk_up
+}
+
+script PewterCity_EventScript_MuseumGuide {
+    lock
+    faceplayer
+    msgbox(PewterCity_Text_GuideAsk, MSGBOX_YESNO)
+    if (var(VAR_RESULT) == YES) {
+        msgbox(PewterCity_Text_GuideYes)
+        release
+        end
+    }
+    msgbox(PewterCity_Text_GuideNo)
+    getplayerxy(VAR_0x8004, VAR_0x8005)
+    if (var(VAR_0x8005) == 16) {
+        applymovement(OBJ_EVENT_ID_PLAYER, PewterCity_Movement_GuideStageFromNorth)
+        waitmovement(OBJ_EVENT_ID_PLAYER)
+    } elif (var(VAR_0x8005) == 18) {
+        applymovement(OBJ_EVENT_ID_PLAYER, PewterCity_Movement_GuideStageFromSouth)
+        waitmovement(OBJ_EVENT_ID_PLAYER)
+    }
+    applymovement(LOCALID_NIBI_MUSEUM_GUIDE, PewterCity_Movement_GuideLead)
+    waitmovement(LOCALID_NIBI_MUSEUM_GUIDE)
+    applymovement(LOCALID_NIBI_MUSEUM_GUIDE, PewterCity_Movement_Guide)
+    applymovement(OBJ_EVENT_ID_PLAYER, PewterCity_Movement_GuidePlayer)
+    waitmovement(LOCALID_NIBI_MUSEUM_GUIDE)
+    waitmovement(OBJ_EVENT_ID_PLAYER)
+    applymovement(LOCALID_NIBI_MUSEUM_GUIDE, PewterCity_Movement_FaceRight)
+    waitmovement(LOCALID_NIBI_MUSEUM_GUIDE)
+    msgbox(PewterCity_Text_GuideHere)
+    applymovement(LOCALID_NIBI_MUSEUM_GUIDE, PewterCity_Movement_GuideReturn)
+    releaseall
+    end
+}
+
+movement PewterCity_Movement_FaceRight {
+    face_right
+}
+
+// ---------------------------------------------------------------------------------------------------------------
+// Street NPCs and signs.
+script PewterCity_EventScript_Lass {
+    msgbox(PewterCity_Text_Lass, MSGBOX_NPC)
+    end
+}
+
+script PewterCity_EventScript_ClefairyMan {
+    msgbox(PewterCity_Text_ClefairyMan, MSGBOX_NPC)
+    end
+}
+
+script PewterCity_EventScript_Gardener {
+    msgbox(PewterCity_Text_Gardener, MSGBOX_NPC)
+    end
+}
+
+script PewterCity_EventScript_JacketMan {
+    msgbox(PewterCity_Text_JacketMan, MSGBOX_NPC)
+    end
+}
+
+script PewterCity_EventScript_TownSign {
+    msgbox(PewterCity_Text_TownSign, MSGBOX_SIGN)
+    end
+}
+
+script PewterCity_EventScript_GymSign {
+    msgbox(PewterCity_Text_GymSign, MSGBOX_SIGN)
+    end
+}
+
+script PewterCity_EventScript_TrainerTips {
+    msgbox(PewterCity_Text_TrainerTips, MSGBOX_SIGN)
+    end
+}
+
+script PewterCity_EventScript_GardenSign {
+    msgbox(PewterCity_Text_GardenSign, MSGBOX_SIGN)
+    end
+}
+
+script PewterCity_EventScript_MuseumFacade {
+    msgbox(PewterCity_Text_MuseumFacade, MSGBOX_SIGN)
+    end
+}
+
+// NIB-201's sign carries the ticket price and the laminated notice; reading it starts NIB-302 (var 0 to 1).
+script PewterCity_EventScript_MuseumSign {
+    lockall
+    msgbox(PewterCity_Text_MuseumSign)
+    msgbox(PewterCity_Text_MuseumSignNotice)
+    if (var(VAR_Q_FOSSILS) == 0) {
+        setvar(VAR_Q_FOSSILS, 1)
+    }
+    releaseall
+    end
+}
+
+script PewterCity_EventScript_SilphCrate {
+    msgbox(PewterCity_Text_SilphCrate, MSGBOX_SIGN)
+    end
+}
+
+script PewterCity_EventScript_PMCFacade {
+    msgbox(PewterCity_Text_PMCFacade, MSGBOX_SIGN)
+    end
+}
+
+script PewterCity_EventScript_HiroseMonument {
+    msgbox(PewterCity_Text_HiroseMonument, MSGBOX_SIGN)
+    end
+}
+
+script PewterCity_EventScript_MillRuin {
+    msgbox(PewterCity_Text_MillRuin, MSGBOX_SIGN)
+    end
+}
+
+// NIB-215 / NIB-221: the CVS outer board. From B2 the fossil-thief notice replaces the municipal ones.
+script PewterCity_EventScript_CVSBoard {
+    if (flag(FLAG_BADGE02_GET)) {
+        msgbox(PewterCity_Text_BoardThieves, MSGBOX_SIGN)
+    } else {
+        msgbox(PewterCity_Text_BoardDefault, MSGBOX_SIGN)
+    }
+    end
+}
+
+// ---------------------------------------------------------------------------------------------------------------
+// NIB-106 + NIB-305 steps 1 and 2 (either order). VAR_Q_POET: 0 none, 1 stone shown, 2 Onix told, 3 both.
+// The grey stone is a flag (FLAG_Q_GREY_STONE), not an item: PLACEHOLDER, a real key item needs a frozen-file change
+// (requests.md). States: stone step, Onix step, done, default.
+script PewterCity_EventScript_Poet {
+    lock
+    faceplayer
+    if (flag(FLAG_Q_GREY_STONE)) {
+        if (var(VAR_Q_POET) == 0 || var(VAR_Q_POET) == 2) {
+            goto(PewterCity_EventScript_PoetStone)
+        }
+    }
+    if (flag(FLAG_BADGE02_GET)) {
+        if (var(VAR_Q_POET) == 0 || var(VAR_Q_POET) == 1) {
+            goto(PewterCity_EventScript_PoetOnix)
+        }
+    }
+    if (var(VAR_Q_POET) == 3) {
+        msgbox(PewterCity_Text_PoetDone)
+    } else {
+        msgbox(PewterCity_Text_PoetDefault)
+    }
+    release
+    end
+}
+
+script PewterCity_EventScript_PoetStone {
+    msgbox(PewterCity_Text_PoetStone1)
+    msgbox(PewterCity_Text_PoetStone2)
+    msgbox(PewterCity_Text_PoetStone3)
+    if (var(VAR_Q_POET) == 0) {
+        setvar(VAR_Q_POET, 1)
+    } else {
+        setvar(VAR_Q_POET, 3)
+    }
+    release
+    end
+}
+
+// Point to the first / Point to the second: a yes/no (YES = the first line) until core adds a two-option multichoice.
+script PewterCity_EventScript_PoetOnix {
+    msgbox(PewterCity_Text_PoetOnix1)
+    msgbox(PewterCity_Text_PoetOnixLines)
+    msgbox(PewterCity_Text_PoetPoint, MSGBOX_YESNO)
+    if (var(VAR_RESULT) == YES) {
+        setflag(FLAG_Q_POET_A)
+        msgbox(PewterCity_Text_PoetPickedA)
+    } else {
+        setflag(FLAG_Q_POET_B)
+        msgbox(PewterCity_Text_PoetPickedB)
+    }
+    if (var(VAR_Q_POET) == 0) {
+        setvar(VAR_Q_POET, 2)
+    } else {
+        setvar(VAR_Q_POET, 3)
+    }
+    release
+    end
+}

@@ -1,2 +1,68 @@
 // PewterCity_AizawaHouse dialogue (English). Logic: scripts.pory. Translations: text.<lang>.pory
 // with the same block names; see docs/engineering/map-text.md.
+// Owner: nibi-town. [Nibi v3 s10] Omar's lines, [new] the studio's join. OQ1: 1946 and 1951 are local history only.
+
+// NIB-105 Aizawa Kenji (68), a retired factory worker, not an academic. Genzaburô is his uncle.
+text PewterCity_AizawaHouse_Text_Short1 {
+    format("My uncle Genzaburô sold natto from a bicycle.\pOne morning, on his route, he found a worked flint in the red soil.")
+}
+
+text PewterCity_AizawaHouse_Text_Short2 {
+    format("The experts told him to go home.\pHe kept looking.")
+}
+
+text PewterCity_AizawaHouse_Text_More {
+    format("Would you like the longer version?")
+}
+
+text PewterCity_AizawaHouse_Text_Long1 {
+    format("He wrote down every find and knocked on every door.\pIn 1951 he printed his notes himself.")
+}
+
+text PewterCity_AizawaHouse_Text_Long2 {
+    format("Years later a university man finally came to look.\pThe dig proved him right.")
+}
+
+// His view of the museum, with respect for Fujita Noriko. [Nibi v3 s10]
+text PewterCity_AizawaHouse_Text_Museum {
+    format("I go to the museum now and then.\pMrs. Fujita keeps everything exactly as it should be.")
+}
+
+text PewterCity_AizawaHouse_Text_AskCrate {
+    format("Did you want to ask about the crate by the museum?")
+}
+
+// Ask only (K2). [Nibi v3 s10] "Ho visto quella cassa..." Only while !FLAG_NIBI_CRATE_ASKED.
+text PewterCity_AizawaHouse_Text_Crate1 {
+    format("I've seen that crate. It came in September.\pI don't know what's inside.")
+}
+
+text PewterCity_AizawaHouse_Text_Crate2 {
+    format("My uncle would have said:\pThe interesting things are always inside crates nobody wants to open.")
+}
+
+// NIB-306 (T3, Charisma 10): the second dig. Lost media, stays open. No description, ever; never with the crate.
+text PewterCity_AizawaHouse_Text_DigT3a {
+    format("My uncle once found something deeper.\pThe ground gave way before anyone could record it.")
+}
+
+text PewterCity_AizawaHouse_Text_DigT3b {
+    format("Nobody ever went back.")
+}
+
+// NIB-218 objects.
+text PewterCity_AizawaHouse_Text_Book1 {
+    format("A thin book with a plain cover: “Notes on the Red Soil of the Nibi-2 Road”.")
+}
+
+text PewterCity_AizawaHouse_Text_Book2 {
+    format("Self-published, 1951.\pThe author is the man on the museum tag.")
+}
+
+text PewterCity_AizawaHouse_Text_Photo1 {
+    format("A man on a bicycle, blurred as if he were moving.")
+}
+
+text PewterCity_AizawaHouse_Text_Photo2 {
+    format("Maybe that bicycle.")
+}
