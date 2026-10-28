@@ -783,8 +783,24 @@ Music: Male
 Double Battle: No
 AI: Check Bad Move / Try To Faint / Check Viability
 
-Rattata
-Level: 2
+/* PLACEHOLDER: levels 12 and 14 are the R/G Brock levels (chapter-1 table of the thread "Design movesets and encounters");
+   moves are the last four of each learnset at that level; no held items, no Signature (q76: the dedicated Takeshi pass
+   decides; Onix has none). Owner threads: "Design movesets and encounters" and "Design arena ecology for gym battles". */
+Geodude
+Level: 12
+IVs: 12 HP / 12 Atk / 12 Def / 12 SpA / 12 SpD / 12 Spe
+- Tackle
+- Defense Curl
+- Sand Attack
+- Rock Throw
+
+Onix
+Level: 14
+IVs: 12 HP / 12 Atk / 12 Def / 12 SpA / 12 SpD / 12 Spe
+- Tackle
+- Screech
+- Bind
+- Rock Throw
 
 /* END takeshi */
 
