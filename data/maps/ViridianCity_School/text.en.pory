@@ -1,2 +1,315 @@
 // ViridianCity_School dialogue (English). Logic: scripts.pory. Translations: text.<lang>.pory
 // with the same block names; see docs/engineering/map-text.md.
+// Kurosawa house, workstream tokiwa-town. Canon: Tokiwa v5 s10 (Kurosawa Megumi, 52, ex-competitor, home tutor).
+// Lines tagged [R/G] come from the Red/Green Pokémon School; [Tokiwa v5] from the city doc; [new] are joins.
+// Everything the studio decided alone is PLACEHOLDER with the thread that should refine it.
+
+// ---- Kurosawa: the first meeting and session 1 (types) ---------------------------------------
+
+// [Tokiwa v5 s10] lessons at home, few advertised
+text TokiwaKurosawa_Text_Welcome {
+    format("KUROSAWA: You're not one of mine. Sit, if you like.\pI teach at home. Types, catching, growth. One lesson at a time. We'll start with types.")
+}
+
+// [Tokiwa v5 s10 session 1] same move, three targets, Eevee as the demonstration subject
+text TokiwaKurosawa_Text_S1Intro {
+    format("She sets two chalk cards on the table, Fire and Grass. Eevee sits down beside them.")
+}
+
+text TokiwaKurosawa_Text_S1Same {
+    format("KUROSAWA: One move. A jet of water. Three targets: the two cards, and Eevee.")
+}
+
+text TokiwaKurosawa_Text_S1Fire {
+    format("On the Fire card it does twice the damage.")
+}
+
+text TokiwaKurosawa_Text_S1Grass {
+    format("On the Grass card it does half.")
+}
+
+text TokiwaKurosawa_Text_S1Eevee {
+    format("On Eevee, who is Normal, it does what it says it does. Eevee has never minded being the plain one.")
+}
+
+text TokiwaKurosawa_Text_S1Arrows {
+    format("KUROSAWA: Every type beats some and loses to others. Learn the arrows. The arenas will teach you the rest.")
+}
+
+text TokiwaKurosawa_Text_S1QuizOffer {
+    format("KUROSAWA: A question, if you already know the basics?")
+}
+
+text TokiwaKurosawa_Text_S1Question {
+    format("KUROSAWA: A Fire move hits a Grass-type. How much damage?")
+}
+
+text TokiwaKurosawa_Text_QuizDouble {
+    format("DOUBLE")
+}
+
+text TokiwaKurosawa_Text_QuizHalf {
+    format("HALF")
+}
+
+text TokiwaKurosawa_Text_QuizSame {
+    format("THE SAME")
+}
+
+text TokiwaKurosawa_Text_QuizRight {
+    format("KUROSAWA: Good. Fire burns grass. Some things are as simple as they sound.")
+}
+
+text TokiwaKurosawa_Text_QuizWrong {
+    format("KUROSAWA: Double. Fire burns grass. Some things are as simple as they sound.")
+}
+
+text TokiwaKurosawa_Text_QuizSkip {
+    format("KUROSAWA: Then you'll find it out in the arenas.")
+}
+
+// [Tokiwa v5 s10] she vouches for you: Charisma +1 after every session
+text TokiwaKurosawa_Text_Vouch {
+    format("KUROSAWA: If anyone in town asks, I'll say you listened.")
+}
+
+text TokiwaKurosawa_Text_Session1Next {
+    format("KUROSAWA: Come back once you've met a few kinds of Pokémon. Then we'll talk about catching them.")
+}
+
+// ---- The menu --------------------------------------------------------------------------------
+
+text TokiwaKurosawa_Text_WhatToday {
+    format("KUROSAWA: What today?")
+}
+
+text TokiwaKurosawa_Text_ChoiceTypes {
+    format("TYPES")
+}
+
+text TokiwaKurosawa_Text_ChoiceCatch {
+    format("CATCHING")
+}
+
+text TokiwaKurosawa_Text_ChoiceGrowth {
+    format("GROWTH")
+}
+
+text TokiwaKurosawa_Text_ChoiceChat {
+    format("TALK")
+}
+
+text TokiwaKurosawa_Text_ChoiceLeave {
+    format("LEAVE")
+}
+
+text TokiwaKurosawa_Text_Leave {
+    format("KUROSAWA: Mind the step.")
+}
+
+text TokiwaKurosawa_Text_TypesFirst {
+    format("KUROSAWA: Types first.")
+}
+
+// ---- Session 2: catching (text plus the notebook page; no tutorial battle) ------------------------
+
+text TokiwaKurosawa_Text_S2NotYet {
+    format("KUROSAWA: Not yet. You've hardly met anyone. Come back when you've seen three kinds of Pokémon, at least.")
+}
+
+text TokiwaKurosawa_Text_S2Intro {
+    format("KUROSAWA: Catching. Eevee, off the table. This one is for the notebook.")
+}
+
+// [R/G] a healthy Pokémon is hard to catch
+text TokiwaKurosawa_Text_S2Healthy {
+    format("KUROSAWA: A Pokémon at full strength slips the ball. It doesn't want to be caught.")
+}
+
+text TokiwaKurosawa_Text_S2Weaken {
+    format("Weaken it first. Not to the end. Just low.")
+}
+
+// [R/G] status helps
+text TokiwaKurosawa_Text_S2Status {
+    format("Sleep or paralysis helps too. A tired thing stops trying.")
+}
+
+// [Tokiwa v5 s10 session 2] full HP vs low vs status, as words (no numbers shown; PLACEHOLDER, owner thread "Design movesets and encounters" if Omar wants the odds on screen)
+text TokiwaKurosawa_Text_S2Three {
+    format("Healthy: it slips out. Hurt: it stays. Hurt and asleep: it hardly tries.")
+}
+
+text TokiwaKurosawa_Text_S2Notebook {
+    format("She slides a notebook across the table, open to the second page.")
+}
+
+text TokiwaKurosawa_Text_Researchers {
+    format("KUROSAWA: Some researchers pay for Pokémon they could catch themselves. I don't know why.\pI write it down.")
+}
+
+text TokiwaKurosawa_Text_Session2Next {
+    format("KUROSAWA: Growth is next. Win your first arena. Then it makes sense.")
+}
+
+// ---- Session 3: stats and growth --------------------------------------------------------------
+
+text TokiwaKurosawa_Text_S3Badge {
+    format("KUROSAWA: Growth makes sense after you have stood in an arena. Come back with the badge.")
+}
+
+text TokiwaKurosawa_Text_S3CatchFirst {
+    format("KUROSAWA: Catching first.")
+}
+
+text TokiwaKurosawa_Text_S3Intro {
+    format("KUROSAWA: Growth. Put your first Pokémon beside Eevee.")
+}
+
+text TokiwaKurosawa_Text_S3Beside {
+    format("KUROSAWA: {STR_VAR_1} and Eevee. Level for level, the numbers are not the same.")
+}
+
+text TokiwaKurosawa_Text_S3Differ {
+    format("Two of one kind can differ, too. A little luck at birth, and what you ask of it.")
+}
+
+text TokiwaKurosawa_Text_S3Born {
+    format("You saw it in the arena, even if you didn't know what you were seeing.")
+}
+
+text TokiwaKurosawa_Text_S3Levels {
+    format("KUROSAWA: A level says how long it has trained. It doesn't say how it fights. Watch both.")
+}
+
+// ---- TOK-109 conversation (Tokiwa v5 s10 themes) -------------------------------------------------
+
+// [Tokiwa v5 s10] why a home tutor and not a school
+text TokiwaKurosawa_Text_ChatWhy {
+    format("KUROSAWA: A school wants a roof, a bell and a fee. I have a room, and I charge less.")
+}
+
+text TokiwaKurosawa_Text_ChatWhy2 {
+    format("A school teaches forty children the same afternoon. I would rather teach one child the afternoon they need.")
+}
+
+// [Tokiwa v5 s10] the trainers who come, and those who don't
+text TokiwaKurosawa_Text_ChatWho {
+    format("KUROSAWA: The ones who come ask good questions. Most of the ones who need the lessons don't come.")
+}
+
+text TokiwaKurosawa_Text_ChatWho2 {
+    format("It's quiet this way. I don't put up signs.")
+}
+
+// [Tokiwa v5 s10, s15] Charisma tier 3: quitting competition was a choice
+text TokiwaKurosawa_Text_ChatQuit {
+    format("KUROSAWA: I stopped competing. That was a choice.\pI have never decided whether I would make it again.")
+}
+
+// ---- Pupil and notebook (TOK-110, 219) ---------------------------------------------------------------
+
+// [new] the pupil at the low table, 09-12
+text TokiwaKurosawa_Text_Pupil {
+    format("Shh. I'm on the page about catching. I keep forgetting it.")
+}
+
+// [R/G Lass] TOK-110
+text TokiwaKurosawa_Text_DontLook {
+    format("Hey! Don't look at my notes!")
+}
+
+text TokiwaKurosawa_Text_NotebookIntro {
+    format("Looked at the notebook!")
+}
+
+text TokiwaKurosawa_Text_Turn {
+    format("Turn the page?")
+}
+
+// [R/G, lightly reworded] page 1
+text TokiwaKurosawa_Text_Page1 {
+    format("First page...\pPoké Balls catch Pokémon. Up to six can come with you. People who raise them are called trainers.")
+}
+
+// page 2
+text TokiwaKurosawa_Text_Page2 {
+    format("Second page...\pA healthy Pokémon is hard to catch. Weaken it first. Sleep and paralysis help.")
+}
+
+// page 3
+text TokiwaKurosawa_Text_Page3 {
+    format("Third page...\pTrainers battle at the circuit arenas.")
+}
+
+// page 4
+text TokiwaKurosawa_Text_Page4 {
+    format("Fourth page...\pBeat the eight arena leaders and you earn the right to the League.")
+}
+
+// ---- TOK-218 blackboard, books, photo, Eevee ---------------------------------------------------------
+
+// [Tokiwa v5 s10]
+text TokiwaKurosawa_Text_BoardTypes {
+    format("Type diagrams in chalk. Someone drew arrows, then half rubbed them out.")
+}
+
+// [R/G blackboard]
+text TokiwaKurosawa_Text_BoardStatus {
+    format("In the corner, a list of status problems in battle. Which heading do you want to read?")
+}
+
+text TokiwaKurosawa_Text_StSleep {
+    format("SLEEP")
+}
+
+text TokiwaKurosawa_Text_StPoison {
+    format("POISON")
+}
+
+text TokiwaKurosawa_Text_StParalysis {
+    format("PARALYSIS")
+}
+
+text TokiwaKurosawa_Text_StBurn {
+    format("BURN")
+}
+
+text TokiwaKurosawa_Text_StFreeze {
+    format("FREEZE")
+}
+
+// [R/G, cures rewritten for the inn-rest rule]
+text TokiwaKurosawa_Text_Sleep {
+    format("A Pokémon can't attack while it sleeps. It stays asleep after the battle, until it wakes or you rest at an inn.")
+}
+
+text TokiwaKurosawa_Text_Poison {
+    format("A poisoned Pokémon loses health steadily. The poison lingers after battle. An Antidote helps, or a night at an inn.")
+}
+
+text TokiwaKurosawa_Text_Paralysis {
+    format("Paralysis can make moves misfire, and it slows the Pokémon. It stays after battle. Rest at an inn.")
+}
+
+text TokiwaKurosawa_Text_Burn {
+    format("A burn cuts attack and does damage every turn. It stays after battle. Rest at an inn.")
+}
+
+text TokiwaKurosawa_Text_Freeze {
+    format("A frozen Pokémon can't move at all. It stays frozen after battle. Rest at an inn.")
+}
+
+// [Tokiwa v5 s10] someone who has read a lot on both sides
+text TokiwaKurosawa_Text_Books {
+    format("Manuals on breeding and ethology. Two novels, spines cracked. Someone who has read a lot on both sides.")
+}
+
+// [Tokiwa v5 s10]
+text TokiwaKurosawa_Text_Photo {
+    format("An old photo. The same person. Not the same Pokémon.")
+}
+
+text TokiwaKurosawa_Text_Eevee {
+    format("Eevee blinks at you, then goes back to ignoring you.")
+}

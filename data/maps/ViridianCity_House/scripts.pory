@@ -1,2 +1,174 @@
-// Placeholder imported from FireRed (tools/frlg_import). No events yet.
-mapscripts ViridianCity_House_MapScripts {}
+// Inoue house (ViridianCity_House), workstream tokiwa-town. Rows: script list TOK-111 (Masako), 112 (Yuki at home),
+// 113 (Grandma Inoue), 125 (the letter delivered), 220 (calendar, photo, back door), 305 (the letter). Text: text.en.pory.
+//
+// Yuki and Biscotto are here whenever they are not at the canal; the exterior's ON_TRANSITION uses the same rule
+// (C4): at the canal after FLAG_Q_CARD, except at NITE unless VAR_Q_PIDGEY is 2.
+// Grandma appears from the second entry after FLAG_Q_CARD (FLAG_Q_INOUE_VISIT1 is set during the first one).
+// The house has one room, so her "back room" is the alcove door in the north wall (PLACEHOLDER; art may add a real door).
+
+const TIME_NITE = 2
+
+mapscripts ViridianCity_House_MapScripts {
+    MAP_SCRIPT_ON_TRANSITION {
+        // Yuki and Biscotto: canal or home (TOK-112, 302).
+        clearflag(FLAG_HIDE_INOUE_YUKI)
+        if (flag(FLAG_Q_CARD)) {
+            checktimeofday
+            if (var(VAR_RESULT) != TIME_NITE || var(VAR_Q_PIDGEY) == 2) {
+                setflag(FLAG_HIDE_INOUE_YUKI)
+            }
+        }
+        // TOK-113: Grandma from the second entry after the Card.
+        setflag(FLAG_HIDE_INOUE_GRANDMA)
+        if (flag(FLAG_Q_CARD)) {
+            if (flag(FLAG_Q_INOUE_VISIT1)) {
+                clearflag(FLAG_HIDE_INOUE_GRANDMA)
+            } else {
+                setflag(FLAG_Q_INOUE_VISIT1)
+            }
+        }
+    }
+}
+
+// ---------------------------------------------------------------------------------------------
+// TOK-111 Masako: the town (B1: the next leader), Yujirou's light, and, with Yuki in the room, the guard line.
+// ---------------------------------------------------------------------------------------------
+script TokiwaInoue_EventScript_Masako {
+    lock
+    faceplayer
+    if (!flag(FLAG_P_MASAKO_GUARD)) {
+        setflag(FLAG_P_MASAKO_GUARD)
+        call(TokiwaInoue_EventScript_MasakoTown)
+    } elif (!flag(FLAG_P_MASAKO_LIGHT)) {
+        setflag(FLAG_P_MASAKO_LIGHT)
+        msgbox(TokiwaInoue_Text_MasakoLight)
+    } else {
+        clearflag(FLAG_P_MASAKO_GUARD)
+        clearflag(FLAG_P_MASAKO_LIGHT)
+        if (!flag(FLAG_HIDE_INOUE_YUKI)) {
+            msgbox(TokiwaInoue_Text_MasakoGuard)
+            msgbox(TokiwaInoue_Text_MasakoGuardYuki)
+        } else {
+            call(TokiwaInoue_EventScript_MasakoTown)
+        }
+    }
+    release
+    end
+}
+
+script TokiwaInoue_EventScript_MasakoTown {
+    if (flag(FLAG_BADGE01_GET)) {
+        msgbox(TokiwaInoue_Text_MasakoB1)
+    } else {
+        msgbox(TokiwaInoue_Text_MasakoTown)
+        msgbox(TokiwaInoue_Text_MasakoTown2)
+    }
+    return
+}
+
+// ---------------------------------------------------------------------------------------------
+// TOK-112 Yuki at home and Biscotto.
+// ---------------------------------------------------------------------------------------------
+script TokiwaInoue_EventScript_Yuki {
+    lock
+    faceplayer
+    if (flag(FLAG_Q_PIDGEY_RELEASED)) {
+        msgbox(TokiwaInoue_Text_YukiGreets)
+    } elif (flag(FLAG_Q_PIDGEY_KEPT)) {
+        msgbox(TokiwaInoue_Text_YukiKept)
+        msgbox(TokiwaInoue_Text_YukiKeptBiscotto)
+    } elif (!flag(FLAG_P_YUKI_NAMES)) {
+        setflag(FLAG_P_YUKI_NAMES)
+        msgbox(TokiwaInoue_Text_YukiMine)
+    } else {
+        clearflag(FLAG_P_YUKI_NAMES)
+        msgbox(TokiwaInoue_Text_YukiNames)
+    }
+    release
+    end
+}
+
+script TokiwaInoue_EventScript_Biscotto {
+    lock
+    faceplayer
+    playmoncry(SPECIES_RATTATA, CRY_MODE_NORMAL)
+    msgbox(TokiwaInoue_Text_Biscotto)
+    waitmoncry
+    release
+    end
+}
+
+// ---------------------------------------------------------------------------------------------
+// TOK-113 / 305 / 125 Grandma Inoue (C3: VAR_Q_LETTER 0 -> 1 here; nibi-spine writes 2).
+// ---------------------------------------------------------------------------------------------
+script TokiwaInoue_EventScript_Grandma {
+    lock
+    faceplayer
+    if (var(VAR_Q_LETTER) == 0) {
+        // First talk: how it was, and the letter.
+        msgbox(TokiwaInoue_Text_GrandmaFirst)
+        msgbox(TokiwaInoue_Text_GrandmaFirst2)
+        msgbox(TokiwaInoue_Text_LetterAsk)
+        giveitem(ITEM_LETTER)
+        if (var(VAR_RESULT) == TRUE) {
+            setvar(VAR_Q_LETTER, 1)
+            msgbox(TokiwaInoue_Text_LetterGiven)
+        } else {
+            msgbox(TokiwaInoue_Text_LetterNoRoom)
+        }
+        release
+        end
+    }
+    if (var(VAR_Q_LETTER) == 1 && !flag(FLAG_P_INOUE_LETTER_ASKED)) {
+        // She asks once, then stops.
+        setflag(FLAG_P_INOUE_LETTER_ASKED)
+        msgbox(TokiwaInoue_Text_LetterStill)
+    } elif (var(VAR_Q_LETTER) == 2 && !flag(FLAG_P_INOUE_LETTER)) {
+        // TOK-125: she asks whether it was read.
+        setflag(FLAG_P_INOUE_LETTER)
+        msgbox(TokiwaInoue_Text_LetterRead)
+        dynmultichoice(20, 4, FALSE, 2, 0, DYN_MULTICHOICE_CB_NONE, TokiwaInoue_Text_ChoiceNod, TokiwaInoue_Text_ChoiceSilent)
+        if (var(VAR_RESULT) == 0) {
+            msgbox(TokiwaInoue_Text_LetterNod)
+        } else {
+            msgbox(TokiwaInoue_Text_LetterSilent)
+        }
+        release
+        end
+    }
+    msgbox(TokiwaInoue_Text_GrandmaWhat)
+    dynmultichoice(20, 4, FALSE, 2, 0, DYN_MULTICHOICE_CB_NONE, TokiwaInoue_Text_ChoiceOldDays, TokiwaInoue_Text_ChoiceArena)
+    switch (var(VAR_RESULT)) {
+        case 0:
+            if (!flag(FLAG_P_GRANDMA_WAR)) {
+                setflag(FLAG_P_GRANDMA_WAR)
+                msgbox(TokiwaInoue_Text_GrandmaHatago)
+            } else {
+                clearflag(FLAG_P_GRANDMA_WAR)
+                msgbox(TokiwaInoue_Text_GrandmaWar)
+            }
+        case 1:
+            // She never speaks of the PMC; she turns the subject.
+            msgbox(TokiwaInoue_Text_GrandmaArena)
+    }
+    release
+    end
+}
+
+// ---------------------------------------------------------------------------------------------
+// TOK-220 objects.
+// ---------------------------------------------------------------------------------------------
+script TokiwaInoue_EventScript_Calendar {
+    msgbox(TokiwaInoue_Text_Calendar, MSGBOX_SIGN)
+    end
+}
+
+script TokiwaInoue_EventScript_FamilyPhoto {
+    msgbox(TokiwaInoue_Text_FamilyPhoto, MSGBOX_SIGN)
+    end
+}
+
+script TokiwaInoue_EventScript_BackDoor {
+    msgbox(TokiwaInoue_Text_BackDoor, MSGBOX_SIGN)
+    end
+}

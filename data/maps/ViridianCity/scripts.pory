@@ -1,2 +1,442 @@
-// Placeholder imported from FireRed (tools/frlg_import). No events yet.
-mapscripts ViridianCity_MapScripts {}
+// Tokiwa City exterior (ViridianCity), workstream tokiwa-town. Rows: script list TOK-001, 010, 011, 104/402 (canal
+// bench copy), 112 (canal), 115, 116, 117, 118, 120, 201, 203, 207, 212, 222, 224, 302 (canal half), 307, 408; SYS-003.
+// Dialogue lives in text.en.pory. Visibility is derived in ON_TRANSITION (see ws/tokiwa-town/visibility.md).
+//
+// Map layout facts (world M1/M2, checked on the layout):
+//  - The north exit is the five cells x 19-23 at y 4 (a 5-wide corridor); the TOK-010 trigger is that row.
+//  - The pond (x 11-16, y 26-30) is the Genbei-gawa stand-in; its east shore (x 17) is the canal bench.
+//  - The fenced grove at the north-west (x 9-18, y 5-16) is the shrine; art has no bench or stone there yet.
+// VAR_TOKIWA_STATE: 0 the north-block scene has not played, 1 played.
+// Every B1 consequence on this map is a read of FLAG_BADGE01_GET (contract C13).
+
+const TIME_NITE = 2
+const KEEP_FRIENDSHIP = 20 // PLACEHOLDER (TOK-302 Keep): "low friendship"; owner thread "Make TP need rest, with town toolkit"
+
+mapscripts ViridianCity_MapScripts {
+    MAP_SCRIPT_ON_TRANSITION {
+        // SYS-003: first entry. Fiora leaves Masara (C7).
+        if (!flag(FLAG_VISITED_TOKIWA)) {
+            setflag(FLAG_VISITED_TOKIWA)
+            setflag(FLAG_HIDE_MASARA_FIORA)
+        }
+        // TOK-115 / 408: Hamada is on the street once the scene has played (or after B1), and home at NITE.
+        setflag(FLAG_HIDE_TOKIWA_HAMADA)
+        if (var(VAR_TOKIWA_STATE) >= 1 || flag(FLAG_BADGE01_GET)) {
+            checktimeofday
+            if (var(VAR_RESULT) != TIME_NITE) {
+                clearflag(FLAG_HIDE_TOKIWA_HAMADA)
+            }
+        }
+        // TOK-011: B1, Hamada steps aside from the north road.
+        // (The scene moves his template to the street edge; reset it on every entry.)
+        if (flag(FLAG_BADGE01_GET)) {
+            setvar(VAR_TEMP_0, 1) // TOK-011: the north-block triggers (VAR_TEMP_0 == 0) never fire after B1
+            setobjectxyperm(LOCALID_TOKIWA_HAMADA, 24, 5)
+            setobjectmovementtype(LOCALID_TOKIWA_HAMADA, MOVEMENT_TYPE_FACE_LEFT)
+        } else {
+            setobjectxyperm(LOCALID_TOKIWA_HAMADA, 22, 5)
+            setobjectmovementtype(LOCALID_TOKIWA_HAMADA, MOVEMENT_TYPE_FACE_DOWN)
+        }
+        // C8: Hiroshi on the canal bench 14-18.
+        getgamehour
+        if (var(VAR_RESULT) >= 14 && var(VAR_RESULT) < 18) {
+            clearflag(FLAG_HIDE_TOKIWA_HIROSHI)
+        } else {
+            setflag(FLAG_HIDE_TOKIWA_HIROSHI)
+        }
+        // TOK-302 / 112: Yuki and Biscotto are at the canal after the Card (C4); at NITE they are home, except
+        // while VAR_Q_PIDGEY is 2 (Fumiko's line says "Yuki is at the canal", so she has to be there).
+        setflag(FLAG_HIDE_TOKIWA_YUKI)
+        if (flag(FLAG_Q_CARD)) {
+            checktimeofday
+            if (var(VAR_RESULT) != TIME_NITE || var(VAR_Q_PIDGEY) == 2) {
+                clearflag(FLAG_HIDE_TOKIWA_YUKI)
+            }
+        }
+    }
+}
+
+// ---------------------------------------------------------------------------------------------
+// TOK-010 The north block. Five trigger cells across the north exit, live until B1. The scene plays once
+// (VAR_TOKIWA_STATE 0 -> 1 at its end, so leaving the game mid-scene replays it from the save);
+// after that Fujiwara has a half-line and the player is turned back. Never a battle, never a heal.
+// Positions: Fujiwara's bench (21,6), the player aligned to (21,4), Hamada's post (22,5).
+// ---------------------------------------------------------------------------------------------
+script TokiwaCity_EventScript_NorthBlock {
+    if (flag(FLAG_BADGE01_GET)) {
+        // Belt and braces: ON_TRANSITION already sets VAR_TEMP_0 after B1, so the trigger cannot fire.
+        releaseall
+        end
+    }
+    lockall
+    if (var(VAR_TOKIWA_STATE) == 0) {
+        // Line the player up in front of Fujiwara, whichever cell was entered.
+        getplayerxy(VAR_0x8004, VAR_0x8005)
+        switch (var(VAR_0x8004)) {
+            case 19:
+                applymovement(LOCALID_PLAYER, TokiwaCity_Movement_PlayerFrom19)
+            case 20:
+                applymovement(LOCALID_PLAYER, TokiwaCity_Movement_PlayerFrom20)
+            case 22:
+                applymovement(LOCALID_PLAYER, TokiwaCity_Movement_PlayerFrom22)
+            case 23:
+                applymovement(LOCALID_PLAYER, TokiwaCity_Movement_PlayerFrom23)
+        }
+        waitmovement(0)
+        applymovement(LOCALID_PLAYER, TokiwaCity_Movement_FaceDown)
+        waitmovement(0)
+        // Fujiwara gets up with an energy nobody expects of him.
+        applymovement(LOCALID_TOKIWA_FUJIWARA, TokiwaCity_Movement_FujiwaraRises)
+        waitmovement(LOCALID_TOKIWA_FUJIWARA)
+        msgbox(TokiwaCity_Text_TOK010_Stop)
+        msgbox(TokiwaCity_Text_TOK010_Nibi)
+        msgbox(TokiwaCity_Text_TOK010_Caves)
+        msgbox(TokiwaCity_Text_TOK010_Lost)
+        closemessage
+        // Hamada comes along the street from the south (off screen at (22,11)) and stands beside him.
+        setobjectxyperm(LOCALID_TOKIWA_HAMADA, 22, 11)
+        setobjectmovementtype(LOCALID_TOKIWA_HAMADA, MOVEMENT_TYPE_FACE_UP)
+        clearflag(FLAG_HIDE_TOKIWA_HAMADA)
+        addobject(LOCALID_TOKIWA_HAMADA)
+        applymovement(LOCALID_TOKIWA_HAMADA, TokiwaCity_Movement_HamadaArrives)
+        waitmovement(LOCALID_TOKIWA_HAMADA)
+        applymovement(LOCALID_TOKIWA_FUJIWARA, TokiwaCity_Movement_FaceRight)
+        waitmovement(LOCALID_TOKIWA_FUJIWARA)
+        msgbox(TokiwaCity_Text_TOK010_Name)
+        closemessage
+        // He walks Fujiwara back to the bench and takes his place in front of the player.
+        applymovement(LOCALID_TOKIWA_FUJIWARA, TokiwaCity_Movement_FujiwaraBackToBench)
+        waitmovement(LOCALID_TOKIWA_FUJIWARA)
+        applymovement(LOCALID_TOKIWA_HAMADA, TokiwaCity_Movement_HamadaStepsIn)
+        waitmovement(LOCALID_TOKIWA_HAMADA)
+        msgbox(TokiwaCity_Text_TOK010_NotDangerous)
+        msgbox(TokiwaCity_Text_TOK010_NotYet)
+        msgbox(TokiwaCity_Text_TOK010_Takeshi)
+        closemessage
+        applymovement(LOCALID_TOKIWA_HAMADA, TokiwaCity_Movement_HamadaToPost)
+        waitmovement(LOCALID_TOKIWA_HAMADA)
+        setflag(FLAG_Q_TKW_NORTH_SEEN)
+        setvar(VAR_TOKIWA_STATE, 1)
+    } else {
+        // The half-line. Fujiwara does not get up.
+        playse(SE_PIN)
+        msgbox(TokiwaCity_Text_TOK010_HalfLine)
+        closemessage
+    }
+    // Turned back from the exit in both cases.
+    applymovement(LOCALID_PLAYER, TokiwaCity_Movement_PlayerBack)
+    waitmovement(0)
+    releaseall
+    end
+}
+
+movement TokiwaCity_Movement_PlayerFrom19 {
+    walk_right * 2
+}
+
+movement TokiwaCity_Movement_PlayerFrom20 {
+    walk_right
+}
+
+movement TokiwaCity_Movement_PlayerFrom22 {
+    walk_left
+}
+
+movement TokiwaCity_Movement_PlayerFrom23 {
+    walk_left * 2
+}
+
+movement TokiwaCity_Movement_FaceDown {
+    face_down
+}
+
+movement TokiwaCity_Movement_FaceRight {
+    face_right
+}
+
+movement TokiwaCity_Movement_FujiwaraRises {
+    emote_exclamation_mark
+    walk_up
+    face_up
+}
+
+movement TokiwaCity_Movement_HamadaArrives {
+    walk_up * 6
+    face_left
+}
+
+movement TokiwaCity_Movement_FujiwaraBackToBench {
+    walk_down
+    face_left
+}
+
+movement TokiwaCity_Movement_HamadaStepsIn {
+    walk_left
+    face_up
+}
+
+movement TokiwaCity_Movement_HamadaToPost {
+    walk_right
+    face_down
+}
+
+movement TokiwaCity_Movement_PlayerBack {
+    walk_down
+}
+
+// ---------------------------------------------------------------------------------------------
+// TOK-116 / 307 / 408 Fujiwara on the north bench. Before the scene he dozes; by day the travellers and the
+// caves; at NITE the second version (sets FLAG_Q_FUJIWARA_NIGHT); CH tier 3 adds the observation.
+// ---------------------------------------------------------------------------------------------
+script TokiwaCity_EventScript_Fujiwara {
+    lock
+    faceplayer
+    if (var(VAR_TOKIWA_STATE) == 0) {
+        msgbox(TokiwaCity_Text_FujiwaraDozing)
+    } else {
+        checktimeofday
+        if (var(VAR_RESULT) == TIME_NITE) {
+            setflag(FLAG_Q_FUJIWARA_NIGHT)
+            msgbox(TokiwaCity_Text_FujiwaraNight)
+        } else {
+            msgbox(TokiwaCity_Text_FujiwaraTravellers)
+            msgbox(TokiwaCity_Text_FujiwaraCavesDay)
+            checkcharisma(CHARISMA_TIERS_TOKIWA)
+            if (var(VAR_RESULT) >= CHARISMA_TIER_HIGH) {
+                msgbox(TokiwaCity_Text_FujiwaraT3)
+            }
+        }
+    }
+    release
+    end
+}
+
+// ---------------------------------------------------------------------------------------------
+// TOK-115 / 011 Hamada on the street: the case and Yujirou (toggled), after B1 "Go on, then."
+// ---------------------------------------------------------------------------------------------
+script TokiwaCity_EventScript_Hamada {
+    lock
+    faceplayer
+    if (flag(FLAG_BADGE01_GET)) {
+        msgbox(TokiwaCity_Text_TOK011_GoOn)
+    } elif (!flag(FLAG_P_HAMADA_YUJI)) {
+        setflag(FLAG_P_HAMADA_YUJI)
+        msgbox(TokiwaCity_Text_HamadaCase)
+    } else {
+        clearflag(FLAG_P_HAMADA_YUJI)
+        msgbox(TokiwaCity_Text_HamadaYujirou)
+    }
+    release
+    end
+}
+
+// Hamada's house (Tokiwa v5 building 6) is a locked door, world M2's bg event repointed here.
+script TokiwaCity_EventScript_HamadaDoor {
+    lockall
+    msgbox(TokiwaCity_Text_NobodyAnswers)
+    if (flag(FLAG_BADGE01_GET)) {
+        msgbox(TokiwaCity_Text_HamadaNote)
+    }
+    releaseall
+    end
+}
+
+// ---------------------------------------------------------------------------------------------
+// TOK-104 / 402 Hiroshi on the canal bench (14-18): the bird (once), B1, the water, the seasons.
+// Spine's inn copies use the same three first lines.
+// ---------------------------------------------------------------------------------------------
+script TokiwaCity_EventScript_HiroshiCanal {
+    lock
+    faceplayer
+    if (flag(FLAG_Q_PIDGEY_RELEASED) && !flag(FLAG_P_HIROSHI_CANAL_PIDGEY)) {
+        setflag(FLAG_P_HIROSHI_CANAL_PIDGEY)
+        msgbox(TokiwaCity_Text_HiroshiPidgey)
+    } elif (flag(FLAG_BADGE01_GET)) {
+        msgbox(TokiwaCity_Text_HiroshiB1)
+    } elif (!flag(FLAG_P_HIROSHI_CANAL_SEASONS)) {
+        setflag(FLAG_P_HIROSHI_CANAL_SEASONS)
+        msgbox(TokiwaCity_Text_HiroshiWater)
+    } else {
+        clearflag(FLAG_P_HIROSHI_CANAL_SEASONS)
+        msgbox(TokiwaCity_Text_HiroshiSeasons)
+    }
+    release
+    end
+}
+
+// ---------------------------------------------------------------------------------------------
+// TOK-302 / 112 Yuki at the canal: the injured Pidgey (C4) and, once it is settled, her ordinary lines.
+//   VAR_Q_PIDGEY 0 -> 1: she gives HURT PIDGEY (needs FLAG_Q_CARD, which is also what shows her here).
+//   1: she points at the inn.  2 (tokiwa-spine: Fumiko's rest): release or keep.
+//   3 released: Charisma +2, she greets the player by name from now on.  4 kept: Pidgey joins the party.
+// ---------------------------------------------------------------------------------------------
+script TokiwaCity_EventScript_YukiCanal {
+    lock
+    faceplayer
+    if (var(VAR_Q_PIDGEY) == 0) {
+        msgbox(TokiwaCity_Text_PidgeyFound)
+        msgbox(TokiwaCity_Text_PidgeyWing)
+        msgbox(TokiwaCity_Text_PidgeyInn)
+        giveitem(ITEM_HURT_PIDGEY)
+        if (var(VAR_RESULT) == TRUE) {
+            setvar(VAR_Q_PIDGEY, 1)
+            msgbox(TokiwaCity_Text_PidgeyCareful)
+        } else {
+            // Key item pocket full: she holds it for later and asks again next time.
+            msgbox(TokiwaCity_Text_PidgeyNoRoom)
+        }
+    } elif (var(VAR_Q_PIDGEY) == 1) {
+        msgbox(TokiwaCity_Text_PidgeyWaiting)
+    } elif (var(VAR_Q_PIDGEY) == 2) {
+        msgbox(TokiwaCity_Text_PidgeyStanding)
+        dynmultichoice(20, 4, FALSE, 3, 0, DYN_MULTICHOICE_CB_NONE, TokiwaCity_Text_ChoiceRelease, TokiwaCity_Text_ChoiceKeep, TokiwaCity_Text_ChoiceNotYet)
+        switch (var(VAR_RESULT)) {
+            case 0:
+                call(TokiwaCity_EventScript_PidgeyRelease)
+            case 1:
+                call(TokiwaCity_EventScript_PidgeyKeep)
+            default:
+                msgbox(TokiwaCity_Text_PidgeyTakeYourTime)
+        }
+    } elif (var(VAR_Q_PIDGEY) == 3) {
+        msgbox(TokiwaCity_Text_YukiGreets)
+    } else {
+        msgbox(TokiwaCity_Text_YukiKeptLine)
+        msgbox(TokiwaCity_Text_YukiKeptBiscotto)
+    }
+    release
+    end
+}
+
+script TokiwaCity_EventScript_PidgeyRelease {
+    msgbox(TokiwaCity_Text_PidgeyReleaseA)
+    msgbox(TokiwaCity_Text_PidgeyReleaseB)
+    closemessage
+    removeitem(ITEM_HURT_PIDGEY)
+    addcharisma(2)
+    setflag(FLAG_Q_PIDGEY_RELEASED)
+    setvar(VAR_Q_PIDGEY, 3)
+    msgbox(TokiwaCity_Text_YukiThanks)
+    return
+}
+
+// "Keep": a plain gift Pidgey, PLACEHOLDER level 5, low friendship, and nothing is said about hesitating.
+script TokiwaCity_EventScript_PidgeyKeep {
+    givemon(SPECIES_PIDGEY, 5)
+    if (var(VAR_RESULT) == MON_CANT_GIVE) {
+        msgbox(TokiwaCity_Text_PidgeyNoRoomParty)
+        return
+    }
+    if (var(VAR_RESULT) == MON_GIVEN_TO_PARTY) {
+        getpartysize
+        subvar(VAR_RESULT, 1)
+        copyvar(VAR_0x8004, VAR_RESULT)
+        setvar(VAR_0x8005, KEEP_FRIENDSHIP)
+        special(SetPartyMonFriendship)
+        playfanfare(MUS_OBTAIN_ITEM)
+        msgbox(TokiwaCity_Text_PidgeyKeptParty)
+    } else {
+        playfanfare(MUS_OBTAIN_ITEM)
+        msgbox(TokiwaCity_Text_PidgeyKeptBox)
+    }
+    waitfanfare
+    removeitem(ITEM_HURT_PIDGEY)
+    setflag(FLAG_Q_PIDGEY_KEPT)
+    setvar(VAR_Q_PIDGEY, 4)
+    msgbox(TokiwaCity_Text_PidgeyKeptYuki)
+    return
+}
+
+script TokiwaCity_EventScript_BiscottoCanal {
+    lock
+    faceplayer
+    playmoncry(SPECIES_RATTATA, CRY_MODE_NORMAL)
+    msgbox(TokiwaCity_Text_Biscotto)
+    waitmoncry
+    release
+    end
+}
+
+// ---------------------------------------------------------------------------------------------
+// TOK-117 The arena watcher outside the PMC. After FLAG_Q_YUJI_MET (spine, TOK-007) he adds the guide line
+// (teaching channel 2): "When the vents choke, his birds come down to earth."
+// ---------------------------------------------------------------------------------------------
+script TokiwaCity_EventScript_ArenaWatcher {
+    lock
+    faceplayer
+    if (flag(FLAG_Q_YUJI_MET)) {
+        msgbox(TokiwaCity_Text_WatcherAfter)
+        msgbox(TokiwaCity_Text_WatcherGuide)
+    } else {
+        msgbox(TokiwaCity_Text_WatcherBefore)
+    }
+    release
+    end
+}
+
+// TOK-118 / 120 R/G streets.
+script TokiwaCity_EventScript_CaterpieBoy {
+    msgbox(TokiwaCity_Text_CaterpieBoy, MSGBOX_NPC)
+    end
+}
+
+script TokiwaCity_EventScript_Youngster {
+    msgbox(TokiwaCity_Text_Youngster, MSGBOX_NPC)
+    end
+}
+
+// ---------------------------------------------------------------------------------------------
+// Signs and examines.
+// ---------------------------------------------------------------------------------------------
+script TokiwaCity_EventScript_TownSign {
+    msgbox(TokiwaCity_Text_TOK001_TownSign, MSGBOX_SIGN)
+    end
+}
+
+script TokiwaCity_EventScript_PMCPlaque {
+    msgbox(TokiwaCity_Text_TOK201_Plaque, MSGBOX_SIGN)
+    end
+}
+
+script TokiwaCity_EventScript_ShrineFence {
+    msgbox(TokiwaCity_Text_TOK203_ShrineFence, MSGBOX_SIGN)
+    end
+}
+
+script TokiwaCity_EventScript_MemorialStone {
+    msgbox(TokiwaCity_Text_TOK224_Stone, MSGBOX_SIGN)
+    end
+}
+
+script TokiwaCity_EventScript_InnSign {
+    msgbox(TokiwaCity_Text_TOK207_InnSign, MSGBOX_SIGN)
+    end
+}
+
+script TokiwaCity_EventScript_TrainerTipsCatch {
+    msgbox(TokiwaCity_Text_TOK222_TipsCatch, MSGBOX_SIGN)
+    end
+}
+
+script TokiwaCity_EventScript_TrainerTipsTP {
+    msgbox(TokiwaCity_Text_TOK222_TipsTP, MSGBOX_SIGN)
+    end
+}
+
+// TOK-212 The CVS board: Omura's notice starts the Sandshrew quest (C2: VAR_Q_SANDSHREW 0 -> 1).
+// The notice is up while the var is 3 or less; once it is handed over, kept, fainted or missed (4-7) the board
+// holds only old flyers.
+script TokiwaCity_EventScript_CVSBoard {
+    lockall
+    if (var(VAR_Q_SANDSHREW) <= 3) {
+        setflag(FLAG_SEEN_OMURA_NOTICE)
+        if (var(VAR_Q_SANDSHREW) == 0) {
+            setvar(VAR_Q_SANDSHREW, 1)
+        }
+        msgbox(TokiwaCity_Text_TOK212_Notice)
+    } else {
+        msgbox(TokiwaCity_Text_TOK212_Old)
+    }
+    releaseall
+    end
+}
